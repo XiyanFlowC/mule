@@ -3,48 +3,45 @@
 #ifndef MAPPIFIER_H__
 #define MAPPIFIER_H__
 
-#include "Basic/DataHandler.h"
+#include <stack>
+
+#include "Basic/MultiValue.h"
+#include "Basic/Object.h"
 
 namespace mule
 {
 	namespace Data
 	{
-		/**
-		 * @brief Ó³Éä»¯Æ÷
-		*/
-		class Mappifier : public Basic::DataHandler
+		class Mappifier : public Basic::Object::DataHandler
 		{
-			Basic::MultiValue root;
-
-			int currentIndex;
-
-			Basic::MultiValue *currentObject;
-
 		public:
-			Mappifier();
+			virtual void OnSheetReadStart() override;
+			virtual void OnSheetWriteStart() override;
 
+			virtual void OnSheetReadEnd() override;
+			virtual void OnSheetWriteEnd() override;
+
+			virtual void OnRealmEnter(Basic::Object *realm, std::string name) override;
+			virtual void OnRealmExit(Basic::Object *realm, std::string name) override;
+			virtual void OnRealmEnter(Basic::Object *realm, int idx) override;
+			virtual void OnRealmExit(Basic::Object *realm, int idx) override;
+
+			virtual void OnDataRead(const Basic::MultiValue &value) override;
+			virtual Basic::MultiValue OnDataWrite() override;
+
+			Basic::MultiValue GetMap() const;
 		protected:
-			virtual void OnSheetReadingStarted() override;
+			std::stack<Basic::MultiValue *> values;
+			Basic::MultiValue result;
+			Basic::MultiValue key;
 
-			virtual void OnSheetWritingStarted() override;
-
-			virtual void OnSheetReadingEnded() override;
-
-			virtual void OnSheetWritingEnded() override;
-
-			virtual void OnRecordReadingStarted() override;
-
-			virtual void OnRecordWritingStarted() override;
-
-			virtual void OnRecordReadingEnded() override;
-
-			virtual void OnRecordWritingEnded() override;
-
-			virtual void OnCellRead(const Basic::MultiValue &value) override;
-
-			virtual Basic::MultiValue OnCellWrite() override;
+			enum {
+				DHMS_IDLE,
+				DHMS_READ,
+				DHMS_WRITE
+			} status = DHMS_IDLE;
 		};
 	}
 }
 
-#endif /* MAPPIFIER_H__ */
+#endif // End of MAPPIFIER_H__

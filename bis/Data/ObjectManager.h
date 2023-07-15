@@ -5,7 +5,7 @@
 
 #include "Basic/Object.h"
 #include "Basic/Structure.h"
-#include "FieldCreator.h"
+#include "ObjectCreator.h"
 #include <map>
 #include <string>
 
@@ -61,7 +61,7 @@ namespace mule
 			 * is able to manage an automatic process of Field creating by using the creators registered.
 			 * @param creator The creator need to be registered to the manager.
 			*/
-			void RegisterFieldCreator(FieldCreator *creator);
+			void RegisterObjectCreator(ObjectCreator *creator);
 
 			/**
 			 * @brief Try to create a Field by given information. Using the creators registered to the
@@ -69,7 +69,7 @@ namespace mule
 			 * @param info The information needed to create the Field.
 			 * @return Created Field instance. nullptr if failed.
 			*/
-			Basic::Field *CreateField(FieldCreator::FieldCreatingInfo &info);
+			Basic::Object *GetOrCreateObject(std::string info);
 
 			/**
 			 * @brief Try to get a object that already registered to the manager.
@@ -79,7 +79,7 @@ namespace mule
 			Basic::Object *GetObject(std::string name);
 		protected:
 			std::map<std::string, Basic::Object *> objects;
-			FieldCreator *first, *last;
+			ObjectCreator *first, *last;
 		};
 	}
 }

@@ -40,7 +40,7 @@ void ObjectManager::ReleaseObject(std::string name)
 	}
 }
 
-void ObjectManager::RegisterFieldCreator(FieldCreator *creator)
+void ObjectManager::RegisterObjectCreator(ObjectCreator *creator)
 {
 	if (creator->nextCreator != nullptr) throw Exception::InvalidParameterException(
 		"creator",
@@ -64,11 +64,16 @@ Basic::Structure *ObjectManager::NewStructure(std::string name) {
 	return ret;
 }
 
-Basic::Field *ObjectManager::CreateField(FieldCreator::FieldCreatingInfo &info)
+Basic::Object *ObjectManager::GetOrCreateObject(std::string info)
 {
+	// 若已经存在则直接返回
+	if (objects.contains(info)) return objects[info];
+
+	// 若没有创建器则直接返回
 	if (first == nullptr) return nullptr;
 
-	return first->CreateField(info);
+	// 保存创建结果并返回
+	return objects[info] = first->GetOrCreateObject(info);
 }
 
 Basic::Object *ObjectManager::GetObject(std::string name)

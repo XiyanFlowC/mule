@@ -4,7 +4,6 @@
 #define STRUCTURE_H__
 
 #include "Object.h"
-#include "Field.h"
 #include <list>
 
 namespace mule
@@ -20,45 +19,64 @@ namespace mule
 			class Structure : public Basic::Object
 			{
 			public:
+
+				class Field : public Basic::Object
+				{
+				public:
+					virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) const override;
+					virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) const override;
+					virtual size_t Size() const override;
+
+					const std::string &GetName() const;
+					const Object * const GetObject() const;
+
+					Field(std::string name, Object *obj);
+				protected:
+
+					std::string name;
+
+					Object *object;
+				};
+
 				/**
 				 * @brief 初始化一个新的结构
 				*/
 				Structure();
 
+				~Structure();
+
 				/**
 				 * @brief 在结构体尾部附加一个字段
 				 * @param name 字段的名字
-				 * @param object 字段处理器的实例
+				 * @param field 字段处理器的实例
 				*/
-				void AppendField(const std::string &name, mule::Data::Basic::Field *field);
+				void AppendField(const std::string &name, mule::Data::Basic::Object *field);
 
 				/**
 				 * @brief 对指定的流进行读取
 				 * @param stream 要进行读取的流
 				 * @param dataHandler 数据处理器
 				*/
-				virtual void Read(xybase::Stream *stream, Basic::DataHandler *dataHandler) override;
+				virtual void Read(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) const override;
 
 				/**
 				 * @brief 对指定的流进行写入
 				 * @param stream 要进行写入的流
 				 * @param dataHandler 数据处理器
 				*/
-				virtual void Write(xybase::Stream *stream, Basic::DataHandler *dataHandler) const override;
+				virtual void Write(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) const override;
 
 				/**
 				 * @brief 获取结构体整体大小
 				 * @return 结构体整体的大小
 				*/
 				virtual size_t Size() const override;
-
-				void Froze();
 			protected:
-				Basic::Field *firstField, *lastField;
 
-				std::list<std::string> nameList;
+				// 通过 Object 继承
+				virtual std::string GetTypeName() const override;
 
-				bool frozen;
+				std::list<Field *> fields;
 			};
 		}
 	}

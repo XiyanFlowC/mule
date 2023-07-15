@@ -30,6 +30,8 @@ namespace mule
 			class MultiValue
 			{
 			public:
+				static const MultiValue MV_NULL;
+
 				/**
 				 * @brief 多用途值类型
 				*/
@@ -81,6 +83,8 @@ namespace mule
 
 				MultiValue();
 
+				MultiValue(ValueType type, int length = 0);
+
 				MultiValue(const MultiValue &pattern);
 
 				MultiValue(const std::string &value);
@@ -111,7 +115,7 @@ namespace mule
 
 				void SetValue(const int size, const MultiValue *array);
 
-				void SetValue(const std::map<MultiValue, MultiValue> map);
+				void SetValue(const std::map<MultiValue, MultiValue> &map);
 
 				void SetValue();
 

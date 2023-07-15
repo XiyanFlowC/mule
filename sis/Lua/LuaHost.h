@@ -78,6 +78,13 @@ namespace mule
 			mule::Data::Basic::MultiValue GetGlobal(const std::string& name);
 
 			/**
+			 * @brief Get a value from given index on the stack.
+			 * @param idx Index of the value.
+			 * @return The value required.
+			*/
+			mule::Data::Basic::MultiValue GetValue(int idx);
+
+			/**
 			 * @brief Set a global variable to lua vm.
 			 * @param name The name of the global variable.
 			 * @param value The value of the global variable.

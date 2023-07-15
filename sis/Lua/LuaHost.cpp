@@ -55,6 +55,43 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetGlobal(const std::string &n
 	return PopValue();
 }
 
+mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
+{
+	MultiValue ret;
+	if (lua_isboolean(L, idx))
+		ret = MultiValue((int64_t)lua_toboolean(L, idx));
+	else if (lua_isinteger(L, idx))
+		ret = MultiValue((int64_t)lua_tointeger(L, idx));
+	else if (lua_isnumber(L, idx))
+		ret = MultiValue(lua_tonumber(L, idx));
+	else if (lua_isstring(L, idx))
+		ret = MultiValue(lua_tostring(L, idx));
+	else if (lua_isnil(L, idx))
+		ret = MultiValue();
+	else if (lua_istable(L, idx))
+	{
+		std::map<MultiValue, MultiValue> result;
+
+		// 遍历LuaTable
+		lua_pushnil(L);  // 将nil推入栈顶作为遍历的起始点
+		while (lua_next(L, idx) != 0) {
+			// 获取key和value
+			const MultiValue key = GetValue(-2);
+			const MultiValue value = GetValue(-1);
+
+			// 将key和value插入std::map
+			result[key] = value;
+
+			// 弹出value，保留key用于下一次迭代
+			lua_pop(L, 1);
+		}
+
+		ret.SetValue(result);
+	}
+	else throw LuaException("Unhandlable value.", __FILE__, __LINE__);
+	return ret;
+}
+
 void mule::Lua::LuaHost::SetGlobal(const std::string &name, const mule::Data::Basic::MultiValue &value)
 {
 	PushValue(value);
@@ -82,17 +119,7 @@ MultiValue LuaHost::Call(const std::string name, int count, ...)
 mule::Data::Basic::MultiValue mule::Lua::LuaHost::PopValue()
 {
 	MultiValue ret;
-	if (lua_isboolean(L, -1))
-		ret = MultiValue((int64_t)lua_toboolean(L, -1));
-	else if (lua_isinteger(L, -1))
-		ret = MultiValue((int64_t)lua_tointeger(L, -1));
-	else if (lua_isnumber(L, -1))
-		ret = MultiValue(lua_tonumber(L, -1));
-	else if (lua_isstring(L, -1))
-		ret = MultiValue(lua_tostring(L, -1));
-	else if (lua_isnil(L, -1))
-		ret = MultiValue();
-	else throw LuaException("Unhandlable value.", __FILE__, __LINE__);
+	GetValue(-1);
 	lua_pop(L, 1);
 	return ret;
 }
@@ -115,6 +142,17 @@ void mule::Lua::LuaHost::PushValue(const mule::Data::Basic::MultiValue &v)
 		break;
 	case MultiValue::ValueType::MVT_STRING:
 		lua_pushstring(L, v.value.stringValue->c_str());
+		break;
+	case MultiValue::ValueType::MVT_MAP:
+		lua_newtable(L);
+
+		for (const auto &entry : *v.value.mapValue)
+		{
+			PushValue(entry.first);
+			PushValue(entry.second);
+
+			lua_settable(L, -3);
+		}
 		break;
 	}
 }

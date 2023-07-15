@@ -27,21 +27,26 @@ int main(int argc, char **argv)
 	}
 
 	// Test:
-	ObjectManager::GetInstance().RegisterFieldCreator(new BasicFieldCreator());
+	ObjectManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
 	Structure *test = ObjectManager::GetInstance().NewStructure("test");
-	FieldCreator::FieldCreatingInfo info;
-	info.typeDescriptor = "uint32";
-	test->AppendField("offset", ObjectManager::GetInstance().CreateField(info));
-	test->AppendField("size", ObjectManager::GetInstance().CreateField(info));
+	std::string info = "uint32";
+	test->AppendField("offset", ObjectManager::GetInstance().GetOrCreateObject(info));
+	test->AppendField("size", ObjectManager::GetInstance().GetOrCreateObject(info));
+	Table *tbl = new Table(test, "test", 10, 0);
 
-	xybase::Stream *stream = new mule::Data::BinaryStream("test.bin");
-
-	Table *tbl = new Table(test, "table", 10, 0);
-
-	MultiValue *mv = new MultiValue();
-	tbl->Read(stream, new Stringfier(mv));
-	puts(mv->ToString().c_str());
-
+	xybase::Stream *stream;
+	try
+	{
+		stream = new mule::Data::BinaryStream("test.bin");
+		Mappifier m;
+		tbl->Read(stream, &m);
+		puts(m.GetMap().ToString().c_str());
+	}
+	catch (mule::Exception::Exception x)
+	{
+		puts( x.What() );
+		abort();
+	}
 
 	return 0;
 }

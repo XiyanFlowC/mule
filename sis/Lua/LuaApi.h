@@ -4,8 +4,6 @@
 #define LUA_API_H__
 
 #include "LuaHost.h"
-#include <Data/Basic/DataHandler.h>
-#include <Data/Basic/Table.h>
 #include <lua.hpp>
 
 namespace mule {

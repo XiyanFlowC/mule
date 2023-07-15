@@ -102,7 +102,11 @@ void Fragment::SetFragment(unsigned int begining, unsigned int size)
 
 void Fragment::SetBegining(unsigned int begining)
 {
+	if (begining >= GetEnding()) throw InvalidParameterException("begining", "Cannot be set to the pos after the ending.", __FILE__, __LINE__);
+	int newSize = GetEnding() - begining;
+
 	begin = begining;
+	size = newSize;
 }
 
 void Fragment::SetSize(unsigned int size)
@@ -112,7 +116,7 @@ void Fragment::SetSize(unsigned int size)
 
 void Fragment::SetEnding(unsigned int ending)
 {
-	if (ending < begin) throw InvalidParameterException("ending", "Cannot be set before the begining.", __FILE__, __LINE__);
+	if (ending < begin) throw InvalidParameterException("ending", "Cannot be set to the pos before the begining.", __FILE__, __LINE__);
 
 	this->size = ending - begin;
 }

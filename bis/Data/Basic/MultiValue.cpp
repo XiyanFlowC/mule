@@ -1,4 +1,5 @@
 #include "MultiValue.h"
+#include "../../xybase/StringBuilder.h"
 
 using namespace std;
 
@@ -92,6 +93,33 @@ MultiValue::MultiValue()
 	SetValue();
 }
 
+mule::Data::Basic::MultiValue::MultiValue(ValueType type, int length)
+	: length(length)
+{
+	this->type = type;
+	switch (type)
+	{
+	case mule::Data::Basic::MultiValue::MVT_NULL:
+	case mule::Data::Basic::MultiValue::MVT_INT:
+	case mule::Data::Basic::MultiValue::MVT_UINT:
+	case mule::Data::Basic::MultiValue::MVT_REAL:
+		value.unsignedValue = 0;
+		break;
+	case mule::Data::Basic::MultiValue::MVT_STRING:
+		value.stringValue = new std::string("");
+		break;
+	case mule::Data::Basic::MultiValue::MVT_MAP:
+		value.mapValue = new std::map<MultiValue, MultiValue>;
+		break;
+	case mule::Data::Basic::MultiValue::MVT_ARRAY:
+		value.arrayValue = new MultiValue[length];
+		break;
+	default:
+		value.unsignedValue = 0;
+		break;
+	}
+}
+
 MultiValue::MultiValue(const MultiValue& pattern)
 {
 	type = pattern.type;
@@ -153,6 +181,31 @@ std::string MultiValue::ToString() const
 	case MVT_UINT:
 		return std::to_string(value.unsignedValue);
 		break;
+	case MVT_ARRAY:
+	{
+		std::string aret("[");
+		for (int i = 0; i < length; ++i)
+		{
+			aret += value.arrayValue[i].ToString() + ',';
+		}
+		aret += "]";
+		return aret;
+		break;
+	}
+	case MVT_MAP:
+	{
+		std::string mret("{");
+		for (const std::pair<MultiValue, MultiValue> &pair : *value.mapValue)
+		{
+			mret += pair.first.ToString() + '=' + pair.second.ToString();
+			mret += ',';
+		}
+		mret += "}";
+		return mret;
+		break;
+	}
+	default:
+		abort();
 	}
 	return "";
 }
@@ -434,9 +487,9 @@ void MultiValue::ParseReal(const std::string &value)
 
 void MultiValue::DisposeOldValue()
 {
-	if (type == MVT_STRING) delete this->value.stringValue;
-	if (type == MVT_MAP) delete this->value.mapValue;
-	if (type == MVT_ARRAY) delete this->value.arrayValue;
+	if (type == MVT_STRING && value.stringValue != nullptr) delete this->value.stringValue;
+	if (type == MVT_MAP && value.mapValue != nullptr) delete this->value.mapValue;
+	if (type == MVT_ARRAY && value.arrayValue != nullptr) delete this->value.arrayValue;
 }
 
 void MultiValue::Parse(const std::string &value)
@@ -505,7 +558,7 @@ void MultiValue::SetValue(const int size, const MultiValue *array)
 	memcpy(value.arrayValue, array, size * sizeof(MultiValue));
 }
 
-void MultiValue::SetValue(const std::map<MultiValue, MultiValue> map)
+void MultiValue::SetValue(const std::map<MultiValue, MultiValue> &map)
 {
 	DisposeOldValue();
 
@@ -618,12 +671,21 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 	DisposeOldValue();
 
 	type = rvalue.type;
-	value = rvalue.value;
 	
 	if (type == MVT_STRING)
 	{
 		value.stringValue = new std::string(*rvalue.value.stringValue);
 	}
+	else if (type == MVT_MAP)
+	{
+		SetValue(*rvalue.value.mapValue);
+	}
+	else if (type == MVT_ARRAY)
+	{
+		SetValue(rvalue.length, rvalue.value.arrayValue);
+	}
+	else
+		value = rvalue.value;
 
 	return *this;
 }

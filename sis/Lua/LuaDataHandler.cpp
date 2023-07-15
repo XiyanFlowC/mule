@@ -3,66 +3,27 @@
 using namespace mule::Lua;
 using namespace mule::Data::Basic;
 
-LuaDataHandler::LuaDataHandler(std::string &handlerName)
+void mule::Lua::LuaDataHandler::OnRealmEnter(Object *realm, std::string name)
 {
-	onSrs = handlerName + ".onSheetReadStarted";
-	onSre = handlerName + ".onSheetReadEnded";
-	onSwe = handlerName + ".onSheetWriteEnded";
-	onSws = handlerName + ".onSheetWriteStarted";
-	onRrs = handlerName + ".onRecordReadStarted";
-	onRre = handlerName + ".onRecordReadEnded";
-	onRws = handlerName + ".onRecordWriteStarted";
-	onRwe = handlerName + ".onRecordWriteEnded";
-	onCr = handlerName + ".onCellRead";
-	onCw = handlerName + ".onCellWrite";
 }
 
-void LuaDataHandler::OnSheetReadingStarted()
+void mule::Lua::LuaDataHandler::OnRealmExit(Object *realm, std::string name)
 {
-	LuaHost::GetInstance().Call(onSrs, 1, MultiValue(tableName));
 }
 
-void LuaDataHandler::OnSheetWritingStarted()
+void mule::Lua::LuaDataHandler::OnDataRead(const MultiValue &value)
 {
-	LuaHost::GetInstance().Call(onSws, 0);
 }
 
-void LuaDataHandler::OnSheetReadingEnded()
+MultiValue mule::Lua::LuaDataHandler::OnDataWrite()
 {
-	LuaHost::GetInstance().Call(onSre, 0);
+	return MultiValue();
 }
 
-void LuaDataHandler::OnSheetWritingEnded()
+void mule::Lua::LuaDataHandler::OnRealmEnter(Object *realm, int idx)
 {
-	LuaHost::GetInstance().Call(onSwe, 0);
 }
 
-void LuaDataHandler::OnRecordReadingStarted()
+void mule::Lua::LuaDataHandler::OnRealmExit(Object *realm, int idx)
 {
-	LuaHost::GetInstance().Call(onRrs, 0);
-}
-
-void LuaDataHandler::OnRecordWritingStarted()
-{
-	LuaHost::GetInstance().Call(onRws, 0);
-}
-
-void LuaDataHandler::OnRecordReadingEnded()
-{
-	LuaHost::GetInstance().Call(onRre, 0);
-}
-
-void LuaDataHandler::OnRecordWritingEnded()
-{
-	LuaHost::GetInstance().Call(onRwe, 0);
-}
-
-void LuaDataHandler::OnCellRead(const MultiValue &value)
-{
-	LuaHost::GetInstance().Call(onCr, 1, value);
-}
-
-MultiValue LuaDataHandler::OnCellWrite()
-{
-	return LuaHost::GetInstance().Call(onCw, 0);
 }
