@@ -77,6 +77,8 @@ namespace mule
 					MultiValue *arrayValue;
 				} value;
 
+				int *useCounter = nullptr;
+
 				size_t length;
 
 				~MultiValue();

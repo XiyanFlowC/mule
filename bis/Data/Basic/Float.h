@@ -16,8 +16,8 @@ namespace mule
 			public:
 				Float();
 
-				virtual void Read(xybase::Stream *stream, DataHandler *handler) const override;
-				virtual void Write(xybase::Stream *stream, DataHandler *handler) const override;
+				virtual void Read(xybase::Stream *stream, DataHandler *handler) override;
+				virtual void Write(xybase::Stream *stream, DataHandler *handler) override;
 				virtual size_t Size() const override;
 
 			protected:

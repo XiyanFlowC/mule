@@ -24,8 +24,8 @@ namespace mule
 
 				virtual size_t Size() const override;
 
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) const override;
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) const override;
+				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
+				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual std::string GetTypeName() const override;
 
 			protected:

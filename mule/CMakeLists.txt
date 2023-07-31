@@ -1,4 +1,4 @@
-add_executable (mule "mule.cpp" "mule.h" "Configuration.cpp" "Configuration.h")
+add_executable (mule "mule.cpp" "mule.h" "Configuration.cpp" "Configuration.h" "ShiftableReferrence.cpp" "ShiftableReferrence.h" "ElfStream.h" "ElfStream.cpp")
 
 target_link_libraries (mule PUBLIC sis)
 target_include_directories (mule PUBLIC "${PROJECT_SOURCE_DIR}/sis" "${PROJECT_SOURCE_DIR}/bis")

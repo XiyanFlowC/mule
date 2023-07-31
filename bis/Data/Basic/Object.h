@@ -41,16 +41,32 @@ namespace mule
 					virtual void OnDataRead(const MultiValue &value) = 0;
 
 					virtual MultiValue OnDataWrite() = 0;
-				protected:
 				};
 
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) const = 0;
+				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) = 0;
 
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) const = 0;
+				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) = 0;
 
 				virtual size_t Size() const = 0;
 
-				virtual std::string GetTypeName() const;
+				/**
+				 * @brief 获得类型名（运行期反射协助用）
+				 * @return 类型名
+				*/
+				virtual std::string GetTypeName() const = 0;
+
+				/**
+				 * @brief 获得上一次读取的大小
+				 * @return 上一次读取操作读取的字节数
+				*/
+				virtual size_t GetLastSize() const;
+
+				/**
+				 * @brief 评估给定数据如要写入，需要使用的空间
+				 * @param obj 要评估的数据
+				 * @return 评估所得的大小结果
+				*/
+				virtual size_t EvalSize(const MultiValue &obj) const;
 			};
 		}
 	}

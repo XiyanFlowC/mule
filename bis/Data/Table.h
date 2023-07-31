@@ -27,14 +27,14 @@ namespace mule {
 			 * @param stream 读取的流
 			 * @param dataHandler 数据处理器
 			*/
-			void Read(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) const override;
+			void Read(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) override;
 
 			/**
 			 * @brief 执行写入
 			 * @param stream 写入的流
 			 * @param dataHandler 数据处理器
 			*/
-			void Write(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) const override;
+			void Write(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) override;
 
 			virtual size_t Size() const override;
 

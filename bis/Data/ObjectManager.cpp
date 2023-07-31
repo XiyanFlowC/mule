@@ -59,7 +59,7 @@ void ObjectManager::RegisterObjectCreator(ObjectCreator *creator)
 }
 
 Basic::Structure *ObjectManager::NewStructure(std::string name) {
-	Basic::Structure *ret = new Basic::Structure();
+	Basic::Structure *ret = new Basic::Structure(name);
 	RegisterObject(ret, name);
 	return ret;
 }

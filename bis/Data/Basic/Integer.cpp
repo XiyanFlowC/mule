@@ -14,7 +14,7 @@ size_t Integer::Size() const
 	return size >> 3;
 }
 
-void mule::Data::Basic::Integer::Read(xybase::Stream *stream, DataHandler *dataHandler) const
+void mule::Data::Basic::Integer::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	MultiValue value(0LL);
 	switch (size >> 3)
@@ -47,7 +47,7 @@ void mule::Data::Basic::Integer::Read(xybase::Stream *stream, DataHandler *dataH
 	dataHandler->OnDataRead(value);
 }
 
-void mule::Data::Basic::Integer::Write(xybase::Stream *stream, DataHandler *dataHandler) const
+void mule::Data::Basic::Integer::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	switch (size >> 3)
 	{

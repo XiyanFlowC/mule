@@ -84,8 +84,7 @@ bool MultiValue::operator>= (const MultiValue &rvalue) const
 
 MultiValue::~MultiValue()
 {
-	if (type == MVT_STRING)
-		delete value.stringValue;
+	DisposeOldValue();
 }
 
 MultiValue::MultiValue()
@@ -110,9 +109,13 @@ mule::Data::Basic::MultiValue::MultiValue(ValueType type, int length)
 		break;
 	case mule::Data::Basic::MultiValue::MVT_MAP:
 		value.mapValue = new std::map<MultiValue, MultiValue>;
+		useCounter = new int;
+		*useCounter = 1;
 		break;
 	case mule::Data::Basic::MultiValue::MVT_ARRAY:
 		value.arrayValue = new MultiValue[length];
+		useCounter = new int;
+		*useCounter = 1;
 		break;
 	default:
 		value.unsignedValue = 0;
@@ -124,6 +127,14 @@ MultiValue::MultiValue(const MultiValue& pattern)
 {
 	type = pattern.type;
 	value = pattern.value;
+
+	// 维护引用计数
+	useCounter = pattern.useCounter;
+	if (useCounter != nullptr)
+	{
+		*useCounter += 1;
+	}
+
 	length = 0;
 	
 	if (type == MVT_STRING)
@@ -488,8 +499,26 @@ void MultiValue::ParseReal(const std::string &value)
 void MultiValue::DisposeOldValue()
 {
 	if (type == MVT_STRING && value.stringValue != nullptr) delete this->value.stringValue;
-	if (type == MVT_MAP && value.mapValue != nullptr) delete this->value.mapValue;
-	if (type == MVT_ARRAY && value.arrayValue != nullptr) delete this->value.arrayValue;
+	if (type == MVT_MAP && value.mapValue != nullptr) 
+	{
+		*useCounter -= 1;
+		if (*useCounter == 0)
+		{
+			delete useCounter;
+			delete this->value.mapValue;
+			useCounter = nullptr;
+		}
+	}
+	if (type == MVT_ARRAY && value.arrayValue != nullptr)
+	{
+		*useCounter -= 1;
+		if (*useCounter == 0)
+		{
+			delete useCounter;
+			delete this->value.arrayValue;
+			useCounter = nullptr;
+		}
+	}
 }
 
 void MultiValue::Parse(const std::string &value)
@@ -554,6 +583,8 @@ void MultiValue::SetValue(const int size, const MultiValue *array)
 
 	type = MVT_ARRAY;
 	length = size;
+	useCounter = new int;
+	*useCounter = 1;
 	value.arrayValue = new MultiValue[size];
 	memcpy(value.arrayValue, array, size * sizeof(MultiValue));
 }
@@ -563,6 +594,8 @@ void MultiValue::SetValue(const std::map<MultiValue, MultiValue> &map)
 	DisposeOldValue();
 
 	type = MVT_MAP;
+	useCounter = new int;
+	*useCounter = 1;
 	value.mapValue = new std::map<MultiValue, MultiValue>(map);
 }
 
@@ -678,11 +711,15 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 	}
 	else if (type == MVT_MAP)
 	{
-		SetValue(*rvalue.value.mapValue);
+		value.mapValue = rvalue.value.mapValue;
+		useCounter = rvalue.useCounter;
+		*useCounter += 1;
 	}
 	else if (type == MVT_ARRAY)
 	{
-		SetValue(rvalue.length, rvalue.value.arrayValue);
+		value.arrayValue = rvalue.value.arrayValue;
+		useCounter = rvalue.useCounter;
+		*useCounter += 1;
 	}
 	else
 		value = rvalue.value;

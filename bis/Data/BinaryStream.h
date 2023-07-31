@@ -18,12 +18,12 @@ namespace mule
 
 		class BinaryStream : public xybase::Stream
 		{
+		protected:
 #ifndef BIG_ENDIAN_SYSTEM
 			static const bool bigEndianSystem = false;
 #else
 			static const bool bigEndianSystem = true;
 #endif
-		protected:
 			FILE *stream;
 			bool isOpen, isBigEndian;
 
@@ -57,7 +57,7 @@ namespace mule
 			virtual void Write(const std::string &value) override;
 			virtual void Write(const char *buffer, size_t size) override;
 			virtual size_t Tell() override;
-			virtual void Seek(long long offset, int mode) override;
+			virtual void Seek(long long offset, int mode = SEEK_SET) override;
 			virtual void Close() override;
 		};
 	}

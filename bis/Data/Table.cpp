@@ -11,7 +11,7 @@ Table::Table(Structure *structure, const std::string &name, int length, size_t o
 	this->name = name;
 }
 
-void Table::Read(xybase::Stream *stream, Object::DataHandler *dataHandler) const
+void Table::Read(xybase::Stream *stream, Object::DataHandler *dataHandler)
 {
 	stream->Seek(offset, SEEK_SET);
 	dataHandler->OnSheetReadStart();
@@ -25,7 +25,7 @@ void Table::Read(xybase::Stream *stream, Object::DataHandler *dataHandler) const
 	dataHandler->OnSheetReadEnd();
 }
 
-void Table::Write(xybase::Stream *stream, Object::DataHandler *dataHandler) const
+void Table::Write(xybase::Stream *stream, Object::DataHandler *dataHandler)
 {
 	stream->Seek(offset, SEEK_SET);
 	dataHandler->OnSheetWriteStart();

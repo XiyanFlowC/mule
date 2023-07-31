@@ -23,8 +23,8 @@ namespace mule
 				class Field : public Basic::Object
 				{
 				public:
-					virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) const override;
-					virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) const override;
+					virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
+					virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 					virtual size_t Size() const override;
 
 					const std::string &GetName() const;
@@ -36,12 +36,16 @@ namespace mule
 					std::string name;
 
 					Object *object;
+
+					// 通过 Object 继承
+					virtual std::string GetTypeName() const override;
 				};
 
 				/**
 				 * @brief 初始化一个新的结构
+				 * @param name 名字
 				*/
-				Structure();
+				Structure(std::string name);
 
 				~Structure();
 
@@ -57,26 +61,28 @@ namespace mule
 				 * @param stream 要进行读取的流
 				 * @param dataHandler 数据处理器
 				*/
-				virtual void Read(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) const override;
+				virtual void Read(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) override;
 
 				/**
 				 * @brief 对指定的流进行写入
 				 * @param stream 要进行写入的流
 				 * @param dataHandler 数据处理器
 				*/
-				virtual void Write(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) const override;
+				virtual void Write(xybase::Stream *stream, Basic::Object::DataHandler *dataHandler) override;
 
 				/**
 				 * @brief 获取结构体整体大小
 				 * @return 结构体整体的大小
 				*/
 				virtual size_t Size() const override;
-			protected:
-
 				// 通过 Object 继承
 				virtual std::string GetTypeName() const override;
+			protected:
+
 
 				std::list<Field *> fields;
+
+				std::string name;
 			};
 		}
 	}

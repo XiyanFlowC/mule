@@ -12,5 +12,6 @@
 #include <Data/BinaryStream.h>
 #include <Data/Table.h>
 #include <Data/Mappifier.h>
+#include <Exception/Exception.h>
 
 #include "Configuration.h"

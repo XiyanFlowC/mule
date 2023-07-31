@@ -1,7 +1,5 @@
 #include "mule.h"
 
-#include <Exception/Exception.h>
-
 using namespace mule::Lua;
 using namespace mule::Data;
 using namespace mule::Data::Basic;

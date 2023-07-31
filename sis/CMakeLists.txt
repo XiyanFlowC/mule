@@ -1,5 +1,5 @@
 
-add_library (sis "Lua/LuaHost.h" "Lua/LuaHost.cpp" "Lua/LuaDataHandler.h" "Lua/LuaDataHandler.cpp" "Lua/LuaApi.h" "Lua/LuaApi.cpp")
+add_library (sis "Lua/LuaHost.h" "Lua/LuaHost.cpp" "Lua/LuaDataHandler.h" "Lua/LuaDataHandler.cpp" "Lua/LuaApi.h" "Lua/LuaApi.cpp" "Ruby/RubyHost.cpp" "Ruby/RubyHost.h" "Cpp/StructureBuilder.h" "Cpp/StructureBuilder.cpp")
 
 target_link_libraries(sis PUBLIC bis)
 target_include_directories(sis PUBLIC "${PROJECT_SOURCE_DIR}/bis")

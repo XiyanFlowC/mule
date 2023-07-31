@@ -1,10 +1,5 @@
 #include "Object.h"
 
-std::string mule::Data::Basic::Object::GetTypeName() const
-{
-	return std::string("object");
-}
-
 void mule::Data::Basic::Object::DataHandler::OnSheetReadStart()
 {
 }
@@ -19,4 +14,14 @@ void mule::Data::Basic::Object::DataHandler::OnSheetWriteStart()
 
 void mule::Data::Basic::Object::DataHandler::OnSheetWriteEnd()
 {
+}
+
+size_t mule::Data::Basic::Object::GetLastSize() const
+{
+	return Size();
+}
+
+size_t mule::Data::Basic::Object::EvalSize(const MultiValue &obj) const
+{
+	return Size();
 }

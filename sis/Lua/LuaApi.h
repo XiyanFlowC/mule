@@ -24,6 +24,9 @@ namespace mule {
 			*/
 			static LuaApi & GetInstance();
 
+			/**
+			 * @brief Register all functions to the vm / init the vm.
+			*/
 			void Init();
 		};
 	}

@@ -3,7 +3,7 @@
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
-Structure::Structure()
+Structure::Structure(std::string name) : name(name)
 {
 }
 
@@ -20,7 +20,7 @@ void Structure::AppendField(const std::string &name, Object * field)
 	fields.push_back(new Field(name, field));
 }
 
-void Structure::Read(xybase::Stream *stream, DataHandler *dataHandler) const
+void Structure::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	for (Field *field : fields)
 	{
@@ -28,7 +28,7 @@ void Structure::Read(xybase::Stream *stream, DataHandler *dataHandler) const
 	}
 }
 
-void Structure::Write(xybase::Stream *stream, DataHandler *dataHandler) const
+void Structure::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	for (Field *field : fields)
 	{
@@ -48,17 +48,17 @@ size_t Structure::Size() const
 
 std::string mule::Data::Basic::Structure::GetTypeName() const
 {
-	return "structure";
+	return name;
 }
 
-void mule::Data::Basic::Structure::Field::Read(xybase::Stream *stream, DataHandler *dataHandler) const
+void mule::Data::Basic::Structure::Field::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter(object, name);
 	object->Read(stream, dataHandler);
 	dataHandler->OnRealmExit(object, name);
 }
 
-void mule::Data::Basic::Structure::Field::Write(xybase::Stream *stream, DataHandler *dataHandler) const
+void mule::Data::Basic::Structure::Field::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter(object, name);
 	object->Write(stream, dataHandler);
@@ -83,4 +83,9 @@ const Object *const mule::Data::Basic::Structure::Field::GetObject() const
 mule::Data::Basic::Structure::Field::Field(std::string name, Object *obj)
 	: name(name), object(obj)
 {
+}
+
+std::string mule::Data::Basic::Structure::Field::GetTypeName() const
+{
+	return std::string("field");
 }

@@ -18,8 +18,8 @@ namespace mule
 
 			protected:
 				// Í¨¹ý Object ¼Ì³Ð
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) const override;
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) const override;
+				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
+				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual size_t Size() const override;
 				virtual std::string GetTypeName() const override;
 			};
