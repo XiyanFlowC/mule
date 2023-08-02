@@ -29,8 +29,20 @@ namespace mule
 			*/
 			class MultiValue
 			{
+				/**
+				 * @brief 引用类型引用计数器
+				*/
+				int *useCounter = nullptr;
+
+				/**
+				 * @brief 表示元素长度。
+				*/
+				size_t length;
+
 			public:
 				static const MultiValue MV_NULL;
+
+				std::map<std::string, MultiValue> metadata;
 
 				/**
 				 * @brief 多用途值类型
@@ -77,10 +89,6 @@ namespace mule
 					MultiValue *arrayValue;
 				} value;
 
-				int *useCounter = nullptr;
-
-				size_t length;
-
 				~MultiValue();
 
 				MultiValue();
@@ -88,6 +96,8 @@ namespace mule
 				MultiValue(ValueType type, int length = 0);
 
 				MultiValue(const MultiValue &pattern);
+
+				MultiValue(MultiValue &&movee) noexcept;
 
 				MultiValue(const std::string &value);
 
@@ -101,10 +111,26 @@ namespace mule
 
 				MultiValue(const std::map<MultiValue, MultiValue> map);
 
+				void SetType(ValueType type, int length = 0);
+
+				ValueType GetType() const;
+
+				/**
+				 * @brief 转换为字符串。
+				 * @return 字符串表示值。
+				*/
 				std::string ToString() const;
 
+				/**
+				 * @brief 序列化为字符串。
+				 * @return 序列化结果。
+				*/
 				std::string Stringfy() const;
 
+				/**
+				 * @brief 反序列化字符串。
+				 * @param value 要解析的字符串对象。
+				*/
 				void Parse(const std::string &value);
 
 				void SetValue(const std::string &value);

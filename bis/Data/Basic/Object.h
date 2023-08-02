@@ -30,12 +30,32 @@ namespace mule
 
 					virtual void OnSheetWriteEnd();
 
+					/**
+					 * @brief 进入具名领域
+					 * @param realm 领域名
+					 * @param name 
+					*/
 					virtual void OnRealmEnter(Object *realm, std::string name) = 0;
 
+					/**
+					 * @brief 离开具名领域
+					 * @param realm 
+					 * @param name 
+					*/
 					virtual void OnRealmExit(Object *realm, std::string name) = 0;
 
+					/**
+					 * @brief 进入索引领域
+					 * @param realm 
+					 * @param idx 
+					*/
 					virtual void OnRealmEnter(Object *realm, int idx) = 0;
 
+					/**
+					 * @brief 离开索引领域
+					 * @param realm 
+					 * @param idx 
+					*/
 					virtual void OnRealmExit(Object *realm, int idx) = 0;
 
 					virtual void OnDataRead(const MultiValue &value) = 0;

@@ -29,6 +29,8 @@ namespace xybase
 
 		StringBuilder &operator+= (const Tunit *str);
 
+		StringBuilder &operator+= (const std::basic_string<Tunit>& str);
+
 		size_t Length();
 
 		size_t Size();
@@ -107,6 +109,12 @@ namespace xybase
 	StringBuilder<Tunit> &StringBuilder<Tunit>::operator+=(const Tunit *str)
 	{
 		return Append(str);
+	}
+
+	template<typename Tunit>
+	StringBuilder<Tunit> &StringBuilder<Tunit>::operator+=(const std::basic_string<Tunit> &str)
+	{
+		return Append(str.c_str());
 	}
 
 	template <typename Tunit>

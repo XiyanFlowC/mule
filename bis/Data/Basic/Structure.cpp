@@ -46,9 +46,14 @@ size_t Structure::Size() const
 	return size;
 }
 
-std::string mule::Data::Basic::Structure::GetTypeName() const
+std::string mule::Data::Basic::Structure::GetName() const
 {
 	return name;
+}
+
+std::string mule::Data::Basic::Structure::GetTypeName() const
+{
+	return "structure";
 }
 
 void mule::Data::Basic::Structure::Field::Read(xybase::Stream *stream, DataHandler *dataHandler)

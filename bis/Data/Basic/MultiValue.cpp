@@ -6,6 +6,8 @@ using namespace std;
 using namespace mule::Data::Basic;
 using namespace mule::Exception;
 
+const MultiValue MultiValue::MV_NULL = MultiValue(MultiValue::MVT_NULL);
+
 InvalidRValueException::InvalidRValueException(std::string description, const char* file, int line) : Exception(description, file, line)
 {
 }
@@ -143,6 +145,24 @@ MultiValue::MultiValue(const MultiValue& pattern)
 	}
 }
 
+mule::Data::Basic::MultiValue::MultiValue(MultiValue &&movee) noexcept
+{
+	type = movee.type;
+	value = movee.value;
+	useCounter = movee.useCounter;
+	if (useCounter != nullptr)
+	{
+		*useCounter += 1;
+	}
+
+	length = movee.length;
+
+	if (type == MVT_STRING)
+	{
+		value.stringValue = new std::string(*movee.value.stringValue);
+	}
+}
+
 MultiValue::MultiValue(const std::string& value)
 {
 	SetValue(value);
@@ -171,6 +191,45 @@ mule::Data::Basic::MultiValue::MultiValue(const int size, const MultiValue *arra
 MultiValue::MultiValue(const std::map<MultiValue, MultiValue> map)
 {
 	SetValue(map);
+}
+
+void mule::Data::Basic::MultiValue::SetType(ValueType type, int length)
+{
+	if (this->type == type) return;
+
+	DisposeOldValue();
+
+	this->type = type;
+	switch (type)
+	{
+	case mule::Data::Basic::MultiValue::MVT_NULL:
+	case mule::Data::Basic::MultiValue::MVT_INT:
+	case mule::Data::Basic::MultiValue::MVT_UINT:
+	case mule::Data::Basic::MultiValue::MVT_REAL:
+		value.unsignedValue = 0;
+		break;
+	case mule::Data::Basic::MultiValue::MVT_STRING:
+		value.stringValue = new std::string("");
+		break;
+	case mule::Data::Basic::MultiValue::MVT_MAP:
+		value.mapValue = new std::map<MultiValue, MultiValue>;
+		useCounter = new int;
+		*useCounter = 1;
+		break;
+	case mule::Data::Basic::MultiValue::MVT_ARRAY:
+		value.arrayValue = new MultiValue[length];
+		useCounter = new int;
+		*useCounter = 1;
+		break;
+	default:
+		value.unsignedValue = 0;
+		break;
+	}
+}
+
+mule::Data::Basic::MultiValue::ValueType mule::Data::Basic::MultiValue::GetType() const
+{
+	return type;
 }
 
 std::string MultiValue::ToString() const

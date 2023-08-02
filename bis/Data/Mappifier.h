@@ -7,6 +7,7 @@
 
 #include "Basic/MultiValue.h"
 #include "Basic/Object.h"
+#include "../Exception/InvalidOperationException.h"
 
 namespace mule
 {
@@ -30,6 +31,7 @@ namespace mule
 			virtual Basic::MultiValue OnDataWrite() override;
 
 			Basic::MultiValue GetMap() const;
+			void SetMap(mule::Data::Basic::MultiValue &value);
 		protected:
 			std::stack<Basic::MultiValue *> values;
 			Basic::MultiValue result;

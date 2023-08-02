@@ -13,5 +13,7 @@
 #include <Data/Table.h>
 #include <Data/Mappifier.h>
 #include <Exception/Exception.h>
+#include <Xml/XmlProc.h>
+#include <Cpp/StructureBuilder.h>
 
 #include "Configuration.h"

@@ -75,7 +75,9 @@ namespace mule
 				 * @return 结构体整体的大小
 				*/
 				virtual size_t Size() const override;
-				// 通过 Object 继承
+
+				virtual std::string GetName() const;
+
 				virtual std::string GetTypeName() const override;
 			protected:
 

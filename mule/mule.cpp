@@ -26,10 +26,10 @@ int main(int argc, char **argv)
 
 	// Test:
 	ObjectManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
-	Structure *test = ObjectManager::GetInstance().NewStructure("test");
-	std::string info = "uint32";
-	test->AppendField("offset", ObjectManager::GetInstance().GetOrCreateObject(info));
-	test->AppendField("size", ObjectManager::GetInstance().GetOrCreateObject(info));
+	mule::Cpp::StructureBuilder *sb = new mule::Cpp::StructureBuilder("test");
+	sb->AppendField("uint32", "offset");
+	sb->AppendField("uint32", "size");
+	Structure *test = sb->Build();
 	Table *tbl = new Table(test, "test", 10, 0);
 
 	xybase::Stream *stream;
@@ -39,6 +39,8 @@ int main(int argc, char **argv)
 		Mappifier m;
 		tbl->Read(stream, &m);
 		puts(m.GetMap().ToString().c_str());
+		mule::Xml::XmlGenerator gen;
+		puts(gen.ToXml(m.GetMap()).c_str());
 	}
 	catch (mule::Exception::Exception x)
 	{

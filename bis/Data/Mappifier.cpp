@@ -31,24 +31,50 @@ void mule::Data::Mappifier::OnSheetWriteEnd()
 
 void mule::Data::Mappifier::OnRealmEnter(Object *realm, std::string name)
 {
-	if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
-		values.push(new MultiValue(MultiValue::MVT_MAP));
+	if (status == DHMS_READ)
+	{
+		if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+			values.push(new MultiValue(MultiValue::MVT_MAP));
+		else
+			key = name;
+	}
 	else
-		key = name;
+	{
+		auto *itr = values.top();
+		if (itr->type != MultiValue::MVT_MAP)
+		{
+			throw Exception::InvalidOperationException("Not map but entered a realm.", __FILE__, __LINE__);
+		}
+		else
+		{
+			auto it = itr->value.mapValue->find(name);
+			if (it != itr->value.mapValue->end())
+			{
+				values.push(&it->second);
+			}
+		}
+	}
 }
 
 void mule::Data::Mappifier::OnRealmExit(Object *realm, std::string name)
 {
-	if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+	if (status == DHMS_READ)
 	{
-		auto value = values.top();
-		values.pop();
-		if (values.empty())
-			result = *value;
-		else
-			(*values.top()->value.mapValue)[MultiValue(name)] = *value;
+		if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+		{
+			auto value = values.top();
+			values.pop();
+			if (values.empty())
+				result = *value;
+			else
+				(*values.top()->value.mapValue)[MultiValue(name)] = *value;
 
-		delete value;
+			delete value;
+		}
+	}
+	else
+	{
+		values.pop();
 	}
 }
 
@@ -59,7 +85,7 @@ void mule::Data::Mappifier::OnDataRead(const MultiValue &value)
 
 MultiValue mule::Data::Mappifier::OnDataWrite()
 {
-	throw Exception::InvalidOperationException("Mappifier cannot handle write.", __FILE__, __LINE__);
+	return *values.top();
 }
 
 MultiValue mule::Data::Mappifier::GetMap() const
@@ -67,25 +93,56 @@ MultiValue mule::Data::Mappifier::GetMap() const
 	return result;
 }
 
+void mule::Data::Mappifier::SetMap(MultiValue &value)
+{
+	result = value;
+}
+
 void mule::Data::Mappifier::OnRealmEnter(Object *realm, int idx)
 {
-	if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
-		values.push(new MultiValue(MultiValue::MVT_MAP));
-	else
-		key = (uint64_t)idx;
+	if (status == DHMS_READ)
+	{
+		if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+			values.push(new MultiValue(MultiValue::MVT_MAP));
+		else
+			key = (uint64_t)idx;
+	}
+	else if (status == DHMS_WRITE)
+	{
+		auto* itr = values.top();
+		if (itr->type != MultiValue::MVT_MAP)
+		{
+			throw Exception::InvalidOperationException("Not map but entered a realm.", __FILE__, __LINE__);
+		}
+		else
+		{
+			auto it = itr->value.mapValue->find((uint64_t)idx);
+			if (it != itr->value.mapValue->end())
+			{
+				values.push(&it->second);
+			}
+		}
+	}
 }
 
 void mule::Data::Mappifier::OnRealmExit(Object *realm, int idx)
 {
-	if (realm->GetTypeName() == "structure")
+	if (status == DHMS_READ)
 	{
-		auto value = values.top();
-		values.pop();
-		if (values.empty())
-			result = *value;
-		else
-			(*values.top()->value.mapValue)[MultiValue((uint64_t)idx)] = *value;
+		if (realm->GetTypeName() == "structure")
+		{
+			auto value = values.top();
+			values.pop();
+			if (values.empty())
+				result = *value;
+			else
+				(*values.top()->value.mapValue)[MultiValue((uint64_t)idx)] = *value;
 
-		delete value;
+			delete value;
+		}
+	}
+	else
+	{
+		values.pop();
 	}
 }
