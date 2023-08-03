@@ -129,6 +129,7 @@ MultiValue::MultiValue(const MultiValue& pattern)
 {
 	type = pattern.type;
 	value = pattern.value;
+	metadata = pattern.metadata;
 
 	// 维护引用计数
 	useCounter = pattern.useCounter;
@@ -149,6 +150,7 @@ mule::Data::Basic::MultiValue::MultiValue(MultiValue &&movee) noexcept
 {
 	type = movee.type;
 	value = movee.value;
+	metadata = movee.metadata;
 	useCounter = movee.useCounter;
 	if (useCounter != nullptr)
 	{
@@ -764,6 +766,7 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 {
 	DisposeOldValue();
 
+	metadata = rvalue.metadata;
 	type = rvalue.type;
 	
 	if (type == MVT_STRING)
@@ -784,6 +787,29 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 	}
 	else
 		value = rvalue.value;
+
+	return *this;
+}
+
+const MultiValue &mule::Data::Basic::MultiValue::operator=(const MultiValue &&movee) noexcept
+{
+	DisposeOldValue();
+
+	type = movee.type;
+	value = movee.value;
+	metadata = movee.metadata;
+	useCounter = movee.useCounter;
+	if (useCounter != nullptr)
+	{
+		*useCounter += 1;
+	}
+
+	length = movee.length;
+
+	if (type == MVT_STRING)
+	{
+		value.stringValue = new std::string(*movee.value.stringValue);
+	}
 
 	return *this;
 }

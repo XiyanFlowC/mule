@@ -42,9 +42,9 @@ int main(int argc, char **argv)
 		Mappifier m;
 		tbl->Read(stream, &m);
 		puts(m.GetMap().ToString().c_str());
-		mule::Xml::XmlGenerator gen;
-		mule::Xml::XmlGenerator::indent = 2;
-		puts(gen.ToXml(m.GetMap()).c_str());
+		mule::Xml::XmlGenerator<mule::Xml::MvXmlNode> gen;
+		gen.indent = 2;
+		puts(gen.ToXml(mule::Xml::MvXmlNode(std::string("root"), m.GetMap())).c_str());
 	}
 	catch (mule::Exception::Exception x)
 	{

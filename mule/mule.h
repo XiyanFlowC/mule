@@ -15,7 +15,9 @@
 #include <Data/Table.h>
 #include <Data/Mappifier.h>
 #include <Exception/Exception.h>
-#include <Xml/XmlProc.h>
+#include <Xml/XmlGenerator.h>
+#include <Xml/XmlParser.h>
+#include <Xml/MvXmlNode.h>
 #include <Cpp/StructureBuilder.h>
 
 #include "Configuration.h"

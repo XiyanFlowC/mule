@@ -21,6 +21,7 @@ void Table::Read(xybase::Stream *stream, Object::DataHandler *dataHandler)
 		structure->Read(stream, dataHandler);
 		dataHandler->OnRealmExit(structure, i);
 	}
+	dataHandler->AppendMetadatum("_type", MultiValue("array"));
 	dataHandler->OnRealmExit((Object *) this, name);
 	dataHandler->OnSheetReadEnd();
 }
