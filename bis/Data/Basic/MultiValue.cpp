@@ -291,7 +291,7 @@ std::string MultiValue::Stringfy() const
 		return std::to_string(value.signedValue);
 		break;
 	case MultiValue::MVT_UINT:
-		return std::to_string(value.unsignedValue) + "U";
+		return std::to_string(value.unsignedValue) + "u";
 		break;
 	case MultiValue::MVT_REAL:
 		return std::string("$") + std::to_string(value.realValue);
@@ -580,28 +580,30 @@ void MultiValue::DisposeOldValue()
 	}
 }
 
-void MultiValue::Parse(const std::string &value)
+MultiValue MultiValue::Parse(const std::string &value)
 {
-	DisposeOldValue();
+	MultiValue ret;
 
 	if (value == "null")
 	{
-		type = MVT_NULL;
-		this->value.unsignedValue = 0;
+		ret.type = MVT_NULL;
+		ret.value.unsignedValue = 0;
 	}
 
 	if (value[0] == '\"') // 以“"”开头视作字符串
 	{
-		ParseString(value);
+		ret.ParseString(value);
 	}
 	else if (value[0] == '$')
 	{
-		ParseReal(value);
+		ret.ParseReal(value);
 	}
 	else
 	{
-		ParseInt(value);
+		ret.ParseInt(value);
 	}
+
+	return ret;
 }
 
 void MultiValue::SetValue(const std::string& value)

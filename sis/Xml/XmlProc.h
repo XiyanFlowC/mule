@@ -41,6 +41,8 @@ namespace mule
 		class XmlGenerator
 		{
 		public:
+			static int indent;
+
 			XmlGenerator();
 
 			std::string ToXml(const mule::Data::Basic::MultiValue &value, std::string rootName = "root");
@@ -48,8 +50,6 @@ namespace mule
 			std::function<std::string(std::string)> callback;
 		private:
 			int layer;
-
-			static int ident;
 
 			void ProcNode(const mule::Data::Basic::MultiValue &value, xybase::StringBuilder<char> &sb);
 		};

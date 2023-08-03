@@ -61,6 +61,10 @@ namespace mule
 					virtual void OnDataRead(const MultiValue &value) = 0;
 
 					virtual MultiValue OnDataWrite() = 0;
+
+					virtual void AppendMetadata(std::map<std::string, MultiValue> metadata);
+
+					virtual void AppendMetadatum(std::string name, const MultiValue &value);
 				};
 
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) = 0;

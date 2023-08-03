@@ -8,6 +8,8 @@
 #include <Data/BinaryStream.h>
 #include <Data/Basic/Integer.h>
 #include <Data/Basic/Structure.h>
+#include <Data/Basic/String.h>
+#include <Data/Referrence.h>
 #include <Data/ObjectCreator.h>
 #include <Data/BinaryStream.h>
 #include <Data/Table.h>

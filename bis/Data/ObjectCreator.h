@@ -9,6 +9,7 @@
 #include "Basic/Integer.h"
 #include "Basic/Double.h"
 #include "Basic/Float.h"
+#include "Basic/String.h"
 #include "Basic/MultiValue.h"
 
 namespace mule

@@ -38,7 +38,7 @@ void mule::Data::Mappifier::OnRealmEnter(Object *realm, std::string name)
 		else
 			key = name;
 	}
-	else
+	else if (status == DHMS_WRITE)
 	{
 		auto *itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
@@ -71,8 +71,10 @@ void mule::Data::Mappifier::OnRealmExit(Object *realm, std::string name)
 
 			delete value;
 		}
+		else
+			key = MultiValue::MV_NULL;
 	}
-	else
+	else if (status == DHMS_WRITE)
 	{
 		values.pop();
 	}
@@ -80,12 +82,27 @@ void mule::Data::Mappifier::OnRealmExit(Object *realm, std::string name)
 
 void mule::Data::Mappifier::OnDataRead(const MultiValue &value)
 {
-	(*values.top()->value.mapValue)[MultiValue(key)] = value;
+	(*values.top()->value.mapValue)[key] = value;
 }
 
 MultiValue mule::Data::Mappifier::OnDataWrite()
 {
 	return *values.top();
+}
+
+void mule::Data::Mappifier::AppendMetadatum(std::string name, const Basic::MultiValue &datum)
+{
+	if (status == DHMS_READ)
+	{
+		if (key != MultiValue::MV_NULL)
+			(*values.top()->value.mapValue)[key].metadata[name] = datum;
+		else
+			values.top()->metadata[name] = datum;
+	}
+	else if (status == DHMS_WRITE)
+	{
+		values.top()->metadata[name] = datum;
+	}
 }
 
 MultiValue mule::Data::Mappifier::GetMap() const
@@ -140,8 +157,10 @@ void mule::Data::Mappifier::OnRealmExit(Object *realm, int idx)
 
 			delete value;
 		}
+		else
+			key = MultiValue::MV_NULL;
 	}
-	else
+	else if (status == DHMS_WRITE)
 	{
 		values.pop();
 	}

@@ -6,7 +6,9 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 {
 	int ptr = stream->ReadInt32();
 	size_t loc = stream->Tell();
+	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
+	dataHandler->AppendMetadatum("addr", (unsigned long long)ptr);
 	stream->Seek(loc, 0);
 }
 
@@ -14,6 +16,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 {
 	int ptr = stream->ReadInt32();
 	size_t loc = stream->Tell();
+	stream->Seek(ptr, 0);
 	referent->Write(stream, dataHandler);
 	stream->Seek(loc, 0);
 }
@@ -25,7 +28,7 @@ size_t mule::Data::Referrence::Size() const
 
 std::string mule::Data::Referrence::GetTypeName() const
 {
-	return std::string("ref:") + referent->GetTypeName();
+	return referent->GetTypeName() + "*";
 }
 
 mule::Data::Referrence::Referrence(Object *referent)
@@ -33,14 +36,14 @@ mule::Data::Referrence::Referrence(Object *referent)
 	this->referent = referent;
 }
 
-inline Object *mule::Data::Referrence::ReferrenceObjectCreator::DoCreateObject(std::string info)
+Object *mule::Data::Referrence::ReferrenceObjectCreator::DoCreateObject(std::string info)
 {
-	if (!info.starts_with("ref:"))
+	if (!info.ends_with("*"))
 	{
 		return nullptr;
 	}
 
-	Basic::Object *innerType = ObjectManager::GetInstance().GetObject(info.substr(4));
+	Basic::Object *innerType = ObjectManager::GetInstance().GetOrCreateObject(info.substr(0, info.size() - 1));
 	if (innerType == nullptr) return nullptr;
 
 	Referrence *referrer = new Referrence(innerType);

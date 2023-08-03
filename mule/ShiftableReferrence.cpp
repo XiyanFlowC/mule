@@ -23,6 +23,7 @@ void ShiftableReferrence::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	int ptr = stream->ReadInt32();
 	size_t loc = stream->Tell();
+	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
 	MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(referent->GetLastSize(), GetAlign(ptr, stream))));
 	stream->Seek(loc, 0);

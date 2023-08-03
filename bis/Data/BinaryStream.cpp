@@ -162,6 +162,7 @@ std::string BinaryStream::ReadString()
 			}
 			buffer = tmp;
 		}
+		ch = fgetc(stream);
 	}
 	buffer[length] = '\0';
 

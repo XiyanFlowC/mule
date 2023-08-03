@@ -26,11 +26,14 @@ int main(int argc, char **argv)
 
 	// Test:
 	ObjectManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
+	ObjectManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceObjectCreator());
 	mule::Cpp::StructureBuilder *sb = new mule::Cpp::StructureBuilder("test");
 	sb->AppendField("uint32", "offset");
 	sb->AppendField("uint32", "size");
+	sb->AppendField("string*", "name");
+	sb->AppendField("uint32", "crc32");
 	Structure *test = sb->Build();
-	Table *tbl = new Table(test, "test", 10, 0);
+	Table *tbl = new Table(test, "test", 5, 0);
 
 	xybase::Stream *stream;
 	try
@@ -40,6 +43,7 @@ int main(int argc, char **argv)
 		tbl->Read(stream, &m);
 		puts(m.GetMap().ToString().c_str());
 		mule::Xml::XmlGenerator gen;
+		mule::Xml::XmlGenerator::indent = 2;
 		puts(gen.ToXml(m.GetMap()).c_str());
 	}
 	catch (mule::Exception::Exception x)

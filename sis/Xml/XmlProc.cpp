@@ -2,7 +2,7 @@
 
 using namespace mule::Data::Basic;
 
-int mule::Xml::XmlGenerator::ident = 2;
+int mule::Xml::XmlGenerator::indent = 0;
 
 mule::Xml::XmlParser::XmlParser()
 {
@@ -66,7 +66,7 @@ std::tuple<std::string, mule::Data::Basic::MultiValue> mule::Xml::XmlParser::Par
             size_t attrValueStart = xml.find_first_of("\"'", attrEndIndex) + 1;
             size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
             std::string attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
-            node.metadata[attrName] = attrValue;
+            node.metadata[attrName] = MultiValue::Parse(attrValue);
             endIndex = xml.find_first_of(" \t\n\r>/", attrValueEnd + 1);
         }
 
@@ -234,7 +234,8 @@ std::string mule::Xml::XmlGenerator::ToXml(const mule::Data::Basic::MultiValue &
 {
     layer = 0;
     xybase::StringBuilder sb;
-    sb += "<" + rootName + ">\n";
+    sb += "<" + rootName + ">";
+    if (indent) sb += '\n';
     ProcNode(value, sb);
     sb += "</" + rootName + ">\n";
     return sb.ToString();
@@ -242,58 +243,67 @@ std::string mule::Xml::XmlGenerator::ToXml(const mule::Data::Basic::MultiValue &
 
 void mule::Xml::XmlGenerator::ProcNode(const mule::Data::Basic::MultiValue &value, xybase::StringBuilder<char> &sb)
 {
+    auto &&metaitr = value.metadata.find("type");
     if (value.GetType() == MultiValue::MVT_MAP)
     {
-        for (auto &ele : *value.value.mapValue)
+        if (metaitr != value.metadata.end() && metaitr->second == std::string("array"))
         {
-            if (ele.first.GetType() == MultiValue::MVT_UINT)
+            for (int i = 0; ; ++i)
             {
-                for (int i = 1; ; ++i)
+                auto itr = value.value.mapValue->find((unsigned long long)i);
+                if (itr == value.value.mapValue->end()) break;
+
+                if (indent)
                 {
-                    auto itr = value.value.mapValue->find((unsigned long long)i);
-                    if (itr == value.value.mapValue->end()) break;
-
-                    if (ident)
+                    ++layer;
+                    for (int i = 0; i < layer * indent; ++i)
                     {
-                        ++layer;
-                        for (int i = 0; i < layer * ident; ++i)
-                        {
-                            sb += ' ';
-                        }
+                        sb += ' ';
                     }
-                    sb += "<i>";
-                    if (ident) sb += '\n';
-                    ProcNode(itr->second, sb);
-                    if (ident)
-                    {
-                        for (int i = 0; i < layer * ident; ++i)
-                        {
-                            sb += ' ';
-                        }
-                        --layer;
-                    }
-                    sb += "</i>";
-                    if (ident) sb += '\n';
                 }
-                break;
+                sb += "<i>";
+                if (indent) sb += '\n';
+                ProcNode(itr->second, sb);
+                if (indent)
+                {
+                    for (int i = 0; i < layer * indent; ++i)
+                    {
+                        sb += ' ';
+                    }
+                    --layer;
+                }
+                sb += "</i>";
+                if (indent) sb += '\n';
             }
-
-            if (ident)
+        }
+        else for (auto &ele : *value.value.mapValue)
+        {
+            if (indent)
             {
                 ++layer;
-                for (int i = 0; i < layer * ident; ++i)
+                for (int i = 0; i < layer * indent; ++i)
                 {
                     sb += ' ';
                 }
             }
             sb += '<';
             sb += ele.first.ToString();
-            sb += ">";
-            if (ident) sb += '\n';
-            ProcNode(ele.second, sb);
-            if (ident)
+
+            if (ele.second.metadata.size())
             {
-                for (int i = 0; i < layer * ident; ++i)
+                sb += ' ';
+                for (auto &attr : ele.second.metadata)
+                {
+                    sb += attr.first + "='" + attr.second.Stringfy() + "'";
+                }
+            }
+
+            sb += ">";
+            if (indent) sb += '\n';
+            ProcNode(ele.second, sb);
+            if (indent)
+            {
+                for (int i = 0; i < layer * indent; ++i)
                 {
                     sb += ' ';
                 }
@@ -302,35 +312,35 @@ void mule::Xml::XmlGenerator::ProcNode(const mule::Data::Basic::MultiValue &valu
             sb += "</";
             sb += ele.first.ToString();
             sb += ">";
-            if (ident) sb += '\n';
+            if (indent) sb += '\n';
         }
     }
     else if (value.GetType() == MultiValue::MVT_STRING)
     {
-        if (ident)
+        if (indent)
         {
             ++layer;
-            for (int i = 0; i < layer * ident; ++i)
+            for (int i = 0; i < layer * indent; ++i)
             {
                 sb += ' ';
             }
             --layer;
         }
         sb += callback(*value.value.stringValue);
-        if (ident) sb += '\n';
+        if (indent) sb += '\n';
     }
     else
     {
-        if (ident)
+        if (indent)
         {
             ++layer;
-            for (int i = 0; i < layer * ident; ++i)
+            for (int i = 0; i < layer * indent; ++i)
             {
                 sb += ' ';
             }
             --layer;
         }
         sb += value.ToString();
-        if (ident) sb += '\n';
+        if (indent) sb += '\n';
     }
 }

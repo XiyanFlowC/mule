@@ -30,6 +30,8 @@ namespace mule
 			virtual void OnDataRead(const Basic::MultiValue &value) override;
 			virtual Basic::MultiValue OnDataWrite() override;
 
+			virtual void AppendMetadatum(std::string name, const Basic::MultiValue &datum) override;
+
 			Basic::MultiValue GetMap() const;
 			void SetMap(mule::Data::Basic::MultiValue &value);
 		protected:

@@ -131,7 +131,7 @@ namespace mule
 				 * @brief 反序列化字符串。
 				 * @param value 要解析的字符串对象。
 				*/
-				void Parse(const std::string &value);
+				static MultiValue Parse(const std::string &value);
 
 				void SetValue(const std::string &value);
 

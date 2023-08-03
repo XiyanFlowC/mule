@@ -25,3 +25,16 @@ size_t mule::Data::Basic::Object::EvalSize(const MultiValue &obj) const
 {
 	return Size();
 }
+
+void mule::Data::Basic::Object::DataHandler::AppendMetadata(std::map<std::string, MultiValue> metadata)
+{
+	for (auto &datum : metadata)
+	{
+		AppendMetadatum(datum.first, datum.second);
+	}
+}
+
+void mule::Data::Basic::Object::DataHandler::AppendMetadatum(std::string name, const MultiValue &value)
+{
+}
+

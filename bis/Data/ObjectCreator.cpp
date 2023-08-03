@@ -58,5 +58,9 @@ Object *mule::Data::BasicFieldCreator::DoCreateObject(std::string info)
 	{
 		ret = new Double();
 	}
+	else if (info == "string")
+	{
+		ret = new String();
+	}
 	return ret;
 }
