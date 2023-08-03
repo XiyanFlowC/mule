@@ -26,7 +26,7 @@ bool MultiValue::operator==(const MultiValue& rvalue) const
 		return value.unsignedValue == rvalue.value.unsignedValue;
 		break;
 	case MVT_STRING:
-		return value.stringValue == rvalue.value.stringValue;
+		return *value.stringValue == *rvalue.value.stringValue;
 		break;
 	case MVT_ARRAY:
 		if (length != rvalue.length) return false;

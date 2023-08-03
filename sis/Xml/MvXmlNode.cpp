@@ -46,7 +46,18 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	std::list<MvXmlNode> ret;
 	if (mv.GetType() != MultiValue::MVT_MAP) return ret;
 
-	for (auto &pair : *mv.value.mapValue)
+	auto &&it = mv.metadata.find("_type");
+	if (it != mv.metadata.end() && it->second == std::string("array"))
+	{
+		for (int i = 0; i < mv.value.mapValue->size(); ++i)
+		{
+			auto itr = mv.value.mapValue->find((unsigned long long)i);
+			if (itr == mv.value.mapValue->end()) break;
+
+			ret.push_back(MvXmlNode("i", itr->second));
+		}
+	}
+	else for (auto &pair : *mv.value.mapValue)
 	{
 		ret.push_back(MvXmlNode(pair.first.ToString(), pair.second));
 	}
