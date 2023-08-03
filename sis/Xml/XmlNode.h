@@ -29,7 +29,7 @@ namespace mule
 
             std::list<XmlNode> GetChildren() const;
 
-            void SetText(std::string str);
+            void AddText(std::string str);
 
             std::string GetText() const;
 

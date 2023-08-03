@@ -41,10 +41,17 @@ int main(int argc, char **argv)
 		stream = new mule::Data::BinaryStream("test.bin");
 		Mappifier m;
 		tbl->Read(stream, &m);
+		puts("Read:");
 		puts(m.GetMap().ToString().c_str());
 		mule::Xml::XmlGenerator<mule::Xml::MvXmlNode> gen;
 		gen.indent = 2;
-		puts(gen.ToXml(mule::Xml::MvXmlNode(std::string("root"), m.GetMap())).c_str());
+		std::string xml = gen.ToXml(mule::Xml::MvXmlNode(std::string("root"), m.GetMap()));
+		puts("Xml:");
+		puts(xml.c_str());
+		mule::Xml::XmlParser<mule::Xml::MvXmlNode> parser;
+		puts("Re-parsed:");
+		puts(parser.Parse(xml).mv.ToString().c_str());
+		puts(parser.error.c_str());
 	}
 	catch (mule::Exception::Exception x)
 	{

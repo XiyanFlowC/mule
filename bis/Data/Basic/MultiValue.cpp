@@ -91,7 +91,9 @@ MultiValue::~MultiValue()
 
 MultiValue::MultiValue()
 {
-	SetValue();
+	value.unsignedValue = 0ULL;
+	length = 0;
+	type = MVT_NULL;
 }
 
 mule::Data::Basic::MultiValue::MultiValue(ValueType type, int length)
@@ -167,31 +169,37 @@ mule::Data::Basic::MultiValue::MultiValue(MultiValue &&movee) noexcept
 
 MultiValue::MultiValue(const std::string& value)
 {
+	type = MVT_NULL;
 	SetValue(value);
 }
 
 MultiValue::MultiValue(const double value)
 {
+	type = MVT_NULL;
 	SetValue(value);
 }
 
 MultiValue::MultiValue(const uint64_t value)
 {
+	type = MVT_NULL;
 	SetValue(value);
 }
 
 MultiValue::MultiValue(const int64_t value)
 {
+	type = MVT_NULL;
 	SetValue(value);
 }
 
 mule::Data::Basic::MultiValue::MultiValue(const int size, const MultiValue *array)
 {
+	type = MVT_NULL;
 	SetValue(size, array);
 }
 
 MultiValue::MultiValue(const std::map<MultiValue, MultiValue> map)
 {
+	type = MVT_NULL;
 	SetValue(map);
 }
 
@@ -347,7 +355,7 @@ void MultiValue::ParseInt(const std::string &value)
 				neg = 1;
 				// state = 1;
 			}
-			else if ('1' >= *itr && *itr <= '9')
+			else if ('1' <= *itr && *itr <= '9')
 			{
 				res = ((unsigned long long) * itr) - '0';
 				state = 1;
@@ -359,14 +367,19 @@ void MultiValue::ParseInt(const std::string &value)
 			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
 			break;
 		case 1:
-			if ('0' >= *itr && *itr <= '9')
+			if ('0' <= *itr && *itr <= '9')
 			{
 				res = ((unsigned long long) * itr) - '0' + res * 10;
+			}
+			else if (*itr == 'u' || *itr == 'U')
+			{
+				type = MVT_UINT;
+				goto mvpi_forout; // 脱离循环
 			}
 			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
 			break;
 		case 2:
-			if ('1' >= *itr && *itr <= '7')
+			if ('1' <= *itr && *itr <= '7')
 			{
 				res = ((unsigned long long) * itr) - '0';
 				state = 4; // 八进制输入
@@ -383,7 +396,7 @@ void MultiValue::ParseInt(const std::string &value)
 			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
 			break;
 		case 3:
-			if ('0' >= *itr && *itr <= '9')
+			if ('0' <= *itr && *itr <= '9')
 			{
 				res = (((unsigned long long) * itr) - '0') | (res << 4);
 			}
@@ -403,7 +416,7 @@ void MultiValue::ParseInt(const std::string &value)
 			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
 			break;
 		case 4:
-			if ('0' >= *itr && *itr <= '7')
+			if ('0' <= *itr && *itr <= '7')
 			{
 				res = (*itr - '0') | (res << 3);
 			}
@@ -426,7 +439,7 @@ void MultiValue::ParseInt(const std::string &value)
 	this->value.unsignedValue = neg ? ~res + 1 : res; // 如果有负号，取反
 }
 
-void MultiValue::ParseString(const std::string &value)
+void MultiValue::ParseString(const std::string &value, bool isBareString)
 {
 	type = MVT_STRING;
 	enum
@@ -438,7 +451,7 @@ void MultiValue::ParseString(const std::string &value)
 		// MVPS_ESCAPE_OCT,
 		MVPS_ESCAPE_HEX,
 		MVPS_ESCAPE_HEX2,
-	} state = MVPS_OUT;
+	} state = isBareString ? MVPS_NORMAL : MVPS_OUT;
 	xybase::StringBuilder sb;
 
 	char tmp;
@@ -524,7 +537,7 @@ void MultiValue::ParseString(const std::string &value)
 		}
 	}
 	// 没有终结的引号
-	if (state != MVPS_OUT) throw InvalidParameterException("value", "Not a valid string representation.", __FILE__, __LINE__);
+	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw InvalidParameterException("value", "Not a valid string representation.", __FILE__, __LINE__);
 
 	this->value.stringValue = new std::string(sb.ToString());
 }
@@ -600,9 +613,13 @@ MultiValue MultiValue::Parse(const std::string &value)
 	{
 		ret.ParseReal(value);
 	}
-	else
+	else if (value[0] >= '0' && value[0] <= '9')
 	{
 		ret.ParseInt(value);
+	}
+	else
+	{
+		ret.ParseString(value, true);
 	}
 
 	return ret;

@@ -173,7 +173,7 @@ namespace mule
 			private:
 				void ParseInt(const std::string &value);
 
-				void ParseString(const std::string &value);
+				void ParseString(const std::string &value, bool isBare = false);
 
 				void ParseReal(const std::string &value);
 

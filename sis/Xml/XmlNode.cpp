@@ -14,9 +14,9 @@ std::list<XmlNode> mule::Xml::XmlNode::GetChildren() const
 	return children;
 }
 
-void mule::Xml::XmlNode::SetText(std::string str)
+void mule::Xml::XmlNode::AddText(std::string str)
 {
-	text = str;
+	text += str;
 }
 
 std::string mule::Xml::XmlNode::GetText() const

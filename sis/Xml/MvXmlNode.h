@@ -17,6 +17,7 @@ namespace mule
         */
         class MvXmlNode
         {
+            int counter;
         public:
             mule::Data::Basic::MultiValue mv;
 
@@ -34,7 +35,7 @@ namespace mule
 
             std::list<MvXmlNode> GetChildren() const;
 
-            void SetText(std::string str);
+            void AddText(std::string str);
 
             std::string GetText() const;
 
