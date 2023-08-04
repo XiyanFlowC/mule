@@ -32,7 +32,7 @@ namespace mule
 
             //std::function<std::string(std::string)> callback;
         private:
-            int layer;
+            int layer = 0;
 
             void ProcNode(const XmlNodeT &value, xybase::StringBuilder<char> &sb)
             {

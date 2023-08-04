@@ -17,6 +17,8 @@ namespace mule
         class XmlNode
         {
         public:
+            bool isTextNode() const;
+
             std::list<XmlNode> children;
 
             std::string text;

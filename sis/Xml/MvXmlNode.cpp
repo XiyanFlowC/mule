@@ -3,7 +3,9 @@
 using namespace mule::Xml;
 using namespace mule::Data::Basic;
 
-const MvXmlNode MvXmlNode::ERROR = MvXmlNode();
+#include <iostream>
+
+const MvXmlNode MvXmlNode::ERROR;
 
 std::function<std::string(std::string)> mule::Xml::MvXmlNode::callback = [](std::string in) -> std::string {
 	auto loc = in.find("]]>");
@@ -38,7 +40,8 @@ mule::Xml::MvXmlNode::MvXmlNode(const MvXmlNode &&movee) noexcept
 void mule::Xml::MvXmlNode::AddChild(MvXmlNode node)
 {
 	mv.SetType(MultiValue::MVT_MAP);
-	if (mv.metadata["_type"] == std::string("array"))
+	auto &&it = mv.metadata.find("_type");
+	if (it != mv.metadata.end() && it->second == std::string("array"))
 		(*mv.value.mapValue)[(unsigned long long)counter++] = node.mv;
 	else
 		(*mv.value.mapValue)[node.GetName()] = node.mv;
@@ -70,7 +73,10 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 
 void mule::Xml::MvXmlNode::AddText(std::string str)
 {
+	// 保全现有 metadata
+	auto metadata = mv.metadata;
 	mv = MultiValue::Parse(str);
+	mv.metadata = metadata;
 }
 
 std::string mule::Xml::MvXmlNode::GetText() const
@@ -97,6 +103,7 @@ std::string mule::Xml::MvXmlNode::GetName() const
 
 void mule::Xml::MvXmlNode::AddAttribute(std::string name, std::string data)
 {
+	std::cout << this->name << ": append attribute: " << name << '=' << data << std::endl;
 	if (name == "_type" && data == "array") counter = 0;
 	mv.metadata[name] = MultiValue::Parse(data);
 }

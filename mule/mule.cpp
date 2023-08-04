@@ -35,6 +35,8 @@ int main(int argc, char **argv)
 	Structure *test = sb->Build();
 	Table *tbl = new Table(test, "test", 5, 0);
 
+	mule::Xml::XmlParser<mule::Xml::XmlNode> configParser;
+
 	xybase::Stream *stream;
 	try
 	{
@@ -48,9 +50,9 @@ int main(int argc, char **argv)
 		std::string xml = gen.ToXml(mule::Xml::MvXmlNode(std::string("root"), m.GetMap()));
 		puts("Xml:");
 		puts(xml.c_str());
-		mule::Xml::XmlParser<mule::Xml::MvXmlNode> parser;
 		puts("Re-parsed:");
-		puts(parser.Parse(xml).mv.ToString().c_str());
+		mule::Xml::XmlParser<mule::Xml::MvXmlNode> parser;
+		puts(gen.ToXml(mule::Xml::MvXmlNode(std::string("root"), parser.Parse(xml).mv)).c_str());
 		puts(parser.error.c_str());
 	}
 	catch (mule::Exception::Exception x)

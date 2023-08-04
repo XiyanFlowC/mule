@@ -17,7 +17,7 @@ namespace mule
         */
         class MvXmlNode
         {
-            int counter;
+            int counter = 0;
         public:
             mule::Data::Basic::MultiValue mv;
 

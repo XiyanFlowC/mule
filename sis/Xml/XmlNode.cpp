@@ -2,7 +2,12 @@
 
 using namespace mule::Xml;
 
-const static XmlNode ERROR;
+const XmlNode XmlNode::ERROR = XmlNode();
+
+bool mule::Xml::XmlNode::isTextNode() const
+{
+	return text.size();
+}
 
 void mule::Xml::XmlNode::AddChild(XmlNode node)
 {
@@ -16,7 +21,9 @@ std::list<XmlNode> mule::Xml::XmlNode::GetChildren() const
 
 void mule::Xml::XmlNode::AddText(std::string str)
 {
-	text += str;
+	XmlNode tmp;
+	tmp.text = str;
+	AddChild(tmp);
 }
 
 std::string mule::Xml::XmlNode::GetText() const
@@ -58,4 +65,6 @@ XmlNode &mule::Xml::XmlNode::operator[](std::string name)
 			return child;
 		}
 	}
+	XmlNode tmp;
+	return tmp;
 }
