@@ -53,11 +53,11 @@ void ShiftableReferrence::StreamDispose(xybase::Stream *stream)
 	MemoryManager::GetInstance().DisposeStream(stream);
 }
 
-Object *ShiftableReferrence::ShiftableStringCreator::DoCreateObject(std::string info)
+Type *ShiftableReferrence::ShiftableStringCreator::DoCreateObject(std::string info)
 {
 	if (info.starts_with("sref:"))
 	{
-		Object *inner = ObjectManager::GetInstance().GetOrCreateObject(info.substr(5));
+		Type *inner = TypeManager::GetInstance().GetOrCreateObject(info.substr(5));
 		if (inner == nullptr) return nullptr;
 
 		ShiftableReferrence *ret = new ShiftableReferrence();

@@ -8,12 +8,17 @@ int main(int argc, char **argv)
 {
 	if (argc != 3)
 	{
-		fprintf(stderr, "Usage: %s [script.lua] [target.bin]", argv[0]);
+		fprintf(stderr, "Usage: %s <path_to_execute_folder> <target.bin> [args...]", argv[0]);
 		exit(-1);
 	}
 
+	Configuration::GetInstance().SetEnvironmentRootPath(argv[1]);
+	crc32_init();
+
+	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua"));
+
 	LuaHost::GetInstance().LoadLuaStandardLibs();
-	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptDir + "config.lua").c_str());
+	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 	try
 	{
 		LuaHost::GetInstance().RunScript(argv[1]);
@@ -25,8 +30,8 @@ int main(int argc, char **argv)
 	}
 
 	// Test:
-	ObjectManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
-	ObjectManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceObjectCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceObjectCreator());
 	mule::Cpp::StructureBuilder *sb = new mule::Cpp::StructureBuilder("test");
 	sb->AppendField("uint32", "offset");
 	sb->AppendField("uint32", "size");
@@ -51,6 +56,7 @@ int main(int argc, char **argv)
 		puts("Xml:");
 		puts(xml.c_str());
 		puts("Re-parsed:");
+		gen.indent = 0;
 		mule::Xml::XmlParser<mule::Xml::MvXmlNode> parser;
 		puts(gen.ToXml(mule::Xml::MvXmlNode(std::string("root"), parser.Parse(xml).mv)).c_str());
 		puts(parser.error.c_str());

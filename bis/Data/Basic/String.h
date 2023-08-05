@@ -3,7 +3,7 @@
 #ifndef STRING_OBJECT_H__
 #define STRING_OBJECT_H__
 
-#include "Object.h"
+#include "Type.h"
 
 namespace mule
 {
@@ -14,15 +14,15 @@ namespace mule
 
 			/**
 			 * @brief String is not a typical object cause it holds a variable length.
-			 * For this reason, it is a subclass of Object.
+			 * For this reason, it is a subclass of Type.
 			 * It should not be linked to the chain of Field.
 			*/
-			class String : public Object
+			class String : public Type
 			{
 			protected:
 				size_t lastSize;
 			public:
-				// 通过 Object 继承
+				// 通过 Type 继承
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual size_t Size() const override;

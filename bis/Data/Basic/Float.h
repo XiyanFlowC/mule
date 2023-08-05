@@ -3,7 +3,7 @@
 #ifndef FLOAT_FIELD_H__
 #define FLOAT_FIELD_H__
 
-#include "Object.h"
+#include "Type.h"
 
 namespace mule
 {
@@ -11,7 +11,7 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class Float : public Object
+			class Float : public Type
 			{
 			public:
 				Float();
@@ -22,7 +22,7 @@ namespace mule
 
 			protected:
 
-				// 通过 Object 继承
+				// 通过 Type 继承
 				virtual std::string GetTypeName() const override;
 			};
 		}

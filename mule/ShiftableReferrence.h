@@ -6,16 +6,16 @@
 #include <map>
 
 #include <Data/Space/FragmentManager.h>
-#include <Data/Basic/Object.h>
-#include <Data/ObjectCreator.h>
-#include <Data/ObjectManager.h>
+#include <Data/Basic/Type.h>
+#include <Data/TypeCreator.h>
+#include <Data/TypeManager.h>
 
 #include "ElfStream.h"
 
-class ShiftableReferrence : public mule::Data::Basic::Object
+class ShiftableReferrence : public mule::Data::Basic::Type
 {
 protected:
-	mule::Data::Basic::Object *referent;
+	mule::Data::Basic::Type *referent;
 
 	class MemoryManager
 	{
@@ -31,16 +31,16 @@ protected:
 	int GetAlign(size_t loc, xybase::Stream *stream);
 
 public:
-	class ShiftableStringCreator : public mule::Data::ObjectCreator
+	class ShiftableStringCreator : public mule::Data::TypeCreator
 	{
-		virtual mule::Data::Basic::Object *DoCreateObject(std::string info) override;
+		virtual mule::Data::Basic::Type *DoCreateObject(std::string info) override;
 	};
 
 	virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 	virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 	virtual size_t Size() const override;
 
-	// 通过 Object 继承
+	// 通过 Type 继承
 	virtual std::string GetTypeName() const override;
 
 	void StreamDispose(xybase::Stream *stream);

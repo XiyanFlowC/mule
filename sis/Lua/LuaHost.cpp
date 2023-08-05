@@ -19,9 +19,25 @@ LuaHost& LuaHost::GetInstance()
 	return inst;
 }
 
+static const luaL_Reg selectedLibs[] = {
+  {LUA_GNAME, luaopen_base},
+  {LUA_LOADLIBNAME, luaopen_package},
+  {LUA_TABLIBNAME, luaopen_table},
+  {LUA_STRLIBNAME, luaopen_string},
+  {LUA_MATHLIBNAME, luaopen_math},
+  {LUA_UTF8LIBNAME, luaopen_utf8},
+  {LUA_DBLIBNAME, luaopen_debug},
+  {NULL, NULL}
+};
+
 void LuaHost::LoadLuaStandardLibs()
 {
-	luaL_openlibs(L);
+	// luaL_openlibs(L);
+	// Codes from luaL_openlibs to register only selected libs.
+	for (const luaL_Reg *lib = selectedLibs; lib->func; lib++) {
+		luaL_requiref(L, lib->name, lib->func, 1);
+		lua_pop(L, 1);  /* remove lib */
+	}
 }
 
 void LuaHost::RunScript(const char* path)

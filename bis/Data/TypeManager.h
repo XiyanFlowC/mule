@@ -3,9 +3,9 @@
 #ifndef OBJECT_MANAGER_H__
 #define OBJECT_MANAGER_H__
 
-#include "Basic/Object.h"
-#include "Basic/Structure.h"
-#include "ObjectCreator.h"
+#include "Basic/Type.h"
+#include "Structure.h"
+#include "TypeCreator.h"
 #include <map>
 #include <string>
 
@@ -15,19 +15,19 @@ namespace mule
 	{
 
 		/**
-		 * @brief Singleton Object Manager. Used to manage all of the objects in the enviorment.
+		 * @brief Singleton Type Manager. Used to manage all of the objects in the enviorment.
 		 * The other compoments should get registered objects from this class.
 		*/
-		class ObjectManager
+		class TypeManager
 		{
-			ObjectManager();
-			~ObjectManager();
+			TypeManager();
+			~TypeManager();
 		public:
 			/**
 			 * @brief Get the instance of this class.
 			 * @return The instance of this class.
 			*/
-			static ObjectManager &GetInstance();
+			static TypeManager &GetInstance();
 
 			/**
 			 * @brief Register given object to manager with name specified. You can drop the pointer
@@ -35,14 +35,7 @@ namespace mule
 			 * @param object The pointer to the object need to be register.
 			 * @param name The name of this object.
 			*/
-			void RegisterObject(Basic::Object *object, std::string name);
-
-			/**
-			 * @brief Create a new structure and register it onto this Manager.
-			 * @param name Name of the structure.
-			 * @return The instance of the structure.
-			*/
-			Basic::Structure *NewStructure(std::string name);
+			void RegisterObject(Basic::Type *object, std::string name);
 
 			/**
 			 * @brief Unregister the object specified by its name.
@@ -61,7 +54,7 @@ namespace mule
 			 * is able to manage an automatic process of Field creating by using the creators registered.
 			 * @param creator The creator need to be registered to the manager.
 			*/
-			void RegisterObjectCreator(ObjectCreator *creator);
+			void RegisterObjectCreator(TypeCreator *creator);
 
 			/**
 			 * @brief Try to create a Field by given information. Using the creators registered to the
@@ -69,17 +62,17 @@ namespace mule
 			 * @param info The information needed to create the Field.
 			 * @return Created Field instance. nullptr if failed.
 			*/
-			Basic::Object *GetOrCreateObject(std::string info);
+			Basic::Type *GetOrCreateObject(std::string info);
 
 			/**
 			 * @brief Try to get a object that already registered to the manager.
 			 * @param name The name of the object given when registered.
 			 * @return
 			*/
-			Basic::Object *GetObject(std::string name);
+			Basic::Type *GetObject(std::string name);
 		protected:
-			std::map<std::string, Basic::Object *> objects;
-			ObjectCreator *first, *last;
+			std::map<std::string, Basic::Type *> objects;
+			TypeCreator *first, *last;
 		};
 	}
 }

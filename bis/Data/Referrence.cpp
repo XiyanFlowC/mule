@@ -31,19 +31,19 @@ std::string mule::Data::Referrence::GetTypeName() const
 	return referent->GetTypeName() + "*";
 }
 
-mule::Data::Referrence::Referrence(Object *referent)
+mule::Data::Referrence::Referrence(Type *referent)
 {
 	this->referent = referent;
 }
 
-Object *mule::Data::Referrence::ReferrenceObjectCreator::DoCreateObject(std::string info)
+Type *mule::Data::Referrence::ReferrenceObjectCreator::DoCreateObject(std::string info)
 {
 	if (!info.ends_with("*"))
 	{
 		return nullptr;
 	}
 
-	Basic::Object *innerType = ObjectManager::GetInstance().GetOrCreateObject(info.substr(0, info.size() - 1));
+	Basic::Type *innerType = TypeManager::GetInstance().GetOrCreateObject(info.substr(0, info.size() - 1));
 	if (innerType == nullptr) return nullptr;
 
 	Referrence *referrer = new Referrence(innerType);

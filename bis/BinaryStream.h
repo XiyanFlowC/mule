@@ -7,9 +7,9 @@
 #include <cerrno>
 #include <cstring>
 #include <cstdlib>
-#include "../xybase/Stream.h"
-#include "../Exception/Exception.h"
-#include "../Exception/InvalidOperationException.h"
+#include "xybase/Stream.h"
+#include "Exception/Exception.h"
+#include "Exception/InvalidOperationException.h"
 
 namespace mule
 {

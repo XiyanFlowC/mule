@@ -6,8 +6,8 @@
 #include <string>
 #include <list>
 #include <tuple>
-#include <Data/ObjectManager.h>
-#include <Data/Basic/Structure.h>
+#include <Data/TypeManager.h>
+#include <Data/Structure.h>
 
 namespace mule
 {
@@ -22,7 +22,9 @@ namespace mule
 		public:
 			StructureBuilder(std::string name);
 
-			mule::Data::Basic::Structure *Build();
+			mule::Data::Structure *Build();
+
+			void NewStruct(std::string name);
 
 			void AppendField(std::string type, std::string name);
 		};

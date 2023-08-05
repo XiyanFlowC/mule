@@ -7,48 +7,76 @@
 #include <map>
 #include <functional>
 
+#include <xybase/xyutils.h>
+
 namespace mule
 {
     namespace Xml
     {
+        // 特化强行停止
+        template <typename Ch>
+        std::basic_string<Ch> to_utf(long) {
+            static_assert(sizeof(Ch) == 0, "Unsupported character type in to_utf");
+        }
+
+        // utf8 特化
+        template <>
+        std::string to_utf<char>(long value) {
+            return xybase::string::to_utf8(value);
+        }
+
+        // utf16 特化
+        template <>
+        std::u16string to_utf<char16_t>(long value) {
+            return xybase::string::to_utf16(value);
+        }
+
+        // utf32 特化
+        template <>
+        std::u32string to_utf<char32_t>(long value) {
+            return xybase::string::to_utf32(value);
+        }
+
         /**
-         * @brief 处理Xml的类。
+         * @brief 处理Xml的类
+         * @tparam XmlNodeT Xml节点类型
+         * @tparam Ch Xml文本流字符类型
         */
-        template <typename XmlNodeT>
+        template <typename XmlNodeT, typename Ch = char>
         class XmlParser
         {
         public:
             XmlParser();
 
-            XmlNodeT Parse(const std::string &xml);
+            XmlNodeT Parse(const std::basic_string<Ch> &xml);
 
-            void RegisterTagCallback(const std::string &tagName, std::function<std::string(XmlNodeT &)> callback);
+            void RegisterTagCallback(const std::basic_string<Ch> &tagName, std::function<std::basic_string<Ch>(XmlNodeT &)> callback);
 
-            void RegisterEntity(const std::string entityName, const std::string entitySeq);
+            void RegisterEntity(const std::basic_string<Ch> entityName, const std::basic_string<Ch> entitySeq);
 
             std::string error;
 
             bool mangleEmbeddedNodes;
 
         private:
-            XmlNodeT ParseNode(const std::string &xml);
+            XmlNodeT ParseNode(const std::basic_string<Ch> &xml);
 
             size_t index;
 
-            std::map<std::string, std::function<std::string(XmlNodeT &)>> callbacks;
+            std::map<std::basic_string<Ch>, std::function<std::basic_string<Ch>(XmlNodeT &)>> callbacks;
 
-            std::map<std::string, std::string> entities;
+            std::map<std::basic_string<Ch>, std::basic_string<Ch>> entities;
         };
 
 
-        template<typename XmlNodeT>
-        inline void XmlParser<XmlNodeT>::RegisterEntity(const std::string entityName, const std::string entitySeq)
+        template<typename XmlNodeT, typename Ch>
+        inline void XmlParser<XmlNodeT, Ch>::RegisterEntity(const std::basic_string<Ch> entityName, const std::basic_string<Ch> entitySeq)
         {
             entities[entityName] = entitySeq;
         }
 
-        template<typename XmlNodeT>
-        inline XmlParser<XmlNodeT>::XmlParser()
+        template<typename XmlNodeT, typename Ch>
+        inline XmlParser<XmlNodeT, Ch>::XmlParser()
             : mangleEmbeddedNodes(false)
         {
             // XML 1.0 预定义实体
@@ -64,29 +92,29 @@ namespace mule
             RegisterEntity("sp", " ");
         }
 
-        template<typename XmlNodeT>
-        inline XmlNodeT XmlParser<XmlNodeT>::Parse(const std::string &xml)
+        template<typename XmlNodeT, typename Ch>
+        inline XmlNodeT XmlParser<XmlNodeT, Ch>::Parse(const std::basic_string<Ch> &xml)
         {
             error = "";
             index = 0;
             return ParseNode(xml);
         }
 
-        template<typename XmlNodeT>
-        inline void XmlParser<XmlNodeT>::RegisterTagCallback(const std::string &tagName, std::function<std::string(XmlNodeT &)> callback)
+        template<typename XmlNodeT, typename Ch>
+        inline void XmlParser<XmlNodeT, Ch>::RegisterTagCallback(const std::basic_string<Ch> &tagName, std::function<std::basic_string<Ch>(XmlNodeT &)> callback)
         {
             callbacks[tagName] = callback;
         }
 
-        template<typename XmlNodeT>
-        XmlNodeT XmlParser<XmlNodeT>::ParseNode(const std::string &xml)
+        template<typename XmlNodeT, typename Ch>
+        XmlNodeT XmlParser<XmlNodeT, Ch>::ParseNode(const std::basic_string<Ch> &xml)
         {
             // 去除空白字符
             index = xml.find_first_not_of(" \t\n\r", index);
             // 节点起始
             if (xml[index] == '<')
             {
-                XmlNodeT node;
+                XmlNodeT node{};
 
                 if (xml[index + 1] == '/')
                 {
@@ -109,10 +137,10 @@ namespace mule
                         break;
                     }
                     size_t attrEndIndex = xml.find('=', index);
-                    std::string attrName = xml.substr(index, attrEndIndex - index);
+                    std::basic_string<Ch> attrName = xml.substr(index, attrEndIndex - index);
                     size_t attrValueStart = xml.find_first_of("\"'", attrEndIndex) + 1;
                     size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
-                    std::string attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
+                    std::basic_string<Ch> attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
                     node.AddAttribute(attrName, attrValue);
                     endIndex = xml.find_first_of(" \t\n\r>/", attrValueEnd + 1);
                 }
@@ -172,30 +200,40 @@ namespace mule
                         {
                             if (xml[index] == '&')
                             {
-                                if (xml[index + 1] == '#')
-                                {
-                                    // 处理直接值
-                                    error += "Near " + xml.substr(index, 32) + ": unimplemented entity type, ignoring...\n";
-                                }
                                 // 处理转义序列
                                 size_t escapeStart = index + 1;
                                 index = xml.find(';', index);
-                                sb += entities[xml.substr(escapeStart, index - escapeStart)];
+                                std::basic_string<Ch> seq = xml.substr(escapeStart, index - escapeStart);
+                                if (seq[0] == '#')
+                                {
+                                    // 处理直接值
+                                    if (seq[1] == 'x')
+                                    {
+                                        sb += to_utf<Ch>(xybase::string::stoi(seq.substr(2), 16));
+                                    }
+                                    else
+                                    {
+                                        sb += to_utf<Ch>(xybase::string::stoi(seq.substr(1)));
+                                    }
+                                }
+                                else sb += entities[seq];
                                 index++;
                             }
-                            // 空白字符合并
+                            // 空白字符去尾
                             else if (xml[index] == ' ' || xml[index] == '\t' || xml[index] == '\r' || xml[index] == '\n')
                             {
-                                index = xml.find_first_not_of(" \t\r\n", index);
+                                size_t endOfBlank = xml.find_first_not_of(" \t\r\n", index);
                                 // 去尾，立即返回
-                                if (xml[index] == '<' && xml[index + 1] == '/')
+                                if (xml[endOfBlank] == '<' && xml[endOfBlank + 1] == '/')
                                 {
                                     node.AddText(sb.ToString());
+                                    index = endOfBlank;
                                     break;
                                 }
                                 else
                                 {
-                                    sb += ' ';
+                                    sb += xml.substr(index, endOfBlank - index);
+                                    index = endOfBlank;
                                 }
                             }
                             else if (xml[index] == '<')

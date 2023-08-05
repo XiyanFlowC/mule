@@ -8,15 +8,21 @@ mule::Cpp::StructureBuilder::StructureBuilder(std::string name)
 {
 }
 
-mule::Data::Basic::Structure *mule::Cpp::StructureBuilder::Build()
+mule::Data::Structure *mule::Cpp::StructureBuilder::Build()
 {
-	mule::Data::Basic::Structure *ret = new mule::Data::Basic::Structure(name);
+	mule::Data::Structure *ret = new mule::Data::Structure(name);
 	for (std::tuple<std::string, std::string> &def : defList)
 	{
-		ret->AppendField(std::get<1>(def), ObjectManager::GetInstance().GetOrCreateObject( std::get<0>(def) ));
+		ret->AppendField(std::get<1>(def), TypeManager::GetInstance().GetOrCreateObject( std::get<0>(def) ));
 	}
-	ObjectManager::GetInstance().RegisterObject(ret, name);
+	TypeManager::GetInstance().RegisterObject(ret, name);
 	return ret;
+}
+
+void mule::Cpp::StructureBuilder::NewStruct(std::string name)
+{
+	this->name = name;
+	defList.clear();
 }
 
 void mule::Cpp::StructureBuilder::AppendField(std::string type, std::string name)

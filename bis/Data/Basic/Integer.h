@@ -3,7 +3,7 @@
 #ifndef INTEGER_FIELD_H__
 #define INTEGER_FIELD_H__
 
-#include "Object.h"
+#include "Type.h"
 #include "../../Exception/InvalidParameterException.h"
 #include "../../Exception/RestrictionViolationException.h"
 #include "MultiValue.h"
@@ -15,7 +15,7 @@ namespace mule
 		namespace Basic
 		{
 
-			class Integer : public Object
+			class Integer : public Type
 			{
 				int size;
 				bool isUnsigned;

@@ -12,11 +12,15 @@ class Configuration
 public:
 	static Configuration& GetInstance();
 
-	std::string ScriptDir = "./scripts/";
-	std::string CellSeperator = ",";
-	std::string RecordSeperator = "\n";
+	std::string ScriptsDir = "./scripts/";
 
-	bool UseLuaDataHandler = false;
+	std::string DataDir = "./data/";
+
+	std::string SheetsDir = "./sheet/";
+
+	std::string EnvironmentRootDir = "./";
+
+	void SetEnvironmentRootPath(std::string path);
 };
 
 #endif

@@ -1,13 +1,13 @@
-#include "ObjectManager.h"
+#include "TypeManager.h"
 
 using namespace mule::Data;
 
-ObjectManager::ObjectManager()
+TypeManager::TypeManager()
 {
 	first = last = nullptr;
 }
 
-ObjectManager::~ObjectManager()
+TypeManager::~TypeManager()
 {
 	for (auto &object : objects)
 	{
@@ -16,23 +16,23 @@ ObjectManager::~ObjectManager()
 	objects.clear();
 }
 
-ObjectManager &ObjectManager::GetInstance()
+TypeManager &TypeManager::GetInstance()
 {
-	static ObjectManager _inst;
+	static TypeManager _inst;
 	return _inst;
 }
 
-void ObjectManager::RegisterObject(Basic::Object *object, std::string name)
+void TypeManager::RegisterObject(Basic::Type *object, std::string name)
 {
 	objects[name] = object;
 }
 
-void ObjectManager::UnregisterObject(std::string name)
+void TypeManager::UnregisterObject(std::string name)
 {
 	objects.erase(name);
 }
 
-void ObjectManager::ReleaseObject(std::string name)
+void TypeManager::ReleaseObject(std::string name)
 {
 	if (objects.contains(name)) {
 		delete objects[name];
@@ -40,7 +40,7 @@ void ObjectManager::ReleaseObject(std::string name)
 	}
 }
 
-void ObjectManager::RegisterObjectCreator(ObjectCreator *creator)
+void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 {
 	if (creator->nextCreator != nullptr) throw Exception::InvalidParameterException(
 		"creator",
@@ -58,13 +58,7 @@ void ObjectManager::RegisterObjectCreator(ObjectCreator *creator)
 	last = creator;
 }
 
-Basic::Structure *ObjectManager::NewStructure(std::string name) {
-	Basic::Structure *ret = new Basic::Structure(name);
-	RegisterObject(ret, name);
-	return ret;
-}
-
-Basic::Object *ObjectManager::GetOrCreateObject(std::string info)
+Basic::Type *TypeManager::GetOrCreateObject(std::string info)
 {
 	// 若已经存在则直接返回
 	if (objects.contains(info)) return objects[info];
@@ -76,7 +70,7 @@ Basic::Object *ObjectManager::GetOrCreateObject(std::string info)
 	return objects[info] = first->GetOrCreateObject(info);
 }
 
-Basic::Object *ObjectManager::GetObject(std::string name)
+Basic::Type *TypeManager::GetObject(std::string name)
 {
 	if (objects.contains(name)) return objects[name];
 

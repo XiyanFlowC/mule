@@ -3,8 +3,6 @@
 using namespace mule::Xml;
 using namespace mule::Data::Basic;
 
-#include <iostream>
-
 const MvXmlNode MvXmlNode::ERROR;
 
 std::function<std::string(std::string)> mule::Xml::MvXmlNode::callback = [](std::string in) -> std::string {
@@ -103,7 +101,6 @@ std::string mule::Xml::MvXmlNode::GetName() const
 
 void mule::Xml::MvXmlNode::AddAttribute(std::string name, std::string data)
 {
-	std::cout << this->name << ": append attribute: " << name << '=' << data << std::endl;
 	if (name == "_type" && data == "array") counter = 0;
 	mv.metadata[name] = MultiValue::Parse(data);
 }

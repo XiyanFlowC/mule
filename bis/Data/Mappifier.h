@@ -6,14 +6,14 @@
 #include <stack>
 
 #include "Basic/MultiValue.h"
-#include "Basic/Object.h"
+#include "Basic/Type.h"
 #include "../Exception/InvalidOperationException.h"
 
 namespace mule
 {
 	namespace Data
 	{
-		class Mappifier : public Basic::Object::DataHandler
+		class Mappifier : public Basic::Type::DataHandler
 		{
 		public:
 			virtual void OnSheetReadStart() override;
@@ -22,10 +22,10 @@ namespace mule
 			virtual void OnSheetReadEnd() override;
 			virtual void OnSheetWriteEnd() override;
 
-			virtual void OnRealmEnter(Basic::Object *realm, std::string name) override;
-			virtual void OnRealmExit(Basic::Object *realm, std::string name) override;
-			virtual void OnRealmEnter(Basic::Object *realm, int idx) override;
-			virtual void OnRealmExit(Basic::Object *realm, int idx) override;
+			virtual void OnRealmEnter(Basic::Type *realm, std::string name) override;
+			virtual void OnRealmExit(Basic::Type *realm, std::string name) override;
+			virtual void OnRealmEnter(Basic::Type *realm, int idx) override;
+			virtual void OnRealmExit(Basic::Type *realm, int idx) override;
 
 			virtual void OnDataRead(const Basic::MultiValue &value) override;
 			virtual Basic::MultiValue OnDataWrite() override;

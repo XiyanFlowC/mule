@@ -1,35 +1,35 @@
-#include "ObjectCreator.h"
+#include "TypeCreator.h"
 
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
-ObjectCreator::ObjectCreator()
+TypeCreator::TypeCreator()
 {
 	nextCreator = nullptr;
 }
 
-ObjectCreator::ObjectCreator(ObjectCreator* next)
+TypeCreator::TypeCreator(TypeCreator* next)
 {
 	nextCreator = next;
 }
 
-ObjectCreator::ObjectCreator(ObjectCreator& pattern)
+TypeCreator::TypeCreator(TypeCreator& pattern)
 {
 	this->nextCreator = pattern.nextCreator;
 }
 
-Object* ObjectCreator::GetOrCreateObject(std::string info)
+Type* TypeCreator::GetOrCreateObject(std::string info)
 {
-	Object* result = DoCreateObject(info);
+	Type* result = DoCreateObject(info);
 	if (result != nullptr) return result;
 
 	if (nextCreator != nullptr) return nextCreator->GetOrCreateObject(info);
 	return nullptr;
 }
 
-Object *mule::Data::BasicFieldCreator::DoCreateObject(std::string info)
+Type *mule::Data::BasicFieldCreator::DoCreateObject(std::string info)
 {
-	Object *ret = nullptr;
+	Type *ret = nullptr;
 	if (info.starts_with("int"))
 	{
 		int size = atoi(info.substr(3).c_str());

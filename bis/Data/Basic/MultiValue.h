@@ -157,7 +157,7 @@ namespace mule
 
 				const MultiValue &operator= (const MultiValue &rvalue);
 
-				const MultiValue &operator= (const MultiValue &&movee) noexcept;
+				const MultiValue &operator= (MultiValue &&movee) noexcept;
 
 				bool operator== (const MultiValue &rvalue) const;
 

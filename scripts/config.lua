@@ -1,1 +1,1 @@
-package.path = package.path .. ';./scripts/?.lua';
+-- package.path = package.path .. ';./scripts/?.lua;./scripts/?/init.lua';

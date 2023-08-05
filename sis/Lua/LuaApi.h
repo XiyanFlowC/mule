@@ -14,20 +14,11 @@ namespace mule {
 		*/
 		class LuaApi
 		{
-		private:
-			LuaApi();
-
 		public:
-			/**
-			 * @brief Get the instance of LuaApi.
-			 * @return The instance of LuaApi.
-			*/
-			static LuaApi & GetInstance();
-
 			/**
 			 * @brief Register all functions to the vm / init the vm.
 			*/
-			void Init();
+			static void Init();
 		};
 	}
 }

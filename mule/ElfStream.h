@@ -2,7 +2,7 @@
 
 #ifndef ELF_STREAM_H__
 
-#include <Data/BinaryStream.h>
+#include <BinaryStream.h>
 #include <Exception/Exception.h>
 #include <Exception/NotImplementedException.h>
 #include <Exception/InvalidParameterException.h>

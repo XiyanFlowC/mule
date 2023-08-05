@@ -11,32 +11,32 @@ Table::Table(Structure *structure, const std::string &name, int length, size_t o
 	this->name = name;
 }
 
-void Table::Read(xybase::Stream *stream, Object::DataHandler *dataHandler)
+void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 {
 	stream->Seek(offset, SEEK_SET);
 	dataHandler->OnSheetReadStart();
-	dataHandler->OnRealmEnter((Object *)this, name);
+	dataHandler->OnRealmEnter((Type *)this, name);
 	for (int i = 0; i < length; ++i) {
 		dataHandler->OnRealmEnter(structure, i);
 		structure->Read(stream, dataHandler);
 		dataHandler->OnRealmExit(structure, i);
 	}
 	dataHandler->AppendMetadatum("_type", MultiValue("array"));
-	dataHandler->OnRealmExit((Object *) this, name);
+	dataHandler->OnRealmExit((Type *) this, name);
 	dataHandler->OnSheetReadEnd();
 }
 
-void Table::Write(xybase::Stream *stream, Object::DataHandler *dataHandler)
+void Table::Write(xybase::Stream *stream, Type::DataHandler *dataHandler)
 {
 	stream->Seek(offset, SEEK_SET);
 	dataHandler->OnSheetWriteStart();
-	dataHandler->OnRealmEnter((Object *)this, name);
+	dataHandler->OnRealmEnter((Type *)this, name);
 	for (int i = 0; i < length; ++i) {
 		dataHandler->OnRealmEnter(structure, i);
 		structure->Write(stream, dataHandler);
 		dataHandler->OnRealmExit(structure, i);
 	}
-	dataHandler->OnRealmExit((Object *)this, name);
+	dataHandler->OnRealmExit((Type *)this, name);
 	dataHandler->OnSheetWriteEnd();
 }
 

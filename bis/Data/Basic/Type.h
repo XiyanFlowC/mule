@@ -14,7 +14,7 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class Object
+			class Type
 			{
 			public:
 
@@ -35,28 +35,28 @@ namespace mule
 					 * @param realm 领域名
 					 * @param name 
 					*/
-					virtual void OnRealmEnter(Object *realm, std::string name) = 0;
+					virtual void OnRealmEnter(Type *realm, std::string name) = 0;
 
 					/**
 					 * @brief 离开具名领域
 					 * @param realm 
 					 * @param name 
 					*/
-					virtual void OnRealmExit(Object *realm, std::string name) = 0;
+					virtual void OnRealmExit(Type *realm, std::string name) = 0;
 
 					/**
 					 * @brief 进入索引领域
 					 * @param realm 
 					 * @param idx 
 					*/
-					virtual void OnRealmEnter(Object *realm, int idx) = 0;
+					virtual void OnRealmEnter(Type *realm, int idx) = 0;
 
 					/**
 					 * @brief 离开索引领域
 					 * @param realm 
 					 * @param idx 
 					*/
-					virtual void OnRealmExit(Object *realm, int idx) = 0;
+					virtual void OnRealmExit(Type *realm, int idx) = 0;
 
 					virtual void OnDataRead(const MultiValue &value) = 0;
 
@@ -91,6 +91,12 @@ namespace mule
 				 * @return 评估所得的大小结果
 				*/
 				virtual size_t EvalSize(const MultiValue &obj) const;
+
+				/**
+				 * @brief 指示该类型是否为复合类型
+				 * @return 
+				*/
+				virtual bool IsComposite() const;
 			};
 		}
 	}

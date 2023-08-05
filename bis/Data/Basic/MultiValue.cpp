@@ -154,17 +154,26 @@ mule::Data::Basic::MultiValue::MultiValue(MultiValue &&movee) noexcept
 	value = movee.value;
 	metadata = movee.metadata;
 	useCounter = movee.useCounter;
-	if (useCounter != nullptr)
+
+	if (type == MVT_STRING && value.stringValue != nullptr)
 	{
-		*useCounter += 1;
+		movee.value.stringValue = nullptr;
 	}
+	if (type == MVT_MAP && value.mapValue != nullptr)
+	{
+		movee.useCounter = nullptr;
+		movee.value.mapValue = nullptr;
+	}
+	if (type == MVT_ARRAY && value.arrayValue != nullptr)
+	{
+		movee.useCounter = nullptr;
+		movee.value.arrayValue = nullptr;
+	}
+
+	// 阻止任何形式的数据回收
+	movee.type = MVT_NULL;
 
 	length = movee.length;
-
-	if (type == MVT_STRING)
-	{
-		value.stringValue = new std::string(*movee.value.stringValue);
-	}
 }
 
 MultiValue::MultiValue(const std::string& value)
@@ -808,7 +817,7 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 	return *this;
 }
 
-const MultiValue &mule::Data::Basic::MultiValue::operator=(const MultiValue &&movee) noexcept
+const MultiValue &mule::Data::Basic::MultiValue::operator=(MultiValue &&movee) noexcept
 {
 	DisposeOldValue();
 
@@ -816,17 +825,26 @@ const MultiValue &mule::Data::Basic::MultiValue::operator=(const MultiValue &&mo
 	value = movee.value;
 	metadata = movee.metadata;
 	useCounter = movee.useCounter;
-	if (useCounter != nullptr)
+
+	if (type == MVT_STRING && value.stringValue != nullptr)
 	{
-		*useCounter += 1;
+		movee.value.stringValue = nullptr;
 	}
+	if (type == MVT_MAP && value.mapValue != nullptr)
+	{
+		movee.useCounter = nullptr;
+		movee.value.mapValue = nullptr;
+	}
+	if (type == MVT_ARRAY && value.arrayValue != nullptr)
+	{
+		movee.useCounter = nullptr;
+		movee.value.arrayValue = nullptr;
+	}
+
+	// 阻止任何形式的数据回收
+	movee.type = MVT_NULL;
 
 	length = movee.length;
-
-	if (type == MVT_STRING)
-	{
-		value.stringValue = new std::string(*movee.value.stringValue);
-	}
 
 	return *this;
 }
