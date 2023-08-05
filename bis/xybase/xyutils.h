@@ -42,6 +42,13 @@ namespace xybase
 		long to_codepoint(std::string str);
 
 		/**
+		 * @brief Get the codepoint for utf-16 (only process the first character).
+		 * @param str The character need to be processed.
+		 * @return The codepoint of given character.
+		*/
+		long to_codepoint(std::u16string str);
+
+		/**
 		 * @brief Convert utf-8 to utf-16
 		 * @param str utf-8 string
 		 * @return utf-16 string

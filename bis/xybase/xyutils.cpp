@@ -96,6 +96,26 @@ long xybase::string::to_codepoint(std::string str)
     return ret;
 }
 
+long xybase::string::to_codepoint(std::u16string str)
+{
+    if (str[0] >= 0xD800 && str[0] <= 0xDBFF && 1 < str.length()) {
+        // Surrogate pair for characters U+10000 to U+10FFFF
+        char16_t leadSurrogate = str[0];
+        char16_t trailSurrogate = str[1];
+
+        // Singular lead surrogate
+        if ((trailSurrogate & 0xDF00) != 0xDC00) return 0;
+
+        return 0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF);
+    }
+    else {
+        // Singular trailsurrogate
+        if ((str[0] & 0xFC00) == 0xDC00) return 0;
+
+        return str[0];
+    }
+}
+
 std::u16string xybase::string::to_utf16(std::string str)
 {
     StringBuilder<char16_t> sb;
@@ -118,22 +138,12 @@ std::u16string xybase::string::to_utf16(std::string str)
         }
         else if ((c & 0xF0) == 0xE0 && i + 2 < str.length()) {
             // 3-byte UTF-8
-            char16_t highByte = static_cast<uint8_t>(c) & 0x0F;
-            char16_t byte = static_cast<uint8_t>(str[i + 1]) & 0x3F;
-            char16_t lowByte = static_cast<uint8_t>(str[i + 2]) & 0x3F;
-            sb += static_cast<char16_t>((highByte << 12) | (byte << 6) | lowByte);
+            sb += to_utf16(to_codepoint(str.substr(i, 3)));
             i += 3;
         }
         else if ((c & 0xF8) == 0xF0 && i + 3 < str.length()) {
             // 4-byte UTF-8 (surrogate pairs)
-            char16_t highByte1 = static_cast<uint8_t>(c) & 0x07;
-            char16_t byte1 = static_cast<uint8_t>(str[i + 1]) & 0x3F;
-            char16_t byte2 = static_cast<uint8_t>(str[i + 2]) & 0x3F;
-            char16_t lowByte = static_cast<uint8_t>(str[i + 3]) & 0x3F;
-            char16_t leadSurrogate = 0xD800 | ((highByte1 << 6) | byte1);
-            char16_t trailSurrogate = 0xDC00 | (byte2 << 6) | lowByte;
-            sb += leadSurrogate;
-            sb += trailSurrogate;
+            sb += to_utf16(to_codepoint(str.substr(i, 4)));
             i += 4;
         }
         else {
@@ -164,7 +174,8 @@ std::string xybase::string::to_utf8(std::u16string str)
             char16_t leadSurrogate = c;
             char16_t trailSurrogate = str[i + 1];
 
-            if (trailSurrogate < 0xDC00 || trailSurrogate > 0xDFFF) continue;
+            // Singular lead surrogate
+            if ((trailSurrogate & 0xDF00) != 0xDC00) continue;
 
             uint32_t codepoint = 0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF);
             sb += static_cast<char>((codepoint >> 18) | 0xF0); // First 3 bits
@@ -172,12 +183,13 @@ std::string xybase::string::to_utf8(std::u16string str)
             sb += static_cast<char>(((codepoint >> 6) & 0x3F) | 0x80); // Next 6 bits
             sb += static_cast<char>((codepoint & 0x3F) | 0x80); // Last 6 bits
 
-            ++i; // Skip the low surrogate, as it's already processed
+            ++i; // Skip the trail surrogate, as it's already processed
         }
         else {
-            sb += static_cast<char>((c >> 12) | 0xE0); // First 4 bits
-            sb += static_cast<char>(((c >> 6) & 0x3F) | 0x80); // Middle 6 bits
-            sb += static_cast<char>((c & 0x3F) | 0x80); // Last 6 bits
+            // Singular trailsurrogate
+            if ((c & 0xFC00) == 0xDC00) continue;
+
+            sb += to_utf8(to_codepoint(str.substr(i, 2)));
         }
     }
 

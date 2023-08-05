@@ -12,11 +12,13 @@ class Configuration
 public:
 	static Configuration& GetInstance();
 
-	std::string ScriptsDir = "./scripts/";
+	std::string ScriptsDir = "./res/scripts/";
 
 	std::string DataDir = "./data/";
 
-	std::string SheetsDir = "./sheet/";
+	std::string SheetsDir = "./res/sheet/";
+
+	std::string ResourceDir = "./res/";
 
 	std::string EnvironmentRootDir = "./";
 
