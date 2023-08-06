@@ -27,7 +27,7 @@ void mule::Data::Array::Write(xybase::Stream *stream, DataHandler *dataHandler)
 
 size_t mule::Data::Array::Size() const
 {
-	return size_t();
+	return length * innerObject->Size();
 }
 
 std::string mule::Data::Array::GetTypeName() const
@@ -42,5 +42,18 @@ bool mule::Data::Array::IsComposite() const
 
 mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::string info)
 {
-	return nullptr;
+	if (!info.ends_with("]")) return nullptr;
+
+	size_t startIndex = info.find_last_of("[");
+	if (startIndex == std::string::npos) return nullptr;
+
+	int size = xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2));
+
+	auto obj = TypeManager::GetInstance().GetOrCreateObject(info.substr(0, startIndex));
+	if (obj == nullptr) return nullptr;
+
+	Array *ret = new Array();
+	ret->length = size;
+	ret->innerObject = obj;
+	return ret;
 }

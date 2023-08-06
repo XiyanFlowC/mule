@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef IO_EXCEPTION_H__
-#define IO_EXCEPTION_H__
+#ifndef XY_IO_EXCEPTION_H__
+#define XY_IO_EXCEPTION_H__
 
 #include <exception>
 #include <string>

@@ -7,25 +7,25 @@ using namespace mule::Data::Basic;
 
 void mule::Data::Mappifier::OnSheetReadStart()
 {
-	if (status != DHMS_IDLE) throw Exception::InvalidOperationException("Start read when not in idle.", __FILE__, __LINE__);
+	if (status != DHMS_IDLE) throw Exception::InvalidOperationException("Start read when not in idle.", MULE_FILE, __LINE__);
 	status = DHMS_READ;
 }
 
 void mule::Data::Mappifier::OnSheetWriteStart()
 {
-	if (status != DHMS_IDLE) throw Exception::InvalidOperationException("Start write when not in idle.", __FILE__, __LINE__);
+	if (status != DHMS_IDLE) throw Exception::InvalidOperationException("Start write when not in idle.", MULE_FILE, __LINE__);
 	status = DHMS_WRITE;
 }
 
 void mule::Data::Mappifier::OnSheetReadEnd()
 {
-	if (status != DHMS_READ) throw Exception::InvalidOperationException("End read when not in read.", __FILE__, __LINE__);
+	if (status != DHMS_READ) throw Exception::InvalidOperationException("End read when not in read.", MULE_FILE, __LINE__);
 	status = DHMS_IDLE;
 }
 
 void mule::Data::Mappifier::OnSheetWriteEnd()
 {
-	if (status != DHMS_WRITE) throw Exception::InvalidOperationException("End write when not in write.", __FILE__, __LINE__);
+	if (status != DHMS_WRITE) throw Exception::InvalidOperationException("End write when not in write.", MULE_FILE, __LINE__);
 	status = DHMS_IDLE;
 }
 
@@ -43,7 +43,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::string name)
 		auto *itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
 		{
-			throw Exception::InvalidOperationException("Not map but entered a realm.", __FILE__, __LINE__);
+			throw Exception::InvalidOperationException("Not map but entered a realm.", MULE_FILE, __LINE__);
 		}
 		else
 		{
@@ -129,7 +129,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, int idx)
 		auto* itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
 		{
-			throw Exception::InvalidOperationException("Not map but entered a realm.", __FILE__, __LINE__);
+			throw Exception::InvalidOperationException("Not map but entered a realm.", MULE_FILE, __LINE__);
 		}
 		else
 		{

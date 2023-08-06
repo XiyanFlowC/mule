@@ -7,6 +7,8 @@
 #include <exception>
 #include <typeinfo>
 
+#define MULE_FILE __FILE__
+
 namespace mule
 {
 	namespace Exception

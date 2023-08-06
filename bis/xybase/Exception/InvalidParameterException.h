@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef InvalidParameterException_EXCEPTION_H__
-#define InvalidParameterException_EXCEPTION_H__
+#ifndef XY_INVALID_PARAMETER_EXCEPTION_H__
+#define XY_INVALID_PARAMETER_EXCEPTION_H__
 
 #include <exception>
 #include <string>
@@ -27,5 +27,4 @@ namespace xybase
 		int err;
 	};
 }
-
 #endif

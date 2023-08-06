@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef BINARY_STREAM_H__
-#define BINARY_STREAM_H__
+#ifndef XY_BINARY_STREAM_H__
+#define XY_BINARY_STREAM_H__
 
 #include <cstdint>
 #include <cerrno>

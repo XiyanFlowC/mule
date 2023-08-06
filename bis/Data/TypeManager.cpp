@@ -45,7 +45,7 @@ void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 	if (creator->nextCreator != nullptr) throw Exception::InvalidParameterException(
 		"creator",
 		"The field nextCreator must be nullptr",
-		__FILE__, __LINE__
+		MULE_FILE, __LINE__
 		);
 
 	if (last == nullptr)

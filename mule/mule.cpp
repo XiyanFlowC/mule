@@ -6,9 +6,9 @@ using namespace mule::Data::Basic;
 
 int main(int argc, char **argv)
 {
-	if (argc != 3)
+	if (argc <= 3)
 	{
-		fprintf(stderr, "Usage: %s <path_to_execute_folder> <target.bin> [args...]", argv[0]);
+		fprintf(stderr, "Usage: %s <path_to_execute_folder> <action> <path_to_target_file(s)> [args...]", argv[0]);
 		exit(-1);
 	}
 
@@ -21,7 +21,7 @@ int main(int argc, char **argv)
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 	try
 	{
-		LuaHost::GetInstance().RunScript(argv[1]);
+		LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + argv[2] + ".lua").c_str());
 	}
 	catch (mule::Lua::LuaException ex)
 	{

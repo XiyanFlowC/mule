@@ -3,7 +3,9 @@
 #ifndef ARRAY_H__
 #define ARRAY_H__
 
+#include "../xybase/xyutils.h"
 #include "Basic/Type.h"
+#include "TypeManager.h"
 #include "TypeCreator.h"
 
 namespace mule

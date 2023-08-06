@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef STREAM_H__
-#define STREAM_H__
+#ifndef XY_STREAM_H__
+#define XY_STREAM_H__
 
 #include <cstdint>
 #include <string>

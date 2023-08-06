@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef OBJECT_MANAGER_H__
-#define OBJECT_MANAGER_H__
+#ifndef TYPE_MANAGER_H__
+#define TYPE_MANAGER_H__
 
 #include "Basic/Type.h"
 #include "Structure.h"

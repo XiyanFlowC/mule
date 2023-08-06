@@ -8,7 +8,7 @@ BinaryStream::BinaryStream(const char* path, bool isBigEndian)
 	stream = fopen(path, "rb+");
 	if (stream == nullptr)
 	{
-		throw Exception::Exception(std::string("Open file error: ") + strerror(errno), __FILE__, __LINE__);
+		throw Exception::Exception(std::string("Open file error: ") + strerror(errno), MULE_FILE, __LINE__);
 	}
 	isOpen = true;
 	this->isBigEndian = isBigEndian;
@@ -22,7 +22,7 @@ BinaryStream::~BinaryStream()
 #ifdef BS_CPP_BSREADEX
 #error Macro BS_CPP_BSREADEX pre-defined alarm!
 #endif
-#define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw Exception::Exception(std::string("Read error: ") + strerror(errno), __FILE__, __LINE__)
+#define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw Exception::Exception(std::string("Read error: ") + strerror(errno), MULE_FILE, __LINE__)
 
 uint8_t BinaryStream::ReadUInt8()
 {
@@ -140,12 +140,12 @@ std::string BinaryStream::ReadString()
 	size_t currentSize = 128, length = 0;
 
 	buffer = (char*)malloc(currentSize);
-	if (buffer == nullptr) throw Exception::Exception("Memory allocation falied.", __FILE__, __LINE__);
+	if (buffer == nullptr) throw Exception::Exception("Memory allocation falied.", MULE_FILE, __LINE__);
 
 	int ch = fgetc(stream);
 	while (ch != 0)
 	{
-		if (ch == EOF) throw Exception::Exception("String reached EOF without a NUL!", __FILE__, __LINE__);
+		if (ch == EOF) throw Exception::Exception("String reached EOF without a NUL!", MULE_FILE, __LINE__);
 
 		buffer[length++] = ch;
 
@@ -156,7 +156,7 @@ std::string BinaryStream::ReadString()
 			if (tmp == nullptr)
 			{
 				tmp = (char*)malloc(currentSize);
-				if (tmp == nullptr) throw Exception::Exception("Memory re-allocation failed.", __FILE__, __LINE__);
+				if (tmp == nullptr) throw Exception::Exception("Memory re-allocation failed.", MULE_FILE, __LINE__);
 				memcpy(tmp, buffer, currentSize >> 1);
 				free(buffer);
 			}
@@ -182,7 +182,7 @@ void BinaryStream::ReadBytes(char* buffer, int limit)
 #ifdef BS_CPP_BSWRITEEX
 #error Macro BS_CPP_BSWRITEEX have been defiend already!
 #endif
-#define BS_CPP_BSWRITEEX(size) if (0 == fwrite(&value, size, 1, stream)) throw Exception::Exception(std::string("Write error: ") + strerror(errno), __FILE__, __LINE__)
+#define BS_CPP_BSWRITEEX(size) if (0 == fwrite(&value, size, 1, stream)) throw Exception::Exception(std::string("Write error: ") + strerror(errno), MULE_FILE, __LINE__)
 
 void BinaryStream::Write(uint8_t value)
 {
@@ -258,7 +258,7 @@ void BinaryStream::Write(const std::string& value)
 
 void BinaryStream::Write(const char* buffer, size_t size)
 {
-	if (1 != fwrite(buffer, size, 1, stream)) throw Exception::Exception(std::string("Write error: ") + strerror(errno), __FILE__, __LINE__);
+	if (1 != fwrite(buffer, size, 1, stream)) throw Exception::Exception(std::string("Write error: ") + strerror(errno), MULE_FILE, __LINE__);
 }
 #undef BS_CPP_BSWRITEEX
 
@@ -274,7 +274,7 @@ void BinaryStream::Seek(long long offset, int mode)
 
 void BinaryStream::Close()
 {
-	if (!isOpen) throw InvalidOperationException("Already closed.", __FILE__, __LINE__);
+	if (!isOpen) throw InvalidOperationException("Already closed.", MULE_FILE, __LINE__);
 	isOpen = false;
 	fclose(stream);
 }

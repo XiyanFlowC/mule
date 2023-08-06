@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef STRING_BUILDER_H__
-#define STRING_BUILDER_H__
+#ifndef XY_STRING_BUILDER_H__
+#define XY_STRING_BUILDER_H__
 
 #include <cstdlib>
 #include "Exception/RuntimeException.h"
@@ -51,7 +51,7 @@ namespace xybase
 		length = 0;
 
 		buffer = (Tunit *)malloc(currentSize * sizeof(Tunit));
-		if (buffer == nullptr) throw RuntimeException("Memory allocation falied.", errno);
+		if (buffer == nullptr) throw RuntimeException(std::string("Memory allocation falied."), errno);
 
 		if (initialContent != nullptr)
 		{

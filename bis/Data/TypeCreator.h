@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef FIELD_CREATOR_H__
-#define FIELD_CREATOR_H__
+#ifndef TYPE_CREATOR_H__
+#define TYPE_CREATOR_H__
 
 #include <string>
 

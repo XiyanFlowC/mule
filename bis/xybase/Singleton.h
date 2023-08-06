@@ -1,5 +1,5 @@
-#ifndef SINGLETON_H__
-#define SINGLETON_H__
+#ifndef XY_SINGLETON_H__
+#define XY_SINGLETON_H__
 
 namespace xybase
 {

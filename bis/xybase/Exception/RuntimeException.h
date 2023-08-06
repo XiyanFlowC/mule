@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef RUNTIME_EXCEPTION_H__
-#define RUNTIME_EXCEPTION_H__
+#ifndef XY_RUNTIME_EXCEPTION_H__
+#define XY_RUNTIME_EXCEPTION_H__
 
 #include <exception>
 #include <string>

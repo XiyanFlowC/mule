@@ -373,7 +373,7 @@ void MultiValue::ParseInt(const std::string &value)
 			{
 				state = 2; // 确认是否为十六进制数
 			}
-			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
 		case 1:
 			if ('0' <= *itr && *itr <= '9')
@@ -385,7 +385,7 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
 		case 2:
 			if ('1' <= *itr && *itr <= '7')
@@ -402,7 +402,7 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT; // 二进制输入默认无符号
 				state = 5; // 二进制输入
 			}
-			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
 		case 3:
 			if ('0' <= *itr && *itr <= '9')
@@ -422,7 +422,7 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
 		case 4:
 			if ('0' <= *itr && *itr <= '7')
@@ -434,14 +434,14 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
 		case 5:
 			if (*itr == '0' || *itr == '1')
 			{
 				res = (res << 1) | (*itr - '0');
 			}
-			else throw InvalidParameterException("value", "unexpected character.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 		}
 	}
 	mvpi_forout:
@@ -546,7 +546,7 @@ void MultiValue::ParseString(const std::string &value, bool isBareString)
 		}
 	}
 	// 没有终结的引号
-	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw InvalidParameterException("value", "Not a valid string representation.", __FILE__, __LINE__);
+	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw InvalidParameterException("value", "Not a valid string representation.", MULE_FILE, __LINE__);
 
 	this->value.stringValue = new std::string(sb.ToString());
 }
@@ -563,7 +563,7 @@ void MultiValue::ParseReal(const std::string &value)
 		{
 			if (ch == '-') isNeg = 1;
 			else if (ch == '.') break;
-			else throw InvalidParameterException("value", "not a valid real number.", __FILE__, __LINE__);
+			else throw InvalidParameterException("value", "not a valid real number.", MULE_FILE, __LINE__);
 		}
 
 		if (flag)
@@ -698,7 +698,7 @@ void MultiValue::SetValue()
 
 MultiValue MultiValue::operator+(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", __FILE__, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
 	
 	switch (type)
 	{
@@ -715,13 +715,13 @@ MultiValue MultiValue::operator+(const MultiValue& rvalue) const
 		return MultiValue(*value.stringValue + *rvalue.value.stringValue);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", __FILE__, __LINE__);
+		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator-(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", __FILE__, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
 
 	switch (type)
 	{
@@ -735,16 +735,16 @@ MultiValue MultiValue::operator-(const MultiValue& rvalue) const
 		return MultiValue(value.realValue - rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw InvalidOperationException("String connot be subtracted.", __FILE__, __LINE__);
+		throw InvalidOperationException("String connot be subtracted.", MULE_FILE, __LINE__);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", __FILE__, __LINE__);
+		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator*(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", __FILE__, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
 
 	switch (type)
 	{
@@ -758,16 +758,16 @@ MultiValue MultiValue::operator*(const MultiValue& rvalue) const
 		return MultiValue(value.realValue * rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw InvalidOperationException("String connot be multiplied.", __FILE__, __LINE__);
+		throw InvalidOperationException("String connot be multiplied.", MULE_FILE, __LINE__);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", __FILE__, __LINE__);
+		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", __FILE__, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
 
 	switch (type)
 	{
@@ -781,10 +781,10 @@ MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 		return MultiValue(value.realValue / rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw InvalidOperationException("String connot be divided.", __FILE__, __LINE__);
+		throw InvalidOperationException("String connot be divided.", MULE_FILE, __LINE__);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", __FILE__, __LINE__);
+		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
 	}
 }
 
