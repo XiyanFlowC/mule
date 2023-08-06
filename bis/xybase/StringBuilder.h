@@ -4,8 +4,8 @@
 #define STRING_BUILDER_H__
 
 #include <cstdlib>
-#include "../Exception/Exception.h"
-#include "../Exception/InvalidParameterException.h"
+#include "Exception/RuntimeException.h"
+#include "Exception/InvalidParameterException.h"
 
 namespace xybase
 {
@@ -51,7 +51,7 @@ namespace xybase
 		length = 0;
 
 		buffer = (Tunit *)malloc(currentSize * sizeof(Tunit));
-		if (buffer == nullptr) throw mule::Exception::Exception("Memory allocation falied.", __FILE__, __LINE__);
+		if (buffer == nullptr) throw RuntimeException("Memory allocation falied.", errno);
 
 		if (initialContent != nullptr)
 		{
@@ -132,13 +132,13 @@ namespace xybase
 	template<typename Tunit>
 	void StringBuilder<Tunit>::Resize(size_t size)
 	{
-		if (size < length) throw mule::Exception::InvalidParameterException("size", "Cannot resize to a size smaller than current length.", __FILE__, __LINE__);
+		if (size < length) throw InvalidParameterException("size", "Cannot resize to a size smaller than current length.", __LINE__);
 
 		Tunit *tmp = (Tunit *)realloc(buffer, size);
 		if (tmp == nullptr)
 		{
 			tmp = (Tunit *)malloc(size * sizeof(Tunit)); // try again in another way.
-			if (tmp == nullptr) throw mule::Exception::Exception("Memory re-allocation failed.", __FILE__, __LINE__);
+			if (tmp == nullptr) throw RuntimeException("Memory re-allocation failed.", errno);
 			memcpy(tmp, buffer, currentSize);
 			free(buffer);
 		}
