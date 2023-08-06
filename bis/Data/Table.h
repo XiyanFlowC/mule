@@ -46,6 +46,8 @@ namespace mule {
 
 			std::string GetTypeName() const override;
 
+			bool IsComposite() const override;
+
 		protected:
 			Structure *structure;
 

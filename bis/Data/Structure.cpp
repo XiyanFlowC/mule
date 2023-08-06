@@ -56,6 +56,11 @@ std::string mule::Data::Structure::GetTypeName() const
 	return "structure";
 }
 
+bool mule::Data::Structure::IsComposite() const
+{
+	return true;
+}
+
 void mule::Data::Structure::Field::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter(object, name);

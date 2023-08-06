@@ -35,6 +35,11 @@ std::string mule::Data::Array::GetTypeName() const
 	return std::string("array");
 }
 
+bool mule::Data::Array::IsComposite() const
+{
+	return true;
+}
+
 mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::string info)
 {
 	return nullptr;

@@ -33,7 +33,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::string name)
 {
 	if (status == DHMS_READ)
 	{
-		if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+		if (realm->IsComposite())
 			values.push(new MultiValue(MultiValue::MVT_MAP));
 		else
 			key = name;
@@ -60,7 +60,7 @@ void mule::Data::Mappifier::OnRealmExit(Type *realm, std::string name)
 {
 	if (status == DHMS_READ)
 	{
-		if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+		if (realm->IsComposite())
 		{
 			auto value = values.top();
 			values.pop();
@@ -119,7 +119,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, int idx)
 {
 	if (status == DHMS_READ)
 	{
-		if (realm->GetTypeName() == "structure" || realm->GetTypeName() == "table")
+		if (realm->IsComposite())
 			values.push(new MultiValue(MultiValue::MVT_MAP));
 		else
 			key = (uint64_t)idx;
@@ -146,7 +146,7 @@ void mule::Data::Mappifier::OnRealmExit(Type *realm, int idx)
 {
 	if (status == DHMS_READ)
 	{
-		if (realm->GetTypeName() == "structure")
+		if (realm->IsComposite())
 		{
 			auto value = values.top();
 			values.pop();

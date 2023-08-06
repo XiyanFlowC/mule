@@ -77,6 +77,8 @@ namespace mule
 			virtual std::string GetName() const;
 
 			virtual std::string GetTypeName() const override;
+
+			virtual bool IsComposite() const override;
 		protected:
 
 

@@ -54,3 +54,8 @@ std::string mule::Data::Table::GetTypeName() const
 {
 	return "table";
 }
+
+bool mule::Data::Table::IsComposite() const
+{
+	return true;
+}

@@ -29,6 +29,8 @@ namespace mule
 			virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 			virtual size_t Size() const override;
 			virtual std::string GetTypeName() const override;
+
+			virtual bool IsComposite() const override;
 		};
 	}
 }

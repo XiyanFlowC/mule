@@ -6,17 +6,17 @@ ResourceManager &ResourceManager::GetInstance()
     return _inst;
 }
 
-BinaryData ResourceManager::GetData(std::string name)
+BinaryData ResourceManager::LoadData(std::string name)
 {
     auto &&it = dataNameMap.find(name);
     if (it == dataNameMap.end())
     {
         throw mule::Exception::Exception("Unkown id for data " + name, __FILE__, __LINE__);
     }
-    return GetData(it->second);
+    return LoadData(it->second);
 }
 
-BinaryData ResourceManager::GetData(unsigned int id)
+BinaryData ResourceManager::LoadData(unsigned int id)
 {
     char path[32];
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 48, (id >> 32) & 0xFF, (id >> 16) & 0xFF, id & 0xFF);
@@ -35,38 +35,100 @@ BinaryData ResourceManager::GetData(unsigned int id)
     return BinaryData(buffer, length, false);
 }
 
-unsigned int ResourceManager::SetData(BinaryData &data)
+unsigned int ResourceManager::SaveData(BinaryData &data, unsigned int assignId)
 {
     char path[32];
-    unsigned int crc = crc32_eval((uint8_t *) data.GetData(), data.GetLength());
-    sprintf(path, "%02X/%02X/%02X/%02X.dat", crc >> 48, (crc >> 32) & 0xFF, (crc >> 16) & 0xFF, crc & 0xFF);
+    unsigned int id = assignId == 0 ? crc32_eval((uint8_t *) data.LoadData(), data.GetLength()) : assignId;
 
-    // 确认文件不存在
+    // 冲突避免
+    while (IsExist(id)) ++id;
+
+    sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 48, (id >> 32) & 0xFF, (id >> 16) & 0xFF, id & 0xFF);
     FILE *f = fopen((Configuration::GetInstance().DataDir + path).c_str(), "rb");
-    if (f != NULL)
-    {
-        fclose(f);
-        throw mule::Exception::Exception("Data save clash of crc " + std::to_string(crc), __FILE__, __LINE__);
-    }
-
     f = fopen((Configuration::GetInstance().DataDir + path).c_str(), "wb");
     if (f == NULL)
     {
         throw mule::Exception::Exception(std::string("Unable to open file to write ") + path, __FILE__, __LINE__);
     }
 
-    fwrite(data.GetData(), data.GetLength(), 1, f);
+    fwrite(data.LoadData(), data.GetLength(), 1, f);
     fclose(f);
 
-    return crc;
+    return id;
+}
+
+bool ResourceManager::IsExist(unsigned int id)
+{
+    char path[32];
+    sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 48, (id >> 32) & 0xFF, (id >> 16) & 0xFF, id & 0xFF);
+
+    FILE *f = fopen((Configuration::GetInstance().DataDir + path).c_str(), "rb");
+    if (f != NULL)
+    {
+        fclose(f);
+        return true;
+    }
+    return false;
+}
+
+bool ResourceManager::IsExist(std::string name)
+{
+    auto &&it = dataNameMap.find(name);
+    if (it == dataNameMap.end())
+    {
+        return false;
+    }
+    return IsExist(it->second);
+}
+
+BinaryData ResourceManager::LoadResource(std::string path)
+{
+    FILE* f = fopen(path.c_str(), "rb");
+    if (f == NULL)
+    {
+        if (f == NULL) throw mule::Exception::Exception(std::string("Unable to open resource file ") + path, __FILE__, __LINE__);
+    }
+
+    fseek(f, 0, SEEK_END);
+    size_t length = ftell(f);
+    fseek(f, 0, SEEK_SET);
+
+    char *buffer = new char[length];
+    fread(buffer, length, 1, f);
+    fclose(f);
+
+    return BinaryData(buffer, length, false);
+}
+
+xybase::Stream *ResourceManager::OpenResource(std::string path, std::function<xybase::Stream *(std::string path)> creator)
+{
+    return creator(Configuration::GetInstance().ResourcesDir + path);
+}
+
+xybase::Stream *ResourceManager::OpenData(unsigned int id, std::function<xybase::Stream *(std::string path)> creator)
+{
+    char path[32];
+    sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 48, (id >> 32) & 0xFF, (id >> 16) & 0xFF, id & 0xFF);
+
+    return creator(Configuration::GetInstance().DataDir + path);
+}
+
+xybase::Stream *ResourceManager::OpenData(std::string name, std::function<xybase::Stream *(std::string path)> creator)
+{
+    auto &&it = dataNameMap.find(name);
+    if (it == dataNameMap.end())
+    {
+        throw mule::Exception::Exception("Unkown id for data " + name, __FILE__, __LINE__);
+    }
+    return OpenData(it->second, creator);
 }
 
 BinaryData::BinaryData(char *data, size_t length, bool duplicate)
 {
-    SetData(data, length, duplicate);
+    SaveData(data, length, duplicate);
 }
 
-const char *BinaryData::GetData()
+const char *BinaryData::LoadData()
 {
     return data.get();
 }
@@ -76,7 +138,7 @@ size_t BinaryData::GetLength()
     return length;
 }
 
-void BinaryData::SetData(char *data, size_t length, bool duplicate)
+void BinaryData::SaveData(char *data, size_t length, bool duplicate)
 {
     if (duplicate)
     {
@@ -90,7 +152,7 @@ void BinaryData::SetData(char *data, size_t length, bool duplicate)
     this->length = length;
 }
 
-void BinaryData::SetData(const char *data, size_t length)
+void BinaryData::SaveData(const char *data, size_t length)
 {
-    SetData((char *) data, length, true);
+    SaveData((char *) data, length, true);
 }

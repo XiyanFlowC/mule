@@ -14,8 +14,9 @@ void Configuration::SetEnvironmentRootPath(std::string path)
 	}
 
 	EnvironmentRootDir = path;
-	ResourceDir = path + "res/";
-	ScriptsDir = ResourceDir + "scripts/";
-	SheetsDir = ResourceDir + "sheets/";
+	ResourcesDir = path + "res/";
+	ScriptsDir = path + "scripts/";
+	SheetsDir = path + "sheets/";
 	DataDir = path + "data/";
+	DefinitionsDir = path + "def/";
 }
