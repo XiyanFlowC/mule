@@ -12,6 +12,10 @@
 
 #include <xybase/Stream.h>
 #include <BinaryStream.h>
+#include <Data/TypeManager.h>
+#include <Data/Structure.h>
+#include <Xml/XmlParser.h>
+#include <Xml/XmlNode.h>
 
 #include "Configuration.h"
 #include "crc32.h"
@@ -47,10 +51,11 @@ public:
 
 class ResourceManager
 {
+	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 public:
 	std::map<std::string, unsigned int> dataNameMap;
 
-	ResourceManager &GetInstance();
+	static ResourceManager &GetInstance();
 
 	BinaryData LoadData(std::string name);
 
@@ -69,6 +74,8 @@ public:
 	xybase::Stream *OpenData(unsigned int id, std::function<xybase::Stream *(std::string path)> creator);
 
 	xybase::Stream *OpenData(std::string name, std::function<xybase::Stream *(std::string path)> creator);
+
+	void LoadDefinition(std::string def);
 };
 
 #endif

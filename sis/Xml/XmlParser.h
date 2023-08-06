@@ -21,21 +21,15 @@ namespace mule
 
         // utf8 特化
         template <>
-        std::string to_utf<char>(long value) {
-            return xybase::string::to_utf8(value);
-        }
+        std::string to_utf<char>(long value);
 
         // utf16 特化
         template <>
-        std::u16string to_utf<char16_t>(long value) {
-            return xybase::string::to_utf16(value);
-        }
+        std::u16string to_utf<char16_t>(long value);
 
         // utf32 特化
         template <>
-        std::u32string to_utf<char32_t>(long value) {
-            return xybase::string::to_utf32(value);
-        }
+        std::u32string to_utf<char32_t>(long value);
 
         /**
          * @brief 处理Xml的类

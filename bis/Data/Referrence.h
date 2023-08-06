@@ -15,7 +15,7 @@ namespace mule
 		{
 			Basic::Type *referent = nullptr;
 		public:
-			class ReferrenceObjectCreator : public TypeCreator
+			class ReferrenceCreator : public TypeCreator
 			{
 				virtual Basic::Type *DoCreateObject(std::string info) override;
 			};

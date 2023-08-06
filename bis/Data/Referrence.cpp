@@ -36,7 +36,7 @@ mule::Data::Referrence::Referrence(Type *referent)
 	this->referent = referent;
 }
 
-Type *mule::Data::Referrence::ReferrenceObjectCreator::DoCreateObject(std::string info)
+Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(std::string info)
 {
 	if (!info.ends_with("*"))
 	{

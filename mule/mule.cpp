@@ -29,16 +29,13 @@ int main(int argc, char **argv)
 		fputs(ex.what(), stderr);
 	}
 
-	// Test:
 	TypeManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
-	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceObjectCreator());
-	mule::Cpp::StructureBuilder *sb = new mule::Cpp::StructureBuilder("test");
-	sb->AppendField("uint32", "offset");
-	sb->AppendField("uint32", "size");
-	sb->AppendField("string*", "name");
-	sb->AppendField("uint32", "crc32");
-	Structure *test = sb->Build();
-	Table *tbl = new Table(test, "test", 5, 0);
+	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new Array::ArrayCreator());
+
+	ResourceManager::GetInstance().LoadDefinition("test");
+
+	Table *tbl = new Table((Structure *)TypeManager::GetInstance().GetObject("FileEntry"), "test", 5, 0);
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> configParser;
 

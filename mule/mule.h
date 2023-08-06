@@ -8,6 +8,7 @@
 #include <BinaryStream.h>
 #include <Data/Basic/Integer.h>
 #include <Data/Structure.h>
+#include <Data/Array.h>
 #include <Data/Basic/String.h>
 #include <Data/Referrence.h>
 #include <Data/TypeCreator.h>
@@ -22,3 +23,4 @@
 
 #include "crc32.h"
 #include "Configuration.h"
+#include "ResourceManager.h"

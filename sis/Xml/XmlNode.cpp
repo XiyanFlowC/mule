@@ -4,7 +4,7 @@ using namespace mule::Xml;
 
 const XmlNode XmlNode::ERROR = XmlNode();
 
-bool mule::Xml::XmlNode::isTextNode() const
+bool mule::Xml::XmlNode::IsTextNode() const
 {
 	return text.size();
 }
@@ -49,6 +49,13 @@ void mule::Xml::XmlNode::AddAttribute(std::string name, std::string data)
 std::map<std::string, std::string> mule::Xml::XmlNode::GetAttributes() const
 {
 	return attributes;
+}
+
+std::string mule::Xml::XmlNode::GetAttribute(std::string name) const
+{
+	auto &&itr = attributes.find(name);
+	if (itr == attributes.end()) return "";
+	else return itr->second;
 }
 
 bool mule::Xml::XmlNode::operator==(const XmlNode &rvalue) const

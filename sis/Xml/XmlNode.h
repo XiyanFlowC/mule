@@ -17,7 +17,7 @@ namespace mule
         class XmlNode
         {
         public:
-            bool isTextNode() const;
+            bool IsTextNode() const;
 
             std::list<XmlNode> children;
 
@@ -42,6 +42,8 @@ namespace mule
             void AddAttribute(std::string name, std::string data);
 
             std::map<std::string, std::string> GetAttributes() const;
+
+            std::string GetAttribute(std::string name) const;
 
             const static XmlNode ERROR;
 
