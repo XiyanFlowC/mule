@@ -62,13 +62,42 @@ void LuaHost::RegisterFunction(const std::string& name, lua_CFunction func)
 
 void mule::Lua::LuaHost::RegisterLibrary(luaL_Reg *libRegTable)
 {
-	luaL_newlib(L, libRegTable);
+	while (libRegTable->func != NULL)
+	{
+		RegisterFunction(libRegTable->name, libRegTable->func);
+		++libRegTable;
+	}
 }
 
 mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetGlobal(const std::string &name)
 {
-	lua_getglobal(L, name.c_str());
-	return PopValue();
+	int top = GetStackTop();
+	// 若是表
+	size_t dotIndex = name.find_first_of('.'), startIndex = 0;
+	if (dotIndex != std::string::npos)
+	{
+		lua_getglobal(L, name.substr(startIndex, dotIndex - startIndex).c_str());
+		if (lua_isnil(L, -1)) throw LuaException("Invalid table " + name.substr(startIndex, dotIndex - startIndex), __FILE__, __LINE__);
+		startIndex = dotIndex + 1;
+		dotIndex = name.find_first_of('.', startIndex);
+		while (dotIndex != std::string::npos)
+		{
+			lua_getfield(L, -1, name.substr(startIndex, dotIndex - startIndex).c_str());
+			if (lua_isnil(L, -1)) throw LuaException("Invalid table " + name.substr(startIndex, dotIndex - startIndex), __FILE__, __LINE__);
+			startIndex = dotIndex + 1;
+			dotIndex = name.find_first_of('.', startIndex);
+		}
+		lua_getfield(L, -1, name.substr(startIndex).c_str());
+		MultiValue ret = GetValue(-1);
+		SetStackTop(top);
+		return ret;
+	}
+	else
+	{
+		lua_getglobal(L, name.c_str());
+		return PopValue();
+	}
+	SetStackTop(top);
 }
 
 mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
@@ -110,8 +139,31 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
 
 void mule::Lua::LuaHost::SetGlobal(const std::string &name, const mule::Data::Basic::MultiValue &value)
 {
-	PushValue(value);
-	lua_setglobal(L, name.c_str());
+	int top = GetStackTop();
+	// 若是表
+	size_t dotIndex = name.find_first_of('.'), startIndex = 0;
+	if (dotIndex != std::string::npos)
+	{
+		lua_getglobal(L, name.substr(startIndex, dotIndex - startIndex).c_str());
+		if (lua_isnil(L, -1)) throw LuaException("Invalid table " + name.substr(startIndex, dotIndex - startIndex), __FILE__, __LINE__);
+		startIndex = dotIndex + 1;
+		dotIndex = name.find_first_of('.', startIndex);
+		while (dotIndex != std::string::npos)
+		{
+			lua_getfield(L, -1, name.substr(startIndex, dotIndex - startIndex).c_str());
+			if (lua_isnil(L, -1)) throw LuaException("Invalid table " + name.substr(startIndex, dotIndex - startIndex), __FILE__, __LINE__);
+			startIndex = dotIndex + 1;
+			dotIndex = name.find_first_of('.', startIndex);
+		}
+		PushValue(value);
+		lua_setfield(L, -2, name.substr(startIndex).c_str());
+	}
+	else
+	{
+		PushValue(value);
+		lua_setglobal(L, name.c_str());
+	}
+	SetStackTop(top);
 }
 
 MultiValue LuaHost::Call(const std::string name, int count, ...)

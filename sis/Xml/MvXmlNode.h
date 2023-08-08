@@ -53,7 +53,14 @@ namespace mule
 
             MvXmlNode operator[] (std::string name);
 
-            static std::function<std::string(std::string)> callback;
+            /**
+             * @brief 从MultiValue值转换为Xml需要的Text
+            */
+            static std::function<std::string(std::string)> text_to_xml;
+            /**
+             * @brief 将Xml转换为需要的MultiValue
+            */
+            static std::function<std::string(std::string)> xml_to_text;
         };
     }
 }

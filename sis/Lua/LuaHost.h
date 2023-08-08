@@ -115,7 +115,7 @@ namespace mule
 			*/
 			void SetStackTop(int idx);
 
-		private:
+		//private:
 			mule::Data::Basic::MultiValue PopValue();
 
 			void PushValue(const mule::Data::Basic::MultiValue &v);

@@ -5,7 +5,7 @@ using namespace mule::Data::Basic;
 
 const MvXmlNode MvXmlNode::ERROR;
 
-std::function<std::string(std::string)> mule::Xml::MvXmlNode::callback = [](std::string in) -> std::string {
+std::function<std::string(std::string)> mule::Xml::MvXmlNode::text_to_xml = [](std::string in) -> std::string {
 	auto loc = in.find("]]>");
 	while (loc != std::string::npos)
 	{
@@ -13,6 +13,10 @@ std::function<std::string(std::string)> mule::Xml::MvXmlNode::callback = [](std:
 		loc = in.find("]]>", loc + 14);
 	}
 	return "<![CDATA[" + in + "]]>";
+};
+
+std::function<std::string(std::string)> mule::Xml::MvXmlNode::xml_to_text = [](std::string in) -> std::string {
+	return in;
 };
 
 mule::Xml::MvXmlNode::MvXmlNode()
@@ -81,7 +85,7 @@ std::string mule::Xml::MvXmlNode::GetText() const
 {
 	if (mv.GetType() == mule::Data::Basic::MultiValue::MVT_STRING)
 	{
-		return callback(*mv.value.stringValue);
+		return text_to_xml(*mv.value.stringValue);
 	}
 	else
 	{

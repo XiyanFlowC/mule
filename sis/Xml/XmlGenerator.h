@@ -30,7 +30,7 @@ namespace mule
                 return sb.ToString();
             }
 
-            //std::function<std::string(std::string)> callback;
+            //std::function<std::string(std::string)> text_to_xml;
         private:
             int layer = 0;
 
