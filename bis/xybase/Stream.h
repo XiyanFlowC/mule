@@ -16,7 +16,12 @@ namespace xybase
 	class Stream
 	{
 	protected:
-		//Stream(bool isBigEndian);
+#ifndef BIG_ENDIAN_SYSTEM
+		static const bool bigEndianSystem = false;
+#else
+		static const bool bigEndianSystem = true;
+#endif
+		bool isBigEndian = false;
 
 	public:
 		virtual uint8_t ReadUInt8() = 0;

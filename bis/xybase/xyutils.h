@@ -65,23 +65,23 @@ namespace xybase
 		template<typename T = char>
 		unsigned long long stoi(std::basic_string<T> str, int base = 10)
 		{
-			const T *bgn = str.c_str();
-			const T *ptr = bgn + str.length();
+			const T *ptr = str.c_str();
+			const T *end = ptr + str.length();
 			unsigned long long ret = 0;
 
-			while (ptr >= bgn)
+			while (ptr <= end)
 			{
 				if (*ptr >= static_cast<T>('0') || *ptr <= std::min<T>(static_cast<T>('9'), static_cast<T>('0') + base))
 				{
-					ret = ret * base + *ptr - static_cast<T>('0');
+					ret = ret * base + *ptr++ - static_cast<T>('0');
 				}
 				else if (*ptr >= static_cast<T>('a') || *ptr <= std::min<T>(static_cast<T>('a'), static_cast<T>('a') + base - 10))
 				{
-					ret = ret * base + *ptr - static_cast<T>('a') + 10;
+					ret = ret * base + *ptr++ - static_cast<T>('a') + 10;
 				}
 				else if (*ptr >= static_cast<T>('A') || *ptr <= std::min<T>(static_cast<T>('A'), static_cast<T>('A') + base - 10))
 				{
-					ret = ret * base + *ptr - static_cast<T>('A') + 10;
+					ret = ret * base + *ptr++ - static_cast<T>('A') + 10;
 				}
 				else break;
 			}

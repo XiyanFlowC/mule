@@ -3,6 +3,7 @@
 #ifndef XY_STRING_BUILDER_H__
 #define XY_STRING_BUILDER_H__
 
+#include <cstring>
 #include <cstdlib>
 #include "Exception/RuntimeException.h"
 #include "Exception/InvalidParameterException.h"

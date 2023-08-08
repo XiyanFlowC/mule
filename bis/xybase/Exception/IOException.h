@@ -3,12 +3,12 @@
 #ifndef XY_IO_EXCEPTION_H__
 #define XY_IO_EXCEPTION_H__
 
-#include <exception>
+#include "RuntimeException.h"
 #include <string>
 
 namespace xybase
 {
-	class IOException : public std::exception
+	class IOException : public RuntimeException
 	{
 	public:
 		IOException(const std::string &filename, const std::string &message, int err = errno);
@@ -23,9 +23,7 @@ namespace xybase
 
 	protected:
 		std::string filename;
-		std::string message;
 		std::string text;
-		int err;
 	};
 }
 
