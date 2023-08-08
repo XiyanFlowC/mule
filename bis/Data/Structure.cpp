@@ -53,7 +53,7 @@ std::string mule::Data::Structure::GetName() const
 
 std::string mule::Data::Structure::GetTypeName() const
 {
-	return "structure";
+	return name;
 }
 
 bool mule::Data::Structure::IsComposite() const

@@ -1,6 +1,6 @@
 #include "BinaryStream.h"
 
-using namespace mule::Data;
+using namespace mule;
 using namespace mule::Exception;
 
 BinaryStream::BinaryStream(const char* path, bool isBigEndian)
@@ -238,7 +238,7 @@ void BinaryStream::Write(uint64_t value)
 
 void BinaryStream::Write(int64_t value)
 {
-	Write(*((int64_t*)&value));
+	Write(*((uint64_t*)&value));
 }
 
 void BinaryStream::Write(float value)

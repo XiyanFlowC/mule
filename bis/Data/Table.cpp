@@ -1,5 +1,7 @@
 #include "Table.h"
 
+#include <iostream>
+
 using namespace mule::Data::Basic;
 using namespace mule::Data;
 
@@ -17,9 +19,17 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 	dataHandler->OnSheetReadStart();
 	dataHandler->OnRealmEnter((Type *)this, name);
 	for (int i = 0; i < length; ++i) {
-		dataHandler->OnRealmEnter(structure, i);
-		structure->Read(stream, dataHandler);
-		dataHandler->OnRealmExit(structure, i);
+		try
+		{
+			dataHandler->OnRealmEnter(structure, i);
+			structure->Read(stream, dataHandler);
+			dataHandler->OnRealmExit(structure, i);
+		}
+		catch (Exception::InvalidParameterException ex)
+		{
+			std::cerr << "Error when read, abort for now, at " << i << std::endl;
+			break;
+		}
 	}
 	dataHandler->AppendMetadatum("_type", MultiValue("array"));
 	dataHandler->OnRealmExit((Type *) this, name);
