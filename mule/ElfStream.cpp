@@ -1,16 +1,17 @@
 #include "ElfStream.h"
 
-using namespace mule::Data;
+using namespace mule;
 
-ElfStream::ElfStream(const std::string &name)
-	: BinaryStream(name.c_str())
+ElfStream::ElfStream(xybase::Stream *stream)
+	: stream(stream)
 {
 	// ¶ÁÈ¡Ä§ÊõÍ·
 	byte_t magicHeader[16];
-	fread(magicHeader, sizeof(magicHeader), 1, stream);
+	stream->ReadBytes(reinterpret_cast<char *>(magicHeader), 16);
+	// fread(magicHeader, sizeof(magicHeader), 1, stream);
 	if (0 != memcmp(magicSeq, magicHeader, 4))
 	{
-		throw ElfFormatErrorException("Not a valid ELF. (file :" + name, __FILE__, __LINE__);
+		throw ElfFormatErrorException("Not a valid ELF.", __FILE__, __LINE__);
 	}
 	if (magicHeader[4] != '\x01')
 	{
@@ -25,7 +26,7 @@ ElfStream::ElfStream(const std::string &name)
 	{
 		throw ElfFormatErrorException("Unsupported ELF version.", __FILE__, __LINE__);
 	}
-	fseek(stream, 0, SEEK_SET);
+	stream->Seek(0, SEEK_SET);
 	header = new elf_header;
 	if (isBigEndian ^ bigEndianSystem)
 	{
@@ -46,24 +47,24 @@ ElfStream::ElfStream(const std::string &name)
 	}
 	else
 	{
-		fread(header, sizeof(elf_header), 1, stream);
+		stream->ReadBytes((char *)header, sizeof(elf_header));
 	}
 
 	phs = new program_header[header->phnum];
-	fseek(stream, header->phoff, SEEK_SET);
+	stream->Seek(header->phoff, SEEK_SET);
 	if (isBigEndian ^ bigEndianSystem)
 	{
 		throw mule::Exception::NotImplementedException(__FILE__, __LINE__);
 	}
-	fread(phs, sizeof(program_header), header->phnum, stream);
+	stream->ReadBytes((char *)phs, sizeof(program_header) * header->phnum);
 
 	shs = new section_header[header->shnum];
-	fseek(stream, header->shoff, SEEK_SET);
+	stream->Seek(header->shoff, SEEK_SET);
 	if (isBigEndian ^ bigEndianSystem)
 	{
 		throw mule::Exception::NotImplementedException(__FILE__, __LINE__);
 	}
-	fread(shs, sizeof(section_header), header->shnum, stream);
+	stream->ReadBytes((char *)shs, sizeof(section_header) * header->shnum);
 
 	Seek(header->entry);
 }
@@ -75,7 +76,7 @@ ElfStream::~ElfStream()
 
 size_t ElfStream::Tell()
 {
-	return size_t();
+	return OffsetToAddress(stream->Tell());
 }
 
 void ElfStream::Seek(long long offset, int mode)
@@ -87,20 +88,17 @@ void ElfStream::Seek(long long offset, int mode)
 
 	else if (mode == SEEK_CUR)
 	{
-		fseek(stream, offset, mode);
+		stream->Seek(offset, mode);
 	}
 	else
 	{
-		fseek(stream, AddressToOffset(offset), mode);
+		stream->Seek(AddressToOffset(offset), mode);
 	}
 }
 
 void ElfStream::Close()
 {
-	if (!isOpen)
-		return;
-
-	if (stream != nullptr) fclose(stream);
+	// if (stream != nullptr) stream->Close();
 	if (shs != nullptr) delete shs;
 	if (phs != nullptr) delete phs;
 	if (header != nullptr) delete header;
@@ -108,19 +106,19 @@ void ElfStream::Close()
 
 void ElfStream::SeekOffset(size_t offset, int mode)
 {
-	BinaryStream::Seek(offset, mode);
+	stream->Seek(offset, mode);
 }
 
 size_t ElfStream::TellOffset()
 {
-	return BinaryStream::Tell();
+	return stream->Tell();
 }
 
 size_t ElfStream::GetAlign(size_t address)
 {
 	for (int i = 0; i < header->phnum; ++i)
 	{
-		if (shs[i].addr <= address && shs[i].addr + shs[i].size > address)
+		if (shs[i].addr <= address && static_cast<unsigned long long>(shs[i].addr) + shs[i].size > address)
 		{
 			return shs[i].align;
 		}
@@ -132,10 +130,10 @@ size_t ElfStream::AddressToOffset(size_t address)
 {
 	for (int i = 0; i < header->phnum; ++i)
 	{
-		if (phs[i].vaddr <= address && phs[i].vaddr + phs[i].filesz > address)
+		if (phs[i].vaddr <= address && static_cast<unsigned long long>(phs[i].vaddr) + phs[i].filesz > address)
 		{
 			long long diff = static_cast<long long>(phs[i].vaddr) - phs[i].offset;
-			return address + diff;
+			return address - diff;
 		}
 	}
 	throw mule::Exception::InvalidParameterException("offset", "Address out of range.", __FILE__, __LINE__);
@@ -145,13 +143,23 @@ size_t ElfStream::OffsetToAddress(size_t offset)
 {
 	for (int i = 0; i < header->phnum; ++i)
 	{
-		if (phs[i].vaddr <= offset && phs[i].vaddr + phs[i].filesz > offset)
+		if (phs[i].vaddr <= offset && static_cast<unsigned long long>(phs[i].vaddr) + phs[i].filesz > offset)
 		{
 			long long diff = static_cast<long long>(phs[i].offset) - phs[i].vaddr;
-			return offset + diff;
+			return offset - diff;
 		}
 	}
 	throw mule::Exception::InvalidParameterException("offset", "Address out of range.", __FILE__, __LINE__);
+}
+
+void ElfStream::ReadBytes(char *buffer, int limit)
+{
+	stream->ReadBytes(buffer, limit);
+}
+
+void ElfStream::Write(const char *buffer, size_t size)
+{
+	stream->Write(buffer, size);
 }
 
 ElfFormatErrorException::ElfFormatErrorException(std::string msg, const char *file, int line)

@@ -11,6 +11,7 @@
 #include <functional>
 
 #include <xybase/Stream.h>
+#include <xybase/Exception/IOException.h>
 #include <BinaryStream.h>
 #include <Data/TypeManager.h>
 #include <Data/Structure.h>
@@ -29,7 +30,7 @@ public:
 
 	BinaryData(char *data, size_t length, bool duplicate = true);
 
-	const char *LoadData();
+	const char *GetData();
 
 	size_t GetLength();
 
@@ -39,21 +40,29 @@ public:
 	 * @param length 数据长度
 	 * @param duplicate 是否复制（不对源操作）
 	*/
-	void SaveData(char *data, size_t length, bool duplicate = true);
+	void SetData(char *data, size_t length, bool duplicate = true);
 
 	/**
 	 * @brief 管理对应数据
 	 * @param data 数据
 	 * @param length 数据长度
 	*/
-	void SaveData(const char *data, size_t length);
+	void SetData(const char *data, size_t length);
 };
 
 class ResourceManager
 {
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
+
+	ResourceManager();
 public:
-	std::map<std::string, unsigned int> dataNameMap;
+	struct FileInfo
+	{
+		unsigned int id;
+		unsigned int crc32;
+	};
+
+	std::map<std::string, FileInfo> fileInfos;
 
 	static ResourceManager &GetInstance();
 
@@ -76,6 +85,10 @@ public:
 	xybase::Stream *OpenData(std::string name, std::function<xybase::Stream *(std::string path)> creator);
 
 	void LoadDefinition(std::string def);
+
+	std::string LoadSheet(std::string sheetName);
+
+	void SaveSheet(std::string sheetName, std::string sheet);
 };
 
 #endif

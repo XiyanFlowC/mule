@@ -6,6 +6,7 @@
 #include <Exception/Exception.h>
 #include <Exception/NotImplementedException.h>
 #include <Exception/InvalidParameterException.h>
+#include <xybase/StreamBasic.h>
 
 #include <cstdlib>
 #include <cstdint>
@@ -67,15 +68,16 @@ public:
 	ElfFormatErrorException(std::string msg, const char *file, int line);
 };
 
-class ElfStream : public mule::Data::BinaryStream
+class ElfStream : public xybase::StreamBasic
 {
 	elf_header *header;
 	section_header *shs;
 	program_header *phs;
 	const char magicSeq[4] = {0x7F, 'E', 'L', 'F'};
+	xybase::Stream *stream;
 
 public:
-	ElfStream(const std::string & name);
+	ElfStream(xybase::Stream *stream);
 	~ElfStream();
 	virtual size_t Tell() override;
 	virtual void Seek(long long offset, int mode = SEEK_SET) override;
@@ -87,6 +89,9 @@ public:
 	size_t GetAlign(size_t address);
 	size_t AddressToOffset(size_t address);
 	size_t OffsetToAddress(size_t offset);
+
+	virtual void ReadBytes(char *buffer, int limit) override;
+	virtual void Write(const char *buffer, size_t size) override;
 };
 
 

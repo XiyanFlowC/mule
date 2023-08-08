@@ -26,6 +26,8 @@ public:
 
 	std::string EnvironmentRootDir = "./";
 
+	std::string TargetFile = "./foo.bin";
+
 	void SetEnvironmentRootPath(std::string path);
 };
 
