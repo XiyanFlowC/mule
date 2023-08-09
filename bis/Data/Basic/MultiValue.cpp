@@ -194,10 +194,46 @@ MultiValue::MultiValue(const uint64_t value)
 	SetValue(value);
 }
 
+mule::Data::Basic::MultiValue::MultiValue(const uint32_t value)
+{
+	type = MVT_NULL;
+	SetValue((uint64_t)value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const uint16_t value)
+{
+	type = MVT_NULL;
+	SetValue((uint64_t)value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const uint8_t value)
+{
+	type = MVT_NULL;
+	SetValue((uint64_t)value);
+}
+
 MultiValue::MultiValue(const int64_t value)
 {
 	type = MVT_NULL;
 	SetValue(value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const int32_t value)
+{
+	type = MVT_NULL;
+	SetValue((int64_t)value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const int16_t value)
+{
+	type = MVT_NULL;
+	SetValue((int64_t)value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const int8_t value)
+{
+	type = MVT_NULL;
+	SetValue((int64_t)value);
 }
 
 mule::Data::Basic::MultiValue::MultiValue(const int size, const MultiValue *array)

@@ -105,7 +105,19 @@ namespace mule
 
 				MultiValue(const uint64_t value);
 
+				MultiValue(const uint32_t value);
+
+				MultiValue(const uint16_t value);
+
+				MultiValue(const uint8_t value);
+
 				MultiValue(const int64_t value);
+
+				MultiValue(const int32_t value);
+
+				MultiValue(const int16_t value);
+
+				MultiValue(const int8_t value);
 
 				MultiValue(const int size, const MultiValue *array);
 

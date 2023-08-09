@@ -6,17 +6,24 @@ using namespace mule::Data::Basic;
 LuaHost::LuaHost()
 {
 	L = luaL_newstate();
+	disposable = true;
 }
 
-inline LuaHost::~LuaHost()
+LuaHost::~LuaHost()
 {
-	lua_close(L);
+	if (disposable)
+		lua_close(L);
 }
 
 LuaHost& LuaHost::GetInstance()
 {
 	static LuaHost inst;
 	return inst;
+}
+
+mule::Lua::LuaHost::LuaHost(lua_State *L)
+{
+	this->L = L;
 }
 
 static const luaL_Reg selectedLibs[] = {
@@ -58,15 +65,6 @@ void LuaHost::LoadScript(const char* path)
 void LuaHost::RegisterFunction(const std::string& name, lua_CFunction func)
 {
 	lua_register(L, name.c_str(), func);
-}
-
-void mule::Lua::LuaHost::RegisterLibrary(luaL_Reg *libRegTable)
-{
-	while (libRegTable->func != NULL)
-	{
-		RegisterFunction(libRegTable->name, libRegTable->func);
-		++libRegTable;
-	}
 }
 
 mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetGlobal(const std::string &name)
