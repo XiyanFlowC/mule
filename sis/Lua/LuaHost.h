@@ -128,10 +128,7 @@ namespace mule
 
 			void PushValue(const mule::Data::Basic::MultiValue &v);
 
-			template<typename AT>
-			bool CheckArg(int index);
-
-			template<typename AT, typename ...ArgTs>
+			template<typename... ArgTs>
 			bool CheckArgs(int index);
 
 			template<typename T>
@@ -170,8 +167,24 @@ namespace mule
 			return func(GetArg<Args>(Indices)...);
 		}
 
-		template<typename AT>
-		bool LuaHost::CheckArg(int index)
+		template<typename... ArgTs>
+		struct CheckArgsHelper;
+
+		template<typename AT, typename... Rest>
+		struct CheckArgsHelper<AT, Rest...>
+		{
+			static bool CheckArg(lua_State *L, int index);
+
+			static bool Check(lua_State *L, int index)
+			{
+				if (CheckArg(L, index))
+					return CheckArgsHelper<Rest...>::Check(L, index + 1);
+				return false;
+			}
+		};
+
+		template<typename AT, typename... Rest>
+		bool CheckArgsHelper<AT, Rest...>::CheckArg(lua_State *L, int index)
 		{
 			if constexpr (std::is_same_v<AT, std::string>)
 			{
@@ -187,18 +200,24 @@ namespace mule
 			}
 			else if constexpr (std::is_same_v<AT, mule::Data::Basic::MultiValue>)
 			{
-				return GetValue(index);
+				return true;
 			}
 			return false;
 		}
 
-		template<typename AT, typename ...ArgTs>
+		template<>
+		struct CheckArgsHelper<>
+		{
+			static bool Check(lua_State *L, int index)
+			{
+				return true;
+			}
+		};
+
+		template<typename... ArgTs>
 		bool LuaHost::CheckArgs(int index)
 		{
-			if constexpr (sizeof...(ArgTs) == 0)
-				return CheckArg<AT>(index);
-			else
-				return CheckArg<AT>(index) && CheckArgs<ArgTs>(index + 1);
+			return CheckArgsHelper<ArgTs...>::Check(L, index);
 		}
 
 		template<typename RetT, typename ...Args>

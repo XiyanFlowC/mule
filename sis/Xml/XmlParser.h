@@ -203,11 +203,11 @@ namespace mule
                                     // 处理直接值
                                     if (seq[1] == 'x')
                                     {
-                                        sb += to_utf<Ch>(xybase::string::stoi(seq.substr(2), 16));
+                                        sb += to_utf<Ch>(static_cast<Ch>(xybase::string::stoi(seq.substr(2), 16)));
                                     }
                                     else
                                     {
-                                        sb += to_utf<Ch>(xybase::string::stoi(seq.substr(1)));
+                                        sb += to_utf<Ch>(static_cast<Ch>(xybase::string::stoi(seq.substr(1))));
                                     }
                                 }
                                 else sb += entities[seq];

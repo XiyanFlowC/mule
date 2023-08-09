@@ -10,9 +10,9 @@ int valued = 0;
 std::stack<xybase::FileContainer *> containerStack;
 std::list<Table *> tables;
 
-int applyContainer(std::string x, int id)
+int applyContainer(int id, std::string x)
 {
-    if (x.empty() || id <= 0)
+    if (x.empty() || id < 0)
     {
         return -1;
     }
@@ -101,9 +101,9 @@ int loadDefine(std::string define)
     return 0;
 }
 
-int applyTable(int size, size_t offset, std::string name, int fd)
+int applyTable(int fd, std::string name, size_t offset, int size)
 {
-    if (size <= 0 || offset < 0 || name.empty() || fd <= 0)
+    if (size <= 0 || offset < 0 || name.empty() || fd < 0)
     {
         return -1;
     }
@@ -131,9 +131,9 @@ int applyTable(int size, size_t offset, std::string name, int fd)
 
 mule::Xml::XmlGenerator<mule::Xml::MvXmlNode> generator;
 
-int saveSheet(std::string sheetName, int vd)
+int saveSheet(int vd, std::string sheetName)
 {
-    if (sheetName.empty() || vd <= 0)
+    if (sheetName.empty() || vd < 0)
     {
         return -1;
     }
@@ -170,7 +170,7 @@ int loadSheet(std::string name)
 
 MultiValue getSheet(int vd)
 {
-    if (vd <= 0)
+    if (vd < 0)
     {
         return -1;
     }
@@ -199,9 +199,9 @@ MultiValue listfs()
     return mv;
 }
 
-int applyStream(std::string x, int id)
+int applyStream(int id, std::string x)
 {
-    if (x.empty() || id <= 0)
+    if (x.empty() || id < 0)
     {
         return -1;
     }
@@ -234,6 +234,7 @@ void InitialiseLuaEnvironment(xybase::Stream *stream)
     lua.RegisterFunction("close", closeFile);
     lua.RegisterFunction("applytbl", applyTable);
     lua.RegisterFunction("loadsheet", loadSheet);
+    lua.RegisterFunction("savesheet", saveSheet);
     lua.RegisterFunction("getsheet", getSheet);
     lua.RegisterFunction("ls", listfs);
     lua.RegisterFunction("applyfile", applyStream);
