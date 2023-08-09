@@ -14,6 +14,7 @@ namespace mule {
 		*/
 		class LuaApi
 		{
+			LuaApi();
 		public:
 			/**
 			 * @brief Register all functions to the vm / init the vm.

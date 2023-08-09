@@ -7,7 +7,7 @@ Exception::Exception(std::string description, const char* file, int line) noexce
 	this->description = "Exception message: " + description + "\n\t" + file + ":" + std::to_string(line) + "\n";
 }
 
-const char *Exception::what() const
+const char *Exception::what() const noexcept
 {
 	return description.c_str();
 }

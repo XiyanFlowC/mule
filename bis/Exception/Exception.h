@@ -24,7 +24,7 @@ namespace mule
 		public:
 			Exception(std::string description, const char *file, int line) noexcept;
 
-			virtual const char *what() const;
+			virtual const char *what() const noexcept;
 
 			const char *What() const;
 		};

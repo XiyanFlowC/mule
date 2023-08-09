@@ -5,7 +5,7 @@
 
 #include <lua.hpp>
 #include <functional>
-#include <varargs.h>
+#include <cstdarg>
 
 #include <Data/Basic/MultiValue.h>
 #include <Exception/Exception.h>
@@ -68,6 +68,13 @@ namespace mule
 			*/
 			void RegisterFunction(const std::string& name, lua_CFunction func);
 
+			/**
+			 * @brief 将一个普通的函数注册到C，自动以lambda包装以兼容
+			 * @tparam ...Args 参数列表
+			 * @tparam RetT 返回值
+			 * @param name 函数名称
+			 * @param func 函数
+			*/
 			template<typename RetT, typename... Args>
 			void RegisterFunction(const std::string &name, RetT(*func)(Args...));
 
@@ -150,6 +157,10 @@ namespace mule
 			{
 				return lua_tonumber(L, index);
 			}
+			else if constexpr (std::is_same_v<T, mule::Data::Basic::MultiValue>)
+			{
+				return true;
+			}
 			else return 0;
 		}
 
@@ -173,6 +184,10 @@ namespace mule
 			else if constexpr (std::is_floating_point_v<AT>)
 			{
 				return lua_isnumber(L, index);
+			}
+			else if constexpr (std::is_same_v<AT, mule::Data::Basic::MultiValue>)
+			{
+				return GetValue(index);
 			}
 			return false;
 		}
@@ -208,7 +223,7 @@ namespace mule
 
 				RetT ret = host.CallCFunc(f, std::index_sequence_for<Args...>{});
 
-				lua_pop(Ls, sizeof...(Args));
+				lua_pop(Ls, static_cast<int>(sizeof...(Args)));
 				
 				host.PushValue(mule::Data::Basic::MultiValue(ret));
 				return 1;

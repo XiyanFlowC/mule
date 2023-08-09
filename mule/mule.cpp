@@ -4,8 +4,7 @@ using namespace mule::Lua;
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
-extern luaL_Reg mulefuncs[];
-extern void setRootStream(xybase::Stream *stream);
+void InitialiseLuaEnvironment(xybase::Stream *);
 
 int main(int argc, char **argv)
 {
@@ -25,8 +24,6 @@ int main(int argc, char **argv)
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
-	LuaHost::GetInstance().RegisterLibrary(mulefuncs);
-
 	TypeManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new Array::ArrayCreator());
@@ -35,7 +32,7 @@ int main(int argc, char **argv)
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 	std::string infoFile(ResourceManager::GetInstance().LoadData(Configuration::GetInstance().dataInfoFile).GetData());
 
-	setRootStream(new mule::BinaryStream(Configuration::GetInstance().TargetFile.c_str()));
+	InitialiseLuaEnvironment(new mule::BinaryStream(Configuration::GetInstance().TargetFile.c_str()));
 
 	// Execution
 	try

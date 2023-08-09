@@ -12,5 +12,3 @@ add_subdirectory ("lib")
 add_subdirectory ("bis")
 add_subdirectory ("sis")
 add_subdirectory ("mule")
-
-file (COPY "./scripts" DESTINATION "${CMAKE_BINARY_DIR}/mule")
