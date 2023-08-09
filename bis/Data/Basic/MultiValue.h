@@ -127,6 +127,8 @@ namespace mule
 
 				ValueType GetType() const;
 
+				size_t GetLength() const;
+
 				/**
 				 * @brief 转换为字符串。
 				 * @return 字符串表示值。

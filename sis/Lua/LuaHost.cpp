@@ -50,10 +50,36 @@ void LuaHost::LoadLuaStandardLibs()
 void LuaHost::RunScript(const char* path)
 {
 	LoadScript(path);
-	int result = lua_pcall(L, 0, 0, 0);
+	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
 	if (result != LUA_OK) throw LuaException(
 		std::string("Run script ") + path + " failed: " + lua_tostring(L, -1),
 		__FILE__, __LINE__);
+}
+
+MultiValue mule::Lua::LuaHost::RunString(const char *str)
+{
+	if (luaL_loadstring(L, str) != LUA_OK)
+	{
+		throw LuaException(std::string("Load error: ") + lua_tostring(L, -1), MULE_FILE, __LINE__);
+	}
+	
+	if (lua_pcall(L, 0, LUA_MULTRET, 0) != LUA_OK)
+	{
+		throw LuaException(std::string("Failed to execute: ") + lua_tostring(L, -1), MULE_FILE, __LINE__);
+	}
+
+	int num = lua_gettop(L);
+	if (num == 1)
+	{
+		return PopValue();
+	}
+
+	MultiValue ret{ MultiValue::MVT_ARRAY, num };
+	for (int i = 0; i < num; ++i)
+	{
+		ret.value.arrayValue[i] = PopValue();
+	}
+	return ret;
 }
 
 void LuaHost::LoadScript(const char* path)
@@ -117,6 +143,10 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
 
 		// 遍历LuaTable
 		lua_pushnil(L);  // 将nil推入栈顶作为遍历的起始点
+
+		// 入栈的key使要求的值离栈顶更远了
+		if (idx < 0)
+			--idx;
 		while (lua_next(L, idx) != 0) {
 			// 获取key和value
 			const MultiValue key = GetValue(-2);
@@ -166,7 +196,31 @@ void mule::Lua::LuaHost::SetGlobal(const std::string &name, const mule::Data::Ba
 
 MultiValue LuaHost::Call(const std::string name, int count, ...)
 {
-	lua_getglobal(L, name.c_str());
+	int top = GetStackTop();
+	MultiValue ret{};
+	// 若是表
+	size_t dotIndex = name.find_first_of('.'), startIndex = 0;
+	if (dotIndex != std::string::npos)
+	{
+		lua_getglobal(L, name.substr(startIndex, dotIndex - startIndex).c_str());
+		if (lua_isnil(L, -1)) throw LuaException("Invalid table " + name.substr(startIndex, dotIndex - startIndex), __FILE__, __LINE__);
+		startIndex = dotIndex + 1;
+		dotIndex = name.find_first_of('.', startIndex);
+		while (dotIndex != std::string::npos)
+		{
+			lua_getfield(L, -1, name.substr(startIndex, dotIndex - startIndex).c_str());
+			if (lua_isnil(L, -1)) throw LuaException("Invalid table " + name.substr(startIndex, dotIndex - startIndex), __FILE__, __LINE__);
+			startIndex = dotIndex + 1;
+			dotIndex = name.find_first_of('.', startIndex);
+		}
+		lua_setfield(L, -2, name.substr(startIndex).c_str());
+	}
+	else
+	{
+		lua_getglobal(L, name.c_str());
+	}
+
+	int funcIdx = GetStackTop();
 
 	va_list p;
 	va_start(p, count);
@@ -176,16 +230,15 @@ MultiValue LuaHost::Call(const std::string name, int count, ...)
 		PushValue(v);
 	}
 	lua_call(L, count, 1);
-	
-	MultiValue ret = PopValue();
 
+	ret = PopValue();
+	SetStackTop(top);
 	return ret;
 }
 
 mule::Data::Basic::MultiValue mule::Lua::LuaHost::PopValue()
 {
-	MultiValue ret;
-	GetValue(-1);
+	MultiValue ret = GetValue(-1);
 	lua_pop(L, 1);
 	return ret;
 }

@@ -7,6 +7,8 @@ project ("mule" VERSION 0.0.0)
 
 set (USING_LUA ON)
 
+set (CXX_STANDARD_REQUIRED ON)
+
 # 包含子项目。
 add_subdirectory ("lib")
 add_subdirectory ("bis")

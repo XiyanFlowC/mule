@@ -72,6 +72,11 @@ XmlNode &mule::Xml::XmlNode::operator[](std::string name)
 			return child;
 		}
 	}
+	
 	XmlNode tmp;
-	return tmp;
+	tmp.name = name;
+	children.push_back(tmp);
+	auto &&itr = children.end();
+	--itr;
+	return *itr;
 }

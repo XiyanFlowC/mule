@@ -37,7 +37,49 @@ int main(int argc, char **argv)
 	// Execution
 	try
 	{
-		LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + argv[3] + ".lua").c_str());
+		if (argv[3] == std::string{"interact"})
+		{
+			puts("=====================================");
+			//puts("MULE who f**ked ArTonelico");
+			//puts("MULE User-configurable Large-file Editor");
+			puts("MULE is a Utility for Limited Editing");
+			puts("=====================================");
+			puts("Interaction Mode [Lua based]");
+			while (true)
+			{
+				printf("Lua> ");
+				static char buffer[4096] = {'r', 'e', 't', 'u', 'r', 'n', ' '};
+				scanf("%[^\n]", buffer + 7);
+				getchar();
+				if (strcmp(buffer, "quit") == 0) break;
+				try
+				{
+					auto && ret = LuaHost::GetInstance().RunString(buffer);
+					if (ret.GetType() == MultiValue::MVT_ARRAY)
+					{
+						for (int i = 0; i < ret.GetLength(); ++i)
+						{
+							printf(" %d=> %s\n", i, ret.value.arrayValue[i].ToString().c_str());
+						}
+					}
+					else printf("  => %s\n", ret.ToString().c_str());
+				}
+				catch (LuaException &ex)
+				{
+					fprintf(stderr, "Lua Error: %s\n\n", ex.what());
+				}
+				catch (mule::Exception::Exception &ex)
+				{
+					fprintf(stderr, "Error when executing %s:\n%s\n\n", buffer, ex.what());
+				}
+				LuaHost::GetInstance().SetStackTop(0);
+			}
+			puts("Bye!");
+		}
+		else
+		{
+			LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + argv[3] + ".lua").c_str());
+		}
 	}
 	catch (mule::Lua::LuaException ex)
 	{

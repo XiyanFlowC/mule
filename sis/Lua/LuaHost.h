@@ -56,6 +56,12 @@ namespace mule
 			void RunScript(const char *path);
 
 			/**
+			 * @brief Run a string.
+			 * @param str The script to be run.
+			*/
+			mule::Data::Basic::MultiValue RunString(const char *str);
+
+			/**
 			 * @brief Load a script.
 			 * @param path The path to the script file.
 			*/
@@ -228,13 +234,13 @@ namespace mule
 
 				if (!lua_islightuserdata(Ls, lua_upvalueindex(1)))
 				{
-					host.PushValue(-1);
+					host.PushValue((uint64_t) - 1);
 					return 1;
 				}
 
 				if (!host.CheckArgs<Args...>(1))
 				{
-					host.PushValue(-1ll);
+					host.PushValue((uint64_t) - 1ll);
 					return 1;
 				}
 
@@ -247,7 +253,7 @@ namespace mule
 				host.PushValue(mule::Data::Basic::MultiValue(ret));
 				return 1;
 			};
-			lua_pushlightuserdata(L, func);
+			lua_pushlightuserdata(L, (void *)func);
 			lua_pushcclosure(L, wrapper, 1);
 			lua_setglobal(L, name.c_str());
 		}

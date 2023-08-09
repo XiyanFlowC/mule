@@ -3,6 +3,8 @@
 #include <cstdint>
 #include <cstdio>
 
+#include <iostream>
+
 #include <BinaryStream.h>
 #include <Lua/LuaHost.h>
 #include <Data/Basic/Integer.h>

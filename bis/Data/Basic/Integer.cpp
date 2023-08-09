@@ -16,7 +16,7 @@ size_t Integer::Size() const
 
 void mule::Data::Basic::Integer::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	MultiValue value(0LL);
+	MultiValue value { };
 	switch (size >> 3)
 	{
 	case 1:

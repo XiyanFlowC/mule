@@ -25,9 +25,10 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 			structure->Read(stream, dataHandler);
 			dataHandler->OnRealmExit(structure, i);
 		}
-		catch (Exception::InvalidParameterException ex)
+		catch (mule::Exception::Exception& ex)
 		{
 			std::cerr << "Error when read, abort for now, at " << i << std::endl;
+			std::cerr << ex.what() << std::endl;
 			break;
 		}
 	}

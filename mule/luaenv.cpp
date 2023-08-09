@@ -186,14 +186,15 @@ MultiValue getSheet(int vd)
 
 MultiValue listfs()
 {
+    if (containerStack.empty()) return -1;
     auto &&lst = containerStack.top()->List();
 
     MultiValue mv{ MultiValue::MVT_MAP };
 
-    int i = 1;
+    int64_t i = 1;
     for (auto &&item : lst)
     {
-        (*mv.value.mapValue)[MultiValue((long long)(i++))] = MultiValue(item);
+        (*mv.value.mapValue)[MultiValue(i++)] = MultiValue(item);
     }
 
     return mv;

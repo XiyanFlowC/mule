@@ -44,7 +44,7 @@ void mule::Xml::MvXmlNode::AddChild(MvXmlNode node)
 	mv.SetType(MultiValue::MVT_MAP);
 	auto &&it = mv.metadata.find("_type");
 	if (it != mv.metadata.end() && it->second == std::string("array"))
-		(*mv.value.mapValue)[(unsigned long long)counter++] = node.mv;
+		(*mv.value.mapValue)[(uint64_t)counter++] = node.mv;
 	else
 		(*mv.value.mapValue)[node.GetName()] = node.mv;
 }
@@ -59,7 +59,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	{
 		for (int i = 0; i < mv.value.mapValue->size(); ++i)
 		{
-			auto itr = mv.value.mapValue->find((unsigned long long)i);
+			auto itr = mv.value.mapValue->find((uint64_t)i);
 			if (itr == mv.value.mapValue->end()) break;
 
 			ret.push_back(MvXmlNode("i", itr->second));

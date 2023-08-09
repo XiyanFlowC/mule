@@ -1,4 +1,4 @@
-add_executable (mule "mule.cpp" "mule.h" "Configuration.cpp" "Configuration.h" "ShiftableReferrence.cpp" "ShiftableReferrence.h" "ElfStream.h" "ElfStream.cpp" "ResourceManager.h" "ResourceManager.cpp" "crc32.h" "crc32.cpp" "BinaryBlock.h" "BinaryBlock.cpp" "IsoContainer.cpp" "IsoContainer.h" "luafuncs.cpp")
+add_executable (mule "mule.cpp" "mule.h" "Configuration.cpp" "Configuration.h" "ShiftableReferrence.cpp" "ShiftableReferrence.h" "ElfStream.h" "ElfStream.cpp" "ResourceManager.h" "ResourceManager.cpp" "crc32.h" "crc32.cpp" "BinaryBlock.h" "BinaryBlock.cpp" "IsoContainer.cpp" "IsoContainer.h" "luaenv.cpp")
 
 target_link_libraries (mule PRIVATE sis sislua)
 target_include_directories (mule PRIVATE "${PROJECT_SOURCE_DIR}/sis" "${PROJECT_SOURCE_DIR}/bis")

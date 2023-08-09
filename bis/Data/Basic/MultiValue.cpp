@@ -287,6 +287,11 @@ mule::Data::Basic::MultiValue::ValueType mule::Data::Basic::MultiValue::GetType(
 	return type;
 }
 
+size_t mule::Data::Basic::MultiValue::GetLength() const
+{
+	return length;
+}
+
 std::string MultiValue::ToString() const
 {
 	switch (type)
@@ -634,7 +639,7 @@ void MultiValue::DisposeOldValue()
 		if (*useCounter == 0)
 		{
 			delete useCounter;
-			delete this->value.arrayValue;
+			delete[] this->value.arrayValue;
 			useCounter = nullptr;
 		}
 	}
