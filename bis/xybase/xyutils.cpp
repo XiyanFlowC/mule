@@ -35,11 +35,11 @@ std::u16string xybase::string::to_utf16(long codepoint)
     std::u16string ret;
 
     if (codepoint <= 0xFFFF) {
-        // ÂëµãÔÚ»ù±¾Æ½Ãæ£¨BMP£©·¶Î§ÄÚ£¬Ö±½Ó×ª»»ÎªÒ»¸öUTF-16×Ö·û
+        // ç ç‚¹åœ¨åŸºæœ¬å¹³é¢ï¼ˆBMPï¼‰èŒƒå›´å†…ï¼Œç›´æŽ¥è½¬æ¢ä¸ºä¸€ä¸ªUTF-16å­—ç¬¦
         ret.push_back(static_cast<wchar_t>(codepoint));
     }
     else if (codepoint <= 0x10FFFF) {
-        // ÂëµãÔÚÔö²¹Æ½Ãæ·¶Î§ÄÚ£¬½øÐÐUTF-16Ë«×Ö½Ú±àÂë
+        // ç ç‚¹åœ¨å¢žè¡¥å¹³é¢èŒƒå›´å†…ï¼Œè¿›è¡ŒUTF-16åŒå­—èŠ‚ç¼–ç 
         codepoint -= 0x10000;
         wchar_t leadSurrogate = static_cast<wchar_t>((codepoint >> 10) + 0xD800);
         wchar_t trailSurrogate = static_cast<wchar_t>((codepoint & 0x3FF) + 0xDC00);
@@ -196,3 +196,27 @@ std::string xybase::string::to_utf8(std::u16string str)
     return sb.ToString();
 }
 
+int xybase::io::access(const char *path, AccessMode mode)
+{
+#ifdef _WIN32
+    int mode_ = 0;
+    if (mode & PM_READ) mode_ |= 0x2;
+    if (mode & PM_WRITE) mode_ |= 0x4;
+    return ::access(path, mode);
+#else
+    int mode_ = 0;
+    if (mode & PM_EXECUTE) mode_ |= 0111;
+    if (mode & PM_READ) mode_ |= 0222;
+    if (mode & PM_WRITE) mode_ |= 0444;
+    return ::access(path, mode_);
+#endif
+}
+
+int xybase::io::mkdir(const char *path)
+{
+#ifdef _WIN32
+    return ::mkdir(path);
+#else
+    return ::mkdir(path, 0777);
+#endif
+}

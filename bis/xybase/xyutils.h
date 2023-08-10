@@ -4,6 +4,14 @@
 #define XYUTILS_H__
 #define XY_ALIGN(n, b) ((n) < 0 ? (n) & ~((b) - 1) : ((n + (b) - 1) & ~((b) - 1))
 
+#ifdef _WIN32
+#include <direct.h>
+#include <io.h>
+#else
+#include <sys/stat.h>
+#include <unistd.h>
+#endif
+
 #include <algorithm>
 #include <string>
 
@@ -87,6 +95,20 @@ namespace xybase
 			}
 			return ret;
 		}
+	}
+
+	namespace io
+	{
+		enum AccessMode
+		{
+			PM_READ = 0x1,
+			PM_WRITE = 0x2,
+			PM_EXECUTE = 0x4,
+		};
+
+		int access(const char *path, AccessMode mode);
+
+		int mkdir(const char *path);
 	}
 }
 
