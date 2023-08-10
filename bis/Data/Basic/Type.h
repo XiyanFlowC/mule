@@ -66,6 +66,7 @@ namespace mule
 
 					virtual void AppendMetadatum(std::string name, const MultiValue &value);
 				};
+				virtual ~Type();
 
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) = 0;
 

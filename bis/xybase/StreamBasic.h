@@ -14,6 +14,7 @@ namespace xybase
 	class StreamBasic : public Stream
 	{
 	public:
+		virtual ~StreamBasic();
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
 		virtual uint16_t ReadUInt16() override;

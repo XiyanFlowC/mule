@@ -1,7 +1,7 @@
 #include "InvalidParameterException.h"
 
 xybase::InvalidParameterException::InvalidParameterException(const std::string &param, const std::string &message, int err)
-	: err(err), message(message), param(param)
+	: param(param), message(message), err(err)
 {
 }
 

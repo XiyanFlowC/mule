@@ -5,7 +5,7 @@ uint32_t crctbl[256];
 uint32_t crc32_eval(const uint8_t *data, size_t size)
 {
     uint32_t crc = 0xffffffff;
-    for (int i = 0; i < size; ++i)
+    for (size_t i = 0; i < size; ++i)
     {
         crc = crctbl[(crc ^ data[i]) & 0xff] ^ (crc >> 8);
     }

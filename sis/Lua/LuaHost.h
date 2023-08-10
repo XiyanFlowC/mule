@@ -154,7 +154,7 @@ namespace mule
 			}
 			else if constexpr (std::is_integral_v<T>)
 			{
-				return lua_tointeger(L, index);
+				return (T)lua_tointeger(L, index);
 			}
 			else if constexpr (std::is_floating_point_v<T>)
 			{

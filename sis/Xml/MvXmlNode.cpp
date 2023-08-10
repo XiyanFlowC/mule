@@ -57,7 +57,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	auto &&it = mv.metadata.find("_type");
 	if (it != mv.metadata.end() && it->second == std::string("array"))
 	{
-		for (int i = 0; i < mv.value.mapValue->size(); ++i)
+		for (size_t i = 0; i < mv.value.mapValue->size(); ++i)
 		{
 			auto itr = mv.value.mapValue->find((uint64_t)i);
 			if (itr == mv.value.mapValue->end()) break;

@@ -35,7 +35,6 @@ namespace mule
 
 				Type *object;
 
-				// 通过 Type 继承
 				virtual std::string GetTypeName() const override;
 			};
 

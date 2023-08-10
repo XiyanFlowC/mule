@@ -2,6 +2,14 @@
 
 using namespace xybase;
 
+#ifdef _WIN32
+#define fseek _fseeki64
+#define ftell _ftelli64
+#else
+#define fseek fseeko64
+#define ftell ftello64
+#endif
+
 BinaryStream::BinaryStream(std::string path, bool isBigEndian)
 	: name(path)
 {

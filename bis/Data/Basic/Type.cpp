@@ -16,6 +16,10 @@ void mule::Data::Basic::Type::DataHandler::OnSheetWriteEnd()
 {
 }
 
+mule::Data::Basic::Type::~Type()
+{
+}
+
 size_t mule::Data::Basic::Type::GetLastSize() const
 {
 	return Size();

@@ -13,7 +13,7 @@ int ShiftableReferrence::GetAlign(size_t loc, xybase::Stream *stream)
 	if (this->align == 0)
 	{
 		ElfStream *elf = dynamic_cast<ElfStream *>(stream);
-		return elf == nullptr ? 1 : elf->GetAlign(loc);
+		return elf == nullptr ? 1 : (int)elf->GetAlign(loc);
 	}
 	else
 		return this->align;

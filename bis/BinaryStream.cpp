@@ -3,6 +3,14 @@
 using namespace mule;
 using namespace mule::Exception;
 
+#ifdef _WIN32
+#define fseek _fseeki64
+#define ftell _ftelli64
+#else
+#define fseek fseeko64
+#define ftell ftello64
+#endif
+
 BinaryStream::BinaryStream(const char* path, bool isBigEndian)
 {
 	stream = fopen(path, "rb+");

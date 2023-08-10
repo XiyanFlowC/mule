@@ -31,7 +31,7 @@ bool MultiValue::operator==(const MultiValue& rvalue) const
 	case MVT_ARRAY:
 		if (length != rvalue.length) return false;
 
-		for (int i = 0; i < length; ++i) {
+		for (size_t i = 0; i < length; ++i) {
 			if (value.arrayValue[i] != rvalue.value.arrayValue[i]) return false;
 		}
 		return true;
@@ -314,7 +314,7 @@ std::string MultiValue::ToString() const
 	case MVT_ARRAY:
 	{
 		std::string aret("[");
-		for (int i = 0; i < length; ++i)
+		for (size_t i = 0; i < length; ++i)
 		{
 			aret += value.arrayValue[i].ToString() + ',';
 		}
@@ -359,6 +359,31 @@ std::string MultiValue::Stringfy() const
 	case MultiValue::MVT_STRING:
 		return Stringfy(*value.stringValue);
 		break;
+	case MVT_ARRAY:
+	{
+		std::string aret("[");
+		for (size_t i = 0; i < length; ++i)
+		{
+			aret += value.arrayValue[i].Stringfy() + ',';
+		}
+		aret += "]";
+		return aret;
+		break;
+	}
+	case MVT_MAP:
+	{
+		std::string mret("{");
+		for (const std::pair<MultiValue, MultiValue> &pair : *value.mapValue)
+		{
+			mret += pair.first.Stringfy() + '=' + pair.second.Stringfy();
+			mret += ',';
+		}
+		mret += "}";
+		return mret;
+		break;
+	}
+	default:
+		abort();
 	}
 	return "";
 }
@@ -716,7 +741,11 @@ void MultiValue::SetValue(const int size, const MultiValue *array)
 	useCounter = new int;
 	*useCounter = 1;
 	value.arrayValue = new MultiValue[size];
-	memcpy(value.arrayValue, array, size * sizeof(MultiValue));
+	// memcpy(value.arrayValue, array, size * sizeof(MultiValue));
+	for (size_t i = 0; i < length; ++i)
+	{
+		value.arrayValue[i] = array[i];
+	}
 }
 
 void MultiValue::SetValue(const std::map<MultiValue, MultiValue> &map)

@@ -220,14 +220,12 @@ MultiValue LuaHost::Call(const std::string name, int count, ...)
 		lua_getglobal(L, name.c_str());
 	}
 
-	int funcIdx = GetStackTop();
-
 	va_list p;
 	va_start(p, count);
 	for (int i = 0; i < count; ++i)
 	{
-		MultiValue &v = va_arg(p, MultiValue);
-		PushValue(v);
+		MultiValue *v = va_arg(p, MultiValue*);
+		PushValue(*v);
 	}
 	lua_call(L, count, 1);
 
@@ -269,6 +267,17 @@ void mule::Lua::LuaHost::PushValue(const mule::Data::Basic::MultiValue &v)
 		{
 			PushValue(entry.first);
 			PushValue(entry.second);
+
+			lua_settable(L, -3);
+		}
+		break;
+	case MultiValue::MVT_ARRAY:
+		lua_newtable(L);
+
+		for (size_t i = 0; i < v.GetLength(); ++i)
+		{
+			lua_pushinteger(L, i);
+			PushValue(v.value.arrayValue[i]);
 
 			lua_settable(L, -3);
 		}

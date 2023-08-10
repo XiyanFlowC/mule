@@ -1,7 +1,7 @@
 #include "IOException.h"
 
 xybase::IOException::IOException(const std::string &filename, const std::string &message, int err)
-	: filename(filename), RuntimeException(message, err)
+	: RuntimeException(message, err), filename(filename)
 {
 	text = message + " (When operate file [" + filename + "])";
 }

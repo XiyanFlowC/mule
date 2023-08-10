@@ -1,7 +1,7 @@
 #include "RuntimeException.h"
 
 xybase::RuntimeException::RuntimeException(const std::string &message, int err)
-	: err(err), message(message)
+	: message(message), err(err)
 {
 }
 

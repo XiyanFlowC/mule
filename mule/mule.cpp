@@ -45,24 +45,53 @@ int main(int argc, char **argv)
 			puts("MULE is a Utility for Limited Editing");
 			puts("=====================================");
 			puts("Interaction Mode [Lua based]");
+
+			bool exList = false;
+			int off = 7;
 			while (true)
 			{
 				printf("Lua> ");
 				static char buffer[4096] = {'r', 'e', 't', 'u', 'r', 'n', ' '};
-				scanf("%[^\n]", buffer + 7);
+				scanf("%[^\n]", buffer + off);
 				getchar();
-				if (strcmp(buffer, "quit") == 0) break;
+				if (strcmp(buffer + off, "quit") == 0) break;
+				if (strcmp(buffer + off, "exlist") == 0)
+				{
+					exList ^= true;
+					std::cout << "Extract list : " << (exList ? "Enable" : "Disable") << std::endl;
+					continue;
+				}
 				try
 				{
 					auto && ret = LuaHost::GetInstance().RunString(buffer);
 					if (ret.GetType() == MultiValue::MVT_ARRAY)
 					{
-						for (int i = 0; i < ret.GetLength(); ++i)
+						for (size_t i = 0; i < ret.GetLength(); ++i)
 						{
-							printf(" %d=> %s\n", i, ret.value.arrayValue[i].ToString().c_str());
+							printf(" %llu => %s\n", i, ret.value.arrayValue[i].ToString().c_str());
 						}
 					}
-					else printf("  => %s\n", ret.ToString().c_str());
+					else if (exList)
+					{
+						if (ret.GetType() == MultiValue::MVT_MAP)
+						{
+							auto &&it = ret.value.mapValue->find(1);
+							if (it != ret.value.mapValue->end())
+							{
+								std::cout << "  => " << it->second.ToString() << std::endl;
+								for (size_t i = 2; i <= ret.value.mapValue->size(); ++i)
+								{
+									it = ret.value.mapValue->find(i);
+									if (it == ret.value.mapValue->end()) break;
+									std::cout << "  -> " << it->second.ToString() << std::endl;
+								}
+								continue;
+							}
+						}
+						std::cout << "  => " << ret.ToString() << std::endl;
+					}
+					else
+						std::cout << "  => " << ret.ToString() << std::endl;
 				}
 				catch (LuaException &ex)
 				{
@@ -81,7 +110,7 @@ int main(int argc, char **argv)
 			LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + argv[3] + ".lua").c_str());
 		}
 	}
-	catch (mule::Lua::LuaException ex)
+	catch (mule::Lua::LuaException &ex)
 	{
 		fputs("Error when execute lua script.\n", stderr);
 		fputs(ex.what(), stderr);

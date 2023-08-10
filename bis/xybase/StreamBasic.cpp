@@ -1,5 +1,9 @@
 #include "StreamBasic.h"
 
+xybase::StreamBasic::~StreamBasic()
+{
+}
+
 uint8_t xybase::StreamBasic::ReadUInt8()
 {
 	uint8_t ret{0};

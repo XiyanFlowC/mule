@@ -5,7 +5,7 @@ using namespace mule::Data::Basic;
 void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter((Type *)this, name);
-	for (int i = 0; i < length; ++i) {
+	for (size_t i = 0; i < length; ++i) {
 		dataHandler->OnRealmEnter(innerObject, i);
 		innerObject->Read(stream, dataHandler);
 		dataHandler->OnRealmExit(innerObject, i);
@@ -17,7 +17,7 @@ void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 void mule::Data::Array::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter((Type *)this, name);
-	for (int i = 0; i < length; ++i) {
+	for (size_t i = 0; i < length; ++i) {
 		dataHandler->OnRealmEnter(innerObject, i);
 		innerObject->Write(stream, dataHandler);
 		dataHandler->OnRealmExit(innerObject, i);
@@ -47,7 +47,7 @@ mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::st
 	size_t startIndex = info.find_last_of("[");
 	if (startIndex == std::string::npos) return nullptr;
 
-	int size = xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2));
+	int size = static_cast<int>(xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2)));
 
 	auto obj = TypeManager::GetInstance().GetOrCreateObject(info.substr(0, startIndex));
 	if (obj == nullptr) return nullptr;

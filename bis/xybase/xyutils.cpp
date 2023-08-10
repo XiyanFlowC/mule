@@ -203,7 +203,7 @@ int xybase::io::access(const char *path, AccessMode mode)
     int mode_ = 0;
     if (mode & PM_READ) mode_ |= 0x2;
     if (mode & PM_WRITE) mode_ |= 0x4;
-    return ::access(path, mode);
+    return ::_access(path, mode);
 #else
     int mode_ = 0;
     if (mode & PM_EXECUTE) mode_ |= 0111;
@@ -216,7 +216,7 @@ int xybase::io::access(const char *path, AccessMode mode)
 int xybase::io::mkdir(const char *path)
 {
 #ifdef _WIN32
-    return ::mkdir(path);
+    return ::_mkdir(path);
 #else
     return ::mkdir(path, 0777);
 #endif
