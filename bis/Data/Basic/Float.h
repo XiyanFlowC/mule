@@ -22,7 +22,7 @@ namespace mule
 
 			protected:
 
-				// Í¨¹ý Type ¼Ì³Ð
+				// é€šè¿‡ Type ç»§æ‰¿
 				virtual std::string GetTypeName() const override;
 			};
 		}

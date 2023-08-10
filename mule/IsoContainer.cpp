@@ -30,7 +30,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
                 offset += entry->length;
                 isoFile->Seek(offset, 0);
                 delete[] entry;
-                continue; /* . & ..£¬ºöÂÔ */
+                continue; /* . & ..ï¼Œå¿½ç•¥ */
             }
 
 

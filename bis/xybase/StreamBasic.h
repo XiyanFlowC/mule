@@ -9,7 +9,7 @@
 namespace xybase
 {
 	/**
-	 * @brief Ìá¹©»ùÓÚReadBytesºÍWriteµÄÆäËûº¯ÊıÊµÏÖ£¬¼ò»¯StreamÊµÏÖÀàĞè±àĞ´µÄ·½·¨¡£
+	 * @brief æä¾›åŸºäºReadByteså’ŒWriteçš„å…¶ä»–å‡½æ•°å®ç°ï¼Œç®€åŒ–Streamå®ç°ç±»éœ€ç¼–å†™çš„æ–¹æ³•ã€‚
 	*/
 	class StreamBasic : public Stream
 	{

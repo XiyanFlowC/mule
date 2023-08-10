@@ -35,17 +35,17 @@ public:
 	size_t GetLength();
 
 	/**
-	 * @brief ¹ÜÀí¶ÔÓ¦Êı¾İ
-	 * @param data Êı¾İ
-	 * @param length Êı¾İ³¤¶È
-	 * @param duplicate ÊÇ·ñ¸´ÖÆ£¨²»¶ÔÔ´²Ù×÷£©
+	 * @brief ç®¡ç†å¯¹åº”æ•°æ®
+	 * @param data æ•°æ®
+	 * @param length æ•°æ®é•¿åº¦
+	 * @param duplicate æ˜¯å¦å¤åˆ¶ï¼ˆä¸å¯¹æºæ“ä½œï¼‰
 	*/
 	void SetData(char *data, size_t length, bool duplicate = true);
 
 	/**
-	 * @brief ¹ÜÀí¶ÔÓ¦Êı¾İ
-	 * @param data Êı¾İ
-	 * @param length Êı¾İ³¤¶È
+	 * @brief ç®¡ç†å¯¹åº”æ•°æ®
+	 * @param data æ•°æ®
+	 * @param length æ•°æ®é•¿åº¦
 	*/
 	void SetData(const char *data, size_t length);
 };

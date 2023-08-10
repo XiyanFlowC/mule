@@ -40,17 +40,17 @@ public:
 	virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 	virtual size_t Size() const override;
 
-	// Í¨¹ı Type ¼Ì³Ğ
+	// é€šè¿‡ Type ç»§æ‰¿
 	virtual std::string GetTypeName() const override;
 
 	void StreamDispose(xybase::Stream *stream);
 
 	/**
-	 * @brief ÊÇ·ñÔÊĞíÒÆ¶¯ÒıÓÃ
+	 * @brief æ˜¯å¦å…è®¸ç§»åŠ¨å¼•ç”¨
 	*/
 	static bool doShift;
 	/**
-	 * @brief ¶ÔÆä×Ö½ÚÊıÒªÇó£¬ÈôÎª0Ôò×Ô¶¯»ñÈ¡
+	 * @brief å¯¹å…¶å­—èŠ‚æ•°è¦æ±‚ï¼Œè‹¥ä¸º0åˆ™è‡ªåŠ¨è·å–
 	*/
 	static int align;
 };

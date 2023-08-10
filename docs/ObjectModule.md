@@ -1,20 +1,20 @@
-# ¶ÔÏóÄ£ÐÍ
+# å¯¹è±¡æ¨¡åž‹
 
-±¾ÏµÍ³µÄ¶ÔÏóÄ£ÐÍÉè¼Æ¡£
+æœ¬ç³»ç»Ÿçš„å¯¹è±¡æ¨¡åž‹è®¾è®¡ã€‚
 
-## ¶ÔÏóÄ£ÐÍ¸ÅÊö
+## å¯¹è±¡æ¨¡åž‹æ¦‚è¿°
 
-±¾ÏµÍ³£¨MULE£©Îª½«¶þ½øÖÆÊý¾ÝÎÄ±¾»¯/·´ÎÄ±¾»¯¶øÉè¼Æ¡£
-½«ÄÜ¹»½øÐÐ¶þ½øÖÆ¶ÁÐ´µÄ»ù±¾µ¥ÔªÊÓ×÷¶ÔÏó¡°Object¡±£¬¶ø¾ßÓÐÒ»¶¨Êý¾Ý½á¹¹µÄ¶ÔÏóÔòÊÇ½á¹¹Ìå¡°Structure¡±£¬Ò»¸ö¶ÔÏóµÄ·´¸´³öÏÖ£¬ÊÓ×÷Êý×é¡°Array¡±¡£
+æœ¬ç³»ç»Ÿï¼ˆMULEï¼‰ä¸ºå°†äºŒè¿›åˆ¶æ•°æ®æ–‡æœ¬åŒ–/åæ–‡æœ¬åŒ–è€Œè®¾è®¡ã€‚
+å°†èƒ½å¤Ÿè¿›è¡ŒäºŒè¿›åˆ¶è¯»å†™çš„åŸºæœ¬å•å…ƒè§†ä½œå¯¹è±¡â€œObjectâ€ï¼Œè€Œå…·æœ‰ä¸€å®šæ•°æ®ç»“æž„çš„å¯¹è±¡åˆ™æ˜¯ç»“æž„ä½“â€œStructureâ€ï¼Œä¸€ä¸ªå¯¹è±¡çš„åå¤å‡ºçŽ°ï¼Œè§†ä½œæ•°ç»„â€œArrayâ€ã€‚
 
-±¾ÏµÍ³£¬ÈÏ¶¨½á¹¹ÌåÒÔÊý×éÐÎÊ½ÔÚ¶ÔÏó¶þ½øÖÆÁ÷ÖÐ×éÖ¯£¬Ã¿¸öÊý×é¶ÔÓ¦Ò»¸ö±í¡°Table¡±¡£ÆäÖÐº¬ÓÐ½ô´Õ´æ´¢µÄStructure¡£Òò´Ë£¬±¾ÏµÍ³ÒªÇóËùÓÐµÄ¶ÔÆëÓÃÌî³ä¶¼ÏÔÊ½ÉùÃ÷¡£
+æœ¬ç³»ç»Ÿï¼Œè®¤å®šç»“æž„ä½“ä»¥æ•°ç»„å½¢å¼åœ¨å¯¹è±¡äºŒè¿›åˆ¶æµä¸­ç»„ç»‡ï¼Œæ¯ä¸ªæ•°ç»„å¯¹åº”ä¸€ä¸ªè¡¨â€œTableâ€ã€‚å…¶ä¸­å«æœ‰ç´§å‡‘å­˜å‚¨çš„Structureã€‚å› æ­¤ï¼Œæœ¬ç³»ç»Ÿè¦æ±‚æ‰€æœ‰çš„å¯¹é½ç”¨å¡«å……éƒ½æ˜¾å¼å£°æ˜Žã€‚
 
-## Êý¾ÝÁ÷¼òÊö
+## æ•°æ®æµç®€è¿°
 
-±¾ÏµÍ³ÔÊÐí¸´ºÏµÄ½á¹¹¡£ÓÃÓÚ½«¶þ½øÖÆÁ÷½âÊÍÎªMultiValue»ò½«MultiValue½âÊÍÎª¶þ½øÖÆÁ÷µÄ¶ÔÏó£¬³Æ×÷Type£¬ËùÓÐ½øÐÐ½âÎöµÄÀà£¬¶¼´ÓType¼Ì³Ð¡£
+æœ¬ç³»ç»Ÿå…è®¸å¤åˆçš„ç»“æž„ã€‚ç”¨äºŽå°†äºŒè¿›åˆ¶æµè§£é‡Šä¸ºMultiValueæˆ–å°†MultiValueè§£é‡Šä¸ºäºŒè¿›åˆ¶æµçš„å¯¹è±¡ï¼Œç§°ä½œTypeï¼Œæ‰€æœ‰è¿›è¡Œè§£æžçš„ç±»ï¼Œéƒ½ä»ŽTypeç»§æ‰¿ã€‚
 
-Ã¿´Î£¬Type½âÎö³öÒ»¸öMultiValue£¬»òÕßÐèÒª»ñÈ¡MultiValueÒÔÐ´ÈëÊ±£¬¶¼»áµ÷ÓÃÊý¾Ý´¦ÀíÆ÷£¨DataHandler£©¡£
-Êý¾Ý´¦ÀíÆ÷ÒÔÀàËÆÊÂ¼þµÄ·½Ê½´¦ÀíÊý¾ÝµÄ¶ÁÈ¡ºÍÐ´Èë£¬Ã¿¸ö¶ÔÏó¿ªÊ¼¶ÁÈ¡/Ð´ÈëµÄÇ°ºó¶¼²úÉúÒ»´ÎÊÂ¼þ£¬Ã¿¸öµ¥Ôª£¨×Ö¶Î£©¶ÁÈ¡ºó£¬Ð´ÈëÇ°Ò²·Ö±ð²úÉúÊÂ¼þ£¨ÒÔ¼°´«ÊäÊý¾Ý£©¡£
+æ¯æ¬¡ï¼ŒTypeè§£æžå‡ºä¸€ä¸ªMultiValueï¼Œæˆ–è€…éœ€è¦èŽ·å–MultiValueä»¥å†™å…¥æ—¶ï¼Œéƒ½ä¼šè°ƒç”¨æ•°æ®å¤„ç†å™¨ï¼ˆDataHandlerï¼‰ã€‚
+æ•°æ®å¤„ç†å™¨ä»¥ç±»ä¼¼äº‹ä»¶çš„æ–¹å¼å¤„ç†æ•°æ®çš„è¯»å–å’Œå†™å…¥ï¼Œæ¯ä¸ªå¯¹è±¡å¼€å§‹è¯»å–/å†™å…¥çš„å‰åŽéƒ½äº§ç”Ÿä¸€æ¬¡äº‹ä»¶ï¼Œæ¯ä¸ªå•å…ƒï¼ˆå­—æ®µï¼‰è¯»å–åŽï¼Œå†™å…¥å‰ä¹Ÿåˆ†åˆ«äº§ç”Ÿäº‹ä»¶ï¼ˆä»¥åŠä¼ è¾“æ•°æ®ï¼‰ã€‚
 
 ```
          (Field/Structure/...)
@@ -23,13 +23,13 @@
 | Stream |<-------------------|              |<--------------| Lua Table |
 +--------+              Type* +--------------+  DataHandler* +-----------+
 
-TableµÄ¶ÁÈ¡¿ØÖÆÁ÷ÈçÏÂ£º
+Tableçš„è¯»å–æŽ§åˆ¶æµå¦‚ä¸‹ï¼š
 Table::Read()+---->DataHandler::BeforeSheetRead()
              +---->DataHandler::OnRealmEnter()
-             +---->Structure::Read()*¼ûÏÂ
+             +---->Structure::Read()*è§ä¸‹
              +---->DataHandler::OnRealmExit()
              +---->DataHandler::OnRealmEnter()
-             +---->Structure::Read()*¼ûÏÂ
+             +---->Structure::Read()*è§ä¸‹
 			 +...
 			 +---->DataHandler::AfterSheetRead()
 
@@ -37,65 +37,65 @@ Structure::Read()+---->Field::Read()+----->DataHandler::OnRealmEnter()
                  |                  +----->Type::Read()+----->OnDataRead()*
                  |                  +----->DataHandler::OnRealmExit()
 		         +---->Field::Read()...
-*²¢²»Ò»¶¨£¬Type¿ÉÄÜÊÇÆäËûStructµÈ£¬¿ÉÄÜµ÷ÓÃ¸ü¶àOnRealmEnter/Exit()£¬µ«×îÖÕÓ¦µ±µ÷ÓÃOnDataRead()
+*å¹¶ä¸ä¸€å®šï¼ŒTypeå¯èƒ½æ˜¯å…¶ä»–Structç­‰ï¼Œå¯èƒ½è°ƒç”¨æ›´å¤šOnRealmEnter/Exit()ï¼Œä½†æœ€ç»ˆåº”å½“è°ƒç”¨OnDataRead()
 
-Ð´Èë¿ØÖÆÁ÷£ººÍÉÏÃæÀàËÆ
+å†™å…¥æŽ§åˆ¶æµï¼šå’Œä¸Šé¢ç±»ä¼¼
 ```
 
-## À©Õ¹ÐÔºÍ×Ô¶¨Òå
-±¾ÏµÍ³£¬Ê¹ÓÃÒÔÏÂ¼¸¸ö»ùÀà¡£Í¨¹ýÊÊµ±µØ¼Ì³ÐºÍ×¢²áËûÃÇ£¬¼´¿ÉÊµÏÖÐÂµÄÐÐÎª¡£
+## æ‰©å±•æ€§å’Œè‡ªå®šä¹‰
+æœ¬ç³»ç»Ÿï¼Œä½¿ç”¨ä»¥ä¸‹å‡ ä¸ªåŸºç±»ã€‚é€šè¿‡é€‚å½“åœ°ç»§æ‰¿å’Œæ³¨å†Œä»–ä»¬ï¼Œå³å¯å®žçŽ°æ–°çš„è¡Œä¸ºã€‚
 
-### ÀàÐÍ
-ÀàÐÍ£¬ÊÇ×ÔÎÒÍê³ÉµÄ£¬×ÔÓÉ¶ÔÊý¾Ý´¦ÀíÆ÷ºÍÁ÷½øÐÐ²Ù×÷µÄ×é¼þ¡£Type ÀàÊÇ³éÏóÀà£¬ÓÃÓÚ¶¨ÒåÆä½Ó¿Ú¡£
+### ç±»åž‹
+ç±»åž‹ï¼Œæ˜¯è‡ªæˆ‘å®Œæˆçš„ï¼Œè‡ªç”±å¯¹æ•°æ®å¤„ç†å™¨å’Œæµè¿›è¡Œæ“ä½œçš„ç»„ä»¶ã€‚Type ç±»æ˜¯æŠ½è±¡ç±»ï¼Œç”¨äºŽå®šä¹‰å…¶æŽ¥å£ã€‚
 
-ÎÄ¼þ mule/Data/Basic/Type.h¡£
+æ–‡ä»¶ mule/Data/Basic/Type.hã€‚
 
-¼Ì³Ð²¢ÊµÏÖ´ËÀà£¬²¢ÔÚ mule::Data::TypeManager ×¢²á¼´¿ÉÊ¹Æä±»±¾ÏµÍ³·¢ÏÖ¡£
+ç»§æ‰¿å¹¶å®žçŽ°æ­¤ç±»ï¼Œå¹¶åœ¨ mule::Data::TypeManager æ³¨å†Œå³å¯ä½¿å…¶è¢«æœ¬ç³»ç»Ÿå‘çŽ°ã€‚
 
-Èç¹ûTypeÖÐÒýÓÃÁËÁíÒ»¸öType£¬Ôò°´Ô¼¶¨£¬ÔÚµ÷ÓÃÄÇ¸öTypeµÄ¶ÁÐ´Ö®Ç°£¬ÐèÒªÊ×ÏÈµ÷ÓÃOnRealmEnter£¬²¢ÔÚÖ®ºóµ÷ÓÃOnRealmExit¡£Õâ²»Ò»¶¨£ºÈç¹û
-Ö»ÊÇÁíÒ»¸öTypeµÄ¼òµ¥°ü×°Ôò²»±Øµ÷ÓÃ£¨¼´£¬ÒâÍ¼¶ÔHandlerÒþ²ØÊµÏÖÏ¸½Ú£¬²¢Î±×°³öÖ»ÓÐÒ»¸öRealmµÄÊ±ºò£©¡£
+å¦‚æžœTypeä¸­å¼•ç”¨äº†å¦ä¸€ä¸ªTypeï¼Œåˆ™æŒ‰çº¦å®šï¼Œåœ¨è°ƒç”¨é‚£ä¸ªTypeçš„è¯»å†™ä¹‹å‰ï¼Œéœ€è¦é¦–å…ˆè°ƒç”¨OnRealmEnterï¼Œå¹¶åœ¨ä¹‹åŽè°ƒç”¨OnRealmExitã€‚è¿™ä¸ä¸€å®šï¼šå¦‚æžœ
+åªæ˜¯å¦ä¸€ä¸ªTypeçš„ç®€å•åŒ…è£…åˆ™ä¸å¿…è°ƒç”¨ï¼ˆå³ï¼Œæ„å›¾å¯¹Handleréšè—å®žçŽ°ç»†èŠ‚ï¼Œå¹¶ä¼ªè£…å‡ºåªæœ‰ä¸€ä¸ªRealmçš„æ—¶å€™ï¼‰ã€‚
 
-¾ÙÀý¶øÑÔ£¬Reference±£ÓÐÒ»¸öÄÚ²¿Type£¬ÆäÔÚ¶ÁÈ¡µ±Ç°uint32_tºó£¬Seekµ½ÏàÓ¦Î»ÖÃÔÙ¶ÁÈ¡ÄÚ²¿Type¡£
+ä¸¾ä¾‹è€Œè¨€ï¼ŒReferenceä¿æœ‰ä¸€ä¸ªå†…éƒ¨Typeï¼Œå…¶åœ¨è¯»å–å½“å‰uint32_tåŽï¼ŒSeekåˆ°ç›¸åº”ä½ç½®å†è¯»å–å†…éƒ¨Typeã€‚
 
-Ã¿¸öÀàÐÍ¶¼±ØÐëÊµÏÖGetTypeNameÀ´ÏòÏµÍ³·´À¡×Ô¼ºµÄÀàÐÍÃû¡£
+æ¯ä¸ªç±»åž‹éƒ½å¿…é¡»å®žçŽ°GetTypeNameæ¥å‘ç³»ç»Ÿåé¦ˆè‡ªå·±çš„ç±»åž‹åã€‚
 
-³ýÁËÊµÏÖ³£¹æµÄReadºÍWriteÍâ£¬Ò»Ð©ÌØÊâÀàÐÍ»¹Ó¦ÖØÔØÆäËûº¯ÊýÀ´±£Ö¤³ÌÐòÕý³£´¦Àí£º
+é™¤äº†å®žçŽ°å¸¸è§„çš„Readå’ŒWriteå¤–ï¼Œä¸€äº›ç‰¹æ®Šç±»åž‹è¿˜åº”é‡è½½å…¶ä»–å‡½æ•°æ¥ä¿è¯ç¨‹åºæ­£å¸¸å¤„ç†ï¼š
 
-¶ÔÓÚ²»¶¨³¤ÀàÐÍ£¬ÐëÔÚSize()ÖÐ·µ»Ø-1£¬²¢ÖØÔØGetLastSize()ºÍEvalSize()¡£Ç°Õß·µ»ØÉÏÒ»´ÎReadÊ±¶ÁÈ¡µÄ×Ö½ÚÊý£¬ºóÕß·µ»ØÈôÒªÐ´ÈëÖ¸¶¨µÄ¶ÔÏó£¬½«Õ¼¾ÝµÄ×Ö½ÚÊý¡£
+å¯¹äºŽä¸å®šé•¿ç±»åž‹ï¼Œé¡»åœ¨Size()ä¸­è¿”å›ž-1ï¼Œå¹¶é‡è½½GetLastSize()å’ŒEvalSize()ã€‚å‰è€…è¿”å›žä¸Šä¸€æ¬¡Readæ—¶è¯»å–çš„å­—èŠ‚æ•°ï¼ŒåŽè€…è¿”å›žè‹¥è¦å†™å…¥æŒ‡å®šçš„å¯¹è±¡ï¼Œå°†å æ®çš„å­—èŠ‚æ•°ã€‚
 
-¶ÔÓÚ¸´ºÏÀàÐÍ£¬ÐëÖØÔØIsComposite()£¬²¢Ê¼ÖÕ·µ»Ø0¡£
+å¯¹äºŽå¤åˆç±»åž‹ï¼Œé¡»é‡è½½IsComposite()ï¼Œå¹¶å§‹ç»ˆè¿”å›ž0ã€‚
 
-### Êý¾Ý´¦ÀíÆ÷
-Êý¾Ý´¦ÀíÆ÷ÊÇ¶ÔÊý¾Ý½øÐÐ´¦ÀíµÄ²¿·Ö£¬ÊÇ¶þ½øÖÆ¶ÔÏóºÍMultiValue¶ÔÏó×ª»»µÄ½éÃæ¡£
+### æ•°æ®å¤„ç†å™¨
+æ•°æ®å¤„ç†å™¨æ˜¯å¯¹æ•°æ®è¿›è¡Œå¤„ç†çš„éƒ¨åˆ†ï¼Œæ˜¯äºŒè¿›åˆ¶å¯¹è±¡å’ŒMultiValueå¯¹è±¡è½¬æ¢çš„ä»‹é¢ã€‚
 
-ÔÚÎÄ¼þ mule/Data/Type.h ÖÐ¶¨Òå£¬ÊÇ Type µÄÄÚ²¿Àà¡£
+åœ¨æ–‡ä»¶ mule/Data/Type.h ä¸­å®šä¹‰ï¼Œæ˜¯ Type çš„å†…éƒ¨ç±»ã€‚
 
-ÔÚ¶ÁÈ¡¶þ½øÖÆÁ÷Ê±£¬Êý¾Ý´¦ÀíÆ÷ÐèÒªÔÚOnReadÖÐ´¦Àí¶ÁÈ¡µ½µÄÊý¾Ý£¬ÀýÈçÐ´ÈëÎÄ¼þÁ÷»ò±ê×¼Êä³öÁ÷ÖÐ£¬Ò²¿ÉÄÜÊÇ½«Æä×ª»»Îª Lua ¶ÔÏó¡£
+åœ¨è¯»å–äºŒè¿›åˆ¶æµæ—¶ï¼Œæ•°æ®å¤„ç†å™¨éœ€è¦åœ¨OnReadä¸­å¤„ç†è¯»å–åˆ°çš„æ•°æ®ï¼Œä¾‹å¦‚å†™å…¥æ–‡ä»¶æµæˆ–æ ‡å‡†è¾“å‡ºæµä¸­ï¼Œä¹Ÿå¯èƒ½æ˜¯å°†å…¶è½¬æ¢ä¸º Lua å¯¹è±¡ã€‚
 
-ÀàËÆµØ£¬ÔÚÐ´Èë¶þ½øÖÆÁ÷Ê±£¬Type»áÍ¨¹ýOnWriteµ÷ÓÃÊý¾Ý´¦ÀíÆ÷£¬Êý¾Ý´¦ÀíÆ÷ÐèÒª´Ó Lua ¶ÔÏó£¬ÎÄ¼þÁ÷»ò±ê×¼ÊäÈëÁ÷»ñÈ¡Êý¾Ý£¬ÕýÈ·µØ´¦ÀíÆä°ü×°²¢½«ÐèÒªÐ´ÈëµÄÊµ¼ÊÊý¾Ý·µ»Ø¸øµ÷ÓÃ·½£¨¼´×Ö¶Î´¦ÀíÆ÷£©¡£
+ç±»ä¼¼åœ°ï¼Œåœ¨å†™å…¥äºŒè¿›åˆ¶æµæ—¶ï¼ŒTypeä¼šé€šè¿‡OnWriteè°ƒç”¨æ•°æ®å¤„ç†å™¨ï¼Œæ•°æ®å¤„ç†å™¨éœ€è¦ä»Ž Lua å¯¹è±¡ï¼Œæ–‡ä»¶æµæˆ–æ ‡å‡†è¾“å…¥æµèŽ·å–æ•°æ®ï¼Œæ­£ç¡®åœ°å¤„ç†å…¶åŒ…è£…å¹¶å°†éœ€è¦å†™å…¥çš„å®žé™…æ•°æ®è¿”å›žç»™è°ƒç”¨æ–¹ï¼ˆå³å­—æ®µå¤„ç†å™¨ï¼‰ã€‚
 
-ÓÐÌØÊâµÄÊÂ¼þ£ºOnRealmEnterºÍOnRealmExit£ºType¿ÉÄÜÔÚÊÊµ±Ê±»ú£¨Ö÷ÒªÊÇ¸´ºÏÀàÐÍ¡¢×Ö¶ÎµÈ£©µ÷ÓÃÕâÁ½¸öº¯Êý£¬ÓÃÓÚ±íÊ¾½øÈëÁËÐÂµÄÁìÓò¡£¿ÉÒÔÒÀÕÕ´Ë´¦ÀíÀàÐÍ½á¹¹¡£
+æœ‰ç‰¹æ®Šçš„äº‹ä»¶ï¼šOnRealmEnterå’ŒOnRealmExitï¼šTypeå¯èƒ½åœ¨é€‚å½“æ—¶æœºï¼ˆä¸»è¦æ˜¯å¤åˆç±»åž‹ã€å­—æ®µç­‰ï¼‰è°ƒç”¨è¿™ä¸¤ä¸ªå‡½æ•°ï¼Œç”¨äºŽè¡¨ç¤ºè¿›å…¥äº†æ–°çš„é¢†åŸŸã€‚å¯ä»¥ä¾ç…§æ­¤å¤„ç†ç±»åž‹ç»“æž„ã€‚
 
-ÒÑ¾­ÊµÏÖÁËMappifier£¬¿É×ª»»ÎªMultiValue¡£¼´Ê¹²»ÊµÏÖÊý¾Ý´¦ÀíÆ÷£¬Ö±½ÓÓÃMappifier»ñÈ¡std::mapºó¶Ô´Ë½øÐÐ´¦ÀíÒ²ÊÇ¿ÉÐÐµÄ¡£
+å·²ç»å®žçŽ°äº†Mappifierï¼Œå¯è½¬æ¢ä¸ºMultiValueã€‚å³ä½¿ä¸å®žçŽ°æ•°æ®å¤„ç†å™¨ï¼Œç›´æŽ¥ç”¨MappifierèŽ·å–std::mapåŽå¯¹æ­¤è¿›è¡Œå¤„ç†ä¹Ÿæ˜¯å¯è¡Œçš„ã€‚
 
-#### ÀàÐÍ´´½¨Æ÷
-ÀàÐÍ´´½¨Æ÷´¦ÀíÀàÐÍ´´½¨ÇëÇó²¢·µ»ØÅäÖÃºÃµÄÀàÐÍ¶ÔÏó¡£
+#### ç±»åž‹åˆ›å»ºå™¨
+ç±»åž‹åˆ›å»ºå™¨å¤„ç†ç±»åž‹åˆ›å»ºè¯·æ±‚å¹¶è¿”å›žé…ç½®å¥½çš„ç±»åž‹å¯¹è±¡ã€‚
 
-ÎÄ¼þ mule/Data/TypeCreator.h
+æ–‡ä»¶ mule/Data/TypeCreator.h
 
-ÀàÐÍ´´½¨Æ÷ÐèÒªÊµÏÖ Basic::Field *DoCreateType(std::string &info) À´´¦Àí×Ö¶ÎµÄ´´½¨¡£Èç¹û¶ÔÓ¦µÄ´´½¨ÐÅÏ¢²»¿É´¦Àí£¬Çë·µ»Ø nullptr À´ÒÆ½»¿ØÖÆÁ÷µ½ÏÂÒ»¸ö´´½¨Æ÷¡£
+ç±»åž‹åˆ›å»ºå™¨éœ€è¦å®žçŽ° Basic::Field *DoCreateType(std::string &info) æ¥å¤„ç†å­—æ®µçš„åˆ›å»ºã€‚å¦‚æžœå¯¹åº”çš„åˆ›å»ºä¿¡æ¯ä¸å¯å¤„ç†ï¼Œè¯·è¿”å›ž nullptr æ¥ç§»äº¤æŽ§åˆ¶æµåˆ°ä¸‹ä¸€ä¸ªåˆ›å»ºå™¨ã€‚
 
-#### ÀàÐÍ¹ÜÀíÆ÷
-ÓÃÓÚÈ«¾Ö¹ÜÀíÀàÐÍ¶ÔÏóµÄ×¢²áÐÅÏ¢£¬Ìá¹©ÒÑ×¢²áµÄÀàÐÍ¶ÔÏó¡£²¢ÍÐ¹ÜÒ»¸öÀàÐÍ´´½¨Æ÷ÔðÈÎÁ´£¬ÒÔ´¦ÀíÀàÐÍµÄ´´½¨ÇëÇó¡£
+#### ç±»åž‹ç®¡ç†å™¨
+ç”¨äºŽå…¨å±€ç®¡ç†ç±»åž‹å¯¹è±¡çš„æ³¨å†Œä¿¡æ¯ï¼Œæä¾›å·²æ³¨å†Œçš„ç±»åž‹å¯¹è±¡ã€‚å¹¶æ‰˜ç®¡ä¸€ä¸ªç±»åž‹åˆ›å»ºå™¨è´£ä»»é“¾ï¼Œä»¥å¤„ç†ç±»åž‹çš„åˆ›å»ºè¯·æ±‚ã€‚
 
-ÎÄ¼þ mule/Data/TypeManager.h
+æ–‡ä»¶ mule/Data/TypeManager.h
 
-ÔÚÏµÍ³³õÊ¼»¯Ê±£¬Ó¦µ±½«ÐèÒªµÄ¶ÔÏó×¢²áµ½±¾¹ÜÀíÆ÷£¬ÒÔÊ¹¶ÔÓ¦¶ÔÏó¶ÔÓÚÏµÍ³¿É¼û¡£·ñÔò¼´Ê¹ÊµÏÖÁË¶ÔÏóÒ²ÎÞ·¨½øÐÐ´¦Àí¡£
+åœ¨ç³»ç»Ÿåˆå§‹åŒ–æ—¶ï¼Œåº”å½“å°†éœ€è¦çš„å¯¹è±¡æ³¨å†Œåˆ°æœ¬ç®¡ç†å™¨ï¼Œä»¥ä½¿å¯¹åº”å¯¹è±¡å¯¹äºŽç³»ç»Ÿå¯è§ã€‚å¦åˆ™å³ä½¿å®žçŽ°äº†å¯¹è±¡ä¹Ÿæ— æ³•è¿›è¡Œå¤„ç†ã€‚
 
-²¢ÇÒ£¬Èç¹û¶ÔÏóÐèÒªÔÚÔËÐÐÊ±´´½¨£¬Æä¶ÔÓ¦µÄÀàÐÍ´´½¨Æ÷±ØÐë×¢²áµ½ÀàÐÍ¹ÜÀíÆ÷¡£
+å¹¶ä¸”ï¼Œå¦‚æžœå¯¹è±¡éœ€è¦åœ¨è¿è¡Œæ—¶åˆ›å»ºï¼Œå…¶å¯¹åº”çš„ç±»åž‹åˆ›å»ºå™¨å¿…é¡»æ³¨å†Œåˆ°ç±»åž‹ç®¡ç†å™¨ã€‚
 
-Í¨¹ý ObjectManager::Register() ¿ÉÒÔÔÚ±¾¹ÜÀíÆ÷×¢²á¡£ÍÆ¼öÔÚ×¢²áºóÓÉ±¾¹ÜÀíÆ÷¹ÜÀíÆäÉúÃüÖÜÆÚ£¬Òò´Ë×îºÃÁ¢¼´·ÅÆúÊµÀýµÄÖ¸Õë¡£
+é€šè¿‡ ObjectManager::Register() å¯ä»¥åœ¨æœ¬ç®¡ç†å™¨æ³¨å†Œã€‚æŽ¨èåœ¨æ³¨å†ŒåŽç”±æœ¬ç®¡ç†å™¨ç®¡ç†å…¶ç”Ÿå‘½å‘¨æœŸï¼Œå› æ­¤æœ€å¥½ç«‹å³æ”¾å¼ƒå®žä¾‹çš„æŒ‡é’ˆã€‚
 
-Ê¹ÓÃ ObjectManager::Release() ¿ÉÒÔÊÍ·Å¶ÔÏó£¬ÕâÍ¬Ê±»áÉ¾³ý¶ÔÏóÊµÀò¡£
+ä½¿ç”¨ ObjectManager::Release() å¯ä»¥é‡Šæ”¾å¯¹è±¡ï¼Œè¿™åŒæ—¶ä¼šåˆ é™¤å¯¹è±¡å®žèŽ‰ã€‚
 
-šG£¿Ã»ÓÐÁË£¿
+æ¬¸ï¼Ÿæ²¡æœ‰äº†ï¼Ÿ

@@ -11,8 +11,8 @@ namespace mule
 	namespace Data
 	{
 		/**
-		 * @brief ½á¹¹ÌåÀà¡£ÓÃÓÚ±íÊ¾×Ö¶Î¶ÁÈ¡Á´µÄ°ü×°¡£ÕâÑù£¬Á´ÖĞµÄFieldÒÔÆä¶ÀÌØµÄReadºÍWriteµÃÒÔÔËĞĞ¡£
-		 * ´Ë½á¹¹ÌåÀíÓ¦±»×¢²áµ½ObjectManagerÒÔÌá¹©Reference¿É¼ûĞÔ¡£
+		 * @brief ç»“æ„ä½“ç±»ã€‚ç”¨äºè¡¨ç¤ºå­—æ®µè¯»å–é“¾çš„åŒ…è£…ã€‚è¿™æ ·ï¼Œé“¾ä¸­çš„Fieldä»¥å…¶ç‹¬ç‰¹çš„Readå’ŒWriteå¾—ä»¥è¿è¡Œã€‚
+		 * æ­¤ç»“æ„ä½“ç†åº”è¢«æ³¨å†Œåˆ°ObjectManagerä»¥æä¾›Referenceå¯è§æ€§ã€‚
 		*/
 		class Structure : public Basic::Type
 		{
@@ -35,42 +35,42 @@ namespace mule
 
 				Type *object;
 
-				// Í¨¹ı Type ¼Ì³Ğ
+				// é€šè¿‡ Type ç»§æ‰¿
 				virtual std::string GetTypeName() const override;
 			};
 
 			/**
-			 * @brief ³õÊ¼»¯Ò»¸öĞÂµÄ½á¹¹
-			 * @param name Ãû×Ö
+			 * @brief åˆå§‹åŒ–ä¸€ä¸ªæ–°çš„ç»“æ„
+			 * @param name åå­—
 			*/
 			Structure(std::string name);
 
 			~Structure();
 
 			/**
-			 * @brief ÔÚ½á¹¹ÌåÎ²²¿¸½¼ÓÒ»¸ö×Ö¶Î
-			 * @param name ×Ö¶ÎµÄÃû×Ö
-			 * @param field ×Ö¶Î´¦ÀíÆ÷µÄÊµÀı
+			 * @brief åœ¨ç»“æ„ä½“å°¾éƒ¨é™„åŠ ä¸€ä¸ªå­—æ®µ
+			 * @param name å­—æ®µçš„åå­—
+			 * @param field å­—æ®µå¤„ç†å™¨çš„å®ä¾‹
 			*/
 			void AppendField(const std::string &name, mule::Data::Basic::Type *field);
 
 			/**
-			 * @brief ¶ÔÖ¸¶¨µÄÁ÷½øĞĞ¶ÁÈ¡
-			 * @param stream Òª½øĞĞ¶ÁÈ¡µÄÁ÷
-			 * @param dataHandler Êı¾İ´¦ÀíÆ÷
+			 * @brief å¯¹æŒ‡å®šçš„æµè¿›è¡Œè¯»å–
+			 * @param stream è¦è¿›è¡Œè¯»å–çš„æµ
+			 * @param dataHandler æ•°æ®å¤„ç†å™¨
 			*/
 			virtual void Read(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
 
 			/**
-			 * @brief ¶ÔÖ¸¶¨µÄÁ÷½øĞĞĞ´Èë
-			 * @param stream Òª½øĞĞĞ´ÈëµÄÁ÷
-			 * @param dataHandler Êı¾İ´¦ÀíÆ÷
+			 * @brief å¯¹æŒ‡å®šçš„æµè¿›è¡Œå†™å…¥
+			 * @param stream è¦è¿›è¡Œå†™å…¥çš„æµ
+			 * @param dataHandler æ•°æ®å¤„ç†å™¨
 			*/
 			virtual void Write(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
 
 			/**
-			 * @brief »ñÈ¡½á¹¹ÌåÕûÌå´óĞ¡
-			 * @return ½á¹¹ÌåÕûÌåµÄ´óĞ¡
+			 * @brief è·å–ç»“æ„ä½“æ•´ä½“å¤§å°
+			 * @return ç»“æ„ä½“æ•´ä½“çš„å¤§å°
 			*/
 			virtual size_t Size() const override;
 

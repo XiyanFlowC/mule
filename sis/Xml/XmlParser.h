@@ -13,28 +13,28 @@ namespace mule
 {
     namespace Xml
     {
-        // ÌØ»¯Ç¿ĞĞÍ£Ö¹
+        // ç‰¹åŒ–å¼ºè¡Œåœæ­¢
         template <typename Ch>
         std::basic_string<Ch> to_utf(long) {
             static_assert(sizeof(Ch) == 0, "Unsupported character type in to_utf");
         }
 
-        // utf8 ÌØ»¯
+        // utf8 ç‰¹åŒ–
         template <>
         std::string to_utf<char>(long value);
 
-        // utf16 ÌØ»¯
+        // utf16 ç‰¹åŒ–
         template <>
         std::u16string to_utf<char16_t>(long value);
 
-        // utf32 ÌØ»¯
+        // utf32 ç‰¹åŒ–
         template <>
         std::u32string to_utf<char32_t>(long value);
 
         /**
-         * @brief ´¦ÀíXmlµÄÀà
-         * @tparam XmlNodeT Xml½ÚµãÀàĞÍ
-         * @tparam Ch XmlÎÄ±¾Á÷×Ö·ûÀàĞÍ
+         * @brief å¤„ç†Xmlçš„ç±»
+         * @tparam XmlNodeT XmlèŠ‚ç‚¹ç±»å‹
+         * @tparam Ch Xmlæ–‡æœ¬æµå­—ç¬¦ç±»å‹
         */
         template <typename XmlNodeT, typename Ch = char>
         class XmlParser
@@ -73,14 +73,14 @@ namespace mule
         inline XmlParser<XmlNodeT, Ch>::XmlParser()
             : mangleEmbeddedNodes(false)
         {
-            // XML 1.0 Ô¤¶¨ÒåÊµÌå
+            // XML 1.0 é¢„å®šä¹‰å®ä½“
             RegisterEntity("amp", "&");
             RegisterEntity("lt", "<");
             RegisterEntity("gt", ">");
             RegisterEntity("apos", "'");
             RegisterEntity("quot", "\"");
 
-            // ÍØÕ¹µÄÍ¨ÓÃÊµÌå
+            // æ‹“å±•çš„é€šç”¨å®ä½“
             RegisterEntity("lf", "\n");
             RegisterEntity("cr", "\r");
             RegisterEntity("sp", " ");
@@ -103,9 +103,9 @@ namespace mule
         template<typename XmlNodeT, typename Ch>
         XmlNodeT XmlParser<XmlNodeT, Ch>::ParseNode(const std::basic_string<Ch> &xml)
         {
-            // È¥³ı¿Õ°××Ö·û
+            // å»é™¤ç©ºç™½å­—ç¬¦
             index = xml.find_first_not_of(" \t\n\r", index);
-            // ½ÚµãÆğÊ¼
+            // èŠ‚ç‚¹èµ·å§‹
             if (xml[index] == '<')
             {
                 XmlNodeT node{};
@@ -117,12 +117,12 @@ namespace mule
                     return XmlNodeT::ERROR;
                 }
 
-                // ¿ªÆô±êÇ©
+                // å¼€å¯æ ‡ç­¾
                 index = xml.find_first_not_of(" \t\n\r", index + 1);
                 size_t endIndex = xml.find_first_of(" \t\n\r>/", index);
                 node.SetName(xml.substr(index, endIndex - index));
 
-                // ´¦ÀíÌØĞÔ
+                // å¤„ç†ç‰¹æ€§
                 while (true)
                 {
                     index = xml.find_first_not_of(" \t\n\r", endIndex);
@@ -139,7 +139,7 @@ namespace mule
                     endIndex = xml.find_first_of(" \t\n\r>/", attrValueEnd + 1);
                 }
 
-                // ¿ÕÔªËØ±êÇ©
+                // ç©ºå…ƒç´ æ ‡ç­¾
                 if (xml[index] == '/')
                 {
                     if (xml[index + 1] == '>')
@@ -156,21 +156,21 @@ namespace mule
                     index++;
                 }
 
-                // ´¦Àí×Ó½Úµã
+                // å¤„ç†å­èŠ‚ç‚¹
                 while (index < xml.size())
                 {
-                    // È¥³ı¿Õ°××Ö·û
+                    // å»é™¤ç©ºç™½å­—ç¬¦
                     index = xml.find_first_not_of(" \t\n\r", index);
-                    // ´¦Àí±êÇ©½Úµã
+                    // å¤„ç†æ ‡ç­¾èŠ‚ç‚¹
                     if (xml[index] == '<' && xml[index + 1] != '!')
                     {
-                        // ´¦Àí¹Ø±Õ±êÇ©£ºÓÉÓÚÄÚ²¿ÔªËØÈ«²¿µİ¹é½âÎö£¬´Ë´¦ÄÜÓöµ½µÄ¹Ø±Õ±êÇ©Ò»¶¨ÊÇ¸ÃÔªËØµÄ¹Ø±Õ±êÇ©
+                        // å¤„ç†å…³é—­æ ‡ç­¾ï¼šç”±äºå†…éƒ¨å…ƒç´ å…¨éƒ¨é€’å½’è§£æï¼Œæ­¤å¤„èƒ½é‡åˆ°çš„å…³é—­æ ‡ç­¾ä¸€å®šæ˜¯è¯¥å…ƒç´ çš„å…³é—­æ ‡ç­¾
                         if (xml[index + 1] == '/')
                         {
                             index = xml.find_first_not_of(" \t\n\r", index + 2);
                             size_t endIndex = xml.find_first_of(" \t\n\r>", index);
 
-                            // ·ÇÏàµÈµÄ¹Ø±Õ±êÇ©£¬ºöÂÔ
+                            // éç›¸ç­‰çš„å…³é—­æ ‡ç­¾ï¼Œå¿½ç•¥
                             if (node.GetName() != xml.substr(index, endIndex - index))
                             {
                                 error += "Near " + xml.substr(index, 32) + ": unpairing with open tag " + node.GetName() + ", ignoring...\n";
@@ -180,13 +180,13 @@ namespace mule
                             index = xml.find('>', index) + 1;
                             return node;
                         }
-                        // ×Ó½Úµã£¬µİ¹é½âÎö
+                        // å­èŠ‚ç‚¹ï¼Œé€’å½’è§£æ
                         else
                         {
                             node.AddChild(ParseNode(xml));
                         }
                     }
-                    // ÎÄ±¾½Úµã
+                    // æ–‡æœ¬èŠ‚ç‚¹
                     else
                     {
                         xybase::StringBuilder sb;
@@ -194,13 +194,13 @@ namespace mule
                         {
                             if (xml[index] == '&')
                             {
-                                // ´¦Àí×ªÒåĞòÁĞ
+                                // å¤„ç†è½¬ä¹‰åºåˆ—
                                 size_t escapeStart = index + 1;
                                 index = xml.find(';', index);
                                 std::basic_string<Ch> seq = xml.substr(escapeStart, index - escapeStart);
                                 if (seq[0] == '#')
                                 {
-                                    // ´¦ÀíÖ±½ÓÖµ
+                                    // å¤„ç†ç›´æ¥å€¼
                                     if (seq[1] == 'x')
                                     {
                                         sb += to_utf<Ch>(static_cast<Ch>(xybase::string::stoi(seq.substr(2), 16)));
@@ -213,11 +213,11 @@ namespace mule
                                 else sb += entities[seq];
                                 index++;
                             }
-                            // ¿Õ°××Ö·ûÈ¥Î²
+                            // ç©ºç™½å­—ç¬¦å»å°¾
                             else if (xml[index] == ' ' || xml[index] == '\t' || xml[index] == '\r' || xml[index] == '\n')
                             {
                                 size_t endOfBlank = xml.find_first_not_of(" \t\r\n", index);
-                                // È¥Î²£¬Á¢¼´·µ»Ø
+                                // å»å°¾ï¼Œç«‹å³è¿”å›
                                 if (xml[endOfBlank] == '<' && xml[endOfBlank + 1] == '/')
                                 {
                                     node.AddText(sb.ToString());
@@ -232,13 +232,13 @@ namespace mule
                             }
                             else if (xml[index] == '<')
                             {
-                                // ½Úµã¹Ø±Õ
+                                // èŠ‚ç‚¹å…³é—­
                                 if (xml[index + 1] == '/')
                                 {
                                     node.AddText(sb.ToString());
                                     break;
                                 }
-                                // XML ½âÎöÆ÷ÃüÁî
+                                // XML è§£æå™¨å‘½ä»¤
                                 if (xml[index + 1] == '!')
                                 {
                                     if (xml[index + 2] == '[')
@@ -247,10 +247,10 @@ namespace mule
                                         size_t blockNameEnd = xml.find("[", index + 3);
 
                                         auto blockName = xml.substr(blockNameStart, blockNameEnd - blockNameStart);
-                                        // Îª±£³ÖÍØÕ¹ĞÔ£¬´Ë´¦ÔÊĞí´¦ÀíCDATAÒÔÍâµÄ¿é
+                                        // ä¸ºä¿æŒæ‹“å±•æ€§ï¼Œæ­¤å¤„å…è®¸å¤„ç†CDATAä»¥å¤–çš„å—
                                         if (blockName == "CDATA")
                                         {
-                                            // ´¦ÀíCDATA¿é
+                                            // å¤„ç†CDATAå—
                                             size_t cdataStart = blockNameEnd + 1;
                                             index = xml.find("]]>", index);
                                             sb += xml.substr(cdataStart, index - cdataStart);
@@ -258,19 +258,19 @@ namespace mule
                                         }
                                         else
                                         {
-                                            // ÎŞĞ§¿é£¬ºöÊÓ£¬²»´¦Àí
+                                            // æ— æ•ˆå—ï¼Œå¿½è§†ï¼Œä¸å¤„ç†
                                             error += "Near " + xml.substr(index, 32) + ": unknown block type " + blockName + ", ignoring...\n";
                                             index = xml.find("]]>", index);
                                             index += 3;
                                         }
                                     }
                                 }
-                                // ±êÇ©´ò¿ª
+                                // æ ‡ç­¾æ‰“å¼€
                                 else
                                 {
                                     if (mangleEmbeddedNodes)
                                     {
-                                        // Í¨¹ı»Øµ÷º¯ÊıÄëËé
+                                        // é€šè¿‡å›è°ƒå‡½æ•°ç¢¾ç¢
                                         auto res = ParseNode(xml);
                                         auto itr = callbacks.find(res.GetName());
                                         if (itr != callbacks.end())
@@ -299,7 +299,7 @@ namespace mule
                 return node;
             }
             error += "Near " + xml.substr(index, 32) + ": expected '<', but got '" + xml[index] + "'.\n";
-            // Ñ°ÕÒÍ¬²½µã
+            // å¯»æ‰¾åŒæ­¥ç‚¹
             index = xml.find("<", index);
             return XmlNodeT::ERROR;
         }

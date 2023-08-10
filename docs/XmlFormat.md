@@ -1,20 +1,20 @@
-# XML ±íÏÖÐÎÊ½
+# XML è¡¨çŽ°å½¢å¼
 
-XMLÐÎÊ½ÓÉÒ»¶¨µÄ½á¹¹×é³É¡£Ïà±ÈÓÚ±ê×¼µÄXML£¬´Ë±íÏÖÐÎÊ½²»ÔÊÐíXMLÉùÃ÷£¨<? ?>£©£¬ÇÒÎÄ±¾½Úµã±ØÐëÊÇÒ¶½Úµã¡£
+XMLå½¢å¼ç”±ä¸€å®šçš„ç»“æž„ç»„æˆã€‚ç›¸æ¯”äºŽæ ‡å‡†çš„XMLï¼Œæ­¤è¡¨çŽ°å½¢å¼ä¸å…è®¸XMLå£°æ˜Žï¼ˆ<? ?>ï¼‰ï¼Œä¸”æ–‡æœ¬èŠ‚ç‚¹å¿…é¡»æ˜¯å¶èŠ‚ç‚¹ã€‚
 
-Ò²¾ÍÊÇËµ
+ä¹Ÿå°±æ˜¯è¯´
 ```xml
 <foo>
 text text <bar> aaa </bar> text.
 </foo>
 ```
-ÊÇ²»ÔÊÐíµÄ£¬³ý·Çbar¿ÉÒÔ±»×¢²áµÄ»Øµ÷º¯Êý´¦Àí£¬²¢·µ»ØÒÔÎÄ±¾´®¡£
+æ˜¯ä¸å…è®¸çš„ï¼Œé™¤éžbarå¯ä»¥è¢«æ³¨å†Œçš„å›žè°ƒå‡½æ•°å¤„ç†ï¼Œå¹¶è¿”å›žä»¥æ–‡æœ¬ä¸²ã€‚
 
-Èç¹ûÎÞ·¨ÕÒµ½barµÄ»Øµ÷º¯Êý£¬barÖÐµÄÈ«²¿Êý¾Ý¶¼½«±»¶ªÆú¡£
+å¦‚æžœæ— æ³•æ‰¾åˆ°barçš„å›žè°ƒå‡½æ•°ï¼Œbarä¸­çš„å…¨éƒ¨æ•°æ®éƒ½å°†è¢«ä¸¢å¼ƒã€‚
 
-## XML ½âÎöÆ÷
-XML ½âÎöÆ÷ÊôÓÚ sis µÄÒ»²¿·Ö¡£Î»ÓÚÃüÃû¿Õ¼ä mule::Xml ÖÐ¡£ÎÄ¼þÎª sis/Xml/XmlProcessor.h¡£
+## XML è§£æžå™¨
+XML è§£æžå™¨å±žäºŽ sis çš„ä¸€éƒ¨åˆ†ã€‚ä½äºŽå‘½åç©ºé—´ mule::Xml ä¸­ã€‚æ–‡ä»¶ä¸º sis/Xml/XmlProcessor.hã€‚
 
-Æä¿ÉÒÔÍ¨¹ý RegisterTagCallback ×¢²á»Øµ÷º¯Êý¡£»Øµ÷º¯Êý½ÓÊÜÒ»¸ö MultiValue ÒÔ¶ÔÆäÖÐµÄÖµ½øÐÐ´¦Àí£¬²¢·µ»ØÒÔ std::string¡£»Øµ÷º¯ÊýÀíÓ¦ÓÚ Parse ±»µ÷ÓÃÇ°×¢²á¡£
+å…¶å¯ä»¥é€šè¿‡ RegisterTagCallback æ³¨å†Œå›žè°ƒå‡½æ•°ã€‚å›žè°ƒå‡½æ•°æŽ¥å—ä¸€ä¸ª MultiValue ä»¥å¯¹å…¶ä¸­çš„å€¼è¿›è¡Œå¤„ç†ï¼Œå¹¶è¿”å›žä»¥ std::stringã€‚å›žè°ƒå‡½æ•°ç†åº”äºŽ Parse è¢«è°ƒç”¨å‰æ³¨å†Œã€‚
 
-µ÷ÓÃ Parse À´»ñÈ¡ MultiValue Ä£ÐÍ¡£
+è°ƒç”¨ Parse æ¥èŽ·å– MultiValue æ¨¡åž‹ã€‚

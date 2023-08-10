@@ -31,28 +31,28 @@ namespace mule
 					virtual void OnSheetWriteEnd();
 
 					/**
-					 * @brief ½øÈë¾ßÃûÁìÓò
-					 * @param realm ÁìÓòÃû
+					 * @brief è¿›å…¥å…·åé¢†åŸŸ
+					 * @param realm é¢†åŸŸå
 					 * @param name 
 					*/
 					virtual void OnRealmEnter(Type *realm, std::string name) = 0;
 
 					/**
-					 * @brief Àë¿ª¾ßÃûÁìÓò
+					 * @brief ç¦»å¼€å…·åé¢†åŸŸ
 					 * @param realm 
 					 * @param name 
 					*/
 					virtual void OnRealmExit(Type *realm, std::string name) = 0;
 
 					/**
-					 * @brief ½øÈëË÷ÒıÁìÓò
+					 * @brief è¿›å…¥ç´¢å¼•é¢†åŸŸ
 					 * @param realm 
 					 * @param idx 
 					*/
 					virtual void OnRealmEnter(Type *realm, int idx) = 0;
 
 					/**
-					 * @brief Àë¿ªË÷ÒıÁìÓò
+					 * @brief ç¦»å¼€ç´¢å¼•é¢†åŸŸ
 					 * @param realm 
 					 * @param idx 
 					*/
@@ -74,26 +74,26 @@ namespace mule
 				virtual size_t Size() const = 0;
 
 				/**
-				 * @brief »ñµÃÀàĞÍÃû£¨ÔËĞĞÆÚ·´ÉäĞ­ÖúÓÃ£©
-				 * @return ÀàĞÍÃû
+				 * @brief è·å¾—ç±»å‹åï¼ˆè¿è¡ŒæœŸåå°„ååŠ©ç”¨ï¼‰
+				 * @return ç±»å‹å
 				*/
 				virtual std::string GetTypeName() const = 0;
 
 				/**
-				 * @brief »ñµÃÉÏÒ»´Î¶ÁÈ¡µÄ´óĞ¡
-				 * @return ÉÏÒ»´Î¶ÁÈ¡²Ù×÷¶ÁÈ¡µÄ×Ö½ÚÊı
+				 * @brief è·å¾—ä¸Šä¸€æ¬¡è¯»å–çš„å¤§å°
+				 * @return ä¸Šä¸€æ¬¡è¯»å–æ“ä½œè¯»å–çš„å­—èŠ‚æ•°
 				*/
 				virtual size_t GetLastSize() const;
 
 				/**
-				 * @brief ÆÀ¹À¸ø¶¨Êı¾İÈçÒªĞ´Èë£¬ĞèÒªÊ¹ÓÃµÄ¿Õ¼ä
-				 * @param obj ÒªÆÀ¹ÀµÄÊı¾İ
-				 * @return ÆÀ¹ÀËùµÃµÄ´óĞ¡½á¹û
+				 * @brief è¯„ä¼°ç»™å®šæ•°æ®å¦‚è¦å†™å…¥ï¼Œéœ€è¦ä½¿ç”¨çš„ç©ºé—´
+				 * @param obj è¦è¯„ä¼°çš„æ•°æ®
+				 * @return è¯„ä¼°æ‰€å¾—çš„å¤§å°ç»“æœ
 				*/
 				virtual size_t EvalSize(const MultiValue &obj) const;
 
 				/**
-				 * @brief Ö¸Ê¾¸ÃÀàĞÍÊÇ·ñÎª¸´ºÏÀàĞÍ
+				 * @brief æŒ‡ç¤ºè¯¥ç±»å‹æ˜¯å¦ä¸ºå¤åˆç±»å‹
 				 * @return 
 				*/
 				virtual bool IsComposite() const;

@@ -12,7 +12,7 @@ namespace mule
 		namespace Space
 		{
 			/**
-			 * @brief ´æ´¢Æ¬¶Î£¬ÓÃÓÚ±ê¼ÇÒ»¶Î×ó±ÕÓÒ¿ªÇø¼ä
+			 * @brief å­˜å‚¨ç‰‡æ®µï¼Œç”¨äºæ ‡è®°ä¸€æ®µå·¦é—­å³å¼€åŒºé—´
 			*/
 			class Fragment
 			{
@@ -20,118 +20,118 @@ namespace mule
 
 			public:
 				/**
-				 * @brief ´´½¨ĞÂ´æ´¢Æ¬¶Î£¬Ö¸¶¨ÆäÆğÊ¼µØÖ·ºÍ³¤¶È
-				 * @param begin ÆğÊ¼µØÖ·
-				 * @param size ³¤¶È
+				 * @brief åˆ›å»ºæ–°å­˜å‚¨ç‰‡æ®µï¼ŒæŒ‡å®šå…¶èµ·å§‹åœ°å€å’Œé•¿åº¦
+				 * @param begin èµ·å§‹åœ°å€
+				 * @param size é•¿åº¦
 				*/
 				Fragment(unsigned int begin, unsigned size);
 
 				/**
-				 * @brief ´´½¨ĞÂ´æ´¢Æ¬¶Î
-				 * @param pattern ¾É´æ´¢Æ¬¶Î
+				 * @brief åˆ›å»ºæ–°å­˜å‚¨ç‰‡æ®µ
+				 * @param pattern æ—§å­˜å‚¨ç‰‡æ®µ
 				*/
 				Fragment(const Fragment &pattern);
 
 				/**
-				 * @brief »ñÈ¡Æ¬¶Î¿ªÊ¼µØÖ·
-				 * @return Æ¬¶Î¿ªÊ¼µØÖ·
+				 * @brief è·å–ç‰‡æ®µå¼€å§‹åœ°å€
+				 * @return ç‰‡æ®µå¼€å§‹åœ°å€
 				*/
 				unsigned int GetBegining() const;
 
 				/**
-				 * @brief »ñÈ¡Æ¬¶Î½áÊøµØÖ·£¨¸ÃµØÖ·²»ÔÚÆ¬¶ÎÖĞ£©
-				 * @return Æ¬¶Î½áÊøµØÖ·
+				 * @brief è·å–ç‰‡æ®µç»“æŸåœ°å€ï¼ˆè¯¥åœ°å€ä¸åœ¨ç‰‡æ®µä¸­ï¼‰
+				 * @return ç‰‡æ®µç»“æŸåœ°å€
 				*/
 				unsigned int GetEnding() const;
 
 				/**
-				 * @brief »ñÈ¡Æ¬¶Î´óĞ¡
-				 * @return Æ¬¶Î´óĞ¡
+				 * @brief è·å–ç‰‡æ®µå¤§å°
+				 * @return ç‰‡æ®µå¤§å°
 				*/
 				unsigned int GetSize() const;
 
 				/**
-				 * @brief ÉèÖÃÆ¬¶ÎÇø¼ä
-				 * @param begining ÆğÊ¼µØÖ·
-				 * @param size ´óĞ¡
+				 * @brief è®¾ç½®ç‰‡æ®µåŒºé—´
+				 * @param begining èµ·å§‹åœ°å€
+				 * @param size å¤§å°
 				*/
 				void SetFragment(unsigned int begining, unsigned int size);
 
 				/**
-				 * @brief ÖØÉèÆğÊ¼µØÖ·
-				 * @param begining ÖØĞÂÉèÖÃÆğÊ¼µØÖ·
+				 * @brief é‡è®¾èµ·å§‹åœ°å€
+				 * @param begining é‡æ–°è®¾ç½®èµ·å§‹åœ°å€
 				*/
 				void SetBegining(unsigned int begining);
 
 				/**
-				 * @brief ÖØÉè´óĞ¡
-				 * @param size ´óĞ¡
+				 * @brief é‡è®¾å¤§å°
+				 * @param size å¤§å°
 				*/
 				void SetSize(unsigned int size);
 
 				/**
-				 * @brief ÖØÉè½áÊøµØÖ·
-				 * @param ending ½áÊøµØÖ·
+				 * @brief é‡è®¾ç»“æŸåœ°å€
+				 * @param ending ç»“æŸåœ°å€
 				*/
 				void SetEnding(unsigned int ending);
 
 				/**
-				 * @brief Ïû³ıÍ·²¿£¬½«Í·²¿ºóÒÆÖ¸¶¨´óĞ¡
-				 * @param size ÒªÏû³ıµÄ´óĞ¡
+				 * @brief æ¶ˆé™¤å¤´éƒ¨ï¼Œå°†å¤´éƒ¨åç§»æŒ‡å®šå¤§å°
+				 * @param size è¦æ¶ˆé™¤çš„å¤§å°
 				*/
 				void EliminateBegining(unsigned int size);
 
 				/**
-				 * @brief Ïû³ıÎ²²¿£¬½«Î²²¿Ç°ÒÆÖ¸¶¨´óĞ¡
-				 * @param size ÒªÏû³ıµÄ´óĞ¡
+				 * @brief æ¶ˆé™¤å°¾éƒ¨ï¼Œå°†å°¾éƒ¨å‰ç§»æŒ‡å®šå¤§å°
+				 * @param size è¦æ¶ˆé™¤çš„å¤§å°
 				*/
 				void EliminateEnding(unsigned int size);
 
 				/**
-				 * @brief ¼ì²éÊÇ·ñºÍËù¸øÇø¶ÎÖØµş
-				 * @param frag Òª±È¶ÔµÄÇø¶Î
-				 * @return ÕæÔòÓĞÖØµş£¬¼ÙÔòÃ»ÓĞ
+				 * @brief æ£€æŸ¥æ˜¯å¦å’Œæ‰€ç»™åŒºæ®µé‡å 
+				 * @param frag è¦æ¯”å¯¹çš„åŒºæ®µ
+				 * @return çœŸåˆ™æœ‰é‡å ï¼Œå‡åˆ™æ²¡æœ‰
 				*/
 				bool IsOverlapsWith(const Fragment &frag) const;
 
 				/**
-				 * @brief ¼ì²éÊÇ·ñ°üÀ¨Ö¸¶¨Çø¶Î
-				 * @param frag Òª±È¶ÔµÄÆ¬¶Î
-				 * @return ÕæÔò°üº¬£¬¼ÙÔòÃ»ÓĞ
+				 * @brief æ£€æŸ¥æ˜¯å¦åŒ…æ‹¬æŒ‡å®šåŒºæ®µ
+				 * @param frag è¦æ¯”å¯¹çš„ç‰‡æ®µ
+				 * @return çœŸåˆ™åŒ…å«ï¼Œå‡åˆ™æ²¡æœ‰
 				*/
 				bool IsContains(const Fragment &frag) const;
 
 				/**
-				 * @brief ¼ì²éÊÇ·ñ°üÀ¨Ö¸¶¨µØÖ·
-				 * @param position Òª¼ì²éµÄµØÖ·
-				 * @return ÕæÔò°üº¬£¬¼ÙÔòÃ»ÓĞ
+				 * @brief æ£€æŸ¥æ˜¯å¦åŒ…æ‹¬æŒ‡å®šåœ°å€
+				 * @param position è¦æ£€æŸ¥çš„åœ°å€
+				 * @return çœŸåˆ™åŒ…å«ï¼Œå‡åˆ™æ²¡æœ‰
 				*/
 				bool IsContains(unsigned int position) const;
 
 				/**
-				 * @brief ºÍÖ¸¶¨Æ¬¶ÎºÏ²¢ÎªĞÂµÄÆ¬¶Î£¨´´½¨ĞÂÆ¬¶Î£©
-				 * @param target ÒªºÏ²¢µÄÆ¬¶Î
-				 * @return ĞÂ´´½¨µÄºÏ²¢ºóÆ¬¶Î£¬Ê§°Ü·µ»Ø nullptr
+				 * @brief å’ŒæŒ‡å®šç‰‡æ®µåˆå¹¶ä¸ºæ–°çš„ç‰‡æ®µï¼ˆåˆ›å»ºæ–°ç‰‡æ®µï¼‰
+				 * @param target è¦åˆå¹¶çš„ç‰‡æ®µ
+				 * @return æ–°åˆ›å»ºçš„åˆå¹¶åç‰‡æ®µï¼Œå¤±è´¥è¿”å› nullptr
 				*/
 				Fragment *MergeToNew(const Fragment &target) const;
 
 				/**
-				 * @brief ½«Ëù¸øÆ¬¶ÎºÏ²¢µ½´ËÆ¬¶ÎÖĞ
-				 * @param target ÒªºÏ²¢µÄÆ¬¶Î
+				 * @brief å°†æ‰€ç»™ç‰‡æ®µåˆå¹¶åˆ°æ­¤ç‰‡æ®µä¸­
+				 * @param target è¦åˆå¹¶çš„ç‰‡æ®µ
 				*/
 				void Merge(const Fragment &target);
 
 				/**
-				 * @brief ±È¶ÔÆ¬¶ÎÊÇ·ñÏàµÈ
-				 * @param right Òª±È¶ÔµÄÆ¬¶Î
-				 * @return ÕæÔòÏàµÈ£¬¼ÙÔò²»µÈ
+				 * @brief æ¯”å¯¹ç‰‡æ®µæ˜¯å¦ç›¸ç­‰
+				 * @param right è¦æ¯”å¯¹çš„ç‰‡æ®µ
+				 * @return çœŸåˆ™ç›¸ç­‰ï¼Œå‡åˆ™ä¸ç­‰
 				*/
 				bool operator== (const Fragment &right) const;
 
 				/**
-				 * @brief ±È¶ÔÆ¬¶ÎÊÇ·ñ²»µÈ
-				 * @param right Òª±È¶ÔµÄÆ¬¶Î
-				 * @return ÕæÔò²»µÈ£¬¼ÙÔòÏàµÈ
+				 * @brief æ¯”å¯¹ç‰‡æ®µæ˜¯å¦ä¸ç­‰
+				 * @param right è¦æ¯”å¯¹çš„ç‰‡æ®µ
+				 * @return çœŸåˆ™ä¸ç­‰ï¼Œå‡åˆ™ç›¸ç­‰
 				*/
 				bool operator!= (const Fragment &right) const;
 			};

@@ -60,13 +60,13 @@ void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 
 Basic::Type *TypeManager::GetOrCreateObject(std::string info)
 {
-	// ÈôÒÑ¾­´æÔÚÔòÖ±½Ó·µ»Ø
+	// è‹¥å·²ç»å­˜åœ¨åˆ™ç›´æŽ¥è¿”å›ž
 	if (objects.contains(info)) return objects[info];
 
-	// ÈôÃ»ÓÐ´´½¨Æ÷ÔòÖ±½Ó·µ»Ø
+	// è‹¥æ²¡æœ‰åˆ›å»ºå™¨åˆ™ç›´æŽ¥è¿”å›ž
 	if (first == nullptr) return nullptr;
 
-	// ±£´æ´´½¨½á¹û²¢·µ»Ø
+	// ä¿å­˜åˆ›å»ºç»“æžœå¹¶è¿”å›ž
 	return objects[info] = first->GetOrCreateObject(info);
 }
 
