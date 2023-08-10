@@ -75,7 +75,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 
 void mule::Xml::MvXmlNode::AddText(std::string str)
 {
-	// 保全现有 metadata
+	// 淇濆叏鐜版湁 metadata
 	auto metadata = mv.metadata;
 	mv = MultiValue::Parse(str);
 	mv.metadata = metadata;

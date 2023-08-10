@@ -133,7 +133,7 @@ MultiValue::MultiValue(const MultiValue& pattern)
 	value = pattern.value;
 	metadata = pattern.metadata;
 
-	// Î¬»¤ÒıÓÃ¼ÆÊı
+	// ç»´æŠ¤å¼•ç”¨è®¡æ•°
 	useCounter = pattern.useCounter;
 	if (useCounter != nullptr)
 	{
@@ -170,7 +170,7 @@ mule::Data::Basic::MultiValue::MultiValue(MultiValue &&movee) noexcept
 		movee.value.arrayValue = nullptr;
 	}
 
-	// ×èÖ¹ÈÎºÎĞÎÊ½µÄÊı¾İ»ØÊÕ
+	// é˜»æ­¢ä»»ä½•å½¢å¼çš„æ•°æ®å›æ”¶
 	movee.type = MVT_NULL;
 
 	length = movee.length;
@@ -400,7 +400,7 @@ void MultiValue::ParseInt(const std::string &value)
 		switch (state)
 		{
 		case 0:
-			if (*itr == '-') // Á¬ĞøµÈºÅÊÓ×÷ÊäÈë´íÎó£¬²¢ºÏ²¢ÎªÒ»¸ö
+			if (*itr == '-') // è¿ç»­ç­‰å·è§†ä½œè¾“å…¥é”™è¯¯ï¼Œå¹¶åˆå¹¶ä¸ºä¸€ä¸ª
 			{
 				neg = 1;
 				// state = 1;
@@ -412,7 +412,7 @@ void MultiValue::ParseInt(const std::string &value)
 			}
 			else if ('0' == *itr)
 			{
-				state = 2; // È·ÈÏÊÇ·ñÎªÊ®Áù½øÖÆÊı
+				state = 2; // ç¡®è®¤æ˜¯å¦ä¸ºåå…­è¿›åˆ¶æ•°
 			}
 			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
@@ -424,7 +424,7 @@ void MultiValue::ParseInt(const std::string &value)
 			else if (*itr == 'u' || *itr == 'U')
 			{
 				type = MVT_UINT;
-				goto mvpi_forout; // ÍÑÀëÑ­»·
+				goto mvpi_forout; // è„±ç¦»å¾ªç¯
 			}
 			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
@@ -432,16 +432,16 @@ void MultiValue::ParseInt(const std::string &value)
 			if ('1' <= *itr && *itr <= '7')
 			{
 				res = ((unsigned long long) * itr) - '0';
-				state = 4; // °Ë½øÖÆÊäÈë
+				state = 4; // å…«è¿›åˆ¶è¾“å…¥
 			}
 			else if ('x' == *itr)
 			{
-				state = 3; // Ê®Áù½øÖÆÊäÈë
+				state = 3; // åå…­è¿›åˆ¶è¾“å…¥
 			}
 			else if ('b' == *itr)
 			{
-				type = MVT_UINT; // ¶ş½øÖÆÊäÈëÄ¬ÈÏÎŞ·ûºÅ
-				state = 5; // ¶ş½øÖÆÊäÈë
+				type = MVT_UINT; // äºŒè¿›åˆ¶è¾“å…¥é»˜è®¤æ— ç¬¦å·
+				state = 5; // äºŒè¿›åˆ¶è¾“å…¥
 			}
 			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
@@ -461,7 +461,7 @@ void MultiValue::ParseInt(const std::string &value)
 			else if (*itr == 'u' || *itr == 'U')
 			{
 				type = MVT_UINT;
-				goto mvpi_forout; // ÍÑÀëÑ­»·
+				goto mvpi_forout; // è„±ç¦»å¾ªç¯
 			}
 			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
@@ -473,7 +473,7 @@ void MultiValue::ParseInt(const std::string &value)
 			else if (*itr == 'u' || *itr == 'U')
 			{
 				type = MVT_UINT;
-				goto mvpi_forout; // ÍÑÀëÑ­»·
+				goto mvpi_forout; // è„±ç¦»å¾ªç¯
 			}
 			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
 			break;
@@ -486,7 +486,7 @@ void MultiValue::ParseInt(const std::string &value)
 		}
 	}
 	mvpi_forout:
-	this->value.unsignedValue = neg ? ~res + 1 : res; // Èç¹ûÓĞ¸ººÅ£¬È¡·´
+	this->value.unsignedValue = neg ? ~res + 1 : res; // å¦‚æœæœ‰è´Ÿå·ï¼Œå–å
 }
 
 void MultiValue::ParseString(const std::string &value, bool isBareString)
@@ -497,7 +497,7 @@ void MultiValue::ParseString(const std::string &value, bool isBareString)
 		MVPS_OUT,
 		MVPS_NORMAL,
 		MVPS_ESCAPE_WAITING,
-		// TODO: Î´À´Ìí¼Ó8½øÖÆÖ§³Ö
+		// TODO: æœªæ¥æ·»åŠ 8è¿›åˆ¶æ”¯æŒ
 		// MVPS_ESCAPE_OCT,
 		MVPS_ESCAPE_HEX,
 		MVPS_ESCAPE_HEX2,
@@ -586,7 +586,7 @@ void MultiValue::ParseString(const std::string &value, bool isBareString)
 			break;
 		}
 	}
-	// Ã»ÓĞÖÕ½áµÄÒıºÅ
+	// æ²¡æœ‰ç»ˆç»“çš„å¼•å·
 	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw InvalidParameterException("value", "Not a valid string representation.", MULE_FILE, __LINE__);
 
 	this->value.stringValue = new std::string(sb.ToString());
@@ -655,7 +655,7 @@ MultiValue MultiValue::Parse(const std::string &value)
 		ret.value.unsignedValue = 0;
 	}
 
-	if (value[0] == '\"') // ÒÔ¡°"¡±¿ªÍ·ÊÓ×÷×Ö·û´®
+	if (value[0] == '\"') // ä»¥â€œ"â€å¼€å¤´è§†ä½œå­—ç¬¦ä¸²
 	{
 		ret.ParseString(value);
 	}
@@ -882,7 +882,7 @@ const MultiValue &mule::Data::Basic::MultiValue::operator=(MultiValue &&movee) n
 		movee.value.arrayValue = nullptr;
 	}
 
-	// ×èÖ¹ÈÎºÎĞÎÊ½µÄÊı¾İ»ØÊÕ
+	// é˜»æ­¢ä»»ä½•å½¢å¼çš„æ•°æ®å›æ”¶
 	movee.type = MVT_NULL;
 
 	length = movee.length;

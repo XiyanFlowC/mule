@@ -17,7 +17,7 @@ namespace mule
 				Double();
 
 			protected:
-				// Í¨¹ý Type ¼Ì³Ð
+				// é€šè¿‡ Type ç»§æ‰¿
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual size_t Size() const override;

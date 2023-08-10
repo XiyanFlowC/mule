@@ -15,7 +15,7 @@ namespace mule
 	namespace Lua
 	{
 		/**
-		 * @brief Lua Ö´ĞĞÊ±·¢ÉúµÄ´íÎó
+		 * @brief Lua æ‰§è¡Œæ—¶å‘ç”Ÿçš„é”™è¯¯
 		*/
 		class LuaException : public mule::Exception::Exception
 		{
@@ -24,7 +24,7 @@ namespace mule
 		};
 
 		/**
-		 * @brief Lua ½Å±¾ÔÚ±¾»ú³ÌĞòµÄËŞÖ÷¡£
+		 * @brief Lua è„šæœ¬åœ¨æœ¬æœºç¨‹åºçš„å®¿ä¸»ã€‚
 		*/
 		class LuaHost
 		{
@@ -75,11 +75,11 @@ namespace mule
 			void RegisterFunction(const std::string& name, lua_CFunction func);
 
 			/**
-			 * @brief ½«Ò»¸öÆÕÍ¨µÄº¯Êı×¢²áµ½C£¬×Ô¶¯ÒÔlambda°ü×°ÒÔ¼æÈİ
-			 * @tparam ...Args ²ÎÊıÁĞ±í
-			 * @tparam RetT ·µ»ØÖµ
-			 * @param name º¯ÊıÃû³Æ
-			 * @param func º¯Êı
+			 * @brief å°†ä¸€ä¸ªæ™®é€šçš„å‡½æ•°æ³¨å†Œåˆ°Cï¼Œè‡ªåŠ¨ä»¥lambdaåŒ…è£…ä»¥å…¼å®¹
+			 * @tparam ...Args å‚æ•°åˆ—è¡¨
+			 * @tparam RetT è¿”å›å€¼
+			 * @param name å‡½æ•°åç§°
+			 * @param func å‡½æ•°
 			*/
 			template<typename RetT, typename... Args>
 			void RegisterFunction(const std::string &name, RetT(*func)(Args...));

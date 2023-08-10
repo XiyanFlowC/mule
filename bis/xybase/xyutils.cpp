@@ -1,4 +1,5 @@
 #include "xyutils.h"
+#include <cstdint>
 
 std::string xybase::string::to_utf8(long codepoint)
 {
@@ -35,11 +36,11 @@ std::u16string xybase::string::to_utf16(long codepoint)
     std::u16string ret;
 
     if (codepoint <= 0xFFFF) {
-        // ÂëµãÔÚ»ù±¾Æ½Ãæ£¨BMP£©·¶Î§ÄÚ£¬Ö±½Ó×ª»»ÎªÒ»¸öUTF-16×Ö·û
+        // ç ç‚¹åœ¨åŸºæœ¬å¹³é¢ï¼ˆBMPï¼‰èŒƒå›´å†…ï¼Œç›´æŽ¥è½¬æ¢ä¸ºä¸€ä¸ªUTF-16å­—ç¬¦
         ret.push_back(static_cast<wchar_t>(codepoint));
     }
     else if (codepoint <= 0x10FFFF) {
-        // ÂëµãÔÚÔö²¹Æ½Ãæ·¶Î§ÄÚ£¬½øÐÐUTF-16Ë«×Ö½Ú±àÂë
+        // ç ç‚¹åœ¨å¢žè¡¥å¹³é¢èŒƒå›´å†…ï¼Œè¿›è¡ŒUTF-16åŒå­—èŠ‚ç¼–ç 
         codepoint -= 0x10000;
         wchar_t leadSurrogate = static_cast<wchar_t>((codepoint >> 10) + 0xD800);
         wchar_t trailSurrogate = static_cast<wchar_t>((codepoint & 0x3FF) + 0xDC00);

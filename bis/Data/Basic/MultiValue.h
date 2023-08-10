@@ -25,17 +25,17 @@ namespace mule
 			};
 
 			/**
-			 * @brief ¶àÓÃÍ¾Öµ¶ÔÏó
+			 * @brief å¤šç”¨é€”å€¼å¯¹è±¡
 			*/
 			class MultiValue
 			{
 				/**
-				 * @brief ÒıÓÃÀàĞÍÒıÓÃ¼ÆÊıÆ÷
+				 * @brief å¼•ç”¨ç±»å‹å¼•ç”¨è®¡æ•°å™¨
 				*/
 				int *useCounter = nullptr;
 
 				/**
-				 * @brief ±íÊ¾ÔªËØ³¤¶È¡£
+				 * @brief è¡¨ç¤ºå…ƒç´ é•¿åº¦ã€‚
 				*/
 				size_t length;
 
@@ -45,36 +45,36 @@ namespace mule
 				std::map<std::string, MultiValue> metadata;
 
 				/**
-				 * @brief ¶àÓÃÍ¾ÖµÀàĞÍ
+				 * @brief å¤šç”¨é€”å€¼ç±»å‹
 				*/
 				enum ValueType
 				{
 					/**
-					 * @brief ²»È·¶¨µÄÖµ£¬Lua »¥²Ù×÷Ê±µÈ¼Û nil
+					 * @brief ä¸ç¡®å®šçš„å€¼ï¼ŒLua äº’æ“ä½œæ—¶ç­‰ä»· nil
 					*/
 					MVT_NULL,
 					/**
-					 * @brief ÕûÊı
+					 * @brief æ•´æ•°
 					*/
 					MVT_INT,
 					/**
-					 * @brief ÎŞ·ûºÅÕûÊı
+					 * @brief æ— ç¬¦å·æ•´æ•°
 					*/
 					MVT_UINT,
 					/**
-					 * @brief ÊµÊı
+					 * @brief å®æ•°
 					*/
 					MVT_REAL,
 					/**
-					 * @brief ×Ö·û´®
+					 * @brief å­—ç¬¦ä¸²
 					*/
 					MVT_STRING,
 					/**
-					 * @brief Ó³Éä
+					 * @brief æ˜ å°„
 					*/
 					MVT_MAP,
 					/**
-					 * @brief Êı×é
+					 * @brief æ•°ç»„
 					*/
 					MVT_ARRAY
 				} type;
@@ -130,20 +130,20 @@ namespace mule
 				size_t GetLength() const;
 
 				/**
-				 * @brief ×ª»»Îª×Ö·û´®¡£
-				 * @return ×Ö·û´®±íÊ¾Öµ¡£
+				 * @brief è½¬æ¢ä¸ºå­—ç¬¦ä¸²ã€‚
+				 * @return å­—ç¬¦ä¸²è¡¨ç¤ºå€¼ã€‚
 				*/
 				std::string ToString() const;
 
 				/**
-				 * @brief ĞòÁĞ»¯Îª×Ö·û´®¡£
-				 * @return ĞòÁĞ»¯½á¹û¡£
+				 * @brief åºåˆ—åŒ–ä¸ºå­—ç¬¦ä¸²ã€‚
+				 * @return åºåˆ—åŒ–ç»“æœã€‚
 				*/
 				std::string Stringfy() const;
 
 				/**
-				 * @brief ·´ĞòÁĞ»¯×Ö·û´®¡£
-				 * @param value Òª½âÎöµÄ×Ö·û´®¶ÔÏó¡£
+				 * @brief ååºåˆ—åŒ–å­—ç¬¦ä¸²ã€‚
+				 * @param value è¦è§£æçš„å­—ç¬¦ä¸²å¯¹è±¡ã€‚
 				*/
 				static MultiValue Parse(const std::string &value);
 

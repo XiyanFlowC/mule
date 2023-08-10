@@ -96,7 +96,7 @@ void LuaHost::RegisterFunction(const std::string& name, lua_CFunction func)
 mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetGlobal(const std::string &name)
 {
 	int top = GetStackTop();
-	// ÈôÊÇ±í
+	// è‹¥æ˜¯è¡¨
 	size_t dotIndex = name.find_first_of('.'), startIndex = 0;
 	if (dotIndex != std::string::npos)
 	{
@@ -141,21 +141,21 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
 	{
 		std::map<MultiValue, MultiValue> result;
 
-		// ±éÀúLuaTable
-		lua_pushnil(L);  // ½«nilÍÆÈëÕ»¶¥×÷Îª±éÀúµÄÆğÊ¼µã
+		// éå†LuaTable
+		lua_pushnil(L);  // å°†nilæ¨å…¥æ ˆé¡¶ä½œä¸ºéå†çš„èµ·å§‹ç‚¹
 
-		// ÈëÕ»µÄkeyÊ¹ÒªÇóµÄÖµÀëÕ»¶¥¸üÔ¶ÁË
+		// å…¥æ ˆçš„keyä½¿è¦æ±‚çš„å€¼ç¦»æ ˆé¡¶æ›´è¿œäº†
 		if (idx < 0)
 			--idx;
 		while (lua_next(L, idx) != 0) {
-			// »ñÈ¡keyºÍvalue
+			// è·å–keyå’Œvalue
 			const MultiValue key = GetValue(-2);
 			const MultiValue value = GetValue(-1);
 
-			// ½«keyºÍvalue²åÈëstd::map
+			// å°†keyå’Œvalueæ’å…¥std::map
 			result[key] = value;
 
-			// µ¯³övalue£¬±£ÁôkeyÓÃÓÚÏÂÒ»´Îµü´ú
+			// å¼¹å‡ºvalueï¼Œä¿ç•™keyç”¨äºä¸‹ä¸€æ¬¡è¿­ä»£
 			lua_pop(L, 1);
 		}
 
@@ -168,7 +168,7 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
 void mule::Lua::LuaHost::SetGlobal(const std::string &name, const mule::Data::Basic::MultiValue &value)
 {
 	int top = GetStackTop();
-	// ÈôÊÇ±í
+	// è‹¥æ˜¯è¡¨
 	size_t dotIndex = name.find_first_of('.'), startIndex = 0;
 	if (dotIndex != std::string::npos)
 	{
@@ -198,7 +198,7 @@ MultiValue LuaHost::Call(const std::string name, int count, ...)
 {
 	int top = GetStackTop();
 	MultiValue ret{};
-	// ÈôÊÇ±í
+	// è‹¥æ˜¯è¡¨
 	size_t dotIndex = name.find_first_of('.'), startIndex = 0;
 	if (dotIndex != std::string::npos)
 	{

@@ -12,7 +12,7 @@ namespace mule
     namespace Xml
     {
         /**
-         * @brief Xml½Úµã
+         * @brief XmlèŠ‚ç‚¹
         */
         class XmlNode
         {

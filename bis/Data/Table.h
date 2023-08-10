@@ -9,38 +9,38 @@
 namespace mule {
 	namespace Data {
 		/**
-		 * @brief ±í¡£¶ÁĞ´Ê±ÔÚÁ÷ÖĞ¶¨Î»Ê×µØÖ·µÄÔªËØ¡£
+		 * @brief è¡¨ã€‚è¯»å†™æ—¶åœ¨æµä¸­å®šä½é¦–åœ°å€çš„å…ƒç´ ã€‚
 		*/
 		class Table : public Basic::Type {
 		public:
 			/**
-			 * @brief Ä³¸öÔÚÁ÷ÖĞµÄÒ»ÁĞÊı¾İ£¬Æäµ¥ÔªÎª structure
-			 * @param structure ½á¹¹
-			 * @param name ±íÃû
-			 * @param length ±í³¤¶È
-			 * @param offset ±íÔÚÁ÷ÖĞµÄÆ«ÒÆ
+			 * @brief æŸä¸ªåœ¨æµä¸­çš„ä¸€åˆ—æ•°æ®ï¼Œå…¶å•å…ƒä¸º structure
+			 * @param structure ç»“æ„
+			 * @param name è¡¨å
+			 * @param length è¡¨é•¿åº¦
+			 * @param offset è¡¨åœ¨æµä¸­çš„åç§»
 			*/
 			Table(Structure *structure, const std::string &name, int length, size_t offset);
 
 			/**
-			 * @brief Ö´ĞĞ¶ÁÈ¡
-			 * @param stream ¶ÁÈ¡µÄÁ÷
-			 * @param dataHandler Êı¾İ´¦ÀíÆ÷
+			 * @brief æ‰§è¡Œè¯»å–
+			 * @param stream è¯»å–çš„æµ
+			 * @param dataHandler æ•°æ®å¤„ç†å™¨
 			*/
 			void Read(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
 
 			/**
-			 * @brief Ö´ĞĞĞ´Èë
-			 * @param stream Ğ´ÈëµÄÁ÷
-			 * @param dataHandler Êı¾İ´¦ÀíÆ÷
+			 * @brief æ‰§è¡Œå†™å…¥
+			 * @param stream å†™å…¥çš„æµ
+			 * @param dataHandler æ•°æ®å¤„ç†å™¨
 			*/
 			void Write(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
 
 			virtual size_t Size() const override;
 
 			/**
-			 * @brief »ñÈ¡±íµÄ³¤¶È£¨ÔªËØ¸öÊı£©
-			 * @return ÔªËØµÄ¸öÊı
+			 * @brief è·å–è¡¨çš„é•¿åº¦ï¼ˆå…ƒç´ ä¸ªæ•°ï¼‰
+			 * @return å…ƒç´ çš„ä¸ªæ•°
 			*/
 			int Length() const;
 
