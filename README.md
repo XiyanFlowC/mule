@@ -1,3 +1,14 @@
-# mule
+# MULE
 
-又一坨答辩。我也不知道这玩意有多混沌。
+~~MULE is a useless, limited editor.~~
+
+## BUILD
+```bash
+mkdir out
+cd out
+cmake ..
+make all
+```
+
+## 使用
+
