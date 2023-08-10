@@ -1,4 +1,5 @@
 #include "xyutils.h"
+#include <cstdint>
 
 std::string xybase::string::to_utf8(long codepoint)
 {
