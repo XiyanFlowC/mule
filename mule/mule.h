@@ -29,3 +29,4 @@
 #include "ResourceManager.h"
 #include "IsoContainer.h"
 #include "ElfStream.h"
+#include "ShiftableReferrence.h"

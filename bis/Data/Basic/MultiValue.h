@@ -127,6 +127,8 @@ namespace mule
 
 				ValueType GetType() const;
 
+				bool IsType(ValueType type) const;
+
 				size_t GetLength() const;
 
 				/**

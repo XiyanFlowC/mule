@@ -264,6 +264,10 @@ namespace mule
                                             index += 3;
                                         }
                                     }
+                                    else if (xml[index + 2] == '-' && xml[index + 3] == '-')
+                                    {
+                                        index = xml.find("-->", index + 4);
+                                    }
                                 }
                                 // 标签打开
                                 else

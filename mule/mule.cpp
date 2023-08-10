@@ -28,6 +28,7 @@ int main(int argc, char **argv)
 	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new Array::ArrayCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new VarChar::VarCharCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableReferrence::ShiftableStringCreator());
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 	std::string infoFile(ResourceManager::GetInstance().LoadData(Configuration::GetInstance().dataInfoFile).GetData());
@@ -81,7 +82,7 @@ int main(int argc, char **argv)
 								std::cout << "  => " << it->second.ToString() << std::endl;
 								for (size_t i = 2; i <= ret.value.mapValue->size(); ++i)
 								{
-									it = ret.value.mapValue->find(i);
+									it = ret.value.mapValue->find((int)i);
 									if (it == ret.value.mapValue->end()) break;
 									std::cout << "  -> " << it->second.ToString() << std::endl;
 								}

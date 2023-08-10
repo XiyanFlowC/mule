@@ -287,6 +287,11 @@ mule::Data::Basic::MultiValue::ValueType mule::Data::Basic::MultiValue::GetType(
 	return type;
 }
 
+bool mule::Data::Basic::MultiValue::IsType(ValueType type) const
+{
+	return this->type == type;
+}
+
 size_t mule::Data::Basic::MultiValue::GetLength() const
 {
 	return length;

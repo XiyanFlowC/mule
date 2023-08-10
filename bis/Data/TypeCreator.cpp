@@ -3,6 +3,10 @@
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
+mule::Data::TypeCreator::~TypeCreator()
+{
+}
+
 TypeCreator::TypeCreator()
 {
 	nextCreator = nullptr;

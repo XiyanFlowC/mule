@@ -23,6 +23,8 @@ namespace mule
 		class TypeCreator
 		{
 		public:
+			virtual ~TypeCreator();
+
 			TypeCreator();
 
 			TypeCreator(TypeCreator *next);
