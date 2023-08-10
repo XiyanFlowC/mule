@@ -23,7 +23,7 @@ namespace mule
 		BinaryStream(const char *path, bool isBigEndian = false);
 		~BinaryStream();
 
-		// Í¨¹ý Stream ¼Ì³Ð
+		// é€šè¿‡ Stream ç»§æ‰¿
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
 		virtual uint16_t ReadUInt16() override;

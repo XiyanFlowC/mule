@@ -71,7 +71,7 @@ unsigned int ResourceManager::SaveData(BinaryData &data, unsigned int assignId)
     char path[32];
     unsigned int id = assignId == 0 ? crc32_eval((uint8_t *) data.GetData(), data.GetLength()) : assignId;
 
-    // 冲突避免
+    // 鍐茬獊閬垮厤
     while (IsExist(id)) ++id;
 
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
@@ -178,7 +178,7 @@ void ResourceManager::LoadDefinition(std::string def)
         return;
     }
 
-    // 处理结构
+    // 澶勭悊缁撴瀯
     if (node.GetName() != "def")
     {
         fputs("XML Definition Format Incorrect.\n", stderr);

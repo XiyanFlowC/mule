@@ -13,7 +13,7 @@ namespace mule
     namespace Xml
     {
         /**
-         * @brief Ìá¹©MultiValueºÍXml½ÚµãµÄ¶ÔÓ¦¹ØÏµ
+         * @brief æä¾›MultiValueå’ŒXmlèŠ‚ç‚¹çš„å¯¹åº”å…³ç³»
         */
         class MvXmlNode
         {
@@ -54,11 +54,11 @@ namespace mule
             MvXmlNode operator[] (std::string name);
 
             /**
-             * @brief ´ÓMultiValueÖµ×ª»»ÎªXmlĞèÒªµÄText
+             * @brief ä»MultiValueå€¼è½¬æ¢ä¸ºXmléœ€è¦çš„Text
             */
             static std::function<std::string(std::string)> text_to_xml;
             /**
-             * @brief ½«Xml×ª»»ÎªĞèÒªµÄMultiValue
+             * @brief å°†Xmlè½¬æ¢ä¸ºéœ€è¦çš„MultiValue
             */
             static std::function<std::string(std::string)> xml_to_text;
         };

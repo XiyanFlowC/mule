@@ -5,7 +5,7 @@ using namespace mule;
 ElfStream::ElfStream(xybase::Stream *stream)
 	: stream(stream)
 {
-	// ��ȡħ��ͷ
+	// 读取魔术头
 	byte_t magicHeader[16];
 	stream->ReadBytes(reinterpret_cast<char *>(magicHeader), 16);
 	// fread(magicHeader, sizeof(magicHeader), 1, stream);

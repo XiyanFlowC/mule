@@ -18,7 +18,7 @@ namespace mule
 	{
 
 		/**
-		 * @brief ×Ö¶Î´´½¨Æ÷£¬ObjectManagerÓÃ
+		 * @brief å­—æ®µåˆ›å»ºå™¨ï¼ŒObjectManagerç”¨
 		*/
 		class TypeCreator
 		{
@@ -44,11 +44,11 @@ namespace mule
 		};
 
 		/**
-		 * @brief »ù±¾×Ö¶Î´´½¨Æ÷£¬ÓÃÓÚ´´½¨ÕûĞÎ¡¢¸¡µãĞÍµÈ»ù´¡¶ÁĞ´Æ÷¡£
+		 * @brief åŸºæœ¬å­—æ®µåˆ›å»ºå™¨ï¼Œç”¨äºåˆ›å»ºæ•´å½¢ã€æµ®ç‚¹å‹ç­‰åŸºç¡€è¯»å†™å™¨ã€‚
 		*/
 		class BasicFieldCreator : public TypeCreator
 		{
-			// Í¨¹ı FieldCreator ¼Ì³Ğ
+			// é€šè¿‡ FieldCreator ç»§æ‰¿
 			virtual Basic::Type *DoCreateObject(std::string info) override;
 		};
 	}

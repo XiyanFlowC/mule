@@ -12,17 +12,17 @@ namespace mule
 	{
 
 		/**
-		 * @brief ÎŞĞ§²Ù×÷¡£
-		 * ±íÊ¾¶ÔÏóÒòµ±Ç°×´Ì¬»òÉè¼ÆÔ­Òò¶øÎŞ·¨´¦ÀíÖ¸¶¨²Ù×÷µÄÒì³£¡£
+		 * @brief æ— æ•ˆæ“ä½œã€‚
+		 * è¡¨ç¤ºå¯¹è±¡å› å½“å‰çŠ¶æ€æˆ–è®¾è®¡åŸå› è€Œæ— æ³•å¤„ç†æŒ‡å®šæ“ä½œçš„å¼‚å¸¸ã€‚
 		*/
 		class InvalidOperationException : public Exception
 		{
 		public:
 			/**
-			 * @brief ³õÊ¼»¯ÎŞĞ§²Ù×÷Òì³£¡£
-			 * @param description ¶ÔÒì³£ĞÅÏ¢µÄÃèÊö¡£
-			 * @param file Å×³öÒì³£µÄÎÄ¼ş¡£
-			 * @param line Å×³öÒì³£µÄĞĞºÅ¡£
+			 * @brief åˆå§‹åŒ–æ— æ•ˆæ“ä½œå¼‚å¸¸ã€‚
+			 * @param description å¯¹å¼‚å¸¸ä¿¡æ¯çš„æè¿°ã€‚
+			 * @param file æŠ›å‡ºå¼‚å¸¸çš„æ–‡ä»¶ã€‚
+			 * @param line æŠ›å‡ºå¼‚å¸¸çš„è¡Œå·ã€‚
 			*/
 			InvalidOperationException(std::string description, const char *file, int line);
 		};
