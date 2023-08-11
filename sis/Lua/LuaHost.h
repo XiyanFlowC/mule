@@ -166,7 +166,7 @@ namespace mule
 				{
 					return GetValue(index);
 				}
-				catch (LuaException &ex)
+				catch (LuaException)
 				{
 					return mule::Data::Basic::MultiValue{};
 				}

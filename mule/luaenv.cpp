@@ -228,6 +228,8 @@ int readTable(int fd, std::string name, std::string handler)
         values[valued++] = v;
     }
     else return -3;
+
+    return 0;
 }
 
 int writeTable(int fd, int vd, std::string handler)
@@ -251,6 +253,8 @@ int writeTable(int fd, int vd, std::string handler)
         }
     }
     else return -3;
+
+    return 0;
 }
 
 mule::Xml::XmlGenerator<mule::Xml::MvXmlNode> generator;
