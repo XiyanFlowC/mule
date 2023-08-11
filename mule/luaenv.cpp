@@ -415,8 +415,12 @@ void InitialiseLuaEnvironment(xybase::Stream *stream)
     lua.RegisterFunction("writetbl", writeTable);
 
     // direct sheet handle
-    //lua.RegisterFunction("export", exportFile);
-    //lua.RegisterFunction("import", importFile);
+    //lua.RegisterFunction("extbl", exportFileHndlr);
+    //lua.RegisterFunction("imtbl", importFileHndlr);
+
+    // file dump/resume
+    // lua.RegisterFunction("export", exportFile);
+    // lua.RegisterFunction("import", importFile);
 
     // data management
     lua.RegisterFunction("loadsheet", loadSheet);

@@ -31,6 +31,26 @@ ResourceManager::ResourceManager()
     }
 }
 
+int ResourceManager::CreateDirectoryRecursively(std::string path, size_t index)
+{
+    size_t endIndex = path.find_first_of('/', index);
+
+    if (endIndex == std::string::npos)
+    {
+        if (!xybase::io::access(path.c_str(), xybase::io::PM_READWRITE))
+        {
+            return xybase::io::mkdir(path.c_str());
+        }
+    }
+
+    std::string curPath = path.substr(0, endIndex);
+    if (!xybase::io::access(curPath.c_str(), xybase::io::PM_READWRITE))
+    {
+        xybase::io::mkdir(curPath.c_str());
+    }
+    return CreateDirectoryRecursively(path, endIndex + 1);
+}
+
 ResourceManager &ResourceManager::GetInstance()
 {
     static ResourceManager _inst;
@@ -75,7 +95,9 @@ unsigned int ResourceManager::SaveData(BinaryData &data, unsigned int assignId)
     while (IsExist(id)) ++id;
 
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
-    FILE *f = fopen((Configuration::GetInstance().DataDir + path).c_str(), "wb");
+    std::string pp = Configuration::GetInstance().DataDir + path;
+    if (!xybase::io::access(pp.c_str(), xybase::io::PM_READWRITE)) CreateDirectoryRecursively(pp);
+    FILE *f = fopen(pp.c_str(), "wb");
     if (f == NULL)
     {
         throw mule::Exception::Exception(std::string("Unable to open file to write ") + path, __FILE__, __LINE__);

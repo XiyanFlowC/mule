@@ -32,7 +32,7 @@ size_t mule::Data::Array::Size() const
 
 std::string mule::Data::Array::GetTypeName() const
 {
-	return std::string("array");
+	return innerObject->GetTypeName() + "[" + std::to_string(length) + "]";
 }
 
 bool mule::Data::Array::IsComposite() const

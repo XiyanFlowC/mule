@@ -11,6 +11,7 @@
 #include <functional>
 
 #include <xybase/Stream.h>
+#include <xybase/xyutils.h>
 #include <xybase/Exception/IOException.h>
 #include <BinaryStream.h>
 #include <Data/TypeManager.h>
@@ -55,6 +56,8 @@ class ResourceManager
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 
 	ResourceManager();
+
+	int CreateDirectoryRecursively(std::string path, size_t index = 0);
 public:
 	struct FileInfo
 	{

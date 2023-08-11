@@ -103,6 +103,7 @@ namespace xybase
 		{
 			PM_READ = 0x1,
 			PM_WRITE = 0x2,
+			PM_READWRITE = 0X3,
 			PM_EXECUTE = 0x4,
 		};
 
