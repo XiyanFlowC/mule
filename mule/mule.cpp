@@ -20,8 +20,8 @@ int main(int argc, char **argv)
 	crc32_init();
 
 	LuaHost::GetInstance().LoadLuaStandardLibs();
-	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua"));
-	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.lua"));
+	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua")));
+	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.lua")));
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
@@ -34,7 +34,7 @@ int main(int argc, char **argv)
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 	std::string infoFile(ResourceManager::GetInstance().LoadData(Configuration::GetInstance().dataInfoFile).GetData());
 
-	InitialiseLuaEnvironment(new xybase::BinaryStream(Configuration::GetInstance().TargetFile.c_str()));
+	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_utf16(Configuration::GetInstance().TargetFile.c_str())));
 
 	// Execution
 	try
@@ -80,26 +80,26 @@ int main(int argc, char **argv)
 							auto &&it = ret.value.mapValue->find(1);
 							if (it != ret.value.mapValue->end())
 							{
-								std::cout << "  => " << it->second.ToString() << std::endl;
+								std::cout << "  => " << xybase::string::to_utf8(it->second.ToString()) << std::endl;
 								for (size_t i = 2; i <= ret.value.mapValue->size(); ++i)
 								{
 									it = ret.value.mapValue->find((int)i);
 									if (it == ret.value.mapValue->end()) break;
-									std::cout << "  -> " << it->second.ToString() << std::endl;
+									std::cout << "  -> " << xybase::string::to_utf8(it->second.ToString()) << std::endl;
 								}
 								continue;
 							}
 						}
-						std::cout << "  => " << ret.ToString() << std::endl;
+						std::cout << "  => " << xybase::string::to_utf8(ret.ToString()) << std::endl;
 					}
 					else
-						std::cout << "  => " << ret.ToString() << std::endl;
+						std::cout << "  => " << xybase::string::to_utf8(ret.ToString()) << std::endl;
 				}
 				catch (LuaException &ex)
 				{
 					fprintf(stderr, "Lua Error: %s\n\n", ex.what());
 				}
-				catch (mule::Exception::Exception &ex)
+				catch (xybase::Exception &ex)
 				{
 					fprintf(stderr, "Error when executing %s:\n%s\n\n", buffer, ex.what());
 				}

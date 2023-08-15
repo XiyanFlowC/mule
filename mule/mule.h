@@ -5,7 +5,7 @@
 
 #include <iostream>
 
-#include <xybase/BinaryStream.h>
+#include <BinaryStream.h>
 #include <Lua/LuaHost.h>
 #include <Data/Basic/Integer.h>
 #include <Data/Basic/String.h>

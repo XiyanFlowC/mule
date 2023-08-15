@@ -6,9 +6,9 @@
 #include <stack>
 #include <map>
 
-#include "xybase/FileContainer.h"
-#include "xybase/StringBuilder.h"
-#include "xybase/Exception/OutOfRangeException.h"
+#include <FileContainer.h>
+#include <StringBuilder.h>
+#include <Exception/OutOfRangeException.h>
 
 #define ISO_SECTOR_SIZE (2048)
 
@@ -16,7 +16,7 @@ namespace mule
 {
 	class BasicContainer : public xybase::FileContainer
 	{
-		std::stack<std::string> dir;
+		std::stack<std::u16string> dir;
 
 		std::map<int, size_t> locs;
 
@@ -30,7 +30,7 @@ namespace mule
 		T Read(int id)
 		{
 			if (locs[id] + sizeof(T) >= fdMap[id]->curSize)
-				throw xybase::OutOfRangeException("Try to read after EOF.", __LINE__);
+				throw xybase::OutOfRangeException(u"Try to read after EOF.", __LINE__);
 			if (file->Tell() != locs[id])
 			{
 				file->Seek(locs[id], 0);
@@ -47,7 +47,7 @@ namespace mule
 		void Write(int id, T data)
 		{
 			if (locs[id] + sizeof(T) >= fdMap[id]->size)
-				throw xybase::OutOfRangeException("Write exceed maximum size.", __LINE__);
+				throw xybase::OutOfRangeException(u"Write exceed maximum size.", __LINE__);
 			if (file->Tell() != locs[id])
 			{
 				file->Seek(locs[id], 0);
@@ -121,21 +121,21 @@ namespace mule
 			bool occupied;
 		};
 
-		std::map<std::string, FileDesc> fileIndices;
+		std::map<std::u16string, FileDesc> fileIndices;
 
 		BasicContainer(xybase::Stream *stream);
 
-		virtual xybase::Stream *Open(std::string name, FileOpenMode mode) override;
+		virtual xybase::Stream *Open(std::u16string name, FileOpenMode mode) override;
 
-		virtual std::list<std::string> List() override;
+		virtual std::list<std::u16string> List() override;
 
-		virtual std::string WorkDir() override;
+		virtual std::u16string WorkDir() override;
 
-		virtual void ChangeDir(std::string path) override;
+		virtual void ChangeDir(std::u16string path) override;
 
-		virtual void MakeDir(std::string path) override;
+		virtual void MakeDir(std::u16string path) override;
 
-		virtual void Remove(std::string target, bool recursive = false) override;
+		virtual void Remove(std::u16string target, bool recursive = false) override;
 
 		void Close();
 

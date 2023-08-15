@@ -5,8 +5,8 @@
 
 #include <map>
 #include <string>
+#include <Stream.h>
 #include "MultiValue.h"
-#include "../../xybase/Stream.h"
 
 namespace mule
 {
@@ -35,14 +35,14 @@ namespace mule
 					 * @param realm 领域名
 					 * @param name 
 					*/
-					virtual void OnRealmEnter(Type *realm, std::string name) = 0;
+					virtual void OnRealmEnter(Type *realm, std::u16string name) = 0;
 
 					/**
 					 * @brief 离开具名领域
 					 * @param realm 
 					 * @param name 
 					*/
-					virtual void OnRealmExit(Type *realm, std::string name) = 0;
+					virtual void OnRealmExit(Type *realm, std::u16string name) = 0;
 
 					/**
 					 * @brief 进入索引领域
@@ -62,9 +62,9 @@ namespace mule
 
 					virtual MultiValue OnDataWrite() = 0;
 
-					virtual void AppendMetadata(std::map<std::string, MultiValue> metadata);
+					virtual void AppendMetadata(std::map<std::u16string, MultiValue> metadata);
 
-					virtual void AppendMetadatum(std::string name, const MultiValue &value);
+					virtual void AppendMetadatum(std::u16string name, const MultiValue &value);
 				};
 				virtual ~Type();
 
@@ -78,7 +78,7 @@ namespace mule
 				 * @brief 获得类型名（运行期反射协助用）
 				 * @return 类型名
 				*/
-				virtual std::string GetTypeName() const = 0;
+				virtual std::u16string GetTypeName() const = 0;
 
 				/**
 				 * @brief 获得上一次读取的大小

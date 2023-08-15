@@ -2,7 +2,7 @@
 
 ~~MULE is a useless, limited editor.~~
 
-## BUILD
+## 构建/BUILD
 ```bash
 mkdir out
 cd out
@@ -10,16 +10,21 @@ cmake ..
 make all
 ```
 
-## 用法
+请注意：你的编译器应支持C++20标准，CMake版本不应低于3.12。
+
+Be noticed: your compiler should support C++20, and the version of your cmake should grather than 3.12.
+The comments were written in Chinese (if I have wrote).
+
+## 用法/Usage
 ```bash
 mule <path-to-work-area> <path-to-target-file> <action>
 ```
 
 * path-to-work-area：到工作区的路径。
 * path-to-target-file：到目标文件的路径。
-* action：动作，若为 interact 则进入交互模式。
+* action：动作，若为 interact 则进入交互模式。If it is set to 'interact', the programe will run in the interaction mode.
 
-## 工作区
+## 工作区/Work Area
 工作区需要具备以下条件：
 * 具有脚本子目录 scr
 * 具有数据子目录 dat
@@ -44,17 +49,6 @@ mule <path-to-work-area> <path-to-target-file> <action>
 </def>
 ```
 
-（尚未完成）
-也可以使用INI定义文件，每个文件，具有如下形式：
-```ini
-[结构1]
-字段1=string*
-字段2=int32
-字段3=uint32
-[结构2]
-
-# ...
-```
 ### 脚本目录
 命令中的 action 将调用此目录下相应的 lua 脚本。
 

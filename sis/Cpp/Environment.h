@@ -3,9 +3,9 @@
 #define ENVIRONMENT_H__
 
 #include <string>
-#include <xybase/Stream.h>
-#include <xybase/FileContainer.h>
-#include <xybase/Exception/InvalidParameterException.h>
+#include <Stream.h>
+#include <FileContainer.h>
+#include <Exception/InvalidParameterException.h>
 #include <Data/TypeCreator.h>
 #include <Data/Basic/MultiValue.h>
 #include <Data/Basic/Type.h>

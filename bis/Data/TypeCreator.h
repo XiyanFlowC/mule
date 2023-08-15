@@ -38,11 +38,11 @@ namespace mule
 			 * @param info
 			 * @return
 			*/
-			Basic::Type *GetOrCreateObject(std::string info);
+			Basic::Type *GetOrCreateObject(std::u16string info);
 
 		protected:
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
-			virtual Basic::Type *DoCreateObject(std::string info) = 0;
+			virtual Basic::Type *DoCreateObject(std::u16string info) = 0;
 		};
 
 		/**
@@ -51,7 +51,7 @@ namespace mule
 		class BasicFieldCreator : public TypeCreator
 		{
 			// 通过 FieldCreator 继承
-			virtual Basic::Type *DoCreateObject(std::string info) override;
+			virtual Basic::Type *DoCreateObject(std::u16string info) override;
 		};
 	}
 }

@@ -12,8 +12,8 @@ namespace mule
 		class LuaDataHandler : public mule::Data::Basic::Type::DataHandler
 		{
 		public:
-			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, std::string name) override;
-			virtual void OnRealmExit(mule::Data::Basic::Type *realm, std::string name) override;
+			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, std::u16string name) override;
+			virtual void OnRealmExit(mule::Data::Basic::Type *realm, std::u16string name) override;
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
 			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
 			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, int idx) override;

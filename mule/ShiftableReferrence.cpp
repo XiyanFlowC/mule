@@ -1,6 +1,6 @@
 #include "ShiftableReferrence.h"
 
-#include <xybase/xyutils.h>
+#include <xyutils.h>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
@@ -43,9 +43,9 @@ size_t ShiftableReferrence::Size() const
 	return size_t(4);
 }
 
-std::string ShiftableReferrence::GetTypeName() const
+std::u16string ShiftableReferrence::GetTypeName() const
 {
-	return std::string("sref:") + referent->GetTypeName();
+	return referent->GetTypeName() + u'&';
 }
 
 void ShiftableReferrence::StreamDispose(xybase::Stream *stream)
@@ -53,9 +53,9 @@ void ShiftableReferrence::StreamDispose(xybase::Stream *stream)
 	MemoryManager::GetInstance().DisposeStream(stream);
 }
 
-Type *ShiftableReferrence::ShiftableStringCreator::DoCreateObject(std::string info)
+Type *ShiftableReferrence::ShiftableStringCreator::DoCreateObject(std::u16string info)
 {
-	if (info.ends_with("&"))
+	if (info.ends_with(u"&"))
 	{
 		Type *inner = TypeManager::GetInstance().GetOrCreateObject(info.substr(info.length() - 1));
 		if (inner == nullptr) return nullptr;

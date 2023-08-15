@@ -84,7 +84,7 @@ int openFile(std::string name)
         name = name.substr(devIndex + 1);
     }
 
-    auto ret = con->Open(name, xybase::FileContainer::FOM_READ_WRITE);
+    auto ret = con->Open(xybase::string::to_utf16(name), xybase::FileContainer::FOM_READ_WRITE);
     if (ret == nullptr)
     {
         return -1;
@@ -141,10 +141,7 @@ MultiValue readFile(int fd, int size)
         return -1;
     }
 
-    char *buffer = new char[size];
-    itr->second->ReadBytes(buffer, size);
-    MultiValue ret{ std::string(buffer, size) };
-    return ret;
+    return -1;
 }
 
 std::string writeFile(int fd, MultiValue mv)
@@ -163,7 +160,7 @@ int loadDefine(std::string define)
     {
         ResourceManager::GetInstance().LoadDefinition(define);
     }
-    catch (mule::Exception::Exception &ex)
+    catch (xybase::Exception &ex)
     {
         fprintf(stderr, "[EX] loadDefine: %s\n", ex.what());
         return -2;
@@ -187,7 +184,7 @@ int registerTable(int fd, std::string name, size_t offset, int size)
         return -1;
     }
 
-    auto structure = TypeManager::GetInstance().GetObject(name);
+    auto structure = TypeManager::GetInstance().GetObject(xybase::string::to_utf16(name));
     if (structure == nullptr || dynamic_cast<Structure *>(structure) == nullptr)
     {
         return -2;
@@ -202,7 +199,7 @@ int registerTable(int fd, std::string name, size_t offset, int size)
     auto &&i = tbls[fd].find(name);
     if (i != tbls[fd].end()) return -3;
 
-    tbls[fd][name] = new Table(dynamic_cast<Structure *>(structure), name, size, offset);
+    tbls[fd][name] = new Table(dynamic_cast<Structure *>(structure), xybase::string::to_utf16(name), size, offset);
 
     return 0;
 }
@@ -223,7 +220,7 @@ int readTable(int fd, std::string name, std::string handler)
         {
             Mappifier m;
             pair.second->Read(sitr->second, &m);
-            (*v.value.mapValue)[pair.first] = m.GetMap();
+            (*v.value.mapValue)[xybase::string::to_utf16(pair.first)] = m.GetMap();
         }
         values[valued++] = v;
     }
@@ -248,7 +245,7 @@ int writeTable(int fd, int vd, std::string handler)
         for (auto &&pair : titr->second)
         {
             Mappifier m;
-            m.SetMap((*v.value.mapValue)[pair.first]);
+            m.SetMap((*v.value.mapValue)[xybase::string::to_utf16(pair.first)]);
             pair.second->Write(sitr->second, &m);
         }
     }
@@ -271,7 +268,7 @@ int saveSheet(int vd, std::string sheetName)
     {
         return -2;
     }
-    std::string xml = generator.ToXml(mule::Xml::MvXmlNode(sheetName, itr->second));
+    std::string xml = generator.ToXml(mule::Xml::MvXmlNode(xybase::string::to_utf16(sheetName), itr->second));
     ResourceManager::GetInstance().SaveSheet(sheetName, xml);
 
     return 0;
@@ -329,7 +326,7 @@ MultiValue listfs(MultiValue dev)
             return -1;
         }
 
-        auto &&itr = containers.find(*dev.value.stringValue);
+        auto &&itr = containers.find(xybase::string::to_utf8(*dev.value.stringValue));
         if (itr == containers.end()) return -2;
 
         con = itr->second;

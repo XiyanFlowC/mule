@@ -3,7 +3,7 @@
 #ifndef FRAGMENT_H__
 #define FRAGMENT_H__
 
-#include "../../Exception/InvalidParameterException.h"
+#include <Exception/InvalidParameterException.h>
 
 namespace mule
 {

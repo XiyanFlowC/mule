@@ -5,7 +5,7 @@ using namespace mule;
 void mule::BasicContainer::ReadBytes(int id, char *buffer, int size)
 {
 	if (locs[id] + size > fdMap[id]->curSize)
-		throw xybase::OutOfRangeException("Try to read after EOF.", __LINE__);
+		throw xybase::OutOfRangeException(u"Try to read after EOF.", __LINE__);
 	if (file->Tell() != locs[id] + fdMap[id]->offset)
 	{
 		file->Seek(locs[id] + fdMap[id]->offset, 0);
@@ -18,7 +18,7 @@ template<>
 void mule::BasicContainer::Write<const std::string &>(int id, const std::string &value)
 {
 	if (locs[id] + value.size() >= fdMap[id]->size)
-		throw xybase::OutOfRangeException("Write exceed maximum size.", __LINE__);
+		throw xybase::OutOfRangeException(u"Write exceed maximum size.", __LINE__);
 	if (file->Tell() != locs[id])
 	{
 		file->Seek(locs[id], 0);
@@ -31,7 +31,7 @@ void mule::BasicContainer::Write<const std::string &>(int id, const std::string 
 void mule::BasicContainer::Write(int id, const char *buffer, size_t size)
 {
 	if (locs[id] + size >= fdMap[id]->size)
-		throw xybase::OutOfRangeException("Write exceed maximum size.", __LINE__);
+		throw xybase::OutOfRangeException(u"Write exceed maximum size.", __LINE__);
 	if (file->Tell() != locs[id])
 	{
 		file->Seek(locs[id], 0);
@@ -56,7 +56,7 @@ BasicContainer::BasicContainer(xybase::Stream * stream)
 	file = stream;
 }
 
-xybase::Stream *BasicContainer::Open(std::string name, FileOpenMode mode)
+xybase::Stream *BasicContainer::Open(std::u16string name, FileOpenMode mode)
 {
 	auto &&it = fileIndices.find(name);
 	if (it == fileIndices.end()) return nullptr;
@@ -69,9 +69,9 @@ xybase::Stream *BasicContainer::Open(std::string name, FileOpenMode mode)
 	return new InnerFile(curId++, it->second.size, it->second.offset, this);
 }
 
-std::list<std::string> BasicContainer::List()
+std::list<std::u16string> BasicContainer::List()
 {
-	std::list<std::string> ret;
+	std::list<std::u16string> ret;
 
 	for (auto &&item : fileIndices)
 	{
@@ -81,12 +81,12 @@ std::list<std::string> BasicContainer::List()
 	return ret;
 }
 
-std::string BasicContainer::WorkDir()
+std::u16string BasicContainer::WorkDir()
 {
-	return std::string("");
+	return std::u16string(u"");
 }
 
-void BasicContainer::ChangeDir(std::string path)
+void BasicContainer::ChangeDir(std::u16string path)
 {
 }
 
@@ -95,11 +95,11 @@ void mule::BasicContainer::Close()
 	file->Close();
 }
 
-void mule::BasicContainer::MakeDir(std::string path)
+void mule::BasicContainer::MakeDir(std::u16string path)
 {
 }
 
-void mule::BasicContainer::Remove(std::string target, bool recursive)
+void mule::BasicContainer::Remove(std::u16string target, bool recursive)
 {
 }
 

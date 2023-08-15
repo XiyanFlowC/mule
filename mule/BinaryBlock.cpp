@@ -14,12 +14,12 @@ size_t BinaryBlock::Size() const
 	return size_t();
 }
 
-std::string BinaryBlock::GetTypeName() const
+std::u16string BinaryBlock::GetTypeName() const
 {
-	return "BinaryBlock";
+	return u"BinaryBlock";
 }
 
-mule::Data::Basic::Type *BinaryBlock::BinaryBlockCreator::DoCreateObject(std::string info)
+mule::Data::Basic::Type *BinaryBlock::BinaryBlockCreator::DoCreateObject(std::u16string info)
 {
 	return nullptr;
 }

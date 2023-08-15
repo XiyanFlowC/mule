@@ -1,7 +1,7 @@
 #include "Integer.h"
+#include <xystring.h>
 
 using namespace mule::Data::Basic;
-using namespace mule::Exception;
 
 mule::Data::Basic::Integer::Integer(int size, bool isUnsigned)
 {
@@ -66,7 +66,7 @@ void mule::Data::Basic::Integer::Write(xybase::Stream *stream, DataHandler *data
 	}
 }
 
-std::string mule::Data::Basic::Integer::GetTypeName() const
+std::u16string mule::Data::Basic::Integer::GetTypeName() const
 {
-	return std::string("int") + std::to_string(size);
+	return std::u16string(u"int") + xybase::string::to_utf16(std::to_string(size));
 }

@@ -10,9 +10,10 @@
 #include <memory>
 #include <functional>
 
-#include <xybase/Stream.h>
-#include <xybase/xyutils.h>
-#include <xybase/Exception/IOException.h>
+#include <Stream.h>
+#include <xyutils.h>
+#include <Exception/IOException.h>
+#include <Exception/RuntimeException.h>
 #include <Data/TypeManager.h>
 #include <Data/Structure.h>
 #include <Xml/XmlParser.h>

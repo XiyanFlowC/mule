@@ -1,35 +1,36 @@
 #include "Mappifier.h"
-#include "../Exception/InvalidParameterException.h"
-#include "../Exception/InvalidOperationException.h"
+#include <Exception/InvalidParameterException.h>
+#include <Exception/InvalidOperationException.h>
 #include "Table.h"
 
 using namespace mule::Data::Basic;
+using namespace xybase;
 
 void mule::Data::Mappifier::OnSheetReadStart()
 {
-	if (status != DHMS_IDLE) throw Exception::InvalidOperationException("Start read when not in idle.", MULE_FILE, __LINE__);
+	if (status != DHMS_IDLE) throw InvalidOperationException(u"Start read when not in idle.", __LINE__);
 	status = DHMS_READ;
 }
 
 void mule::Data::Mappifier::OnSheetWriteStart()
 {
-	if (status != DHMS_IDLE) throw Exception::InvalidOperationException("Start write when not in idle.", MULE_FILE, __LINE__);
+	if (status != DHMS_IDLE) throw InvalidOperationException(u"Start write when not in idle.", __LINE__);
 	status = DHMS_WRITE;
 }
 
 void mule::Data::Mappifier::OnSheetReadEnd()
 {
-	if (status != DHMS_READ) throw Exception::InvalidOperationException("End read when not in read.", MULE_FILE, __LINE__);
+	if (status != DHMS_READ) throw InvalidOperationException(u"End read when not in read.", __LINE__);
 	status = DHMS_IDLE;
 }
 
 void mule::Data::Mappifier::OnSheetWriteEnd()
 {
-	if (status != DHMS_WRITE) throw Exception::InvalidOperationException("End write when not in write.", MULE_FILE, __LINE__);
+	if (status != DHMS_WRITE) throw InvalidOperationException(u"End write when not in write.", __LINE__);
 	status = DHMS_IDLE;
 }
 
-void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::string name)
+void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::u16string name)
 {
 	if (status == DHMS_READ)
 	{
@@ -43,7 +44,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::string name)
 		auto *itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
 		{
-			throw Exception::InvalidOperationException("Not map but entered a realm.", MULE_FILE, __LINE__);
+			throw InvalidOperationException(u"Not map but entered a realm.", __LINE__);
 		}
 		else
 		{
@@ -56,7 +57,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::string name)
 	}
 }
 
-void mule::Data::Mappifier::OnRealmExit(Type *realm, std::string name)
+void mule::Data::Mappifier::OnRealmExit(Type *realm, std::u16string name)
 {
 	if (status == DHMS_READ)
 	{
@@ -90,7 +91,7 @@ MultiValue mule::Data::Mappifier::OnDataWrite()
 	return *values.top();
 }
 
-void mule::Data::Mappifier::AppendMetadatum(std::string name, const Basic::MultiValue &datum)
+void mule::Data::Mappifier::AppendMetadatum(std::u16string name, const Basic::MultiValue &datum)
 {
 	if (status == DHMS_READ)
 	{
@@ -129,7 +130,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, int idx)
 		auto* itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
 		{
-			throw Exception::InvalidOperationException("Not map but entered a realm.", MULE_FILE, __LINE__);
+			throw InvalidOperationException(u"Not map but entered a realm.", __LINE__);
 		}
 		else
 		{

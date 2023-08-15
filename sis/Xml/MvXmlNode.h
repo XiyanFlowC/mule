@@ -21,11 +21,11 @@ namespace mule
         public:
             mule::Data::Basic::MultiValue mv;
 
-            std::string name;
+            std::u16string name;
 
             MvXmlNode();
 
-            MvXmlNode(std::string name, const mule::Data::Basic::MultiValue &val);
+            MvXmlNode(std::u16string name, const mule::Data::Basic::MultiValue &val);
 
             MvXmlNode(const MvXmlNode &rvalue);
 
@@ -35,32 +35,32 @@ namespace mule
 
             std::list<MvXmlNode> GetChildren() const;
 
-            void AddText(std::string str);
+            void AddText(std::u16string str);
 
-            std::string GetText() const;
+            std::u16string GetText() const;
 
-            void SetName(std::string name);
+            void SetName(std::u16string name);
 
-            std::string GetName() const;
+            std::u16string GetName() const;
 
-            void AddAttribute(std::string name, std::string data);
+            void AddAttribute(std::u16string name, std::u16string data);
 
-            std::map<std::string, std::string> GetAttributes() const;
+            std::map<std::u16string, std::u16string> GetAttributes() const;
 
             const static MvXmlNode ERROR;
 
             bool operator== (const MvXmlNode &rvalue) const;
 
-            MvXmlNode operator[] (std::string name);
+            MvXmlNode operator[] (std::u16string name);
 
             /**
              * @brief 从MultiValue值转换为Xml需要的Text
             */
-            static std::function<std::string(std::string)> text_to_xml;
+            static std::function<std::u16string(std::u16string)> text_to_xml;
             /**
              * @brief 将Xml转换为需要的MultiValue
             */
-            static std::function<std::string(std::string)> xml_to_text;
+            static std::function<std::u16string(std::u16string)> xml_to_text;
         };
     }
 }

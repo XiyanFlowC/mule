@@ -1,14 +1,14 @@
 #include "MultiValue.h"
-#include "../../xybase/StringBuilder.h"
+#include <StringBuilder.h>
+#include <xystring.h>
 
 using namespace std;
 
 using namespace mule::Data::Basic;
-using namespace mule::Exception;
 
 const MultiValue MultiValue::MV_NULL = MultiValue(MultiValue::MVT_NULL);
 
-InvalidRValueException::InvalidRValueException(std::string description, const char* file, int line) : Exception(description, file, line)
+InvalidRValueException::InvalidRValueException(std::u16string description, int line) : xybase::Exception(description, line)
 {
 }
 
@@ -109,7 +109,7 @@ mule::Data::Basic::MultiValue::MultiValue(ValueType type, int length)
 		value.unsignedValue = 0;
 		break;
 	case mule::Data::Basic::MultiValue::MVT_STRING:
-		value.stringValue = new std::string("");
+		value.stringValue = new std::u16string(u"");
 		break;
 	case mule::Data::Basic::MultiValue::MVT_MAP:
 		value.mapValue = new std::map<MultiValue, MultiValue>;
@@ -144,7 +144,7 @@ MultiValue::MultiValue(const MultiValue& pattern)
 	
 	if (type == MVT_STRING)
 	{
-		value.stringValue = new std::string(*(pattern.value.stringValue));
+		value.stringValue = new std::u16string(*(pattern.value.stringValue));
 	}
 }
 
@@ -176,7 +176,7 @@ mule::Data::Basic::MultiValue::MultiValue(MultiValue &&movee) noexcept
 	length = movee.length;
 }
 
-MultiValue::MultiValue(const std::string& value)
+MultiValue::MultiValue(const std::u16string & value)
 {
 	type = MVT_NULL;
 	SetValue(value);
@@ -264,7 +264,7 @@ void mule::Data::Basic::MultiValue::SetType(ValueType type, int length)
 		value.unsignedValue = 0;
 		break;
 	case mule::Data::Basic::MultiValue::MVT_STRING:
-		value.stringValue = new std::string("");
+		value.stringValue = new std::u16string(u"");
 		break;
 	case mule::Data::Basic::MultiValue::MVT_MAP:
 		value.mapValue = new std::map<MultiValue, MultiValue>;
@@ -297,120 +297,120 @@ size_t mule::Data::Basic::MultiValue::GetLength() const
 	return length;
 }
 
-std::string MultiValue::ToString() const
+std::u16string MultiValue::ToString() const
 {
 	switch (type)
 	{
 	case MVT_INT:
-		return std::to_string(value.signedValue);
+		return xybase::string::to_utf16(std::to_string(value.signedValue));
 		break;
 	case MVT_NULL:
-		return std::string("(null)");
+		return std::u16string(u"(null)");
 		break;
 	case MVT_REAL:
-		return std::to_string(value.realValue);
+		return xybase::string::to_utf16(std::to_string(value.realValue));
 		break;
 	case MVT_STRING:
 		return *value.stringValue;
 		break;
 	case MVT_UINT:
-		return std::to_string(value.unsignedValue);
+		return xybase::string::to_utf16(std::to_string(value.unsignedValue));
 		break;
 	case MVT_ARRAY:
 	{
-		std::string aret("[");
+		std::u16string aret(u"[");
 		for (size_t i = 0; i < length; ++i)
 		{
-			aret += value.arrayValue[i].ToString() + ',';
+			aret += value.arrayValue[i].ToString() + u',';
 		}
-		aret += "]";
+		aret += u"]";
 		return aret;
 		break;
 	}
 	case MVT_MAP:
 	{
-		std::string mret("{");
+		std::u16string mret(u"{");
 		for (const std::pair<MultiValue, MultiValue> &pair : *value.mapValue)
 		{
-			mret += pair.first.ToString() + '=' + pair.second.ToString();
+			mret += pair.first.ToString() + u'=' + pair.second.ToString();
 			mret += ',';
 		}
-		mret += "}";
+		mret += u"}";
 		return mret;
 		break;
 	}
 	default:
 		abort();
 	}
-	return "";
+	return u"";
 }
 
-std::string MultiValue::Stringfy() const
+std::u16string MultiValue::Stringfy() const
 {
 	switch (type)
 	{
 	case MultiValue::MVT_NULL:
-		return "null";
+		return u"null";
 		break;
 	case MultiValue::MVT_INT:
-		return std::to_string(value.signedValue);
+		return xybase::string::to_utf16(std::to_string(value.signedValue));
 		break;
 	case MultiValue::MVT_UINT:
-		return std::to_string(value.unsignedValue) + "u";
+		return xybase::string::to_utf16(std::to_string(value.unsignedValue)) + u"u";
 		break;
 	case MultiValue::MVT_REAL:
-		return std::string("$") + std::to_string(value.realValue);
+		return u"$" + xybase::string::to_utf16(std::to_string(value.realValue));
 		break;
 	case MultiValue::MVT_STRING:
 		return Stringfy(*value.stringValue);
 		break;
 	case MVT_ARRAY:
 	{
-		std::string aret("[");
+		std::u16string aret(u"[");
 		for (size_t i = 0; i < length; ++i)
 		{
-			aret += value.arrayValue[i].Stringfy() + ',';
+			aret += value.arrayValue[i].Stringfy() + u',';
 		}
-		aret += "]";
+		aret += u"]";
 		return aret;
 		break;
 	}
 	case MVT_MAP:
 	{
-		std::string mret("{");
+		std::u16string mret(u"{");
 		for (const std::pair<MultiValue, MultiValue> &pair : *value.mapValue)
 		{
-			mret += pair.first.Stringfy() + '=' + pair.second.Stringfy();
-			mret += ',';
+			mret += pair.first.Stringfy() + u'=' + pair.second.Stringfy();
+			mret += u',';
 		}
-		mret += "}";
+		mret += u"}";
 		return mret;
 		break;
 	}
 	default:
 		abort();
 	}
-	return "";
+	return u"";
 }
 
-std::string MultiValue::Stringfy(std::string str) const
+std::u16string MultiValue::Stringfy(std::u16string str) const
 {
-	xybase::StringBuilder<char> sb;
-	for (char ch : str)
+	xybase::StringBuilder<char16_t> sb;
+	for (char16_t ch : str)
 	{
 		switch (ch)
 		{
-		case '\\':
-			sb += "\\\\";
+		case u'\\':
+			sb += u"\\\\";
 			break;
-		case '\n':
-			sb += "\\n";
+		case u'\n':
+			sb += u"\\n";
 			break;
-		case '\r':
-			sb += "\\r";
+		case u'\r':
+			sb += u"\\r";
 			break;
-		case '"':
-			sb += "\\\"";
+		case u'"':
+			sb += u"\\\"";
 			break;
 		default:
 			sb += ch;
@@ -419,7 +419,7 @@ std::string MultiValue::Stringfy(std::string str) const
 	return sb.ToString();
 }
 
-void MultiValue::ParseInt(const std::string &value)
+void MultiValue::ParseInt(const std::u16string &value)
 {
 	unsigned long long res = 0;
 	int neg = 0;
@@ -444,7 +444,7 @@ void MultiValue::ParseInt(const std::string &value)
 			{
 				state = 2; // 确认是否为十六进制数
 			}
-			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 			break;
 		case 1:
 			if ('0' <= *itr && *itr <= '9')
@@ -456,7 +456,7 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 			break;
 		case 2:
 			if ('1' <= *itr && *itr <= '7')
@@ -473,7 +473,7 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT; // 二进制输入默认无符号
 				state = 5; // 二进制输入
 			}
-			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 			break;
 		case 3:
 			if ('0' <= *itr && *itr <= '9')
@@ -493,7 +493,7 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 			break;
 		case 4:
 			if ('0' <= *itr && *itr <= '7')
@@ -505,21 +505,21 @@ void MultiValue::ParseInt(const std::string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 			break;
 		case 5:
 			if (*itr == '0' || *itr == '1')
 			{
 				res = (res << 1) | (*itr - '0');
 			}
-			else throw InvalidParameterException("value", "unexpected character.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 		}
 	}
 	mvpi_forout:
 	this->value.unsignedValue = neg ? ~res + 1 : res; // 如果有负号，取反
 }
 
-void MultiValue::ParseString(const std::string &value, bool isBareString)
+void MultiValue::ParseString(const std::u16string &value, bool isBareString)
 {
 	type = MVT_STRING;
 	enum
@@ -532,7 +532,7 @@ void MultiValue::ParseString(const std::string &value, bool isBareString)
 		MVPS_ESCAPE_HEX,
 		MVPS_ESCAPE_HEX2,
 	} state = isBareString ? MVPS_NORMAL : MVPS_OUT;
-	xybase::StringBuilder sb;
+	xybase::StringBuilder<char16_t> sb;
 
 	char tmp;
 	for (auto ch : value)
@@ -562,15 +562,15 @@ void MultiValue::ParseString(const std::string &value, bool isBareString)
 		case MVPS_ESCAPE_WAITING:
 			if (ch == '0')
 			{
-				sb.Append('\0');
+				sb.Append(u'\0');
 			}
 			else if (ch == 'n')
 			{
-				sb.Append('\n');
+				sb.Append(u'\n');
 			}
 			else if (ch == 'r')
 			{
-				sb.Append('\r');
+				sb.Append(u'\r');
 			}
 			else if (ch == 'x')
 			{
@@ -617,12 +617,12 @@ void MultiValue::ParseString(const std::string &value, bool isBareString)
 		}
 	}
 	// 没有终结的引号
-	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw InvalidParameterException("value", "Not a valid string representation.", MULE_FILE, __LINE__);
+	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw xybase::InvalidParameterException(u"value", u"Not a valid string representation.", __LINE__);
 
-	this->value.stringValue = new std::string(sb.ToString());
+	this->value.stringValue = new std::u16string(sb.ToString());
 }
 
-void MultiValue::ParseReal(const std::string &value)
+void MultiValue::ParseReal(const std::u16string &value)
 {
 	type = MVT_REAL;
 
@@ -634,7 +634,7 @@ void MultiValue::ParseReal(const std::string &value)
 		{
 			if (ch == '-') isNeg = 1;
 			else if (ch == '.') break;
-			else throw InvalidParameterException("value", "not a valid real number.", MULE_FILE, __LINE__);
+			else throw xybase::InvalidParameterException(u"value", u"not a valid real number.", __LINE__);
 		}
 
 		if (flag)
@@ -645,7 +645,6 @@ void MultiValue::ParseReal(const std::string &value)
 		else
 			res = res * 10 + ch - '0';
 	}
-
 
 	this->value.realValue = isNeg ? -res : res;
 }
@@ -675,11 +674,11 @@ void MultiValue::DisposeOldValue()
 	}
 }
 
-MultiValue MultiValue::Parse(const std::string &value)
+MultiValue MultiValue::Parse(const std::u16string &value)
 {
 	MultiValue ret;
 
-	if (value == "null")
+	if (value == u"null")
 	{
 		ret.type = MVT_NULL;
 		ret.value.unsignedValue = 0;
@@ -705,12 +704,12 @@ MultiValue MultiValue::Parse(const std::string &value)
 	return ret;
 }
 
-void MultiValue::SetValue(const std::string& value)
+void MultiValue::SetValue(const std::u16string & value)
 {
 	DisposeOldValue();
 
 	this->type = MVT_STRING;
-	this->value.stringValue = new std::string(value);
+	this->value.stringValue = new std::u16string(value);
 }
 
 void MultiValue::SetValue(const double value)
@@ -773,7 +772,7 @@ void MultiValue::SetValue()
 
 MultiValue MultiValue::operator+(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
 	
 	switch (type)
 	{
@@ -790,13 +789,13 @@ MultiValue MultiValue::operator+(const MultiValue& rvalue) const
 		return MultiValue(*value.stringValue + *rvalue.value.stringValue);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
+		throw xybase::Exception(u"Type unknown.", __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator-(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
 
 	switch (type)
 	{
@@ -810,16 +809,16 @@ MultiValue MultiValue::operator-(const MultiValue& rvalue) const
 		return MultiValue(value.realValue - rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw InvalidOperationException("String connot be subtracted.", MULE_FILE, __LINE__);
+		throw xybase::InvalidOperationException(u"String connot be subtracted.", __LINE__);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
+		throw xybase::Exception(u"Type unknown.", __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator*(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
 
 	switch (type)
 	{
@@ -833,16 +832,16 @@ MultiValue MultiValue::operator*(const MultiValue& rvalue) const
 		return MultiValue(value.realValue * rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw InvalidOperationException("String connot be multiplied.", MULE_FILE, __LINE__);
+		throw xybase::InvalidOperationException(u"String connot be multiplied.", __LINE__);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
+		throw xybase::Exception(u"Type unknown.", __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException("Type mismatching!", MULE_FILE, __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
 
 	switch (type)
 	{
@@ -856,10 +855,10 @@ MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 		return MultiValue(value.realValue / rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw InvalidOperationException("String connot be divided.", MULE_FILE, __LINE__);
+		throw xybase::InvalidOperationException(u"String connot be divided.", __LINE__);
 		break;
 	default:
-		throw Exception::Exception("Type unknown.", MULE_FILE, __LINE__);
+		throw xybase::Exception(u"Type unknown.", __LINE__);
 	}
 }
 
@@ -872,7 +871,7 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 	
 	if (type == MVT_STRING)
 	{
-		value.stringValue = new std::string(*rvalue.value.stringValue);
+		value.stringValue = new std::u16string(*rvalue.value.stringValue);
 	}
 	else if (type == MVT_MAP)
 	{

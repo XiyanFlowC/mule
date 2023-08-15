@@ -35,7 +35,7 @@ bool mule::Data::Basic::Type::IsComposite() const
 	return false;
 }
 
-void mule::Data::Basic::Type::DataHandler::AppendMetadata(std::map<std::string, MultiValue> metadata)
+void mule::Data::Basic::Type::DataHandler::AppendMetadata(std::map<std::u16string, MultiValue> metadata)
 {
 	for (auto &datum : metadata)
 	{
@@ -43,7 +43,7 @@ void mule::Data::Basic::Type::DataHandler::AppendMetadata(std::map<std::string, 
 	}
 }
 
-void mule::Data::Basic::Type::DataHandler::AppendMetadatum(std::string name, const MultiValue &value)
+void mule::Data::Basic::Type::DataHandler::AppendMetadatum(std::u16string name, const MultiValue &value)
 {
 }
 

@@ -23,7 +23,7 @@ namespace mule
 			protected:
 
 				// 通过 Type 继承
-				virtual std::string GetTypeName() const override;
+				virtual std::u16string GetTypeName() const override;
 			};
 		}
 	}

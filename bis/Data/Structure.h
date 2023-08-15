@@ -25,24 +25,24 @@ namespace mule
 				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual size_t Size() const override;
 
-				const std::string &GetName() const;
+				const std::u16string &GetName() const;
 				const Type *const GetObject() const;
 
-				Field(std::string name, Type *obj);
+				Field(std::u16string name, Type *obj);
 			protected:
 
-				std::string name;
+				std::u16string name;
 
 				Type *object;
 
-				virtual std::string GetTypeName() const override;
+				virtual std::u16string GetTypeName() const override;
 			};
 
 			/**
 			 * @brief 初始化一个新的结构
 			 * @param name 名字
 			*/
-			Structure(std::string name);
+			Structure(std::u16string name);
 
 			~Structure();
 
@@ -51,7 +51,7 @@ namespace mule
 			 * @param name 字段的名字
 			 * @param field 字段处理器的实例
 			*/
-			void AppendField(const std::string &name, mule::Data::Basic::Type *field);
+			void AppendField(const std::u16string &name, mule::Data::Basic::Type *field);
 
 			/**
 			 * @brief 对指定的流进行读取
@@ -73,17 +73,16 @@ namespace mule
 			*/
 			virtual size_t Size() const override;
 
-			virtual std::string GetName() const;
+			virtual std::u16string GetName() const;
 
-			virtual std::string GetTypeName() const override;
+			virtual std::u16string GetTypeName() const override;
 
 			virtual bool IsComposite() const override;
 		protected:
 
-
 			std::list<Field *> fields;
 
-			std::string name;
+			std::u16string name;
 		};
 	}
 }

@@ -5,7 +5,7 @@
 using namespace mule::Data::Basic;
 using namespace mule::Data;
 
-Table::Table(Structure *structure, const std::string &name, int length, size_t offset)
+Table::Table(Structure *structure, const std::u16string &name, int length, size_t offset)
 {
 	this->structure = structure;
 	this->length = length;
@@ -25,14 +25,14 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 			structure->Read(stream, dataHandler);
 			dataHandler->OnRealmExit(structure, i);
 		}
-		catch (mule::Exception::Exception& ex)
+		catch (xybase::Exception& ex)
 		{
 			std::cerr << "Error when read, abort for now, at " << i << std::endl;
 			std::cerr << ex.what() << std::endl;
 			break;
 		}
 	}
-	dataHandler->AppendMetadatum("_type", MultiValue("array"));
+	dataHandler->AppendMetadatum(u"_type", MultiValue(u"array"));
 	dataHandler->OnRealmExit((Type *) this, name);
 	dataHandler->OnSheetReadEnd();
 }
@@ -61,9 +61,9 @@ int mule::Data::Table::Length() const
 	return length;
 }
 
-std::string mule::Data::Table::GetTypeName() const
+std::u16string mule::Data::Table::GetTypeName() const
 {
-	return "table";
+	return u"table";
 }
 
 bool mule::Data::Table::IsComposite() const

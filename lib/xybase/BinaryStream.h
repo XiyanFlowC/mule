@@ -1,20 +1,30 @@
 #pragma once
 
-#ifndef XY_STREAM_BASIC_H__
-#define XY_STREAM_BASIC_H__
+#ifndef XY_BINARY_STREAM_H__
+#define XY_BINARY_STREAM_H__
 
-#include "StringBuilder.h"
+#include <cstdint>
+#include <cerrno>
+#include <cstring>
+#include <cstdlib>
 #include "Stream.h"
+#include "Exception/IOException.h"
+#include "Exception/InvalidOperationException.h"
+#include "StringBuilder.h"
 
 namespace xybase
 {
-	/**
-	 * @brief 提供基于ReadBytes和Write的其他函数实现，简化Stream实现类需编写的方法。
-	*/
-	class StreamBasic : public Stream
+	class BinaryStream : public xybase::Stream
 	{
+	protected:
+		FILE *stream;
+		bool isOpen;
+		std::u16string name;
+
 	public:
-		virtual ~StreamBasic();
+		BinaryStream(std::u16string path, bool isBigEndian = false);
+		~BinaryStream();
+
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
 		virtual uint16_t ReadUInt16() override;
@@ -26,6 +36,7 @@ namespace xybase
 		virtual float ReadFloat() override;
 		virtual double ReadDouble() override;
 		virtual std::string ReadString() override;
+		virtual void ReadBytes(char *buffer, int limit) override;
 		virtual void Write(uint8_t value) override;
 		virtual void Write(int8_t value) override;
 		virtual void Write(uint16_t value) override;
@@ -37,7 +48,10 @@ namespace xybase
 		virtual void Write(float value) override;
 		virtual void Write(double value) override;
 		virtual void Write(const std::string &value) override;
-		virtual void Write(const char *buffer, size_t limit) override = 0;
+		virtual void Write(const char *buffer, size_t size) override;
+		virtual size_t Tell() override;
+		virtual void Seek(long long offset, int mode = SEEK_SET) override;
+		virtual void Close() override;
 	};
 }
 

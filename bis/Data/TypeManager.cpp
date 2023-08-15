@@ -22,17 +22,17 @@ TypeManager &TypeManager::GetInstance()
 	return _inst;
 }
 
-void TypeManager::RegisterObject(Basic::Type *object, std::string name)
+void TypeManager::RegisterObject(Basic::Type *object, std::u16string name)
 {
 	objects[name] = object;
 }
 
-void TypeManager::UnregisterObject(std::string name)
+void TypeManager::UnregisterObject(std::u16string name)
 {
 	objects.erase(name);
 }
 
-void TypeManager::ReleaseObject(std::string name)
+void TypeManager::ReleaseObject(std::u16string name)
 {
 	if (objects.contains(name)) {
 		delete objects[name];
@@ -59,7 +59,7 @@ void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 	}
 }
 
-Basic::Type *TypeManager::GetOrCreateObject(std::string info)
+Basic::Type *TypeManager::GetOrCreateObject(std::u16string info)
 {
 	// 若已经存在则直接返回
 	if (objects.contains(info)) return objects[info];
@@ -71,7 +71,7 @@ Basic::Type *TypeManager::GetOrCreateObject(std::string info)
 	return objects[info] = first->GetOrCreateObject(info);
 }
 
-Basic::Type *TypeManager::GetObject(std::string name)
+Basic::Type *TypeManager::GetObject(std::u16string name)
 {
 	if (objects.contains(name)) return objects[name];
 

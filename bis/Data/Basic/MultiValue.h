@@ -6,10 +6,10 @@
 #include <string>
 #include <map>
 #include <cstdint>
-#include "../../Exception/Exception.h"
-#include "../../Exception/InvalidParameterException.h"
-#include "../../Exception/InvalidOperationException.h"
-#include "../../xybase/StringBuilder.h"
+#include <StringBuilder.h>
+#include <Exception/Exception.h>
+#include <Exception/InvalidParameterException.h>
+#include <Exception/InvalidOperationException.h>
 
 namespace mule
 {
@@ -17,10 +17,10 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class InvalidRValueException : public mule::Exception::Exception
+			class InvalidRValueException : public xybase::Exception
 			{
 			public:
-				InvalidRValueException(std::string description, const char *file, int line);
+				InvalidRValueException(std::u16string description, int line);
 			};
 
 			/**
@@ -41,7 +41,7 @@ namespace mule
 			public:
 				static const MultiValue MV_NULL;
 
-				std::map<std::string, MultiValue> metadata;
+				std::map<std::u16string, MultiValue> metadata;
 
 				/**
 				 * @brief 多用途值类型
@@ -83,7 +83,7 @@ namespace mule
 					uint64_t unsignedValue;
 					int64_t signedValue;
 					double realValue;
-					std::string *stringValue;
+					std::u16string *stringValue;
 					std::map<MultiValue, MultiValue> *mapValue;
 					MultiValue *arrayValue;
 				} value;
@@ -98,7 +98,7 @@ namespace mule
 
 				MultiValue(MultiValue &&movee) noexcept;
 
-				MultiValue(const std::string &value);
+				MultiValue(const std::u16string &value);
 
 				MultiValue(const double value);
 
@@ -134,21 +134,21 @@ namespace mule
 				 * @brief 转换为字符串。
 				 * @return 字符串表示值。
 				*/
-				std::string ToString() const;
+				std::u16string ToString() const;
 
 				/**
 				 * @brief 序列化为字符串。
 				 * @return 序列化结果。
 				*/
-				std::string Stringfy() const;
+				std::u16string Stringfy() const;
 
 				/**
 				 * @brief 反序列化字符串。
 				 * @param value 要解析的字符串对象。
 				*/
-				static MultiValue Parse(const std::string &value);
+				static MultiValue Parse(const std::u16string &value);
 
-				void SetValue(const std::string &value);
+				void SetValue(const std::u16string &value);
 
 				void SetValue(const double value);
 
@@ -186,15 +186,15 @@ namespace mule
 
 				bool operator>= (const MultiValue &rvalue) const;
 			private:
-				void ParseInt(const std::string &value);
+				void ParseInt(const std::u16string &value);
 
-				void ParseString(const std::string &value, bool isBare = false);
+				void ParseString(const std::u16string &value, bool isBare = false);
 
-				void ParseReal(const std::string &value);
+				void ParseReal(const std::u16string &value);
 
 				void DisposeOldValue();
 
-				std::string Stringfy(std::string str) const;
+				std::u16string Stringfy(std::u16string str) const;
 			};
 		}
 	}

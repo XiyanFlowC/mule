@@ -3,11 +3,11 @@
 #ifndef XY_NOT_IMPLEMENTED_EXCEPTION_H__
 #define XY_NOT_IMPLEMENTED_EXCEPTION_H__
 
-#include "RuntimeException.h"
+#include "Exception.h"
 
 namespace xybase
 {
-	class NotImplementedException : public RuntimeException
+	class NotImplementedException : public Exception
 	{
 	public:
 		NotImplementedException();

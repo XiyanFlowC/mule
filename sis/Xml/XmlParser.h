@@ -7,7 +7,8 @@
 #include <map>
 #include <functional>
 
-#include <xybase/xyutils.h>
+#include <StringBuilder.h>
+#include <xyutils.h>
 
 namespace mule
 {
@@ -189,7 +190,7 @@ namespace mule
                     // 文本节点
                     else
                     {
-                        xybase::StringBuilder sb;
+                        xybase::StringBuilder<Ch> sb;
                         while (true)
                         {
                             if (xml[index] == '&')

@@ -2,9 +2,9 @@
 
 #ifndef ELF_STREAM_H__
 
-#include <xybase/Exception/InvalidOperationException.h>
-#include <xybase/Exception/NotImplementedException.h>
-#include <xybase/StreamBasic.h>
+#include <Exception/InvalidOperationException.h>
+#include <Exception/NotImplementedException.h>
+#include <StreamBasic.h>
 
 #include <cstdlib>
 #include <cstdint>
@@ -63,7 +63,7 @@ struct rel_entry {
 class ElfFormatErrorException : public xybase::RuntimeException
 {
 public:
-	ElfFormatErrorException(std::string message, int line);
+	ElfFormatErrorException(std::u16string message, int line);
 };
 
 class ElfStream : public xybase::StreamBasic

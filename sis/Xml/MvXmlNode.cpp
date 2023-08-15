@@ -5,17 +5,17 @@ using namespace mule::Data::Basic;
 
 const MvXmlNode MvXmlNode::ERROR;
 
-std::function<std::string(std::string)> mule::Xml::MvXmlNode::text_to_xml = [](std::string in) -> std::string {
-	auto loc = in.find("]]>");
+std::function<std::u16string(std::u16string)> mule::Xml::MvXmlNode::text_to_xml = [](std::u16string in) -> std::u16string {
+	auto loc = in.find(u"]]>");
 	while (loc != std::string::npos)
 	{
-		in = in.replace(loc, 3, "]]>]]><![CDATA[");
-		loc = in.find("]]>", loc + 14);
+		in = in.replace(loc, 3, u"]]>]]><![CDATA[");
+		loc = in.find(u"]]>", loc + 14);
 	}
-	return "<![CDATA[" + in + "]]>";
+	return u"<![CDATA[" + in + u"]]>";
 };
 
-std::function<std::string(std::string)> mule::Xml::MvXmlNode::xml_to_text = [](std::string in) -> std::string {
+std::function<std::u16string(std::u16string)> mule::Xml::MvXmlNode::xml_to_text = [](std::u16string in) -> std::u16string {
 	return in;
 };
 
@@ -23,7 +23,7 @@ mule::Xml::MvXmlNode::MvXmlNode()
 {
 }
 
-mule::Xml::MvXmlNode::MvXmlNode(std::string name, const mule::Data::Basic::MultiValue &val)
+mule::Xml::MvXmlNode::MvXmlNode(std::u16string name, const mule::Data::Basic::MultiValue &val)
 	: name(name), mv(val)
 {
 }
@@ -42,8 +42,8 @@ mule::Xml::MvXmlNode::MvXmlNode(const MvXmlNode &&movee) noexcept
 void mule::Xml::MvXmlNode::AddChild(MvXmlNode node)
 {
 	mv.SetType(MultiValue::MVT_MAP);
-	auto &&it = mv.metadata.find("_type");
-	if (it != mv.metadata.end() && it->second == std::string("array"))
+	auto &&it = mv.metadata.find(u"_type");
+	if (it != mv.metadata.end() && it->second == std::u16string(u"array"))
 		(*mv.value.mapValue)[(uint64_t)counter++] = node.mv;
 	else
 		(*mv.value.mapValue)[node.GetName()] = node.mv;
@@ -54,15 +54,15 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	std::list<MvXmlNode> ret;
 	if (mv.GetType() != MultiValue::MVT_MAP) return ret;
 
-	auto &&it = mv.metadata.find("_type");
-	if (it != mv.metadata.end() && it->second == std::string("array"))
+	auto &&it = mv.metadata.find(u"_type");
+	if (it != mv.metadata.end() && it->second == std::u16string(u"array"))
 	{
 		for (size_t i = 0; i < mv.value.mapValue->size(); ++i)
 		{
 			auto itr = mv.value.mapValue->find((uint64_t)i);
 			if (itr == mv.value.mapValue->end()) break;
 
-			ret.push_back(MvXmlNode("i", itr->second));
+			ret.push_back(MvXmlNode(u"i", itr->second));
 		}
 	}
 	else for (auto &pair : *mv.value.mapValue)
@@ -73,7 +73,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	return ret;
 }
 
-void mule::Xml::MvXmlNode::AddText(std::string str)
+void mule::Xml::MvXmlNode::AddText(std::u16string str)
 {
 	// 保全现有 metadata
 	auto metadata = mv.metadata;
@@ -81,7 +81,7 @@ void mule::Xml::MvXmlNode::AddText(std::string str)
 	mv.metadata = metadata;
 }
 
-std::string mule::Xml::MvXmlNode::GetText() const
+std::u16string mule::Xml::MvXmlNode::GetText() const
 {
 	if (mv.GetType() == mule::Data::Basic::MultiValue::MVT_STRING)
 	{
@@ -93,25 +93,25 @@ std::string mule::Xml::MvXmlNode::GetText() const
 	}
 }
 
-void mule::Xml::MvXmlNode::SetName(std::string name)
+void mule::Xml::MvXmlNode::SetName(std::u16string name)
 {
 	this->name = name;
 }
 
-std::string mule::Xml::MvXmlNode::GetName() const
+std::u16string mule::Xml::MvXmlNode::GetName() const
 {
 	return name;
 }
 
-void mule::Xml::MvXmlNode::AddAttribute(std::string name, std::string data)
+void mule::Xml::MvXmlNode::AddAttribute(std::u16string name, std::u16string data)
 {
-	if (name == "_type" && data == "array") counter = 0;
+	if (name == u"_type" && data == u"array") counter = 0;
 	mv.metadata[name] = MultiValue::Parse(data);
 }
 
-std::map<std::string, std::string> mule::Xml::MvXmlNode::GetAttributes() const
+std::map<std::u16string, std::u16string> mule::Xml::MvXmlNode::GetAttributes() const
 {
-	std::map<std::string, std::string> ret;
+	std::map<std::u16string, std::u16string> ret;
 
 	for (auto &&datum : mv.metadata)
 	{
@@ -126,7 +126,7 @@ bool mule::Xml::MvXmlNode::operator==(const MvXmlNode &rvalue) const
 	return name == rvalue.name && mv == rvalue.mv;
 }
 
-MvXmlNode mule::Xml::MvXmlNode::operator[](std::string name)
+MvXmlNode mule::Xml::MvXmlNode::operator[](std::u16string name)
 {
 	return MvXmlNode(name, (*mv.value.mapValue)[name]);
 }

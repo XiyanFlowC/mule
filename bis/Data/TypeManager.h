@@ -34,19 +34,19 @@ namespace mule
 			 * @param object The pointer to the object need to be register.
 			 * @param name The name of this object.
 			*/
-			void RegisterObject(Basic::Type *object, std::string name);
+			void RegisterObject(Basic::Type *object, std::u16string name);
 
 			/**
 			 * @brief Unregister the object specified by its name.
 			 * @param name The name of the object need to be unregistered.
 			*/
-			void UnregisterObject(std::string name);
+			void UnregisterObject(std::u16string name);
 
 			/**
 			 * @brief Release the object by its name. This method will also delete the pointer.
 			 * @param name The name of the object need to be released.
 			*/
-			void ReleaseObject(std::string name);
+			void ReleaseObject(std::u16string name);
 
 			/**
 			 * @brief Register type creator to the manager. This class
@@ -58,19 +58,19 @@ namespace mule
 			/**
 			 * @brief Try to create a Field by given information. Using the creators registered to the
 			 * manager. If failed, this method will return nullptr.
-			 * @param info The information needed to create the Field.
+			 * @param name The name of the type.
 			 * @return Created Field instance. nullptr if failed.
 			*/
-			Basic::Type *GetOrCreateObject(std::string info);
+			Basic::Type *GetOrCreateObject(std::u16string name);
 
 			/**
 			 * @brief Try to get a object that already registered to the manager.
 			 * @param name The name of the object given when registered.
 			 * @return
 			*/
-			Basic::Type *GetObject(std::string name);
+			Basic::Type *GetObject(std::u16string name);
 		protected:
-			std::map<std::string, Basic::Type *> objects;
+			std::map<std::u16string, Basic::Type *> objects;
 			TypeCreator *first, *last;
 		};
 	}

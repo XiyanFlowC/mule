@@ -1,4 +1,5 @@
 #include "BinaryStream.h"
+#include "xyutils.h"
 
 using namespace xybase;
 
@@ -10,13 +11,13 @@ using namespace xybase;
 #define ftell ftello64
 #endif
 
-BinaryStream::BinaryStream(std::string path, bool isBigEndian)
+BinaryStream::BinaryStream(std::u16string path, bool isBigEndian)
 	: name(path)
 {
-	stream = fopen(path.c_str(), "rb+");
+	stream = fopen(xybase::string::to_utf8(path).c_str(), "rb+");
 	if (stream == nullptr)
 	{
-		throw IOException(path, std::string("Open file error."));
+		throw IOException(path, u"Open file error.");
 	}
 	isOpen = true;
 	this->isBigEndian = isBigEndian;
@@ -30,7 +31,7 @@ BinaryStream::~BinaryStream()
 #ifdef BS_CPP_BSREADEX
 #error Macro BS_CPP_BSREADEX pre-defined alarm!
 #endif
-#define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw IOException(std::string(name), std::string("Read error."))
+#define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw IOException(name, std::u16string(u"Read error."))
 
 uint8_t BinaryStream::ReadUInt8()
 {
@@ -149,7 +150,7 @@ std::string BinaryStream::ReadString()
 	int ch = fgetc(stream);
 	while (ch != 0)
 	{
-		if (ch == EOF) throw IOException(name, "String reached EOF without a NUL!", __LINE__);
+		if (ch == EOF) throw IOException(name, u"String reached EOF without a NUL!", __LINE__);
 
 		sb += ch;
 
@@ -168,7 +169,7 @@ void BinaryStream::ReadBytes(char* buffer, int limit)
 #ifdef BS_CPP_BSWRITEEX
 #error Macro BS_CPP_BSWRITEEX have been defiend already!
 #endif
-#define BS_CPP_BSWRITEEX(size) if (0 == fwrite(&value, size, 1, stream)) throw IOException(name, std::string("Write error."))
+#define BS_CPP_BSWRITEEX(size) if (0 == fwrite(&value, size, 1, stream)) throw IOException(name, u"Write error.")
 
 void BinaryStream::Write(uint8_t value)
 {
@@ -244,7 +245,7 @@ void BinaryStream::Write(const std::string& value)
 
 void BinaryStream::Write(const char* buffer, size_t size)
 {
-	if (1 != fwrite(buffer, size, 1, stream)) throw IOException(name, std::string("Write error: "));
+	if (1 != fwrite(buffer, size, 1, stream)) throw IOException(name, u"Write error: ");
 }
 #undef BS_CPP_BSWRITEEX
 
@@ -260,7 +261,7 @@ void BinaryStream::Seek(long long offset, int mode)
 
 void BinaryStream::Close()
 {
-	if (!isOpen) throw InvalidOperationException("Already closed.", __LINE__);
+	if (!isOpen) throw InvalidOperationException(u"Already closed.", __LINE__);
 	isOpen = false;
 	fclose(stream);
 }

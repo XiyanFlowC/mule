@@ -1,4 +1,4 @@
 #include "NotImplementedException.h"
 
 xybase::NotImplementedException::NotImplementedException()
-	: RuntimeException("Not implemented yet.", 90002) {}
+	: Exception(u"Not implemented yet.", 90002) {}

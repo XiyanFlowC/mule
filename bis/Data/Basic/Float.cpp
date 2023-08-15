@@ -19,7 +19,7 @@ size_t mule::Data::Basic::Float::Size() const
 	return size_t(sizeof(float));
 }
 
-std::string mule::Data::Basic::Float::GetTypeName() const
+std::u16string mule::Data::Basic::Float::GetTypeName() const
 {
-	return std::string("float");
+	return std::u16string(u"float");
 }

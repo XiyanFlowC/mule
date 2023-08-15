@@ -7,7 +7,7 @@
 
 #include "Basic/MultiValue.h"
 #include "Basic/Type.h"
-#include "../Exception/InvalidOperationException.h"
+#include <Exception/InvalidOperationException.h>
 
 namespace mule
 {
@@ -22,15 +22,15 @@ namespace mule
 			virtual void OnSheetReadEnd() override;
 			virtual void OnSheetWriteEnd() override;
 
-			virtual void OnRealmEnter(Basic::Type *realm, std::string name) override;
-			virtual void OnRealmExit(Basic::Type *realm, std::string name) override;
+			virtual void OnRealmEnter(Basic::Type *realm, std::u16string name) override;
+			virtual void OnRealmExit(Basic::Type *realm, std::u16string name) override;
 			virtual void OnRealmEnter(Basic::Type *realm, int idx) override;
 			virtual void OnRealmExit(Basic::Type *realm, int idx) override;
 
 			virtual void OnDataRead(const Basic::MultiValue &value) override;
 			virtual Basic::MultiValue OnDataWrite() override;
 
-			virtual void AppendMetadatum(std::string name, const Basic::MultiValue &datum) override;
+			virtual void AppendMetadatum(std::u16string name, const Basic::MultiValue &datum) override;
 
 			Basic::MultiValue GetMap() const;
 			void SetMap(mule::Data::Basic::MultiValue &value);

@@ -1,4 +1,5 @@
 #include "Array.h"
+#include "../xybase/xyutils.h"
 
 using namespace mule::Data::Basic;
 
@@ -25,9 +26,9 @@ size_t mule::Data::Array::Size() const
 	return length * innerObject->Size();
 }
 
-std::string mule::Data::Array::GetTypeName() const
+std::u16string mule::Data::Array::GetTypeName() const
 {
-	return innerObject->GetTypeName() + "[" + std::to_string(length) + "]";
+	return innerObject->GetTypeName() + u"[" + xybase::string::to_utf16(std::to_string(length)) + u"]";
 }
 
 bool mule::Data::Array::IsComposite() const
@@ -35,11 +36,11 @@ bool mule::Data::Array::IsComposite() const
 	return true;
 }
 
-mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::string info)
+mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::u16string info)
 {
-	if (!info.ends_with("]")) return nullptr;
+	if (!info.ends_with(u"]")) return nullptr;
 
-	size_t startIndex = info.find_last_of("[");
+	size_t startIndex = info.find_last_of(u"[");
 	if (startIndex == std::string::npos) return nullptr;
 
 	int size = static_cast<int>(xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2)));

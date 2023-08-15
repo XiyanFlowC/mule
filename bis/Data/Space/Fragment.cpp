@@ -1,11 +1,11 @@
 #include "Fragment.h"
 
 using namespace mule::Data::Space;
-using namespace mule::Exception;
+using namespace xybase;
 
 void Fragment::EliminateBegining(unsigned int size)
 {
-	if (size >= this->size) throw InvalidParameterException("size", "Cannot larger than this->size.", MULE_FILE, __LINE__);
+	if (size >= this->size) throw InvalidParameterException(u"size", u"Cannot larger than this->size.", __LINE__);
 
 	begin += size;
 	this->size -= size;
@@ -13,7 +13,7 @@ void Fragment::EliminateBegining(unsigned int size)
 
 void Fragment::EliminateEnding(unsigned int size)
 {
-	if (size > this->size) throw InvalidParameterException("size", "Cannot be larger than this->size.", MULE_FILE, __LINE__);
+	if (size > this->size) throw InvalidParameterException(u"size", u"Cannot be larger than this->size.", __LINE__);
 
 	this->size -= size;
 }
@@ -51,7 +51,7 @@ Fragment *Fragment::MergeToNew(const Fragment &target) const
 void Fragment::Merge(const Fragment &target)
 {
 	if (IsContains(target)) return;
-	if (!IsOverlapsWith(target)) throw InvalidParameterException("target", "Have no insertion with this fragment.", MULE_FILE, __LINE__);
+	if (!IsOverlapsWith(target)) throw InvalidParameterException(u"target", u"Have no insertion with this fragment.", __LINE__);
 
 	begin = begin < target.begin ? begin : target.begin;
 	SetEnding(GetEnding() < target.GetEnding() ? target.GetEnding() : GetEnding());
@@ -102,7 +102,7 @@ void Fragment::SetFragment(unsigned int begining, unsigned int size)
 
 void Fragment::SetBegining(unsigned int begining)
 {
-	if (begining >= GetEnding()) throw InvalidParameterException("begining", "Cannot be set to the pos after the ending.", MULE_FILE, __LINE__);
+	if (begining >= GetEnding()) throw InvalidParameterException(u"begining", u"Cannot be set to the pos after the ending.", __LINE__);
 	int newSize = GetEnding() - begining;
 
 	begin = begining;
@@ -116,7 +116,7 @@ void Fragment::SetSize(unsigned int size)
 
 void Fragment::SetEnding(unsigned int ending)
 {
-	if (ending < begin) throw InvalidParameterException("ending", "Cannot be set to the pos before the begining.", MULE_FILE, __LINE__);
+	if (ending < begin) throw InvalidParameterException(u"ending", u"Cannot be set to the pos before the begining.", __LINE__);
 
 	this->size = ending - begin;
 }

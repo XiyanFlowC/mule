@@ -1,21 +1,9 @@
 #pragma once
 
-#ifndef XYUTILS_H__
-#define XYUTILS_H__
-#define XY_ALIGN(n, b) ((n) < 0 ? (n) & ~((b) - 1) : ((n + (b) - 1) & ~((b) - 1))
+#ifndef XY_XYSTRING_H__
+#define XY_XYSTRING_H__
 
-#ifdef _WIN32
-#include <direct.h>
-#include <io.h>
-#else
-#include <sys/stat.h>
-#include <unistd.h>
-#endif
-
-#include <algorithm>
 #include <string>
-
-#include "StringBuilder.h"
 
 namespace xybase
 {
@@ -61,14 +49,14 @@ namespace xybase
 		 * @param str utf-8 string
 		 * @return utf-16 string
 		*/
-		std::u16string to_utf16(std::string str);
+		std::u16string to_utf16(std::string str) noexcept;
 
 		/**
 		 * @brief Convert utf-16 to utf-8
 		 * @param str utf-16 string
 		 * @return utf-8 string
 		*/
-		std::string to_utf8(std::u16string str);
+		std::string to_utf8(std::u16string str) noexcept;
 
 		template<typename T = char>
 		unsigned long long stoi(std::basic_string<T> str, int base = 10)
@@ -96,21 +84,6 @@ namespace xybase
 			return ret;
 		}
 	}
-
-	namespace io
-	{
-		enum AccessMode
-		{
-			PM_READ = 0x1,
-			PM_WRITE = 0x2,
-			PM_READWRITE = 0X3,
-			PM_EXECUTE = 0x4,
-		};
-
-		int access(const char *path, AccessMode mode);
-
-		int mkdir(const char *path);
-	}
 }
 
-#endif // !XYUTILS_H__
+#endif // !XY_XYSTRING_H__

@@ -16,20 +16,20 @@ ResourceManager::ResourceManager()
         return;
     }
 
-    if (xml.name != "info")
+    if (xml.name != u"info")
     {
         fputs("Info file format error: root node mismatch.\n", stderr);
     }
     for (auto &&file : xml.children)
     {
-        if (file.name != "file" || file.children.size() != 1 || !file.children.begin()->IsTextNode())
+        if (file.name != u"file" || file.children.size() != 1 || !file.children.begin()->IsTextNode())
         {
             fputs("Info file format error: file node mismatch.\n", stderr);
             continue;
         }
-        std::string filename = file.children.begin()->text;
+        std::string filename = xybase::string::to_utf8(file.children.begin()->text);
 
-        fileInfos[filename] = FileInfo{ (unsigned int)xybase::string::stoi(file.GetAttribute("id")) , (unsigned int)xybase::string::stoi(file.GetAttribute("crc32"))};
+        fileInfos[filename] = FileInfo{ (unsigned int)xybase::string::stoi(file.GetAttribute(u"id")) , (unsigned int)xybase::string::stoi(file.GetAttribute(u"crc32"))};
     }
 }
 
@@ -64,7 +64,7 @@ BinaryData ResourceManager::LoadData(std::string name)
     auto &&it = fileInfos.find(name);
     if (it == fileInfos.end())
     {
-        throw mule::Exception::Exception("Unkown id for data " + name, __FILE__, __LINE__);
+        throw xybase::RuntimeException(u"Unkown id for data " + xybase::string::to_utf16(name), __LINE__);
     }
     return LoadData(it->second.id);
 }
@@ -75,7 +75,7 @@ BinaryData ResourceManager::LoadData(unsigned int id)
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
     
     FILE *f = fopen((Configuration::GetInstance().DataDir + path).c_str(), "rb");
-    if (f == NULL) throw mule::Exception::Exception(std::string("Unable to open data file ") + path, __FILE__, __LINE__);
+    if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open data file.");
 
     fseek(f, 0, SEEK_END);
     size_t length = ftell(f);
@@ -96,7 +96,7 @@ unsigned int ResourceManager::SaveData(BinaryData &data, unsigned int assignId)
     // 冲突避免
     if (rejectOnConflict)
     {
-        if (IsExist(id)) throw mule::Exception::Exception(std::string("Conflict on saving."), __FILE__, __LINE__);
+        if (IsExist(id)) throw xybase::RuntimeException(u"Conflict on saving.", __LINE__);
     } else while (IsExist(id)) ++id;
 
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
@@ -105,7 +105,7 @@ unsigned int ResourceManager::SaveData(BinaryData &data, unsigned int assignId)
     FILE *f = fopen(pp.c_str(), "wb");
     if (f == NULL)
     {
-        throw mule::Exception::Exception(std::string("Unable to open file to write ") + path, __FILE__, __LINE__);
+        throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open file to write ");
     }
 
     fwrite(data.GetData(), data.GetLength(), 1, f);
@@ -143,7 +143,7 @@ BinaryData ResourceManager::LoadResource(std::string path)
     FILE *f = fopen((Configuration::GetInstance().ResourcesDir + path).c_str(), "rb");
     if (f == NULL)
     {
-        if (f == NULL) throw mule::Exception::Exception(std::string("Unable to open resource file ") + path, __FILE__, __LINE__);
+        if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open resource file.");
     }
 
     fseek(f, 0, SEEK_END);
@@ -175,7 +175,7 @@ xybase::Stream *ResourceManager::OpenData(std::string name, std::function<xybase
     auto &&it = fileInfos.find(name);
     if (it == fileInfos.end())
     {
-        throw mule::Exception::Exception("Unkown id for data " + name, __FILE__, __LINE__);
+        throw xybase::RuntimeException(u"Conflict on saving.", __LINE__);
     }
     return OpenData(it->second.id, creator);
 }
@@ -187,7 +187,7 @@ void ResourceManager::LoadDefinition(std::string def)
 
     if (f == NULL)
     {
-        if (f == NULL) throw mule::Exception::Exception(std::string("Unable to open resource file ") + path, __FILE__, __LINE__);
+        if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open definition file.");
     }
 
     fseek(f, 0, SEEK_END);
@@ -206,7 +206,7 @@ void ResourceManager::LoadDefinition(std::string def)
     }
 
     // 处理结构
-    if (node.GetName() != "def")
+    if (node.GetName() != u"def")
     {
         fputs("XML Definition Format Incorrect.\n", stderr);
         return;
@@ -223,10 +223,10 @@ void ResourceManager::LoadDefinition(std::string def)
         Structure *structure = new Structure(child.name);
         for (auto &&field : child.children)
         {
-            auto ret = TypeManager::GetInstance().GetOrCreateObject(field.GetAttribute("type"));
+            auto ret = TypeManager::GetInstance().GetOrCreateObject(field.GetAttribute(u"type"));
             if (ret == nullptr)
             {
-                fprintf(stderr, "Invalid type: %s in definition of type %s\n", field.GetAttribute("type").c_str(), child.name.c_str());
+                fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_utf8(field.GetAttribute(u"type")).c_str(), child.name.c_str());
             }
             structure->AppendField(field.name, ret);
         }
@@ -241,7 +241,7 @@ std::string ResourceManager::LoadSheet(std::string sheetName)
     FILE *f = fopen((Configuration::GetInstance().SheetsDir + sheetName + ".xml").c_str(), "r");
     if (f == NULL)
     {
-        if (f == NULL) throw mule::Exception::Exception(std::string("Unable to open sheet ") + sheetName, __FILE__, __LINE__);
+        if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(Configuration::GetInstance().SheetsDir + sheetName + ".xml"), u"Unable to open sheet.");
     }
 
     fseek(f, 0, SEEK_END);
@@ -262,7 +262,7 @@ void ResourceManager::SaveSheet(std::string sheetName, std::string sheet)
     FILE *f = fopen((Configuration::GetInstance().SheetsDir + sheetName + ".xml").c_str(), "w");
     if (f == NULL)
     {
-        throw mule::Exception::Exception(std::string("Unable to open file to write ") + sheetName, __FILE__, __LINE__);
+        throw xybase::IOException(xybase::string::to_utf16(Configuration::GetInstance().SheetsDir + sheetName + ".xml"), u"Unable to open sheet for write.");
     }
 
     fwrite(sheet.c_str(), sheet.size(), 1, f);

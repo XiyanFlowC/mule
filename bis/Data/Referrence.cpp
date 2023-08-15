@@ -8,7 +8,7 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
-	dataHandler->AppendMetadatum("addr", (uint64_t)ptr);
+	dataHandler->AppendMetadatum(u"addr", (uint64_t)ptr);
 	stream->Seek(loc, 0);
 }
 
@@ -26,9 +26,9 @@ size_t mule::Data::Referrence::Size() const
 	return size_t(sizeof(int32_t));
 }
 
-std::string mule::Data::Referrence::GetTypeName() const
+std::u16string mule::Data::Referrence::GetTypeName() const
 {
-	return referent->GetTypeName() + "*";
+	return referent->GetTypeName() + u'*';
 }
 
 mule::Data::Referrence::Referrence(Type *referent)
@@ -36,9 +36,9 @@ mule::Data::Referrence::Referrence(Type *referent)
 	this->referent = referent;
 }
 
-Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(std::string info)
+Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(std::u16string info)
 {
-	if (!info.ends_with("*"))
+	if (!info.ends_with(u"*"))
 	{
 		return nullptr;
 	}

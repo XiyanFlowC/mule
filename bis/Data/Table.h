@@ -20,7 +20,7 @@ namespace mule {
 			 * @param length 表长度
 			 * @param offset 表在流中的偏移
 			*/
-			Table(Structure *structure, const std::string &name, int length, size_t offset);
+			Table(Structure *structure, const std::u16string &name, int length, size_t offset);
 
 			/**
 			 * @brief 执行读取
@@ -44,7 +44,7 @@ namespace mule {
 			*/
 			int Length() const;
 
-			std::string GetTypeName() const override;
+			std::u16string GetTypeName() const override;
 
 			bool IsComposite() const override;
 
@@ -53,7 +53,7 @@ namespace mule {
 
 			int length;
 			size_t offset;
-			std::string name;
+			std::u16string name;
 		private:
 		};
 	}

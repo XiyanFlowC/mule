@@ -15,18 +15,18 @@ namespace mule
 	{
 		class StructureBuilder
 		{
-			std::string name;
+			std::u16string name;
 
-			std::list<std::tuple<std::string, std::string>> defList;
+			std::list<std::tuple<std::u16string, std::u16string>> defList;
 
 		public:
-			StructureBuilder(std::string name);
+			StructureBuilder(std::u16string name);
 
 			mule::Data::Structure *Build();
 
-			void NewStruct(std::string name);
+			void NewStruct(std::u16string name);
 
-			void AppendField(std::string type, std::string name);
+			void AppendField(std::u16string type, std::u16string name);
 		};
 	}
 }

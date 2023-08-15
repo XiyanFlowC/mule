@@ -21,35 +21,35 @@ namespace mule
 
             std::list<XmlNode> children;
 
-            std::string text;
+            std::u16string text;
 
-            std::string name;
+            std::u16string name;
 
-            std::map<std::string, std::string> attributes;
+            std::map<std::u16string, std::u16string> attributes;
 
             void AddChild(XmlNode node);
 
             std::list<XmlNode> GetChildren() const;
 
-            void AddText(std::string str);
+            void AddText(std::u16string str);
 
-            std::string GetText() const;
+            std::u16string GetText() const;
 
-            void SetName(std::string name);
+            void SetName(std::u16string name);
 
-            std::string GetName() const;
+            std::u16string GetName() const;
 
-            void AddAttribute(std::string name, std::string data);
+            void AddAttribute(std::u16string name, std::u16string data);
 
-            std::map<std::string, std::string> GetAttributes() const;
+            std::map<std::u16string, std::u16string> GetAttributes() const;
 
-            std::string GetAttribute(std::string name) const;
+            std::u16string GetAttribute(std::u16string name) const;
 
             const static XmlNode ERROR;
 
             bool operator== (const XmlNode &rvalue) const;
 
-            XmlNode &operator[] (std::string name);
+            XmlNode &operator[] (std::u16string name);
         };
     }
 }

@@ -1,17 +1,19 @@
 #include "String.h"
 
+#include <xystring.h>
+
 using namespace mule::Data::Basic;
 
 void String::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	MultiValue tmp(stream->ReadString());
+	MultiValue tmp(xybase::string::to_utf16(stream->ReadString()));
 	lastSize = tmp.value.stringValue->length();
 	dataHandler->OnDataRead(tmp);
 }
 
 void String::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	stream->Write(*(dataHandler->OnDataWrite().value.stringValue));
+	stream->Write(xybase::string::to_utf8(*(dataHandler->OnDataWrite().value.stringValue)));
 }
 
 size_t String::Size() const
@@ -19,9 +21,9 @@ size_t String::Size() const
 	return size_t(-1);
 }
 
-std::string mule::Data::Basic::String::GetTypeName() const
+std::u16string mule::Data::Basic::String::GetTypeName() const
 {
-	return std::string("string");
+	return u"string";
 }
 
 size_t mule::Data::Basic::String::GetLastSize() const

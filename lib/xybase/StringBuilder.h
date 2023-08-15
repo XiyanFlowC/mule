@@ -52,7 +52,7 @@ namespace xybase
 		length = 0;
 
 		buffer = (Tunit *)malloc(currentSize * sizeof(Tunit));
-		if (buffer == nullptr) throw RuntimeException(std::string("Memory allocation falied."), errno);
+		if (buffer == nullptr) throw RuntimeException(u"Memory allocation falied.", errno);
 
 		if (initialContent != nullptr)
 		{
@@ -133,13 +133,13 @@ namespace xybase
 	template<typename Tunit>
 	void StringBuilder<Tunit>::Resize(size_t size)
 	{
-		if (size < length) throw InvalidParameterException("size", "Cannot resize to a size smaller than current length.", __LINE__);
+		if (size < length) throw InvalidParameterException(u"size", u"Cannot resize to a size smaller than current length.", __LINE__);
 
 		Tunit *tmp = (Tunit *)realloc(buffer, size);
 		if (tmp == nullptr)
 		{
 			tmp = (Tunit *)malloc(size * sizeof(Tunit)); // try again in another way.
-			if (tmp == nullptr) throw RuntimeException("Memory re-allocation failed.", errno);
+			if (tmp == nullptr) throw RuntimeException(u"Memory re-allocation failed.", errno);
 			memcpy(tmp, buffer, currentSize);
 			free(buffer);
 		}

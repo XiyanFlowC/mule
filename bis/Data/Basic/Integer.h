@@ -3,9 +3,8 @@
 #ifndef INTEGER_FIELD_H__
 #define INTEGER_FIELD_H__
 
+#include <Exception/InvalidParameterException.h>
 #include "Type.h"
-#include "../../Exception/InvalidParameterException.h"
-#include "../../Exception/RestrictionViolationException.h"
 #include "MultiValue.h"
 
 namespace mule
@@ -26,7 +25,7 @@ namespace mule
 
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
-				virtual std::string GetTypeName() const override;
+				virtual std::u16string GetTypeName() const override;
 
 			protected:
 			};

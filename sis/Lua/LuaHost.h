@@ -17,10 +17,10 @@ namespace mule
 		/**
 		 * @brief Lua 执行时发生的错误
 		*/
-		class LuaException : public mule::Exception::Exception
+		class LuaException : public xybase::Exception
 		{
 		public:
-			LuaException(std::string desc, const char *file, int line);
+			LuaException(std::u16string desc, int line);
 		};
 
 		/**

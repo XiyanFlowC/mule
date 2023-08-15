@@ -1,5 +1,7 @@
 #include "IsoContainer.h"
 
+#include <xystring.h>
+
 IsoContainer::IsoContainer(xybase::Stream *stream)
 	: BasicContainer(stream)
 {
@@ -44,7 +46,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
             std::string fileName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
             uint32_t fileSize = entry->dataLengthLe;
             uint32_t fileOffset = entry->locationOfExtentLe * ISO_BLOCK_SIZE;
-            fileIndices[path + '/' + fileName] = FileDesc{fileOffset, fileSize, fileSize, false};
+            fileIndices[xybase::string::to_utf16(path + '/' + fileName)] = FileDesc{ fileOffset, fileSize, fileSize, false };
         }
 
         // Move to the next entry
