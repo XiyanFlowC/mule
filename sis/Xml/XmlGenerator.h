@@ -7,6 +7,7 @@
 #include <list>
 #include <Data/Basic/MultiValue.h>
 #include <functional>
+#include <xystring.h>
 
 namespace mule
 {
@@ -45,14 +46,14 @@ namespace mule
                     }
                 }
                 sb += '<';
-                sb += value.GetName();
+                sb += xybase::string::to_utf8(value.GetName());
 
-                std::map<std::string, std::string> attributes = value.GetAttributes();
+                std::map<std::u16string, std::u16string> attributes = value.GetAttributes();
                 std::list<XmlNodeT> children = value.GetChildren();
 
                 for (auto &&attr : attributes)
                 {
-                    sb += " " + attr.first + "='" + attr.second + "'";
+                    sb += " " + xybase::string::to_utf8(attr.first) + "='" + xybase::string::to_utf8(attr.second) + "'";
                 }
 
                 if (children.size())
@@ -74,13 +75,13 @@ namespace mule
                         }
                         --layer;
                     }
-                    sb += "</" + value.GetName() + ">";
+                    sb += "</" + xybase::string::to_utf8(value.GetName()) + ">";
                     if (indent)
                         sb += '\n';
                 }
                 else
                 {
-                    std::string text = value.GetText();
+                    std::string text = xybase::string::to_utf8(value.GetText());
                     if (text.size() == 0)
                     {
                         sb += "/>";
@@ -107,7 +108,7 @@ namespace mule
                                 sb += ' ';
                             }
                         }
-                        sb += "</" + value.GetName() + ">";
+                        sb += "</" + xybase::string::to_utf8(value.GetName()) + ">";
                     }
                     if (indent)
                     {

@@ -100,6 +100,8 @@ namespace mule
 
 				MultiValue(const std::u16string &value);
 
+				MultiValue(const std::string &value);
+
 				MultiValue(const double value);
 
 				MultiValue(const uint64_t value);

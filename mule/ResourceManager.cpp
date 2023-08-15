@@ -226,7 +226,7 @@ void ResourceManager::LoadDefinition(std::string def)
             auto ret = TypeManager::GetInstance().GetOrCreateObject(field.GetAttribute(u"type"));
             if (ret == nullptr)
             {
-                fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_utf8(field.GetAttribute(u"type")).c_str(), child.name.c_str());
+                fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_utf8(field.GetAttribute(u"type")).c_str(), xybase::string::to_utf8(child.name).c_str());
             }
             structure->AppendField(field.name, ret);
         }

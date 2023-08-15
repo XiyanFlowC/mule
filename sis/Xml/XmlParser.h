@@ -14,6 +14,7 @@ namespace mule
 {
     namespace Xml
     {
+
         // 特化强行停止
         template <typename Ch>
         std::basic_string<Ch> to_utf(long) {
@@ -121,7 +122,7 @@ namespace mule
                 // 开启标签
                 index = xml.find_first_not_of(" \t\n\r", index + 1);
                 size_t endIndex = xml.find_first_of(" \t\n\r>/", index);
-                node.SetName(xml.substr(index, endIndex - index));
+                node.SetName(xybase::string::to_utf16(xml.substr(index, endIndex - index)));
 
                 // 处理特性
                 while (true)
@@ -136,7 +137,7 @@ namespace mule
                     size_t attrValueStart = xml.find_first_of("\"'", attrEndIndex) + 1;
                     size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
                     std::basic_string<Ch> attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
-                    node.AddAttribute(attrName, attrValue);
+                    node.AddAttribute(xybase::string::to_utf16(attrName), xybase::string::to_utf16(attrValue));
                     endIndex = xml.find_first_of(" \t\n\r>/", attrValueEnd + 1);
                 }
 
@@ -172,9 +173,9 @@ namespace mule
                             size_t endIndex = xml.find_first_of(" \t\n\r>", index);
 
                             // 非相等的关闭标签，忽略
-                            if (node.GetName() != xml.substr(index, endIndex - index))
+                            if (xybase::string::to_utf16(node.GetName()) != xybase::string::to_utf16(xml.substr(index, endIndex - index)))
                             {
-                                error += "Near " + xml.substr(index, 32) + ": unpairing with open tag " + node.GetName() + ", ignoring...\n";
+                                error += "Near " + xml.substr(index, 32) + ": unpairing with open tag " + xybase::string::to_utf8(node.GetName()) + ", ignoring...\n";
                                 index = xml.find('>', index);
                                 continue;
                             }
@@ -221,7 +222,7 @@ namespace mule
                                 // 去尾，立即返回
                                 if (xml[endOfBlank] == '<' && xml[endOfBlank + 1] == '/')
                                 {
-                                    node.AddText(sb.ToString());
+                                    node.AddText(xybase::string::to_utf16(sb.ToString()));
                                     index = endOfBlank;
                                     break;
                                 }
@@ -236,7 +237,7 @@ namespace mule
                                 // 节点关闭
                                 if (xml[index + 1] == '/')
                                 {
-                                    node.AddText(sb.ToString());
+                                    node.AddText(xybase::string::to_utf16(sb.ToString()));
                                     break;
                                 }
                                 // XML 解析器命令
@@ -277,19 +278,19 @@ namespace mule
                                     {
                                         // 通过回调函数碾碎
                                         auto res = ParseNode(xml);
-                                        auto itr = callbacks.find(res.GetName());
+                                        auto itr = callbacks.find(xybase::string::to_utf8(res.GetName()));
                                         if (itr != callbacks.end())
                                         {
                                             sb += itr->second(res);
                                         }
                                         else
                                         {
-                                            error += "Near " + xml.substr(index, 32) + ": unknown callback for embedded element " + res.GetName() + ", ignoring...\n";
+                                            error += "Near " + xml.substr(index, 32) + ": unknown callback for embedded element " + xybase::string::to_utf8(res.GetName()) + ", ignoring...\n";
                                         }
                                     }
                                     else
                                     {
-                                        node.AddText(sb.ToString());
+                                        node.AddText(xybase::string::to_utf16(sb.ToString()));
                                         break;
                                     }
                                 }

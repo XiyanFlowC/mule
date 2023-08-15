@@ -157,6 +157,11 @@ std::u16string xybase::string::to_utf16(std::string str) noexcept
     return sb.ToString();
 }
 
+std::u16string xybase::string::to_utf16(std::u16string str) noexcept
+{
+    return str;
+}
+
 std::string xybase::string::to_utf8(std::u16string str) noexcept
 {
     StringBuilder sb;
@@ -196,4 +201,9 @@ std::string xybase::string::to_utf8(std::u16string str) noexcept
     }
 
     return sb.ToString();
+}
+
+std::string xybase::string::to_utf8(std::string str) noexcept
+{
+    return str;
 }

@@ -52,11 +52,25 @@ namespace xybase
 		std::u16string to_utf16(std::string str) noexcept;
 
 		/**
+		 * @brief Identical transform
+		 * @param str 
+		 * @return 
+		*/
+		std::u16string to_utf16(std::u16string str) noexcept;
+
+		/**
 		 * @brief Convert utf-16 to utf-8
 		 * @param str utf-16 string
 		 * @return utf-8 string
 		*/
 		std::string to_utf8(std::u16string str) noexcept;
+
+		/**
+		 * @brief identical transform
+		 * @param str 
+		 * @return 
+		*/
+		std::string to_utf8(std::string str) noexcept;
 
 		template<typename T = char>
 		unsigned long long stoi(std::basic_string<T> str, int base = 10)

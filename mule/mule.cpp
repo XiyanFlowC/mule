@@ -70,7 +70,7 @@ int main(int argc, char **argv)
 					{
 						for (size_t i = 0; i < ret.GetLength(); ++i)
 						{
-							printf(" %llu => %s\n", i, ret.value.arrayValue[i].ToString().c_str());
+							printf(" %llu => %s\n", i, xybase::string::to_utf8(ret.value.arrayValue[i].ToString()).c_str());
 						}
 					}
 					else if (exList)

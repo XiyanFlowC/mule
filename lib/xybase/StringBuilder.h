@@ -135,7 +135,7 @@ namespace xybase
 	{
 		if (size < length) throw InvalidParameterException(u"size", u"Cannot resize to a size smaller than current length.", __LINE__);
 
-		Tunit *tmp = (Tunit *)realloc(buffer, size);
+		Tunit *tmp = (Tunit *)realloc(buffer, size * sizeof(Tunit));
 		if (tmp == nullptr)
 		{
 			tmp = (Tunit *)malloc(size * sizeof(Tunit)); // try again in another way.

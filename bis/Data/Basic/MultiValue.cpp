@@ -182,6 +182,12 @@ MultiValue::MultiValue(const std::u16string & value)
 	SetValue(value);
 }
 
+mule::Data::Basic::MultiValue::MultiValue(const std::string &value)
+{
+	type = MVT_NULL;
+	SetValue(xybase::string::to_utf16(value));
+}
+
 MultiValue::MultiValue(const double value)
 {
 	type = MVT_NULL;
