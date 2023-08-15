@@ -1,6 +1,6 @@
 #include "ElfStream.h"
 
-using namespace mule;
+using namespace xybase;
 
 ElfStream::ElfStream(xybase::Stream *stream)
 	: stream(stream)
@@ -11,20 +11,20 @@ ElfStream::ElfStream(xybase::Stream *stream)
 	// fread(magicHeader, sizeof(magicHeader), 1, stream);
 	if (0 != memcmp(magicSeq, magicHeader, 4))
 	{
-		throw ElfFormatErrorException("Not a valid ELF.", __FILE__, __LINE__);
+		throw ElfFormatErrorException("Not a valid ELF.", __LINE__);
 	}
 	if (magicHeader[4] != '\x01')
 	{
-		throw ElfFormatErrorException("Only support 32-bit ELF.", __FILE__, __LINE__);
+		throw ElfFormatErrorException("Only support 32-bit ELF.", __LINE__);
 	}
 	if (magicHeader[5] != '\x01' && magicHeader[5] != '\x02')
 	{
-		throw ElfFormatErrorException("Invalid data marshal.", __FILE__, __LINE__);
+		throw ElfFormatErrorException("Invalid data marshal.", __LINE__);
 	}
 	isBigEndian = magicHeader[5] == '\x02' ? true : false;
 	if (magicHeader[6] != '\x01')
 	{
-		throw ElfFormatErrorException("Unsupported ELF version.", __FILE__, __LINE__);
+		throw ElfFormatErrorException("Unsupported ELF version.", __LINE__);
 	}
 	stream->Seek(0, SEEK_SET);
 	header = new elf_header;
@@ -54,7 +54,7 @@ ElfStream::ElfStream(xybase::Stream *stream)
 	stream->Seek(header->phoff, SEEK_SET);
 	if (isBigEndian ^ bigEndianSystem)
 	{
-		throw mule::Exception::NotImplementedException(__FILE__, __LINE__);
+		throw xybase::NotImplementedException();
 	}
 	stream->ReadBytes((char *)phs, sizeof(program_header) * header->phnum);
 
@@ -62,7 +62,7 @@ ElfStream::ElfStream(xybase::Stream *stream)
 	stream->Seek(header->shoff, SEEK_SET);
 	if (isBigEndian ^ bigEndianSystem)
 	{
-		throw mule::Exception::NotImplementedException(__FILE__, __LINE__);
+		throw xybase::NotImplementedException();
 	}
 	stream->ReadBytes((char *)shs, sizeof(section_header) * header->shnum);
 
@@ -83,7 +83,7 @@ void ElfStream::Seek(long long offset, int mode)
 {
 	if (mode == SEEK_END)
 	{
-		throw mule::Exception::InvalidOperationException("Cannot seek from end on address mode.", __FILE__, __LINE__);
+		throw xybase::InvalidOperationException("Cannot seek from end on address mode.", __LINE__);
 	}
 
 	else if (mode == SEEK_CUR)
@@ -123,7 +123,7 @@ size_t ElfStream::GetAlign(size_t address)
 			return shs[i].align;
 		}
 	}
-	throw mule::Exception::InvalidParameterException("offset", "Address out of range.", __FILE__, __LINE__);
+	throw xybase::InvalidParameterException("offset", "Address out of range.", __LINE__);
 }
 
 size_t ElfStream::AddressToOffset(size_t address)
@@ -136,7 +136,7 @@ size_t ElfStream::AddressToOffset(size_t address)
 			return address - diff;
 		}
 	}
-	throw mule::Exception::InvalidParameterException("offset", "Address out of range.", __FILE__, __LINE__);
+	throw xybase::InvalidParameterException("offset", "Address out of range.", __LINE__);
 }
 
 size_t ElfStream::OffsetToAddress(size_t offset)
@@ -149,7 +149,7 @@ size_t ElfStream::OffsetToAddress(size_t offset)
 			return offset - diff;
 		}
 	}
-	throw mule::Exception::InvalidParameterException("offset", "Address out of range.", __FILE__, __LINE__);
+	throw xybase::InvalidParameterException("offset", "Address out of range.", __LINE__);
 }
 
 void ElfStream::ReadBytes(char *buffer, int limit)
@@ -162,7 +162,7 @@ void ElfStream::Write(const char *buffer, size_t size)
 	stream->Write(buffer, size);
 }
 
-ElfFormatErrorException::ElfFormatErrorException(std::string msg, const char *file, int line)
-	: Exception(msg, file, line)
+ElfFormatErrorException::ElfFormatErrorException(std::string msg, int line)
+	: RuntimeException(msg, line)
 {
 }

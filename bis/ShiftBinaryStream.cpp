@@ -1,6 +1,7 @@
 #include "ShiftBinaryStream.h"
 
-using namespace mule::Data;
+using namespace xybase;
+using namespace mule;
 
 ShiftBinaryStream::ShiftBinaryStream(const char *path, long long offset, bool isBigEndian)
 	: BinaryStream(path, isBigEndian)

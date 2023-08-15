@@ -42,20 +42,21 @@ void TypeManager::ReleaseObject(std::string name)
 
 void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 {
-	if (creator->nextCreator != nullptr) throw Exception::InvalidParameterException(
-		"creator",
-		"The field nextCreator must be nullptr",
-		MULE_FILE, __LINE__
-		);
-
 	if (last == nullptr)
 	{
 		first = last = creator;
+		while (creator->nextCreator != nullptr)
+		{
+			creator = last = creator->nextCreator;
+		}
 		return;
 	}
 
 	last->nextCreator = creator;
-	last = creator;
+	while (creator->nextCreator != nullptr)
+	{
+		creator = last = creator->nextCreator;
+	}
 }
 
 Basic::Type *TypeManager::GetOrCreateObject(std::string info)

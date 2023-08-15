@@ -2,10 +2,8 @@
 
 #ifndef ELF_STREAM_H__
 
-#include <BinaryStream.h>
-#include <Exception/Exception.h>
-#include <Exception/NotImplementedException.h>
-#include <Exception/InvalidParameterException.h>
+#include <xybase/Exception/InvalidOperationException.h>
+#include <xybase/Exception/NotImplementedException.h>
 #include <xybase/StreamBasic.h>
 
 #include <cstdlib>
@@ -62,10 +60,10 @@ struct rel_entry {
 	word_t info;
 };
 
-class ElfFormatErrorException : public mule::Exception::Exception
+class ElfFormatErrorException : public xybase::RuntimeException
 {
 public:
-	ElfFormatErrorException(std::string msg, const char *file, int line);
+	ElfFormatErrorException(std::string message, int line);
 };
 
 class ElfStream : public xybase::StreamBasic

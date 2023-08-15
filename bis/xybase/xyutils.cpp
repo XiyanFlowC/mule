@@ -203,7 +203,7 @@ int xybase::io::access(const char *path, AccessMode mode)
     int mode_ = 0;
     if (mode & PM_READ) mode_ |= 0x2;
     if (mode & PM_WRITE) mode_ |= 0x4;
-    return ::_access(path, mode);
+    return ::_access(path, mode_);
 #else
     int mode_ = 0;
     if (mode & PM_EXECUTE) mode_ |= 0111;

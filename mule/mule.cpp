@@ -21,6 +21,7 @@ int main(int argc, char **argv)
 
 	LuaHost::GetInstance().LoadLuaStandardLibs();
 	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua"));
+	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.lua"));
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
@@ -33,7 +34,7 @@ int main(int argc, char **argv)
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 	std::string infoFile(ResourceManager::GetInstance().LoadData(Configuration::GetInstance().dataInfoFile).GetData());
 
-	InitialiseLuaEnvironment(new mule::BinaryStream(Configuration::GetInstance().TargetFile.c_str()));
+	InitialiseLuaEnvironment(new xybase::BinaryStream(Configuration::GetInstance().TargetFile.c_str()));
 
 	// Execution
 	try
@@ -52,7 +53,7 @@ int main(int argc, char **argv)
 			while (true)
 			{
 				printf("Lua> ");
-				static char buffer[4096] = {'r', 'e', 't', 'u', 'r', 'n', ' '};
+				static char buffer[4096] {'r', 'e', 't', 'u', 'r', 'n', ' '};
 				scanf("%[^\n]", buffer + off);
 				getchar();
 				if (strcmp(buffer + off, "quit") == 0) break;

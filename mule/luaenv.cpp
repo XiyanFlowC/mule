@@ -390,6 +390,40 @@ int newSheet()
     return valued++;
 }
 
+unsigned int exportFile(int fd)
+{
+    auto &&it = streams.find(fd);
+    if (it == streams.end())
+    {
+        return 0;
+    }
+
+    auto &&stream = it->second;
+    stream->Seek(0, 2);
+    size_t length = stream->Tell();
+    stream->Seek(0, 0);
+    char *buffer = new char[length];
+    BinaryData bd{ buffer, length, false };
+    return ResourceManager::GetInstance().SaveData(bd);
+}
+
+int importFile(int fd, unsigned int id)
+{
+    auto &&it = streams.find(fd);
+    if (it == streams.end())
+    {
+        return -1;
+    }
+
+    BinaryData bd = ResourceManager::GetInstance().LoadData(id);
+    
+    auto &&stream = it->second;
+    stream->Seek(0, 0);
+    stream->Write(bd.GetData(), bd.GetLength());
+    
+    return 0;
+}
+
 void InitialiseLuaEnvironment(xybase::Stream *stream)
 {
     streams[streamd++] = stream;
@@ -423,8 +457,8 @@ void InitialiseLuaEnvironment(xybase::Stream *stream)
     //lua.RegisterFunction("imtbl", importFileHndlr);
 
     // file dump/resume
-    // lua.RegisterFunction("export", exportFile);
-    // lua.RegisterFunction("import", importFile);
+    lua.RegisterFunction("export", exportFile);
+    lua.RegisterFunction("import", importFile);
 
     // data management
     lua.RegisterFunction("loadsheet", loadSheet);

@@ -3,6 +3,8 @@
 using namespace mule::Xml;
 using namespace mule::Data;
 
+bool ResourceManager::rejectOnConflict = true;
+
 ResourceManager::ResourceManager()
 {
     auto data = LoadData(Configuration::GetInstance().dataInfoFile);
@@ -37,14 +39,14 @@ int ResourceManager::CreateDirectoryRecursively(std::string path, size_t index)
 
     if (endIndex == std::string::npos)
     {
-        if (!xybase::io::access(path.c_str(), xybase::io::PM_READWRITE))
+        if (xybase::io::access(path.c_str(), xybase::io::PM_READWRITE))
         {
             return xybase::io::mkdir(path.c_str());
         }
     }
 
     std::string curPath = path.substr(0, endIndex);
-    if (!xybase::io::access(curPath.c_str(), xybase::io::PM_READWRITE))
+    if (xybase::io::access(curPath.c_str(), xybase::io::PM_READWRITE))
     {
         xybase::io::mkdir(curPath.c_str());
     }
@@ -92,11 +94,14 @@ unsigned int ResourceManager::SaveData(BinaryData &data, unsigned int assignId)
     unsigned int id = assignId == 0 ? crc32_eval((uint8_t *) data.GetData(), data.GetLength()) : assignId;
 
     // 冲突避免
-    while (IsExist(id)) ++id;
+    if (rejectOnConflict)
+    {
+        if (IsExist(id)) throw mule::Exception::Exception(std::string("Conflict on saving."), __FILE__, __LINE__);
+    } else while (IsExist(id)) ++id;
 
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
     std::string pp = Configuration::GetInstance().DataDir + path;
-    if (!xybase::io::access(pp.c_str(), xybase::io::PM_READWRITE)) CreateDirectoryRecursively(pp);
+    if (xybase::io::access(pp.substr(0, pp.find_last_of('/')).c_str(), xybase::io::PM_READWRITE)) CreateDirectoryRecursively(pp.substr(0, pp.find_last_of('/')));
     FILE *f = fopen(pp.c_str(), "wb");
     if (f == NULL)
     {

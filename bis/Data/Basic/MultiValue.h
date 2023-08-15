@@ -17,7 +17,6 @@ namespace mule
 	{
 		namespace Basic
 		{
-
 			class InvalidRValueException : public mule::Exception::Exception
 			{
 			public:

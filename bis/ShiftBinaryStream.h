@@ -3,28 +3,24 @@
 #ifndef SHIFT_BINARY_STREAM_H__
 #define SHIFT_BINARY_STREAM_H__
 
-#include "BinaryStream.h"
+#include "xybase/BinaryStream.h"
 
 
 namespace mule
 {
-	namespace Data
+	class ShiftBinaryStream : public xybase::BinaryStream
 	{
+	protected:
+		long long offset;
+	public:
+		ShiftBinaryStream(const char *path, long long offset, bool isBigEndian = false);
 
-		class ShiftBinaryStream : public BinaryStream
-		{
-		protected:
-			long long offset;
-		public:
-			ShiftBinaryStream(const char *path, long long offset, bool isBigEndian = false);
+		void SetOffset(long long offset);
 
-			void SetOffset(long long offset);
+		virtual size_t Tell() override;
 
-			virtual size_t Tell() override;
-
-			virtual void Seek(long long offset, int mode) override;
-		};
-	}
+		virtual void Seek(long long offset, int mode) override;
+	};
 }
 
 #endif

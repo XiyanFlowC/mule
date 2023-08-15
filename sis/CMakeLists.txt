@@ -1,5 +1,5 @@
 
-add_library (sis "Cpp/StructureBuilder.h" "Cpp/StructureBuilder.cpp" "Xml/XmlHandler.h" "Xml/XmlHandler.cpp" "Xml/XmlGenerator.h" "Xml/XmlParser.h"  "Xml/MvXmlNode.h" "Xml/MvXmlNode.cpp" "Xml/XmlNode.cpp" "Xml/XmlNode.h" "Xml/XmlParser.cpp")
+add_library (sis "Cpp/StructureBuilder.h" "Cpp/StructureBuilder.cpp" "Xml/XmlHandler.h" "Xml/XmlHandler.cpp" "Xml/XmlGenerator.h" "Xml/XmlParser.h"  "Xml/MvXmlNode.h" "Xml/MvXmlNode.cpp" "Xml/XmlNode.cpp" "Xml/XmlNode.h" "Xml/XmlParser.cpp" "Cpp/Environment.cpp" "Cpp/Environment.h")
 
 if (USING_LUA)
 add_subdirectory(Lua)

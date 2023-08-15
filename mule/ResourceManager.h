@@ -13,7 +13,6 @@
 #include <xybase/Stream.h>
 #include <xybase/xyutils.h>
 #include <xybase/Exception/IOException.h>
-#include <BinaryStream.h>
 #include <Data/TypeManager.h>
 #include <Data/Structure.h>
 #include <Xml/XmlParser.h>
@@ -59,6 +58,8 @@ class ResourceManager
 
 	int CreateDirectoryRecursively(std::string path, size_t index = 0);
 public:
+	static bool rejectOnConflict;
+
 	struct FileInfo
 	{
 		unsigned int id;

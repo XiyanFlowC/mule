@@ -13,7 +13,6 @@ namespace mule
 {
 	namespace Data
 	{
-
 		/**
 		 * @brief Singleton Type Manager. Used to manage all of the objects in the enviorment.
 		 * The other compoments should get registered objects from this class.
@@ -50,9 +49,9 @@ namespace mule
 			void ReleaseObject(std::string name);
 
 			/**
-			 * @brief Register field creator to the manager. This class
-			 * is able to manage an automatic process of Field creating by using the creators registered.
-			 * @param creator The creator need to be registered to the manager.
+			 * @brief Register type creator to the manager. This class
+			 * is able to manage an automatic process of Type creation by using the creators registered.
+			 * @param creator The creator(s) need to be registered to the manager.
 			*/
 			void RegisterObjectCreator(TypeCreator *creator);
 
