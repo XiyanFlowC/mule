@@ -226,7 +226,7 @@ void ResourceManager::LoadDefinition(std::string def)
             auto ret = TypeManager::GetInstance().GetOrCreateObject(field.GetAttribute(u"type"));
             if (ret == nullptr)
             {
-                fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_utf8(field.GetAttribute(u"type")).c_str(), xybase::string::to_utf8(child.name).c_str());
+                fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_string(field.GetAttribute(u"type")).c_str(), xybase::string::to_string(child.name).c_str());
             }
             structure->AppendField(field.name, ret);
         }
@@ -288,7 +288,7 @@ void BinaryData::SetData(char *data, size_t length, bool duplicate)
 {
     if (duplicate)
     {
-        this->data = std::make_shared<char[]>(length);
+        this->data = std::shared_ptr<char[]>(new char[length]);
         memcpy(this->data.get(), data, length);
     }
     else
