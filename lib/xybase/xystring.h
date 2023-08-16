@@ -1,3 +1,7 @@
+/**
+* xystring.h - A platform isolation string processing util
+* @author Xiyan
+*/
 #pragma once
 
 #ifndef XY_XYSTRING_H__
@@ -9,12 +13,14 @@ namespace xybase
 {
 	namespace string
 	{
+		/* Codepoint conversions. */
+
 		/**
 		 * @brief Encode a codepoint to utf-8
 		 * @param codePoint Code Point.
 		 * @return The utf-8 encoded string.
 		*/
-		std::string to_utf8(long codePoint);
+		std::u8string to_utf8(long codePoint);
 
 		/**
 		 * @brief Encode a codepoint to utf-16
@@ -35,45 +41,187 @@ namespace xybase
 		 * @param str The character need to be processed.
 		 * @return The codepoint of given character.
 		*/
-		long to_codepoint(std::string str);
+		long to_codepoint(const std::u8string &str);
 
 		/**
 		 * @brief Get the codepoint for utf-16 (only process the first character).
 		 * @param str The character need to be processed.
 		 * @return The codepoint of given character.
 		*/
-		long to_codepoint(std::u16string str);
+		long to_codepoint(const std::u16string &str);
+
+		/* String type conversions. */
+
+		/**
+		 * @brief Convert locale string to ucs-4 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u32string to_utf32(const std::string &str) noexcept;
+
+		/**
+		 * @brief Convert utf8 string to utf32 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u32string to_utf32(const std::u8string &str) noexcept;
+
+		/**
+		 * @brief Convert utf16 string to utf32 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u32string to_utf32(const std::u16string &str) noexcept;
+
+		/**
+		 * @brief Identical conversion.
+		 * @param str 
+		 * @return 
+		*/
+		std::u32string to_utf32(const std::u32string &str) noexcept;
+
+		/**
+		 * @brief Convert wstring to ucs-4 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u32string to_utf32(const std::wstring &str) noexcept;
+
+		/**
+		 * @brief Convert local string to utf-16
+		 * @param str 
+		 * @return 
+		*/
+		std::u16string to_utf16(const std::string &str) noexcept;
 
 		/**
 		 * @brief Convert utf-8 to utf-16
 		 * @param str utf-8 string
 		 * @return utf-16 string
 		*/
-		std::u16string to_utf16(std::string str) noexcept;
+		std::u16string to_utf16(const std::u8string &str) noexcept;
 
 		/**
 		 * @brief Identical transform
 		 * @param str 
 		 * @return 
 		*/
-		std::u16string to_utf16(std::u16string str) noexcept;
+		std::u16string to_utf16(const std::u16string &str) noexcept;
+
+		/**
+		 * @brief Convert UCS-4 to Utf-16
+		 * @param str 
+		 * @return 
+		*/
+		std::u16string to_utf16(const std::u32string &str) noexcept;
+
+		/**
+		 * @brief Convert a wstring to utf16 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u16string to_utf16(const std::wstring &str) noexcept;
+
+		/**
+		 * @brief Convert wstring to utf-8 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u8string to_utf8(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Convert utf-16 to utf-8
 		 * @param str utf-16 string
 		 * @return utf-8 string
 		*/
-		std::string to_utf8(std::u16string str) noexcept;
+		std::u8string to_utf8(const std::u16string &str) noexcept;
 
 		/**
 		 * @brief identical transform
 		 * @param str 
 		 * @return 
 		*/
-		std::string to_utf8(std::string str) noexcept;
+		std::u8string to_utf8(const std::u8string &str) noexcept;
+
+		/**
+		 * @brief Convert local string to utf-8 string
+		 * @param str 
+		 * @return 
+		*/
+		std::u8string to_utf8(const std::string &str) noexcept;
+
+		/**
+		 * @brief 
+		 * @param str 
+		 * @return 
+		*/
+		std::wstring to_wstring(const std::string &str) noexcept;
+
+		/**
+		 * @brief Convert to wstring (platform specified)
+		 * @param str 
+		 * @return 
+		*/
+		std::wstring to_wstring(const std::u8string &str) noexcept;
+
+		/**
+		 * @brief Convert to wstring
+		 * @param str UTF-16 string
+		 * @return 
+		*/
+		std::wstring to_wstring(const std::u16string &str) noexcept;
+
+		/**
+		 * @brief Convert to wstring
+		 * @param str UCS-4 string
+		 * @return 
+		*/
+		std::wstring to_wstring(const std::u32string &str) noexcept;
+
+		/**
+		 * @brief Identical conversion
+		 * @param str 
+		 * @return 
+		*/
+		std::wstring to_wstring(const std::wstring &str) noexcept;
+
+		/**
+		 * @brief Identical conversion
+		 * @param str 
+		 * @return 
+		*/
+		std::string to_string(const std::string &str) noexcept;
+
+		/**
+		 * @brief Convert utf8 string to local string
+		 * @param str 
+		 * @return 
+		*/
+		std::string to_string(const std::u8string &str) noexcept;
+
+		/**
+		 * @brief Convert utf16 string to local string
+		 * @param str 
+		 * @return 
+		*/
+		std::string to_string(const std::u16string &str) noexcept;
+
+		/**
+		 * @brief Convert utf32 string to local string
+		 * @param str 
+		 * @return 
+		*/
+		std::string to_string(const std::u32string &str) noexcept;
+
+		/**
+		 * @brief Convert wstring to local string
+		 * @param str 
+		 * @return 
+		*/
+		std::string to_string(const std::wstring &str) noexcept;
 
 		template<typename T = char>
-		unsigned long long stoi(std::basic_string<T> str, int base = 10)
+		unsigned long long stoi(const std::basic_string<T> &str, int base = 10)
 		{
 			const T *ptr = str.c_str();
 			const T *end = ptr + str.length();

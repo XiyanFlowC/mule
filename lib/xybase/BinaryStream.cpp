@@ -14,7 +14,7 @@ using namespace xybase;
 BinaryStream::BinaryStream(std::u16string path, bool isBigEndian)
 	: name(path)
 {
-	stream = fopen(xybase::string::to_utf8(path).c_str(), "rb+");
+	stream = fopen(xybase::string::to_string(path).c_str(), "rb+");
 	if (stream == nullptr)
 	{
 		throw IOException(path, u"Open file error.");

@@ -10,7 +10,7 @@ int valued = 0;
 std::map<std::string, xybase::FileContainer *> containers;
 std::list<Table *> tables;
 
-int mountCountainer(int id, std::string type, std::string code)
+int mountContainer(int id, std::string type, std::string code)
 {
     if (type.empty() || code.empty() || id < 0)
     {
@@ -204,7 +204,7 @@ int registerTable(int fd, std::string name, size_t offset, int size)
     return 0;
 }
 
-int readTable(int fd, std::string name, std::string handler)
+int readTable(int fd, std::string handler)
 {
     auto &&titr = tbls.find(fd);
     auto &&sitr = streams.find(fd);
@@ -226,7 +226,7 @@ int readTable(int fd, std::string name, std::string handler)
     }
     else return -3;
 
-    return 0;
+    return valued - 1;
 }
 
 int writeTable(int fd, int vd, std::string handler)
@@ -326,7 +326,7 @@ MultiValue listfs(MultiValue dev)
             return -1;
         }
 
-        auto &&itr = containers.find(xybase::string::to_utf8(*dev.value.stringValue));
+        auto &&itr = containers.find(xybase::string::to_string(*dev.value.stringValue));
         if (itr == containers.end()) return -2;
 
         con = itr->second;
@@ -429,7 +429,7 @@ void InitialiseLuaEnvironment(xybase::Stream *stream)
     lua.RegisterFunction("loaddef", loadDefine);
 
     // virtual filesystem control
-    lua.RegisterFunction("mount", mountCountainer);
+    lua.RegisterFunction("mount", mountContainer);
     lua.RegisterFunction("seldev", selectContainer);
     lua.RegisterFunction("pdev", getDefaultContainer);
     lua.RegisterFunction("applyfile", applyStream);

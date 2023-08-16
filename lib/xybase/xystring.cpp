@@ -1,10 +1,11 @@
 #include "xystring.h"
-
+#include <locale>
+#include <cstdlib>
 #include "StringBuilder.h"
 
-std::string xybase::string::to_utf8(long codepoint)
+std::u8string xybase::string::to_utf8(long codepoint)
 {
-    std::string ret;
+    std::u8string ret;
 
     if (codepoint <= 0x7F) {
         ret += static_cast<char>(codepoint);
@@ -26,7 +27,7 @@ std::string xybase::string::to_utf8(long codepoint)
     }
     else {
         // Invalid codepoint
-        return "";
+        return u8"";
     }
 
     return ret;
@@ -38,13 +39,13 @@ std::u16string xybase::string::to_utf16(long codepoint)
 
     if (codepoint <= 0xFFFF) {
         // 码点在基本平面（BMP）范围内，直接转换为一个UTF-16字符
-        ret.push_back(static_cast<wchar_t>(codepoint));
+        ret.push_back(static_cast<char16_t>(codepoint));
     }
     else if (codepoint <= 0x10FFFF) {
         // 码点在增补平面范围内，进行UTF-16双字节编码
         codepoint -= 0x10000;
-        wchar_t leadSurrogate = static_cast<wchar_t>((codepoint >> 10) + 0xD800);
-        wchar_t trailSurrogate = static_cast<wchar_t>((codepoint & 0x3FF) + 0xDC00);
+        char16_t leadSurrogate = static_cast<char16_t>((codepoint >> 10) + 0xD800);
+        char16_t trailSurrogate = static_cast<char16_t>((codepoint & 0x3FF) + 0xDC00);
         ret.push_back(leadSurrogate);
         ret.push_back(trailSurrogate);
     }
@@ -57,7 +58,7 @@ std::u32string xybase::string::to_utf32(long codepoint)
     return std::u32string() + static_cast<char32_t>(codepoint);
 }
 
-long xybase::string::to_codepoint(std::string str)
+long xybase::string::to_codepoint(const std::u8string &str)
 {
     uint32_t ret = 0;
     int leng = 0;
@@ -98,7 +99,7 @@ long xybase::string::to_codepoint(std::string str)
     return ret;
 }
 
-long xybase::string::to_codepoint(std::u16string str)
+long xybase::string::to_codepoint(const std::u16string &str)
 {
     if (str[0] >= 0xD800 && str[0] <= 0xDBFF && 1 < str.length()) {
         // Surrogate pair for characters U+10000 to U+10FFFF
@@ -118,13 +119,119 @@ long xybase::string::to_codepoint(std::u16string str)
     }
 }
 
-std::u16string xybase::string::to_utf16(std::string str) noexcept
+std::u32string xybase::string::to_utf32(const std::string &str) noexcept
+{
+    return to_utf32(to_wstring(str));
+}
+
+std::u32string xybase::string::to_utf32(const std::u8string &str) noexcept
+{
+    StringBuilder<char32_t> sb;
+    size_t i = 0;
+
+    while (i < str.length()) {
+        uint32_t res = 0;
+        int leng = 0;
+
+        if (str[i] & 0x80) {
+            if ((str[0] & 0xE0) == 0xC0) {
+                leng = 2;
+                res = str[i] & 0x1F;
+            }
+            else if ((str[i] & 0xF0) == 0xE0) {
+                leng = 3;
+                res = str[i] & 0x0F;
+            }
+            else if ((str[i] & 0xF8) == 0xF0) {
+                leng = 4;
+                res = str[i] & 0x07;
+            }
+            else {
+                // Invalid UTF-8 encoding
+                continue;
+            }
+
+            if (i + leng >= str.size())
+            {
+                break;
+            }
+
+            for (int j = 1; j < leng; ++j) {
+                if ((str[i + j] & 0xC0) == 0x80) {
+                    res = (res << 6) | (str[i + j] & 0x3F);
+                }
+                else {
+                    // Invalid UTF-8 encoding
+                    continue;
+                }
+            }
+        }
+        else {
+            // ASCII character
+            res = str[0];
+        }
+
+        sb += res;
+        i += leng;
+    }
+
+    return sb.ToString();
+}
+
+std::u32string xybase::string::to_utf32(const std::u16string &str) noexcept
+{
+    StringBuilder<char32_t> sb;
+    size_t i = 0;
+
+    while (i < str.size())
+    {
+        if (str[i] >= 0xD800 && str[i] <= 0xDBFF && i + 1 < str.length()) {
+            // Surrogate pair for characters U+10000 to U+10FFFF
+            char16_t leadSurrogate = str[i++];
+            char16_t trailSurrogate = str[i++];
+
+            // Singular lead surrogate
+            if ((trailSurrogate & 0xDF00) != 0xDC00) continue;
+
+            sb += static_cast<char32_t>(0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF));
+        }
+        else {
+            // Singular trailsurrogate
+            if ((str[i] & 0xFC00) == 0xDC00) continue;
+
+            sb += str[i++];
+        }
+    }
+
+    return sb.ToString();
+}
+
+std::u32string xybase::string::to_utf32(const std::u32string &str) noexcept
+{
+    return str;
+}
+
+std::u32string xybase::string::to_utf32(const std::wstring &str) noexcept
+{
+#ifdef _WIN32
+    return to_utf32((const char16_t*)str.c_str());
+#else
+    return std::u32string((const char32_t*)str.c_str());
+#endif
+}
+
+std::u16string xybase::string::to_utf16(const std::string &str) noexcept
+{
+    return to_utf16(to_wstring(str));
+}
+
+std::u16string xybase::string::to_utf16(const std::u8string &str) noexcept
 {
     StringBuilder<char16_t> sb;
     size_t i = 0;
 
     while (i < str.length()) {
-        char c = str[i];
+        char8_t c = str[i];
 
         if ((c & 0x80) == 0) {
             // ASCII
@@ -157,14 +264,49 @@ std::u16string xybase::string::to_utf16(std::string str) noexcept
     return sb.ToString();
 }
 
-std::u16string xybase::string::to_utf16(std::u16string str) noexcept
+std::u16string xybase::string::to_utf16(const std::u16string &str) noexcept
 {
     return str;
 }
 
-std::string xybase::string::to_utf8(std::u16string str) noexcept
+std::u16string xybase::string::to_utf16(const std::u32string &str) noexcept
 {
-    StringBuilder sb;
+    std::u16string ret;
+    for (auto ch : str)
+    {
+        if (ch <= 0xFFFF) {
+            // 码点在基本平面（BMP）范围内，直接转换为一个UTF-16字符
+            ret.push_back(static_cast<char16_t>(ch));
+        }
+        else if (ch <= 0x10FFFF) {
+            // 码点在增补平面范围内，进行UTF-16双字节编码
+            ch -= 0x10000;
+            char16_t leadSurrogate = static_cast<char16_t>((ch >> 10) + 0xD800);
+            char16_t trailSurrogate = static_cast<char16_t>((ch & 0x3FF) + 0xDC00);
+            ret.push_back(leadSurrogate);
+            ret.push_back(trailSurrogate);
+        }
+    }
+    return ret;
+}
+
+std::u16string xybase::string::to_utf16(const std::wstring &str) noexcept
+{
+#ifdef _WIN32
+    return std::u16string((const char16_t *)str.c_str());
+#else
+    return to_utf16((const char32_t *)str.c_str());
+#endif // _WIN32
+}
+
+std::u8string xybase::string::to_utf8(const std::wstring &str) noexcept
+{
+    return to_utf8(to_utf16(str));
+}
+
+std::u8string xybase::string::to_utf8(const std::u16string &str) noexcept
+{
+    StringBuilder<char8_t> sb;
 
     for (size_t i = 0; i < str.length(); ++i) {
         char16_t c = str[i];
@@ -203,7 +345,92 @@ std::string xybase::string::to_utf8(std::u16string str) noexcept
     return sb.ToString();
 }
 
-std::string xybase::string::to_utf8(std::string str) noexcept
+std::u8string xybase::string::to_utf8(const std::u8string &str) noexcept
 {
     return str;
+}
+
+std::u8string xybase::string::to_utf8(const std::string &str) noexcept
+{
+    return to_utf8(to_wstring(str));
+}
+
+std::wstring xybase::string::to_wstring(const std::string &str) noexcept
+{
+    mbstate_t state = mbstate_t{};
+    const char *pstr = str.c_str();
+    size_t size = mbsrtowcs(NULL, &pstr, 0, &state);
+    if (size == -1) return L"";
+    wchar_t *buf = new wchar_t[size + 1];
+    mbsrtowcs(buf, &pstr, str.size(), &state);
+    buf[size] = 0;
+    std::wstring ret {buf};
+    delete[] buf;
+    return ret;
+}
+
+std::wstring xybase::string::to_wstring(const std::u8string &str) noexcept
+{
+#ifdef _WIN32
+    return std::wstring((const wchar_t *)to_utf16(str).c_str());
+#else
+    return std::wstring((const wchar_t *)to_utf32(str).c_str());
+#endif // _WIN32
+}
+
+std::wstring xybase::string::to_wstring(const std::u16string &str) noexcept
+{
+#ifdef _WIN32
+    return std::wstring((const wchar_t *)to_utf16(str).c_str());
+#else
+    return std::wstring((const wchar_t *)to_utf32(str).c_str());
+#endif // _WIN32
+}
+
+std::wstring xybase::string::to_wstring(const std::u32string &str) noexcept
+{
+#ifdef _WIN32
+    return std::wstring((const wchar_t *)to_utf16(str).c_str());
+#else
+    return std::wstring((const wchar_t *)to_utf32(str).c_str());
+#endif // _WIN32
+}
+
+std::wstring xybase::string::to_wstring(const std::wstring &str) noexcept
+{
+    return str;
+}
+
+std::string xybase::string::to_string(const std::string &str) noexcept
+{
+    return str;
+}
+
+std::string xybase::string::to_string(const std::u8string &str) noexcept
+{
+    return to_string(to_wstring(str));
+}
+
+std::string xybase::string::to_string(const std::u16string &str) noexcept
+{
+    return to_string(to_wstring(str));
+}
+
+std::string xybase::string::to_string(const std::u32string &str) noexcept
+{
+    return to_string(to_wstring(str));
+}
+
+std::string xybase::string::to_string(const std::wstring &str) noexcept
+{
+    mbstate_t state = mbstate_t{};
+    const wchar_t *pstr = str.c_str();
+    size_t size = wcsrtombs(NULL, &pstr, 0, &state);
+    if (size == -1) return "";
+    char *buf = new char[size + 1];
+    wcsrtombs(buf, &pstr, str.size(), &state);
+    buf[size] = 0;
+    std::string ret {buf};
+    delete[] buf;
+    return ret;
 }

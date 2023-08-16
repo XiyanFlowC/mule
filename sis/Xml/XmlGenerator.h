@@ -13,6 +13,10 @@ namespace mule
 {
     namespace Xml
     {
+        /**
+         * @brief Utf8 xml generator
+         * @tparam XmlNodeT The type of the node.
+        */
         template<typename XmlNodeT>
         class XmlGenerator
         {
@@ -26,17 +30,18 @@ namespace mule
             std::string ToXml(const XmlNodeT &value)
             {
                 layer = -1;
-                xybase::StringBuilder sb;
+                xybase::StringBuilder<char8_t> sb;
                 ProcNode(value, sb);
-                return sb.ToString();
+                return (char *)sb.ToString();
             }
 
             //std::function<std::string(std::string)> text_to_xml;
         private:
             int layer = 0;
 
-            void ProcNode(const XmlNodeT &value, xybase::StringBuilder<char> &sb)
+            void ProcNode(const XmlNodeT &value, xybase::StringBuilder<char8_t> &sb)
             {
+                // FIXME: mis-process the text node, behavior inconsistant found between MvXmlNode and XmlNode, might need to specialise for one of them
                 if (indent)
                 {
                     ++layer;
@@ -53,7 +58,7 @@ namespace mule
 
                 for (auto &&attr : attributes)
                 {
-                    sb += " " + xybase::string::to_utf8(attr.first) + "='" + xybase::string::to_utf8(attr.second) + "'";
+                    sb += u8' ' + xybase::string::to_utf8(attr.first) + u8"='" + xybase::string::to_utf8(attr.second) + u8"'";
                 }
 
                 if (children.size())
@@ -75,20 +80,20 @@ namespace mule
                         }
                         --layer;
                     }
-                    sb += "</" + xybase::string::to_utf8(value.GetName()) + ">";
+                    sb += u8"</" + xybase::string::to_utf8(value.GetName()) + u8">";
                     if (indent)
                         sb += '\n';
                 }
                 else
                 {
-                    std::string text = xybase::string::to_utf8(value.GetText());
+                    std::u8string text = xybase::string::to_utf8(value.GetText());
                     if (text.size() == 0)
                     {
-                        sb += "/>";
+                        sb += u8"/>";
                     }
                     else
                     {
-                        sb += ">";
+                        sb += u8">";
                         if (indent)
                         {
                             sb += '\n';
@@ -108,7 +113,7 @@ namespace mule
                                 sb += ' ';
                             }
                         }
-                        sb += "</" + xybase::string::to_utf8(value.GetName()) + ">";
+                        sb += u8"</" + xybase::string::to_utf8(value.GetName()) + u8">";
                     }
                     if (indent)
                     {

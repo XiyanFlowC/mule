@@ -1,4 +1,5 @@
 #include "RuntimeException.h"
+#include <cstring>
 #include "../xyutils.h"
 
 xybase::RuntimeException::RuntimeException(const std::u16string &message, int err)

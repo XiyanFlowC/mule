@@ -41,7 +41,7 @@ mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::u1
 	if (!info.ends_with(u"]")) return nullptr;
 
 	size_t startIndex = info.find_last_of(u"[");
-	if (startIndex == std::string::npos) return nullptr;
+	if (startIndex == std::u16string::npos) return nullptr;
 
 	int size = static_cast<int>(xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2)));
 

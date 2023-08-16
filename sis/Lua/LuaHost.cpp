@@ -261,7 +261,7 @@ void mule::Lua::LuaHost::PushValue(const mule::Data::Basic::MultiValue &v)
 		lua_pushnumber(L, v.value.realValue);
 		break;
 	case MultiValue::ValueType::MVT_STRING:
-		lua_pushstring(L, xybase::string::to_utf8(*v.value.stringValue).c_str());
+		lua_pushstring(L, xybase::string::to_string(*v.value.stringValue).c_str());
 		break;
 	case MultiValue::ValueType::MVT_MAP:
 		lua_newtable(L);

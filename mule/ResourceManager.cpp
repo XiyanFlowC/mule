@@ -27,7 +27,7 @@ ResourceManager::ResourceManager()
             fputs("Info file format error: file node mismatch.\n", stderr);
             continue;
         }
-        std::string filename = xybase::string::to_utf8(file.children.begin()->text);
+        std::string filename = xybase::string::to_string(file.children.begin()->text);
 
         fileInfos[filename] = FileInfo{ (unsigned int)xybase::string::stoi(file.GetAttribute(u"id")) , (unsigned int)xybase::string::stoi(file.GetAttribute(u"crc32"))};
     }

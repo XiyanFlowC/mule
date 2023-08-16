@@ -9,7 +9,7 @@ xybase::InvalidOperationException::InvalidOperationException(const std::u16strin
 
 const char *xybase::InvalidOperationException::what() const noexcept
 {
-	return xybase::string::to_utf8(message).c_str();
+	return xybase::string::to_string(message).c_str();
 }
 
 const std::u16string &xybase::InvalidOperationException::GetMessage() const

@@ -17,13 +17,13 @@ namespace mule
 
         // 特化强行停止
         template <typename Ch>
-        std::basic_string<Ch> to_utf(long) {
-            static_assert(sizeof(Ch) == 0, "Unsupported character type in to_utf");
+        std::basic_string<Ch> to_utf(long v) {
+            return std::basic_string<Ch>{static_cast<Ch>(v)};
         }
 
         // utf8 特化
         template <>
-        std::string to_utf<char>(long value);
+        std::u8string to_utf<char8_t>(long value);
 
         // utf16 特化
         template <>
@@ -32,6 +32,21 @@ namespace mule
         // utf32 特化
         template <>
         std::u32string to_utf<char32_t>(long value);
+
+        template <typename Ch>
+        std::basic_string<Ch> str_encflip(const std::string &str)
+        {
+            return str;
+        }
+
+        template <>
+        std::basic_string<char8_t> str_encflip(const std::string &str);
+
+        template <>
+        std::basic_string<char16_t> str_encflip(const std::string &str);
+
+        template <>
+        std::basic_string<char32_t> str_encflip(const std::string &str);
 
         /**
          * @brief 处理Xml的类
@@ -46,7 +61,7 @@ namespace mule
 
             XmlNodeT Parse(const std::basic_string<Ch> &xml);
 
-            void RegisterTagCallback(const std::basic_string<Ch> &tagName, std::function<std::basic_string<Ch>(XmlNodeT &)> callback);
+            void RegisterTagCallback(const std::u16string &tagName, std::function<std::basic_string<Ch>(XmlNodeT &)> callback);
 
             void RegisterEntity(const std::basic_string<Ch> entityName, const std::basic_string<Ch> entitySeq);
 
@@ -59,7 +74,7 @@ namespace mule
 
             size_t index;
 
-            std::map<std::basic_string<Ch>, std::function<std::basic_string<Ch>(XmlNodeT &)>> callbacks;
+            std::map<std::u16string, std::function<std::basic_string<Ch>(XmlNodeT &)>> callbacks;
 
             std::map<std::basic_string<Ch>, std::basic_string<Ch>> entities;
         };
@@ -76,16 +91,16 @@ namespace mule
             : mangleEmbeddedNodes(false)
         {
             // XML 1.0 预定义实体
-            RegisterEntity("amp", "&");
-            RegisterEntity("lt", "<");
-            RegisterEntity("gt", ">");
-            RegisterEntity("apos", "'");
-            RegisterEntity("quot", "\"");
+            RegisterEntity(str_encflip<Ch>("amp"), str_encflip<Ch>("&"));
+            RegisterEntity(str_encflip<Ch>("lt"), str_encflip<Ch>("<"));
+            RegisterEntity(str_encflip<Ch>("gt"), str_encflip<Ch>(">"));
+            RegisterEntity(str_encflip<Ch>("apos"), str_encflip<Ch>("'"));
+            RegisterEntity(str_encflip<Ch>("quot"), str_encflip<Ch>("\""));
 
-            // 拓展的通用实体
-            RegisterEntity("lf", "\n");
-            RegisterEntity("cr", "\r");
-            RegisterEntity("sp", " ");
+            //// 拓展的通用实体
+            //RegisterEntity("lf", "\n");
+            //RegisterEntity("cr", "\r");
+            //RegisterEntity("sp", " ");
         }
 
         template<typename XmlNodeT, typename Ch>
@@ -97,7 +112,7 @@ namespace mule
         }
 
         template<typename XmlNodeT, typename Ch>
-        inline void XmlParser<XmlNodeT, Ch>::RegisterTagCallback(const std::basic_string<Ch> &tagName, std::function<std::basic_string<Ch>(XmlNodeT &)> callback)
+        inline void XmlParser<XmlNodeT, Ch>::RegisterTagCallback(const std::u16string &tagName, std::function<std::basic_string<Ch>(XmlNodeT &)> callback)
         {
             callbacks[tagName] = callback;
         }
@@ -106,7 +121,7 @@ namespace mule
         XmlNodeT XmlParser<XmlNodeT, Ch>::ParseNode(const std::basic_string<Ch> &xml)
         {
             // 去除空白字符
-            index = xml.find_first_not_of(" \t\n\r", index);
+            index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
             // 节点起始
             if (xml[index] == '<')
             {
@@ -114,31 +129,31 @@ namespace mule
 
                 if (xml[index + 1] == '/')
                 {
-                    error += "Near " + xml.substr(index, 32) + ": Unexpected close tag.\n";
-                    index = xml.find(">", index) + 1;
+                    error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": Unexpected close tag.\n";
+                    index = xml.find(str_encflip<Ch>(">"), index) + 1;
                     return XmlNodeT::ERROR;
                 }
 
                 // 开启标签
-                index = xml.find_first_not_of(" \t\n\r", index + 1);
-                size_t endIndex = xml.find_first_of(" \t\n\r>/", index);
+                index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 1);
+                size_t endIndex = xml.find_first_of(str_encflip<Ch>(" \t\n\r>/"), index);
                 node.SetName(xybase::string::to_utf16(xml.substr(index, endIndex - index)));
 
                 // 处理特性
                 while (true)
                 {
-                    index = xml.find_first_not_of(" \t\n\r", endIndex);
+                    index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), endIndex);
                     if (xml[index] == '>' || xml[index] == '/')
                     {
                         break;
                     }
                     size_t attrEndIndex = xml.find('=', index);
                     std::basic_string<Ch> attrName = xml.substr(index, attrEndIndex - index);
-                    size_t attrValueStart = xml.find_first_of("\"'", attrEndIndex) + 1;
+                    size_t attrValueStart = xml.find_first_of(str_encflip<Ch>("\"'"), attrEndIndex) + 1;
                     size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
                     std::basic_string<Ch> attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
                     node.AddAttribute(xybase::string::to_utf16(attrName), xybase::string::to_utf16(attrValue));
-                    endIndex = xml.find_first_of(" \t\n\r>/", attrValueEnd + 1);
+                    endIndex = xml.find_first_of(str_encflip<Ch>(" \t\n\r>/"), attrValueEnd + 1);
                 }
 
                 // 空元素标签
@@ -150,7 +165,7 @@ namespace mule
                         return node;
                     }
 
-                    error += "Near " + xml.substr(index, 32) + ": unexpected character '/', ignoring...\n";
+                    error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": unexpected character '/', ignoring...\n";
                     index = xml.find('>', index);
                 }
                 else // xml[index] == '>'
@@ -162,20 +177,20 @@ namespace mule
                 while (index < xml.size())
                 {
                     // 去除空白字符
-                    index = xml.find_first_not_of(" \t\n\r", index);
+                    index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
                     // 处理标签节点
                     if (xml[index] == '<' && xml[index + 1] != '!')
                     {
                         // 处理关闭标签：由于内部元素全部递归解析，此处能遇到的关闭标签一定是该元素的关闭标签
                         if (xml[index + 1] == '/')
                         {
-                            index = xml.find_first_not_of(" \t\n\r", index + 2);
-                            size_t endIndex = xml.find_first_of(" \t\n\r>", index);
+                            index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 2);
+                            size_t endIndex = xml.find_first_of(str_encflip<Ch>(" \t\n\r>"), index);
 
                             // 非相等的关闭标签，忽略
                             if (xybase::string::to_utf16(node.GetName()) != xybase::string::to_utf16(xml.substr(index, endIndex - index)))
                             {
-                                error += "Near " + xml.substr(index, 32) + ": unpairing with open tag " + xybase::string::to_utf8(node.GetName()) + ", ignoring...\n";
+                                error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": unpairing with open tag " + xybase::string::to_string(node.GetName()) + ", ignoring...\n";
                                 index = xml.find('>', index);
                                 continue;
                             }
@@ -218,7 +233,7 @@ namespace mule
                             // 空白字符去尾
                             else if (xml[index] == ' ' || xml[index] == '\t' || xml[index] == '\r' || xml[index] == '\n')
                             {
-                                size_t endOfBlank = xml.find_first_not_of(" \t\r\n", index);
+                                size_t endOfBlank = xml.find_first_not_of(str_encflip<Ch>(" \t\r\n"), index);
                                 // 去尾，立即返回
                                 if (xml[endOfBlank] == '<' && xml[endOfBlank + 1] == '/')
                                 {
@@ -246,29 +261,29 @@ namespace mule
                                     if (xml[index + 2] == '[')
                                     {
                                         size_t blockNameStart = index + 3;
-                                        size_t blockNameEnd = xml.find("[", index + 3);
+                                        size_t blockNameEnd = xml.find('[', index + 3);
 
                                         auto blockName = xml.substr(blockNameStart, blockNameEnd - blockNameStart);
                                         // 为保持拓展性，此处允许处理CDATA以外的块
-                                        if (blockName == "CDATA")
+                                        if (blockName == str_encflip<Ch>("CDATA"))
                                         {
                                             // 处理CDATA块
                                             size_t cdataStart = blockNameEnd + 1;
-                                            index = xml.find("]]>", index);
+                                            index = xml.find(str_encflip<Ch>("]]>"), index);
                                             sb += xml.substr(cdataStart, index - cdataStart);
                                             index += 3;
                                         }
                                         else
                                         {
                                             // 无效块，忽视，不处理
-                                            error += "Near " + xml.substr(index, 32) + ": unknown block type " + blockName + ", ignoring...\n";
-                                            index = xml.find("]]>", index);
+                                            error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": unknown block type " + xybase::string::to_string(blockName) + ", ignoring...\n";
+                                            index = xml.find(str_encflip<Ch>("]]>"), index);
                                             index += 3;
                                         }
                                     }
                                     else if (xml[index + 2] == '-' && xml[index + 3] == '-')
                                     {
-                                        index = xml.find("-->", index + 4);
+                                        index = xml.find(str_encflip<Ch>("-->"), index + 4);
                                     }
                                 }
                                 // 标签打开
@@ -278,14 +293,14 @@ namespace mule
                                     {
                                         // 通过回调函数碾碎
                                         auto res = ParseNode(xml);
-                                        auto itr = callbacks.find(xybase::string::to_utf8(res.GetName()));
+                                        auto itr = callbacks.find(res.GetName());
                                         if (itr != callbacks.end())
                                         {
                                             sb += itr->second(res);
                                         }
                                         else
                                         {
-                                            error += "Near " + xml.substr(index, 32) + ": unknown callback for embedded element " + xybase::string::to_utf8(res.GetName()) + ", ignoring...\n";
+                                            error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": unknown callback for embedded element " + xybase::string::to_string(res.GetName()) + ", ignoring...\n";
                                         }
                                     }
                                     else
@@ -304,9 +319,9 @@ namespace mule
                 }
                 return node;
             }
-            error += "Near " + xml.substr(index, 32) + ": expected '<', but got '" + xml[index] + "'.\n";
+            error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": expected '<', but got '" + static_cast<char>(xml[index]) + "'.\n";
             // 寻找同步点
-            index = xml.find("<", index);
+            index = xml.find('<', index);
             return XmlNodeT::ERROR;
         }
     }

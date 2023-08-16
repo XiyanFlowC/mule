@@ -1,4 +1,5 @@
 #include "Exception.h"
+#include <cstring>
 #include "../xyutils.h"
 
 xybase::Exception::Exception(const std::u16string &message, int err)

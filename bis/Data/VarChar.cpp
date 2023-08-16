@@ -31,12 +31,12 @@ void mule::Data::VarChar::Write(xybase::Stream *stream, DataHandler *dataHandler
 	if (str.size() < length - 1)
 	{
 		memset(buffer, 0, length);
-		strcpy(buffer, xybase::string::to_utf8(str).c_str());
+		strcpy(buffer, xybase::string::to_string(str).c_str());
 		stream->Write(buffer, length);
 	}
 	else
 	{
-		stream->Write(xybase::string::to_utf8(str.substr(0, length - 1)));
+		stream->Write(xybase::string::to_string(str.substr(0, length - 1)));
 	}
 }
 

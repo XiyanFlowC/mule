@@ -13,7 +13,7 @@ void String::Read(xybase::Stream *stream, DataHandler *dataHandler)
 
 void String::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	stream->Write(xybase::string::to_utf8(*(dataHandler->OnDataWrite().value.stringValue)));
+	stream->Write(xybase::string::to_string(*(dataHandler->OnDataWrite().value.stringValue)));
 }
 
 size_t String::Size() const
