@@ -36,6 +36,15 @@ mule::Data::Referrence::Referrence(Type *referent)
 	this->referent = referent;
 }
 
+MultiValue mule::Data::Referrence::DoRead(xybase::Stream *stream)
+{
+	return MultiValue();
+}
+
+void mule::Data::Referrence::DoWrite(xybase::Stream *stream, const MultiValue &value)
+{
+}
+
 Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(std::u16string info)
 {
 	if (!info.ends_with(u"*"))

@@ -68,7 +68,7 @@ Basic::Type *TypeManager::GetOrCreateObject(std::u16string info)
 	if (first == nullptr) return nullptr;
 
 	// 保存创建结果并返回
-	return objects[info] = first->GetOrCreateObject(info);
+	return objects[info] = first->CreateType(info);
 }
 
 Basic::Type *TypeManager::GetObject(std::u16string name)

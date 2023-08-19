@@ -2,6 +2,8 @@
 
 #include "../xybase/xystring.h"
 
+using namespace mule::Data::Basic;
+
 mule::Data::VarChar::VarChar(size_t length)
 	: length(length) 
 {
@@ -13,21 +15,30 @@ mule::Data::VarChar::~VarChar()
 	delete[] buffer;
 }
 
-void mule::Data::VarChar::Read(xybase::Stream *stream, DataHandler *dataHandler)
+size_t mule::Data::VarChar::Size() const
 {
-	stream->ReadBytes(buffer, length);
-	dataHandler->OnDataRead(xybase::string::to_utf16(buffer));
+	return length;
 }
 
-void mule::Data::VarChar::Write(xybase::Stream *stream, DataHandler *dataHandler)
+std::u16string mule::Data::VarChar::GetTypeName() const
 {
-	auto &&data = dataHandler->OnDataWrite();
-	if (data.GetType() != Basic::MultiValue::MVT_STRING)
+	return u"varchar(" + xybase::string::to_utf16(std::to_string(length)) + u')';
+}
+
+MultiValue mule::Data::VarChar::DoRead(xybase::Stream *stream)
+{
+	stream->ReadBytes(buffer, length);
+	return xybase::string::to_utf16(buffer);
+}
+
+void mule::Data::VarChar::DoWrite(xybase::Stream *stream, const MultiValue &value)
+{
+	if (value.GetType() != Basic::MultiValue::MVT_STRING)
 	{
 		stream->Seek(Size(), 1);
-		return ;
+		return;
 	}
-	auto &&str = *data.value.stringValue;
+	auto &&str = *value.value.stringValue;
 	if (str.size() < length - 1)
 	{
 		memset(buffer, 0, length);
@@ -38,16 +49,6 @@ void mule::Data::VarChar::Write(xybase::Stream *stream, DataHandler *dataHandler
 	{
 		stream->Write(xybase::string::to_string(str.substr(0, length - 1)));
 	}
-}
-
-size_t mule::Data::VarChar::Size() const
-{
-	return length;
-}
-
-std::u16string mule::Data::VarChar::GetTypeName() const
-{
-	return u"varchar(" + xybase::string::to_utf16(std::to_string(length)) + u')';
 }
 
 mule::Data::Basic::Type *mule::Data::VarChar::VarCharCreator::DoCreateObject(std::u16string info)

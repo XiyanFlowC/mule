@@ -14,9 +14,14 @@ size_t Integer::Size() const
 	return size >> 3;
 }
 
-void mule::Data::Basic::Integer::Read(xybase::Stream *stream, DataHandler *dataHandler)
+std::u16string mule::Data::Basic::Integer::GetTypeName() const
 {
-	MultiValue value { };
+	return std::u16string(u"int") + xybase::string::to_utf16(std::to_string(size));
+}
+
+MultiValue mule::Data::Basic::Integer::DoRead(xybase::Stream *stream)
+{
+	MultiValue value{ };
 	switch (size >> 3)
 	{
 	case 1:
@@ -44,29 +49,24 @@ void mule::Data::Basic::Integer::Read(xybase::Stream *stream, DataHandler *dataH
 		value.type = MultiValue::MVT_UINT;
 	}
 
-	dataHandler->OnDataRead(value);
+	return value;
 }
 
-void mule::Data::Basic::Integer::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void mule::Data::Basic::Integer::DoWrite(xybase::Stream *stream, const MultiValue &value)
 {
 	switch (size >> 3)
 	{
 	case 1:
-		stream->Write((uint8_t)(dataHandler->OnDataWrite().value.unsignedValue & 0xFF));
+		stream->Write((uint8_t)(value.value.unsignedValue & 0xFF));
 		break;
 	case 2:
-		stream->Write((uint16_t)(dataHandler->OnDataWrite().value.unsignedValue & 0xFFFF));
+		stream->Write((uint16_t)(value.value.unsignedValue & 0xFFFF));
 		break;
 	case 4:
-		stream->Write((uint32_t)(dataHandler->OnDataWrite().value.unsignedValue & 0xFFFFFFFF));
+		stream->Write((uint32_t)(value.value.unsignedValue & 0xFFFFFFFF));
 		break;
 	case 8:
-		stream->Write((uint64_t)(dataHandler->OnDataWrite().value.unsignedValue));
+		stream->Write((uint64_t)(value.value.unsignedValue));
 		break;
 	}
-}
-
-std::u16string mule::Data::Basic::Integer::GetTypeName() const
-{
-	return std::u16string(u"int") + xybase::string::to_utf16(std::to_string(size));
 }

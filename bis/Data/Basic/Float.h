@@ -16,14 +16,15 @@ namespace mule
 			public:
 				Float();
 
-				virtual void Read(xybase::Stream *stream, DataHandler *handler) override;
-				virtual void Write(xybase::Stream *stream, DataHandler *handler) override;
 				virtual size_t Size() const override;
 
-			protected:
-
-				// 通过 Type 继承
 				virtual std::u16string GetTypeName() const override;
+
+
+			protected:
+				virtual MultiValue DoRead(xybase::Stream *stream) override;
+				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) override;
+
 			};
 		}
 	}

@@ -33,6 +33,9 @@ namespace mule
 			virtual std::u16string GetTypeName() const override;
 
 			virtual bool IsComposite() const override;
+		protected:
+			virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
+			virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;
 		};
 	}
 }

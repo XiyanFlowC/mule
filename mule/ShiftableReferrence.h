@@ -53,6 +53,10 @@ public:
 	 * @brief 对其字节数要求，若为0则自动获取
 	*/
 	static int align;
+
+	// 通过 Type 继承
+	virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
+	virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;
 };
 
 #endif // End of SHIFTABLE_REFERRENCE_H__

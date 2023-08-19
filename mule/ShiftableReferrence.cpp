@@ -53,6 +53,15 @@ void ShiftableReferrence::StreamDispose(xybase::Stream *stream)
 	MemoryManager::GetInstance().DisposeStream(stream);
 }
 
+MultiValue ShiftableReferrence::DoRead(xybase::Stream *stream)
+{
+	return MultiValue();
+}
+
+void ShiftableReferrence::DoWrite(xybase::Stream *stream, const MultiValue &value)
+{
+}
+
 Type *ShiftableReferrence::ShiftableStringCreator::DoCreateObject(std::u16string info)
 {
 	if (info.ends_with(u"&"))

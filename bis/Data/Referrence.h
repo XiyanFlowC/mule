@@ -27,6 +27,9 @@ namespace mule
 
 		private:
 			Referrence(Type *referent);
+
+			virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
+			virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;
 		};
 	}
 }

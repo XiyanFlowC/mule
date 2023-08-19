@@ -12,6 +12,8 @@ make all
 
 请注意：你的编译器应支持C++20标准，CMake版本不应低于3.12。
 
+当前，确认可用的编译器为g++（GCC）和cl（MSVC）。
+
 Be noticed: your compiler should support C++20, and the version of your cmake should grather than 3.12.
 The comments were written in Chinese (if I have wrote).
 

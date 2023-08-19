@@ -4,14 +4,10 @@ using namespace mule::Data::Basic;
 
 mule::Data::Basic::Float::Float() { }
 
-void mule::Data::Basic::Float::Read(xybase::Stream *stream, DataHandler *handler)
-{
-	handler->OnDataRead(stream->ReadFloat());
-}
 
-void mule::Data::Basic::Float::Write(xybase::Stream *stream, DataHandler *handler)
+std::u16string mule::Data::Basic::Float::GetTypeName() const
 {
-	stream->Write((float)(handler->OnDataWrite().value.realValue));
+	return std::u16string(u"float");
 }
 
 size_t mule::Data::Basic::Float::Size() const
@@ -19,7 +15,12 @@ size_t mule::Data::Basic::Float::Size() const
 	return size_t(sizeof(float));
 }
 
-std::u16string mule::Data::Basic::Float::GetTypeName() const
+MultiValue mule::Data::Basic::Float::DoRead(xybase::Stream *stream)
 {
-	return std::u16string(u"float");
+	return stream->ReadFloat();
+}
+
+void mule::Data::Basic::Float::DoWrite(xybase::Stream *stream, const MultiValue &value)
+{
+	stream->Write((float)(value.value.realValue));
 }

@@ -22,13 +22,27 @@ TypeCreator::TypeCreator(TypeCreator& pattern)
 	this->nextCreator = pattern.nextCreator;
 }
 
-Type* TypeCreator::GetOrCreateObject(std::u16string info)
+Type* TypeCreator::CreateType(std::u16string info)
 {
 	Type* result = DoCreateObject(info);
 	if (result != nullptr) return result;
 
-	if (nextCreator != nullptr) return nextCreator->GetOrCreateObject(info);
+	if (nextCreator != nullptr) return nextCreator->CreateType(info);
 	return nullptr;
+}
+
+Type *TypeCreator::CreateType(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo)
+{
+	Type *result = DoCreateObject(info);
+	if (result != nullptr) return result;
+
+	if (nextCreator != nullptr) return nextCreator->CreateType(info);
+	return nullptr;
+}
+
+Basic::Type *mule::Data::TypeCreator::DoCreateObject(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo)
+{
+	return DoCreateObject(info);
 }
 
 Type *mule::Data::BasicFieldCreator::DoCreateObject(std::u16string info)

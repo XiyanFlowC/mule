@@ -45,6 +45,8 @@ namespace mule
 
 			void OpenPlugin(std::string moduleName, std::string path);
 
+			void LoadDescription(mule::Cpp::PluginDescription *desc);
+
 			void *GetFunction(std::string moduleName, std::string functionName);
 
 			void ClosePlugin(std::string moduleName);

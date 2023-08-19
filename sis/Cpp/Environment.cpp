@@ -57,6 +57,11 @@ void mule::Cpp::Environment::OpenPlugin(std::string moduleName, std::string path
 		throw xybase::RuntimeException(u"Try to load an invalid plugin.", __LINE__);
 	
 	auto desc = getDesc();
+	LoadDescription(desc);
+}
+
+void mule::Cpp::Environment::LoadDescription(mule::Cpp::PluginDescription *desc)
+{
 	descriptions.push_back(desc);
 	if (desc->GetCreators != nullptr)
 	{

@@ -23,11 +23,12 @@ namespace mule
 
 				virtual size_t Size() const override;
 
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual std::u16string GetTypeName() const override;
-
 			protected:
+				virtual MultiValue DoRead(xybase::Stream *stream) override;
+
+				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) override;
+
 			};
 		}
 	}

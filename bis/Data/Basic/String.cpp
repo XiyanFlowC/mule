@@ -4,18 +4,6 @@
 
 using namespace mule::Data::Basic;
 
-void String::Read(xybase::Stream *stream, DataHandler *dataHandler)
-{
-	MultiValue tmp(xybase::string::to_utf16(stream->ReadString()));
-	lastSize = tmp.value.stringValue->length();
-	dataHandler->OnDataRead(tmp);
-}
-
-void String::Write(xybase::Stream *stream, DataHandler *dataHandler)
-{
-	stream->Write(xybase::string::to_string(*(dataHandler->OnDataWrite().value.stringValue)));
-}
-
 size_t String::Size() const
 {
 	return size_t(-1);
@@ -37,4 +25,16 @@ size_t mule::Data::Basic::String::EvalSize(const MultiValue &obj) const
 		return 0;
 
 	return obj.value.stringValue->size() + 1;
+}
+
+MultiValue mule::Data::Basic::String::DoRead(xybase::Stream *stream)
+{
+	MultiValue tmp(xybase::string::to_utf16(stream->ReadString()));
+	lastSize = tmp.value.stringValue->length();
+	return tmp;
+}
+
+void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue &value)
+{
+	stream->Write(xybase::string::to_string(*(value.value.stringValue)));
 }

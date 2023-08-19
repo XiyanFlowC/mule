@@ -36,13 +36,24 @@ namespace mule
 			/**
 			 * @brief Try to create a field handler by given information.
 			 * @param info
-			 * @return
+			 * @return The created Type, nullptr if failed to create.
 			*/
-			Basic::Type *GetOrCreateObject(std::u16string info);
+			Basic::Type *CreateType(std::u16string info);
+
+			/**
+			 * @brief Try to create a type handler by given information.
+			 * @param name The name of the type
+			 * @param extraInfo The extra creation information
+			 * @return The created Type, nullptr if failed to create.
+			*/
+			Basic::Type *CreateType(std::u16string name, const mule::Data::Basic::MultiValue &extraInfo);
 
 		protected:
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
 			virtual Basic::Type *DoCreateObject(std::u16string info) = 0;
+
+			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
+			virtual Basic::Type *DoCreateObject(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo);
 		};
 
 		/**

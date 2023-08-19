@@ -70,3 +70,12 @@ bool mule::Data::Table::IsComposite() const
 {
 	return true;
 }
+
+MultiValue mule::Data::Table::DoRead(xybase::Stream *stream)
+{
+	return MultiValue();
+}
+
+void mule::Data::Table::DoWrite(xybase::Stream *stream, const MultiValue &value)
+{
+}
