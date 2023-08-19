@@ -3,7 +3,7 @@
 #ifndef FLOAT_FIELD_H__
 #define FLOAT_FIELD_H__
 
-#include "Type.h"
+#include "BasicType.h"
 
 namespace mule
 {
@@ -11,7 +11,7 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class Float : public Type
+			class Float : public BasicType
 			{
 			public:
 				Float();

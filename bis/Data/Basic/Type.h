@@ -66,6 +66,7 @@ namespace mule
 
 					virtual void AppendMetadatum(std::u16string name, const MultiValue &value);
 				};
+
 				virtual ~Type();
 
 				virtual size_t Size() const = 0;
@@ -100,19 +101,14 @@ namespace mule
 				 * @param stream 数据流（数据源）
 				 * @param dataHandler 数据处理器
 				*/
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler);
+				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) = 0;
 
 				/**
 				 * @brief 从数据源获取数据，写入数据流
 				 * @param stream 数据流
 				 * @param dataHandler 数据处理器（数据源）
 				*/
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler);
-			protected:
-
-				virtual MultiValue DoRead(xybase::Stream *stream) = 0;
-
-				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) = 0;
+				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) = 0;
 			};
 		}
 	}

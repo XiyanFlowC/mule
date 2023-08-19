@@ -21,15 +21,6 @@ std::u16string BinaryBlock::GetTypeName() const
 	return u"BinaryBlock";
 }
 
-MultiValue BinaryBlock::DoRead(xybase::Stream *stream)
-{
-	return MultiValue();
-}
-
-void BinaryBlock::DoWrite(xybase::Stream *stream, const MultiValue &value)
-{
-}
-
 mule::Data::Basic::Type *BinaryBlock::BinaryBlockCreator::DoCreateObject(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo)
 {
 	return nullptr;

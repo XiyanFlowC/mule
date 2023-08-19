@@ -54,10 +54,6 @@ namespace mule {
 			int length;
 			size_t offset;
 			std::u16string name;
-		private:
-
-			virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
-			virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;
 		};
 	}
 }

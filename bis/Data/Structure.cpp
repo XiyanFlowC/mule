@@ -61,15 +61,6 @@ bool mule::Data::Structure::IsComposite() const
 	return true;
 }
 
-MultiValue mule::Data::Structure::DoRead(xybase::Stream *stream)
-{
-	return MultiValue();
-}
-
-void mule::Data::Structure::DoWrite(xybase::Stream *stream, const MultiValue &value)
-{
-}
-
 void mule::Data::Structure::Field::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter(object, name);
@@ -107,13 +98,4 @@ mule::Data::Structure::Field::Field(std::u16string name, Type *obj)
 std::u16string mule::Data::Structure::Field::GetTypeName() const
 {
 	return u"field[" + object->GetTypeName() + u',' + name + u']';
-}
-
-MultiValue mule::Data::Structure::Field::DoRead(xybase::Stream *stream)
-{
-	return MultiValue();
-}
-
-void mule::Data::Structure::Field::DoWrite(xybase::Stream *stream, const MultiValue &value)
-{
 }

@@ -3,7 +3,7 @@
 #ifndef DOUBLE_FIELD_H__
 #define DOUBLE_FILED_H__
 
-#include "Type.h"
+#include "BasicType.h"
 
 namespace mule
 {
@@ -11,7 +11,7 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class Double : public Type
+			class Double : public BasicType
 			{
 			public:
 				Double();

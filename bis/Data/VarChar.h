@@ -2,7 +2,7 @@
 #ifndef VAR_CHAR_H__
 #define VAR_CHAR_H__
 
-#include "Basic/Type.h"
+#include "Basic/BasicType.h"
 #include "TypeCreator.h"
 #include "../xybase/xyutils.h"
 
@@ -10,7 +10,7 @@ namespace mule
 {
 	namespace Data
 	{
-		class VarChar : Basic::Type
+		class VarChar : Basic::BasicType
 		{
 		protected:
 			size_t length;

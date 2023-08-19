@@ -3,7 +3,7 @@
 #ifndef STRING_OBJECT_H__
 #define STRING_OBJECT_H__
 
-#include "Type.h"
+#include "BasicType.h"
 
 namespace mule
 {
@@ -15,7 +15,7 @@ namespace mule
 			/**
 			 * @brief String is not a typical object cause it holds a variable length.
 			*/
-			class String : public Type
+			class String : public BasicType
 			{
 			protected:
 				size_t lastSize;

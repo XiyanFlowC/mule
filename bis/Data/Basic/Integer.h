@@ -4,7 +4,7 @@
 #define INTEGER_FIELD_H__
 
 #include <Exception/InvalidParameterException.h>
-#include "Type.h"
+#include "BasicType.h"
 #include "MultiValue.h"
 
 namespace mule
@@ -14,7 +14,7 @@ namespace mule
 		namespace Basic
 		{
 
-			class Integer : public Type
+			class Integer : public BasicType
 			{
 				int size;
 				bool isUnsigned;

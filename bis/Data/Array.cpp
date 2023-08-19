@@ -36,15 +36,6 @@ bool mule::Data::Array::IsComposite() const
 	return true;
 }
 
-MultiValue mule::Data::Array::DoRead(xybase::Stream *stream)
-{
-	return MultiValue();
-}
-
-void mule::Data::Array::DoWrite(xybase::Stream *stream, const MultiValue &value)
-{
-}
-
 mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::u16string info)
 {
 	if (!info.ends_with(u"]")) return nullptr;

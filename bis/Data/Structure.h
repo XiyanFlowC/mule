@@ -36,9 +36,6 @@ namespace mule
 				Type *object;
 
 				virtual std::u16string GetTypeName() const override;
-
-				virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
-				virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;
 			};
 
 			/**
@@ -86,9 +83,6 @@ namespace mule
 			std::list<Field *> fields;
 
 			std::u16string name;
-
-			virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
-			virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;
 		};
 	}
 }
