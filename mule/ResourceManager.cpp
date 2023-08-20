@@ -1,5 +1,8 @@
 #include "ResourceManager.h"
 
+#include <xyutils.h>
+#include <Lua/LuaHost.h>
+
 using namespace mule::Xml;
 using namespace mule::Data;
 
@@ -221,16 +224,31 @@ void ResourceManager::LoadDefinition(std::string def)
         }
 
         Structure *structure = new Structure(child.name);
-        for (auto &&field : child.children)
+        for (auto &&ele : child.children)
         {
-            auto ret = TypeManager::GetInstance().GetOrCreateObject(field.GetAttribute(u"type"));
-            if (ret == nullptr)
+            if (ele.GetName() == u"struct")
             {
-                fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_string(field.GetAttribute(u"type")).c_str(), xybase::string::to_string(child.name).c_str());
+                for (auto &&field : ele.GetChildren())
+                {
+                    auto ret = TypeManager::GetInstance().GetOrCreateType(field.GetName(), field.GetAttributes());
+                    if (ret == nullptr)
+                    {
+                        fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_string(field.GetName()).c_str(), xybase::string::to_string(child.name).c_str());
+                    }
+                    structure->AppendField(field.children.begin()->GetText(), ret);
+                }
+                TypeManager::GetInstance().RegisterObject(structure, child.GetAttribute(u"name"));
             }
-            structure->AppendField(field.name, ret);
+            else if (ele.GetName() == u"script")
+            {
+                xybase::StringBuilder<char16_t> sb;
+                for (auto &&text : ele.GetChildren())
+                {
+                    sb.Append(text.GetText().c_str());
+                }
+                mule::Lua::LuaHost::GetInstance().RunString(xybase::string::to_string(sb.ToString()).c_str());
+            }
         }
-        TypeManager::GetInstance().RegisterObject(structure, child.name);
     }
 
     delete[] buffer;

@@ -14,8 +14,8 @@ namespace mule
 	namespace Data
 	{
 		/**
-		 * @brief Singleton Type Manager. Used to manage all of the objects in the enviorment.
-		 * The other compoments should get registered objects from this class.
+		 * @brief Singleton Type Manager. Used to manage all of the objects in the environment.
+		 * The other components should get registered objects from this class.
 		*/
 		class TypeManager
 		{
@@ -61,14 +61,22 @@ namespace mule
 			 * @param name The name of the type.
 			 * @return Created Field instance. nullptr if failed.
 			*/
-			Basic::Type *GetOrCreateObject(std::u16string name);
+			Basic::Type *GetOrCreateType(std::u16string name);
+
+			/**
+			 * @brief 尝试获取一个已经创建的 Type 或者创建一个一个新的。注意若 meta-info 不为空，则总是创建新的。
+			 * @param name Type 的名字。
+			 * @param metainfo 修饰 Type 的元信息。
+			 * @return 创建的 Type，若失败则为 nullptr。
+			*/
+			Basic::Type *GetOrCreateType(std::u16string name, const std::map<std::u16string, std::u16string> &metainfo);
 
 			/**
 			 * @brief Try to get a object that already registered to the manager.
 			 * @param name The name of the object given when registered.
 			 * @return
 			*/
-			Basic::Type *GetObject(std::u16string name);
+			Basic::Type *GetType(std::u16string name);
 		protected:
 			std::map<std::u16string, Basic::Type *> objects;
 			TypeCreator *first, *last;

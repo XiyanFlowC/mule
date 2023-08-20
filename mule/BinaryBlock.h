@@ -12,7 +12,6 @@ public:
 	class BinaryBlockCreator : public mule::Data::TypeCreator
 	{
 	public:
-		virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo) override;
 
 		virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info) override;
 	};

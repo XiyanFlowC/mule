@@ -43,7 +43,7 @@ Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(std::u16string i
 		return nullptr;
 	}
 
-	Basic::Type *innerType = TypeManager::GetInstance().GetOrCreateObject(info.substr(0, info.size() - 1));
+	Basic::Type *innerType = TypeManager::GetInstance().GetOrCreateType(info.substr(0, info.size() - 1));
 	if (innerType == nullptr) return nullptr;
 
 	Referrence *referrer = new Referrence(innerType);

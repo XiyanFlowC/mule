@@ -45,7 +45,7 @@ mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::u1
 
 	int size = static_cast<int>(xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2)));
 
-	auto obj = TypeManager::GetInstance().GetOrCreateObject(info.substr(0, startIndex));
+	auto obj = TypeManager::GetInstance().GetOrCreateType(info.substr(0, startIndex));
 	if (obj == nullptr) return nullptr;
 
 	Array *ret = new Array();

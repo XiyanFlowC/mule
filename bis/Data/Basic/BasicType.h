@@ -19,13 +19,14 @@ namespace mule
 
 			protected:
 
-				std::u16string cacheVariableName;
-
 				virtual MultiValue DoRead(xybase::Stream *stream) = 0;
 
 				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) = 0;
 				
 			public:
+
+				std::u16string cacheVariableName;
+
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 
 				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;

@@ -1,5 +1,12 @@
 #include "TypeCreator.h"
+
+#include "Basic/BasicType.h"
+#include "Basic/Integer.h"
+#include "Basic/Double.h"
+#include "Basic/Float.h"
+#include "Basic/String.h"
 #include <xystring.h>
+
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
@@ -31,7 +38,7 @@ Type* TypeCreator::CreateType(std::u16string info)
 	return nullptr;
 }
 
-Type *TypeCreator::CreateType(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo)
+Type *TypeCreator::CreateType(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo)
 {
 	Type *result = DoCreateObject(info);
 	if (result != nullptr) return result;
@@ -40,14 +47,19 @@ Type *TypeCreator::CreateType(std::u16string info, const mule::Data::Basic::Mult
 	return nullptr;
 }
 
-Basic::Type *mule::Data::TypeCreator::DoCreateObject(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo)
+Basic::Type *mule::Data::TypeCreator::DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo)
 {
 	return DoCreateObject(info);
 }
 
 Type *mule::Data::BasicFieldCreator::DoCreateObject(std::u16string info)
 {
-	Type *ret = nullptr;
+	return DoCreateObject(info, {});
+}
+
+Basic::Type *mule::Data::BasicFieldCreator::DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> &metainfo)
+{
+	BasicType *ret = nullptr;
 	if (info.starts_with(u"int"))
 	{
 		int size = xybase::string::stoi(info.substr(3));
@@ -80,5 +92,14 @@ Type *mule::Data::BasicFieldCreator::DoCreateObject(std::u16string info)
 	{
 		ret = new String();
 	}
+	else
+		return ret;
+
+	auto &&itr = metainfo.find(u"cache");
+	if (itr != metainfo.end())
+	{
+		ret->cacheVariableName = itr->second;
+	}
+
 	return ret;
 }

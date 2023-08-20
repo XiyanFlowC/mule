@@ -6,11 +6,6 @@
 #include <string>
 
 #include "Basic/Type.h"
-#include "Basic/Integer.h"
-#include "Basic/Double.h"
-#include "Basic/Float.h"
-#include "Basic/String.h"
-#include "Basic/MultiValue.h"
 
 namespace mule
 {
@@ -46,14 +41,14 @@ namespace mule
 			 * @param extraInfo The extra creation information
 			 * @return The created Type, nullptr if failed to create.
 			*/
-			Basic::Type *CreateType(std::u16string name, const mule::Data::Basic::MultiValue &extraInfo);
+			Basic::Type *CreateType(std::u16string name, const std::map<std::u16string, std::u16string> & metainfo);
 
 		protected:
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
 			virtual Basic::Type *DoCreateObject(std::u16string info) = 0;
 
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
-			virtual Basic::Type *DoCreateObject(std::u16string info, const mule::Data::Basic::MultiValue &extraInfo);
+			virtual Basic::Type *DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo);
 		};
 
 		/**
@@ -61,8 +56,9 @@ namespace mule
 		*/
 		class BasicFieldCreator : public TypeCreator
 		{
-			// 通过 FieldCreator 继承
 			virtual Basic::Type *DoCreateObject(std::u16string info) override;
+
+			virtual Basic::Type *DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> &metainfo);
 		};
 	}
 }

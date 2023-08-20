@@ -13,7 +13,7 @@ mule::Data::Structure *mule::Cpp::StructureBuilder::Build()
 	mule::Data::Structure *ret = new mule::Data::Structure(name);
 	for (std::tuple<std::u16string, std::u16string> &def : defList)
 	{
-		ret->AppendField(std::get<1>(def), TypeManager::GetInstance().GetOrCreateObject( std::get<0>(def) ));
+		ret->AppendField(std::get<1>(def), TypeManager::GetInstance().GetOrCreateType( std::get<0>(def) ));
 	}
 	TypeManager::GetInstance().RegisterObject(ret, name);
 	return ret;

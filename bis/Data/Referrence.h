@@ -11,8 +11,14 @@ namespace mule
 {
 	namespace Data
 	{
+		/**
+		 * @brief 指向其他位置的32位引用类型。A 32-bit pointer point to somewhere else.
+		*/
 		class Referrence : public Basic::Type
 		{
+			/**
+			 * @brief 内部的类型。Refered type.
+			*/
 			Basic::Type *referent = nullptr;
 		public:
 			class ReferrenceCreator : public TypeCreator

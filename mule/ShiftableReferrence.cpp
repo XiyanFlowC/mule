@@ -57,7 +57,7 @@ Type *ShiftableReferrence::ShiftableStringCreator::DoCreateObject(std::u16string
 {
 	if (info.ends_with(u"&"))
 	{
-		Type *inner = TypeManager::GetInstance().GetOrCreateObject(info.substr(info.length() - 1));
+		Type *inner = TypeManager::GetInstance().GetOrCreateType(info.substr(info.length() - 1));
 		if (inner == nullptr) return nullptr;
 
 		ShiftableReferrence *ret = new ShiftableReferrence();

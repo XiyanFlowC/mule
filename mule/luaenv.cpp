@@ -184,7 +184,7 @@ int registerTable(int fd, std::string name, size_t offset, int size)
         return -1;
     }
 
-    auto structure = TypeManager::GetInstance().GetObject(xybase::string::to_utf16(name));
+    auto structure = TypeManager::GetInstance().GetType(xybase::string::to_utf16(name));
     if (structure == nullptr || dynamic_cast<Structure *>(structure) == nullptr)
     {
         return -2;

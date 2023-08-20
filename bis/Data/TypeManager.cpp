@@ -59,7 +59,7 @@ void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 	}
 }
 
-Basic::Type *TypeManager::GetOrCreateObject(std::u16string info)
+Basic::Type *TypeManager::GetOrCreateType(std::u16string info)
 {
 	// 若已经存在则直接返回
 	if (objects.contains(info)) return objects[info];
@@ -71,7 +71,12 @@ Basic::Type *TypeManager::GetOrCreateObject(std::u16string info)
 	return objects[info] = first->CreateType(info);
 }
 
-Basic::Type *TypeManager::GetObject(std::u16string name)
+Basic::Type *mule::Data::TypeManager::GetOrCreateType(std::u16string name, const std::map<std::u16string, std::u16string> &metainfo)
+{
+	return nullptr;
+}
+
+Basic::Type *TypeManager::GetType(std::u16string name)
 {
 	if (objects.contains(name)) return objects[name];
 
