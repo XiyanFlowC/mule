@@ -227,7 +227,7 @@ namespace xybase
 			const T *end = ptr + str.length();
 			unsigned long long ret = 0;
 
-			while (ptr <= end)
+			while (ptr < end)
 			{
 				if (*ptr >= static_cast<T>('0') || *ptr <= std::min<T>(static_cast<T>('9'), static_cast<T>('0') + base))
 				{

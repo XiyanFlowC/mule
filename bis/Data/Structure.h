@@ -11,7 +11,7 @@ namespace mule
 	namespace Data
 	{
 		/**
-		 * @brief 结构体类。用于表示字段读取链的包装。这样，链中的Field以其独特的Read和Write得以运行。
+		 * @brief 结构体类。用于表示字段读取链的包装。
 		 * 此结构体理应被注册到ObjectManager以提供Reference可见性。
 		*/
 		class Structure : public Basic::Type

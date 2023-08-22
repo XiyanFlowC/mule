@@ -53,9 +53,9 @@ void TypeManager::RegisterObjectCreator(TypeCreator *creator)
 	}
 
 	last->nextCreator = creator;
-	while (creator->nextCreator != nullptr)
+	while (last->nextCreator != nullptr)
 	{
-		creator = last = creator->nextCreator;
+		last = last->nextCreator;
 	}
 }
 
@@ -73,7 +73,14 @@ Basic::Type *TypeManager::GetOrCreateType(std::u16string info)
 
 Basic::Type *mule::Data::TypeManager::GetOrCreateType(std::u16string name, const std::map<std::u16string, std::u16string> &metainfo)
 {
-	return nullptr;
+	// 若元参数为空则直接返回
+	if (metainfo.empty()) return GetOrCreateType(name);
+
+	// 若没有创建器则直接返回
+	if (first == nullptr) return nullptr;
+
+	// 返回创建结果（不保存，不复用）
+	return first->CreateType(name, metainfo);
 }
 
 Basic::Type *TypeManager::GetType(std::u16string name)

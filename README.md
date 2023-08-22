@@ -38,16 +38,26 @@ mule <path-to-work-area> <path-to-target-file> <action>
 其中保存各XML定义文件。每个文件，具有如下形式：
 ```xml
 <def>
-  <结构1>
-    <字段1 type="string*" />
-    <字段2 type="int32" />
-    <字段3 type="int32" />
-  </结构1>
-  <结构2>
-    <字段1 type="string*" />
-    <字段2 type="string*" />
-  </结构2>
+  <struct name="结构1" onread="foo" onwrite="foo">
+    <field name="字段1" type="string*" />
+    <field name="字段2" type="int32" />
+    <field name="字段3" type="int32">
+        <!-- 如果有元信息，则在这里登记，不同的类型支持不同的元信息 -->
+        <cache>字段</cache>
+        <!-- 即使登记了不受支持的元信息，也不会发生异常 -->
+        <invalid>Foo</invalid>
+    </field>
+  </struct>
+  <struct name="结构2">
+    <field name="字段1" type="string*" />
+    <field name="字段2" type="string*" />
+  </struct>
   <!-- 其他结构 -->
+  <script>
+    function foo()
+      print('foo() called');
+    end
+  </script>
 </def>
 ```
 

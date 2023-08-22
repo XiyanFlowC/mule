@@ -201,7 +201,7 @@ void ResourceManager::LoadDefinition(std::string def)
     fread(buffer, length, 1, f);
     fclose(f);
 
-    XmlNode node = xmlParser.Parse(buffer);
+    XmlNode root = xmlParser.Parse(buffer);
     if (xmlParser.error != "")
     {
         fputs(xmlParser.error.c_str(), stderr);
@@ -209,13 +209,13 @@ void ResourceManager::LoadDefinition(std::string def)
     }
 
     // 处理结构
-    if (node.GetName() != u"def")
+    if (root.GetName() != u"def")
     {
         fputs("XML Definition Format Incorrect.\n", stderr);
         return;
     }
 
-    for (auto &&child : node.children)
+    for (auto &&child : root.children)
     {
         if (child.IsTextNode())
         {
@@ -223,32 +223,53 @@ void ResourceManager::LoadDefinition(std::string def)
             return;
         }
 
-        Structure *structure = new Structure(child.name);
-        for (auto &&ele : child.children)
+        if (child.GetName() == u"struct")
         {
-            if (ele.GetName() == u"struct")
+            Structure *structure = new Structure(child.GetAttribute(u"name"));
+            for (auto &&field : child.GetChildren())
             {
-                for (auto &&field : ele.GetChildren())
+                if (field.GetName() != u"field")
                 {
-                    auto ret = TypeManager::GetInstance().GetOrCreateType(field.GetName(), field.GetAttributes());
-                    if (ret == nullptr)
+                    fputs("XML Definition Format Incorrect.\n", stderr);
+                    return;
+                }
+
+                auto metadata = field.GetChildren();
+                std::map<std::u16string, std::u16string> metainfo;
+                if (!metadata.empty())
+                {
+                    for (auto &&metadatum : metadata)
                     {
-                        fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_string(field.GetName()).c_str(), xybase::string::to_string(child.name).c_str());
+                        if (metadatum.IsTextNode())
+                        {
+                            fputs("XML Definition Format Incorrect.\n", stderr);
+                            return;
+                        }
+
+                        metainfo[metadatum.GetName()] = metadatum.GetChildren().begin()->GetText();
                     }
-                    structure->AppendField(field.children.begin()->GetText(), ret);
                 }
-                TypeManager::GetInstance().RegisterObject(structure, child.GetAttribute(u"name"));
-            }
-            else if (ele.GetName() == u"script")
-            {
-                xybase::StringBuilder<char16_t> sb;
-                for (auto &&text : ele.GetChildren())
+
+                auto ret = TypeManager::GetInstance().GetOrCreateType(field.GetAttribute(u"type"), metainfo);
+                if (ret == nullptr)
                 {
-                    sb.Append(text.GetText().c_str());
+                    fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_string(field.GetAttribute(u"type")).c_str(), xybase::string::to_string(child.name).c_str());
                 }
-                mule::Lua::LuaHost::GetInstance().RunString(xybase::string::to_string(sb.ToString()).c_str());
+                structure->AppendField(field.GetAttribute(u"name"), ret);
             }
+            TypeManager::GetInstance().RegisterObject(structure, child.GetAttribute(u"name"));
         }
+        else if (child.GetName() == u"script")
+        {
+            xybase::StringBuilder<char16_t> sb;
+            for (auto &&text : child.GetChildren())
+            {
+                sb.Append(text.GetText().c_str());
+            }
+            mule::Lua::LuaHost::GetInstance().RunString(xybase::string::to_string(sb.ToString()).c_str());
+        }
+        else
+            fprintf(stderr, "Invalid tag: %s", xybase::string::to_string(child.GetName()).c_str());
     }
 
     delete[] buffer;

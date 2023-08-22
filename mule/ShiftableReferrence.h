@@ -31,7 +31,7 @@ protected:
 	int GetAlign(size_t loc, xybase::Stream *stream);
 
 public:
-	class ShiftableStringCreator : public mule::Data::TypeCreator
+	class ShiftableReferrenceCreator : public mule::Data::TypeCreator
 	{
 		virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info) override;
 	};

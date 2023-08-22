@@ -54,6 +54,7 @@ MultiValue mule::Data::Basic::Integer::DoRead(xybase::Stream *stream)
 
 void mule::Data::Basic::Integer::DoWrite(xybase::Stream *stream, const MultiValue &value)
 {
+	if (!value.IsType(MultiValue::MVT_INT) && !value.IsType(MultiValue::MVT_UINT)) throw xybase::InvalidParameterException(u"value", u"Type mismatch!", 19003);
 	switch (size >> 3)
 	{
 	case 1:

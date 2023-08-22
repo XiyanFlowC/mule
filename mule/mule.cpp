@@ -25,11 +25,11 @@ int main(int argc, char **argv)
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
-	TypeManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
-	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new Array::ArrayCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableReferrence::ShiftableReferrenceCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new VarChar::VarCharCreator());
-	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableReferrence::ShiftableStringCreator());
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 	std::string infoFile(ResourceManager::GetInstance().LoadData(Configuration::GetInstance().dataInfoFile).GetData());
