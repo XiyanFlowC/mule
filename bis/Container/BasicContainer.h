@@ -10,8 +10,6 @@
 #include <StringBuilder.h>
 #include <Exception/OutOfRangeException.h>
 
-#define ISO_SECTOR_SIZE (2048)
-
 namespace mule
 {
 	class BasicContainer : public xybase::FileContainer
@@ -128,10 +126,6 @@ namespace mule
 		virtual xybase::Stream *Open(std::u16string name, FileOpenMode mode) override;
 
 		virtual std::list<std::u16string> List() override;
-
-		virtual std::u16string WorkDir() override;
-
-		virtual void ChangeDir(std::u16string path) override;
 
 		virtual void MakeDir(std::u16string path) override;
 

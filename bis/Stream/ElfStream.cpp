@@ -1,6 +1,7 @@
 #include "ElfStream.h"
 
 using namespace xybase;
+using namespace mule::Stream;
 
 ElfStream::ElfStream(xybase::Stream *stream)
 	: stream(stream)

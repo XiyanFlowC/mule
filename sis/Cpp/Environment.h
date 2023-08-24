@@ -16,6 +16,9 @@ namespace mule
 {
 	namespace Cpp
 	{
+		/**
+		 * @brief 适应环境的插件描述
+		*/
 		struct PluginDescription
 		{
 			const char *name;
@@ -25,10 +28,10 @@ namespace mule
 			const int minorVer;
 			const char *description;
 			mule::Data::TypeCreator *(*GetCreators)();
-			mule::Data::Basic::Type::DataHandler *(*GetHandler)(const char *name);
-			xybase::Stream *(*GetStream)(const char *name);
-			xybase::Stream *(*ApplyStream)(const char *name, xybase::Stream *infraStream);
-			xybase::FileContainer *(*GetFileContainer)(const char *name, xybase::Stream *infraStream);
+			mule::Data::Basic::Type::DataHandler *(*GetHandler)(const char16_t *name);
+			xybase::Stream *(*GetStream)(const char16_t *name);
+			xybase::Stream *(*ApplyStream)(const char16_t *name, xybase::Stream *infraStream);
+			xybase::FileContainer *(*GetFileContainer)(const char16_t *name, xybase::Stream *infraStream);
 		};
 
 		class Environment
@@ -51,11 +54,13 @@ namespace mule
 
 			void ClosePlugin(std::string moduleName);
 
-			xybase::Stream *GetStream(std::string name);
+			mule::Data::Basic::Type::DataHandler *GetHandler(const std::u16string &name);
 
-			xybase::Stream *ApplyStream(std::string name, xybase::Stream *infraStream);
+			xybase::Stream *GetStream(std::u16string name);
 
-			xybase::FileContainer *GetFileContainer(std::string name, xybase::Stream *infraStream);
+			xybase::Stream *ApplyStream(std::u16string name, xybase::Stream *infraStream);
+
+			xybase::FileContainer *GetFileContainer(std::u16string name, xybase::Stream *infraStream);
 		};
 	}
 }

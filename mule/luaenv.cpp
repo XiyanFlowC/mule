@@ -30,7 +30,7 @@ int mountContainer(int id, std::string type, std::string code)
 
     if (type == "iso")
     {
-        containers[code] = (new IsoContainer(stream->second));
+        containers[code] = (new mule::Container::IsoContainer(stream->second));
         return 0;
     }
     else
@@ -360,7 +360,7 @@ int applyStream(int id, std::string x)
 
     if (x == "elf")
     {
-        streams[streamd] = new ElfStream(stream->second);
+        streams[streamd] = new mule::Stream::ElfStream(stream->second);
         return streamd++;
     }
     else

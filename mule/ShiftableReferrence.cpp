@@ -1,9 +1,11 @@
 #include "ShiftableReferrence.h"
 
 #include <xyutils.h>
+#include <Stream/ElfStream.h>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
+using namespace mule::Stream;
 
 bool ShiftableReferrence::doShift = false;
 int ShiftableReferrence::align = 0;

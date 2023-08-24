@@ -2,8 +2,10 @@
 
 #include <xystring.h>
 
+using namespace mule::Container;
+
 IsoContainer::IsoContainer(xybase::Stream *stream)
-	: BasicContainer(stream)
+    : BasicContainer(stream)
 {
     stream->Seek(0x8000, 0);
     PrimaryVolume volume{};
@@ -24,8 +26,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
         if (entry->fileFlags & 0x02) {
             // It's a directory
             std::string directoryName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
-            /*if (entry->fileIdentifier[0] == 0) directoryName = ".", skip = true;
-            if (entry->fileIdentifier[0] == 1) directoryName = "..", skip = true;*/
+
             if (entry->fileIdentifier[0] == 0 || entry->fileIdentifier[0] == 1)
             {
                 // Move to the next entry
@@ -34,8 +35,6 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
                 delete[] entry;
                 continue; /* . & ..，忽略 */
             }
-
-
             // std::cout << "Directory: " << directoryName << std::endl;
 
             // Recursively parse subdirectories

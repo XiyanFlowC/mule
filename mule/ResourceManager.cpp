@@ -211,7 +211,7 @@ void ResourceManager::LoadDefinition(std::string def)
     // 处理结构
     if (root.GetName() != u"def")
     {
-        fputs("XML Definition Format Incorrect.\n", stderr);
+        fputs("XML Definition Format Incorrect: Root node (signation) mismatch.\n", stderr);
         return;
     }
 
@@ -219,7 +219,7 @@ void ResourceManager::LoadDefinition(std::string def)
     {
         if (child.IsTextNode())
         {
-            fputs("XML Definition Format Incorrect.\n", stderr);
+            fputs("XML Definition Format Incorrect: No text allowed in def tag.\n", stderr);
             return;
         }
 
@@ -230,7 +230,7 @@ void ResourceManager::LoadDefinition(std::string def)
             {
                 if (field.GetName() != u"field")
                 {
-                    fputs("XML Definition Format Incorrect.\n", stderr);
+                    fputs("XML Definition Format Incorrect: Only feild tag is allowed in struct.\n", stderr);
                     return;
                 }
 
@@ -242,7 +242,7 @@ void ResourceManager::LoadDefinition(std::string def)
                     {
                         if (metadatum.IsTextNode())
                         {
-                            fputs("XML Definition Format Incorrect.\n", stderr);
+                            fputs("XML Definition Format Incorrect: No text allowed in tag field.\n", stderr);
                             return;
                         }
 

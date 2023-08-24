@@ -24,10 +24,6 @@ namespace xybase
 
 		virtual std::list<std::u16string> List() = 0;
 
-		virtual std::u16string WorkDir() = 0;
-
-		virtual void ChangeDir(std::u16string path) = 0;
-
 		virtual void MakeDir(std::u16string path) = 0;
 
 		virtual void Remove(std::u16string path, bool recursive = false) = 0;

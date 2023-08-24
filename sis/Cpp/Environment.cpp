@@ -5,7 +5,6 @@
 #else
 #include <dlfcn.h>
 #endif
-
 using namespace mule::Cpp;
 using namespace mule::Data;
 
@@ -101,7 +100,23 @@ void mule::Cpp::Environment::ClosePlugin(std::string moduleName)
 	handlers.erase(itr);
 }
 
-xybase::Stream *mule::Cpp::Environment::GetStream(std::string name)
+mule::Data::Basic::Type::DataHandler *mule::Cpp::Environment::GetHandler(const std::u16string &name)
+{
+	for (auto &&itr : descriptions)
+	{
+		if (itr->GetHandler != nullptr)
+		{
+			auto handler = itr->GetHandler(name.c_str());
+			if (handler != nullptr)
+			{
+				return handler;
+			}
+		}
+	}
+	return nullptr;
+}
+
+xybase::Stream *mule::Cpp::Environment::GetStream(std::u16string name)
 {
 	for (auto &&itr : descriptions)
 	{
@@ -117,7 +132,7 @@ xybase::Stream *mule::Cpp::Environment::GetStream(std::string name)
 	return nullptr;
 }
 
-xybase::Stream *mule::Cpp::Environment::ApplyStream(std::string name, xybase::Stream *infraStream)
+xybase::Stream *mule::Cpp::Environment::ApplyStream(std::u16string name, xybase::Stream *infraStream)
 {
 	for (auto &&itr : descriptions)
 	{
@@ -133,7 +148,7 @@ xybase::Stream *mule::Cpp::Environment::ApplyStream(std::string name, xybase::St
 	return nullptr;
 }
 
-xybase::FileContainer *mule::Cpp::Environment::GetFileContainer(std::string name, xybase::Stream *infraStream)
+xybase::FileContainer *mule::Cpp::Environment::GetFileContainer(std::u16string name, xybase::Stream *infraStream)
 {
 	for (auto &&itr : descriptions)
 	{

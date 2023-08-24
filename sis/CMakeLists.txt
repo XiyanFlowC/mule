@@ -1,5 +1,5 @@
 
-add_library (sis "Cpp/StructureBuilder.h" "Cpp/StructureBuilder.cpp" "Xml/XmlHandler.h" "Xml/XmlHandler.cpp" "Xml/XmlGenerator.h" "Xml/XmlParser.h"  "Xml/MvXmlNode.h" "Xml/MvXmlNode.cpp" "Xml/XmlNode.cpp" "Xml/XmlNode.h" "Xml/XmlParser.cpp" "Cpp/Environment.cpp" "Cpp/Environment.h")
+add_library (sis "Cpp/StructureBuilder.h" "Cpp/StructureBuilder.cpp" "Xml/XmlHandler.h" "Xml/XmlHandler.cpp" "Xml/XmlGenerator.h" "Xml/XmlParser.h"  "Xml/MvXmlNode.h" "Xml/MvXmlNode.cpp" "Xml/XmlNode.cpp" "Xml/XmlNode.h" "Xml/XmlParser.cpp" "Cpp/Environment.cpp" "Cpp/Environment.h" "Cpp/BisEnv.h" "Cpp/BisEnv.cpp")
 
 target_include_directories (sis INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 

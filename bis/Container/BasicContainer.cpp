@@ -81,15 +81,6 @@ std::list<std::u16string> BasicContainer::List()
 	return ret;
 }
 
-std::u16string BasicContainer::WorkDir()
-{
-	return std::u16string(u"");
-}
-
-void BasicContainer::ChangeDir(std::u16string path)
-{
-}
-
 void mule::BasicContainer::Close()
 {
 	file->Close();

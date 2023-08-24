@@ -10,8 +10,6 @@
 #include <Data/TypeCreator.h>
 #include <Data/TypeManager.h>
 
-#include "ElfStream.h"
-
 class ShiftableReferrence : public mule::Data::Basic::Type
 {
 protected:
