@@ -268,6 +268,8 @@ void ResourceManager::LoadDefinition(std::string def)
             }
             mule::Lua::LuaHost::GetInstance().RunString(xybase::string::to_string(sb.ToString()).c_str());
         }
+        else if (child.GetName() == u"")
+            continue;
         else
             fprintf(stderr, "Invalid tag: %s", xybase::string::to_string(child.GetName()).c_str());
     }

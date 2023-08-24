@@ -284,6 +284,7 @@ namespace mule
                                     else if (xml[index + 2] == '-' && xml[index + 3] == '-')
                                     {
                                         index = xml.find(str_encflip<Ch>("-->"), index + 4);
+                                        index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 3);
                                     }
                                 }
                                 // 标签打开
@@ -305,7 +306,8 @@ namespace mule
                                     }
                                     else
                                     {
-                                        node.AddText(xybase::string::to_utf16(sb.ToString()));
+                                        if (sb.Length())
+                                            node.AddText(xybase::string::to_utf16(sb.ToString()));
                                         break;
                                     }
                                 }

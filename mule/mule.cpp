@@ -36,6 +36,7 @@ int main(int argc, char **argv)
 
 	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_utf16(Configuration::GetInstance().TargetFile.c_str())));
 
+	setlocale(LC_ALL, "ja-JP");
 	// Execution
 	try
 	{

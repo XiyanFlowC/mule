@@ -171,9 +171,9 @@ int loadDefine(std::string define)
 
 std::map<int, std::map<std::string, Table *>> tbls;
 
-int registerTable(int fd, std::string name, size_t offset, int size)
+int registerTable(int fd, std::string name, std::string type, size_t offset, int size)
 {
-    if (size <= 0 || offset < 0 || name.empty() || fd < 0)
+    if (size <= 0 || offset < 0 || name.empty() || type.empty() || fd < 0)
     {
         return -1;
     }
@@ -184,7 +184,7 @@ int registerTable(int fd, std::string name, size_t offset, int size)
         return -1;
     }
 
-    auto structure = TypeManager::GetInstance().GetType(xybase::string::to_utf16(name));
+    auto structure = TypeManager::GetInstance().GetType(xybase::string::to_utf16(type));
     if (structure == nullptr || dynamic_cast<Structure *>(structure) == nullptr)
     {
         return -2;
@@ -219,6 +219,7 @@ int readTable(int fd, std::string handler)
         for (auto &&pair : titr->second)
         {
             Mappifier m;
+            std::wcout << L"Now processing " << xybase::string::to_wstring(pair.first) << std::endl;
             pair.second->Read(sitr->second, &m);
             (*v.value.mapValue)[xybase::string::to_utf16(pair.first)] = m.GetMap();
         }
