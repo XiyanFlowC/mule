@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "Structure.h"
+#include "Basic/Type.h"
 #include "../xybase/Stream.h"
 
 namespace mule {
@@ -20,7 +20,7 @@ namespace mule {
 			 * @param length 表长度
 			 * @param offset 表在流中的偏移
 			*/
-			Table(Structure *structure, const std::u16string &name, int length, size_t offset);
+			Table(Basic::Type *structure, const std::u16string &name, int length, size_t offset);
 
 			/**
 			 * @brief 执行读取
@@ -49,7 +49,7 @@ namespace mule {
 			bool IsComposite() const override;
 
 		protected:
-			Structure *structure;
+			Basic::Type *infraType;
 
 			int length;
 			size_t offset;

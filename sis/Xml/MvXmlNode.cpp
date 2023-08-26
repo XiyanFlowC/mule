@@ -42,10 +42,10 @@ mule::Xml::MvXmlNode::MvXmlNode(const MvXmlNode &&movee) noexcept
 void mule::Xml::MvXmlNode::AddChild(MvXmlNode node)
 {
 	mv.SetType(MultiValue::MVT_MAP);
-	auto &&it = mv.metadata.find(u"_type");
+	/*auto &&it = mv.metadata.find(u"_type");
 	if (it != mv.metadata.end() && it->second == std::u16string(u"array"))
 		(*mv.value.mapValue)[(uint64_t)counter++] = node.mv;
-	else
+	else*/
 		(*mv.value.mapValue)[node.GetName()] = node.mv;
 }
 
@@ -54,7 +54,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	std::list<MvXmlNode> ret;
 	if (mv.GetType() != MultiValue::MVT_MAP) return ret;
 
-	auto &&it = mv.metadata.find(u"_type");
+	/*auto &&it = mv.metadata.find(u"_type");
 	if (it != mv.metadata.end() && it->second == std::u16string(u"array"))
 	{
 		for (size_t i = 0; i < mv.value.mapValue->size(); ++i)
@@ -65,7 +65,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 			ret.push_back(MvXmlNode(u"i", itr->second));
 		}
 	}
-	else for (auto &pair : *mv.value.mapValue)
+	else*/ for (auto &pair : *mv.value.mapValue)
 	{
 		ret.push_back(MvXmlNode(pair.first.ToString(), pair.second));
 	}
@@ -105,7 +105,7 @@ std::u16string mule::Xml::MvXmlNode::GetName() const
 
 void mule::Xml::MvXmlNode::AddAttribute(std::u16string name, std::u16string data)
 {
-	if (name == u"_type" && data == u"array") counter = 0;
+	// if (name == u"_type" && data == u"array") counter = 0;
 	mv.metadata[name] = MultiValue::Parse(data);
 }
 

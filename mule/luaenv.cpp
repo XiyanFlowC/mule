@@ -185,7 +185,7 @@ int registerTable(int fd, std::string name, std::string type, size_t offset, int
     }
 
     auto structure = TypeManager::GetInstance().GetType(xybase::string::to_utf16(type));
-    if (structure == nullptr || dynamic_cast<Structure *>(structure) == nullptr)
+    if (structure == nullptr)
     {
         return -2;
     }
@@ -199,7 +199,7 @@ int registerTable(int fd, std::string name, std::string type, size_t offset, int
     auto &&i = tbls[fd].find(name);
     if (i != tbls[fd].end()) return -3;
 
-    tbls[fd][name] = new Table(dynamic_cast<Structure *>(structure), xybase::string::to_utf16(name), size, offset);
+    tbls[fd][name] = new Table(structure, xybase::string::to_utf16(name), size, offset);
 
     return 0;
 }
@@ -464,4 +464,6 @@ void InitialiseLuaEnvironment(xybase::Stream *stream)
     lua.RegisterFunction("getsheet", getSheet);
     lua.RegisterFunction("updatesheet", updateSheet);
     lua.RegisterFunction("newsheet", newSheet);
+
+    generator.indent = 2;
 }

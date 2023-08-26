@@ -44,10 +44,8 @@ MultiValue mule::Data::Basic::Integer::DoRead(xybase::Stream *stream)
 		leading <<= size;
 		value.value.unsignedValue |= leading;
 	}
-	else
-	{
-		value.type = MultiValue::MVT_UINT;
-	}
+
+	value.type = isUnsigned ? MultiValue::MVT_UINT : MultiValue::MVT_INT;
 
 	return value;
 }

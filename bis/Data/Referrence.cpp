@@ -5,10 +5,17 @@ using namespace mule::Data::Basic;
 void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	int ptr = stream->ReadInt32();
+
+	if (ptr == 0)
+	{
+		dataHandler->OnDataRead(MultiValue::MV_NULL);
+		return;
+	}
+
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
-	dataHandler->AppendMetadatum(u"addr", (uint64_t)ptr);
+	dataHandler->AppendMetadatum(u"size", referent->GetLastSize());
 	stream->Seek(loc, 0);
 }
 
@@ -29,6 +36,11 @@ size_t mule::Data::Referrence::Size() const
 std::u16string mule::Data::Referrence::GetTypeName() const
 {
 	return referent->GetTypeName() + u'*';
+}
+
+bool mule::Data::Referrence::IsComposite() const
+{
+	return referent->IsComposite();
 }
 
 mule::Data::Referrence::Referrence(Type *referent)
