@@ -42,13 +42,22 @@ xybase::FileContainer *BisEnvApplyContainer(const char16_t *name, xybase::Stream
 	return nullptr;
 }
 
+TypeCreator *BisEnvGetCreators()
+{
+	auto ret = new Array::ArrayCreator();
+	ret->nextCreator = new Referrence::ReferrenceCreator();
+	ret->nextCreator->nextCreator = new BasicFieldCreator();
+
+	return ret;
+}
+
 mule::Cpp::PluginDescription mule::Cpp::bisDesc = {
 	"bis",
 	"xiyan",
 	"MIT",
 	1, 0,
 	"Basic mule features.",
-	nullptr,
+	BisEnvGetCreators,
 	BisEnvGetHandler,
 	nullptr,
 	BisEnvApplyStream,

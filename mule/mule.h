@@ -25,6 +25,8 @@
 #include <Xml/MvXmlNode.h>
 #include <Xml/XmlNode.h>
 #include <Cpp/StructureBuilder.h>
+#include <Cpp/Environment.h>
+#include <Cpp/BisEnv.h>
 
 #include "crc32.h"
 #include "Configuration.h"

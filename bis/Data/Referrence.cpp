@@ -22,6 +22,12 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	int ptr = stream->ReadInt32();
+
+	if (ptr == 0)
+	{
+		return;
+	}
+
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
 	referent->Write(stream, dataHandler);

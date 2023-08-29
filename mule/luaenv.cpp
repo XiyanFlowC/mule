@@ -269,8 +269,11 @@ int saveSheet(int vd, std::string sheetName)
     {
         return -2;
     }
-    std::string xml = generator.ToXml(mule::Xml::MvXmlNode(xybase::string::to_utf16(sheetName), itr->second));
-    ResourceManager::GetInstance().SaveSheet(sheetName, xml);
+    for (auto &&sheet : *itr->second.value.mapValue)
+    {
+        std::string xml = generator.ToXml(mule::Xml::MvXmlNode(u"Sheet", sheet.second));
+        ResourceManager::GetInstance().SaveSheet(sheetName + xybase::string::to_string(*sheet.first.value.stringValue), xml);
+    }
 
     return 0;
 }

@@ -21,14 +21,14 @@ int main(int argc, char **argv)
 
 	LuaHost::GetInstance().LoadLuaStandardLibs();
 	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua")));
-	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.lua")));
+	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.dll")));
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
-	TypeManager::GetInstance().RegisterObjectCreator(new Array::ArrayCreator());
-	TypeManager::GetInstance().RegisterObjectCreator(new Referrence::ReferrenceCreator());
 	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableReferrence::ShiftableReferrenceCreator());
-	TypeManager::GetInstance().RegisterObjectCreator(new BasicFieldCreator());
+
+	mule::Cpp::Environment::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
+
 	TypeManager::GetInstance().RegisterObjectCreator(new VarChar::VarCharCreator());
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
@@ -45,7 +45,8 @@ int main(int argc, char **argv)
 			puts("=====================================");
 			//puts("MULE who f**ked ArTonelico");
 			//puts("MULE User-configurable Large-file Editor");
-			puts("MULE is a Utility for Limited Editing");
+			//puts("MULE is a Utility for Limited Editing");
+			puts("Multiple-purpose User-configurable Large-file Editor");
 			puts("=====================================");
 			puts("Interaction Mode [Lua based]");
 

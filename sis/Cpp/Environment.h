@@ -44,7 +44,7 @@ namespace mule
 
 			~Environment();
 		public:
-			Environment &GetInstance();
+			static Environment &GetInstance();
 
 			void OpenPlugin(std::string moduleName, std::string path);
 
