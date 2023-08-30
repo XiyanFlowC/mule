@@ -3,7 +3,7 @@
 #include "../xyutils.h"
 
 xybase::RuntimeException::RuntimeException(const std::u16string &message, int err)
-	: message(message), err(err)
+	: message(message), err(RUNTIME_EXCEPTION_LEAD | err)
 {
 	auto ret = xybase::string::to_utf8(message);
 	buf = new char[ret.size()];

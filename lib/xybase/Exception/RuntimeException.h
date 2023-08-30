@@ -8,6 +8,8 @@
 
 namespace xybase
 {
+	const int RUNTIME_EXCEPTION_LEAD = 0x0100'0000;
+
 	class RuntimeException : public std::exception
 	{
 	public:

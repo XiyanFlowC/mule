@@ -8,6 +8,8 @@
 
 namespace xybase
 {
+	const int INVALID_PARAMETER_EXCPETION_LEAD = 0x0001'0000;
+
 	class InvalidParameterException : public Exception
 	{
 	public:

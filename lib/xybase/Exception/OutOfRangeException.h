@@ -7,6 +7,8 @@
 
 namespace xybase
 {
+	const int OUT_OF_RANGE_EXCEPTION_LEAD = 0x0002'0000;
+
 	class OutOfRangeException : public RuntimeException
 	{
 	public:
