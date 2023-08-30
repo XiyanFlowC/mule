@@ -22,8 +22,8 @@ namespace mule
 			virtual void OnSheetReadEnd() override;
 			virtual void OnSheetWriteEnd() override;
 
-			virtual void OnRealmEnter(Basic::Type *realm, std::u16string name) override;
-			virtual void OnRealmExit(Basic::Type *realm, std::u16string name) override;
+			virtual void OnRealmEnter(Basic::Type *realm, const std::u16string &name) override;
+			virtual void OnRealmExit(Basic::Type *realm, const std::u16string &name) override;
 			virtual void OnRealmEnter(Basic::Type *realm, int idx) override;
 			virtual void OnRealmExit(Basic::Type *realm, int idx) override;
 

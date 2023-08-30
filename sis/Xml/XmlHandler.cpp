@@ -2,11 +2,11 @@
 
 using namespace mule::Data::Basic;
 
-void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, std::u16string name)
+void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name)
 {
 }
 
-void mule::Xml::XmlHandler::OnRealmExit(Type *realm, std::u16string name)
+void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 {
 }
 

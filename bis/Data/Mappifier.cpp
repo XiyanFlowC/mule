@@ -30,7 +30,7 @@ void mule::Data::Mappifier::OnSheetWriteEnd()
 	status = DHMS_IDLE;
 }
 
-void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::u16string name)
+void mule::Data::Mappifier::OnRealmEnter(Type *realm, const std::u16string& name)
 {
 	if (status == DHMS_READ)
 	{
@@ -57,7 +57,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, std::u16string name)
 	}
 }
 
-void mule::Data::Mappifier::OnRealmExit(Type *realm, std::u16string name)
+void mule::Data::Mappifier::OnRealmExit(Type *realm, const std::u16string& name)
 {
 	if (status == DHMS_READ)
 	{

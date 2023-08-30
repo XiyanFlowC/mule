@@ -35,14 +35,14 @@ namespace mule
 					 * @param realm 领域名
 					 * @param name 
 					*/
-					virtual void OnRealmEnter(Type *realm, std::u16string name) = 0;
+					virtual void OnRealmEnter(Type *realm, const std::u16string& name) = 0;
 
 					/**
 					 * @brief 离开具名领域
 					 * @param realm 
 					 * @param name 
 					*/
-					virtual void OnRealmExit(Type *realm, std::u16string name) = 0;
+					virtual void OnRealmExit(Type *realm, const std::u16string& name) = 0;
 
 					/**
 					 * @brief 进入索引领域
