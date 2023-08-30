@@ -65,6 +65,8 @@ namespace mule
 					virtual void AppendMetadata(std::map<std::u16string, MultiValue> metadata);
 
 					virtual void AppendMetadatum(std::u16string name, const MultiValue &value);
+
+					virtual void SetStream(xybase::Stream *stream);
 				};
 
 				virtual ~Type();

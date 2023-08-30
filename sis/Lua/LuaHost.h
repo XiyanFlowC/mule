@@ -162,14 +162,11 @@ namespace mule
 			}
 			else if constexpr (std::is_same_v<T, mule::Data::Basic::MultiValue>)
 			{
-				try
-				{
-					return GetValue(index);
-				}
-				catch (LuaException)
-				{
+				/* Exceedded stack size, for multiValue only, return the nil */
+				if (GetStackTop() < index)
 					return mule::Data::Basic::MultiValue{};
-				}
+				
+				return GetValue(index);
 			}
 			else return 0;
 		}

@@ -1,5 +1,8 @@
 #include "luaenv.h"
 
+#include <Cpp/Environment.h>
+#include <TextStream.h>
+
 using namespace mule::Data::Basic;
 using namespace mule::Data;
 
@@ -28,14 +31,16 @@ int mountContainer(int id, std::string type, std::string code)
         return -3;
     }
 
-    if (type == "iso")
+    auto cont = mule::Cpp::Environment::GetInstance().GetFileContainer(xybase::string::to_utf16(type), stream->second);
+
+    if (cont == nullptr)
     {
-        containers[code] = (new mule::Container::IsoContainer(stream->second));
-        return 0;
+        return -4;
     }
     else
     {
-        return -4;
+        containers[code] = (new mule::Container::IsoContainer(stream->second));
+        return 0;
     }
 }
 
@@ -225,7 +230,22 @@ int readTable(int fd, std::string handler)
         }
         values[valued++] = v;
     }
-    else return -3;
+    else
+    {
+        auto proc = mule::Cpp::Environment::GetInstance().GetHandler(xybase::string::to_utf16(handler));
+        
+        if (proc == nullptr) return -3;
+
+        for (auto &&pair : titr->second)
+        {
+            xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + ".txt", 1);
+            proc->SetStream(stream);
+            std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
+            pair.second->Read(sitr->second, proc);
+            stream->Close();
+            delete stream;
+        }
+    }
 
     return valued - 1;
 }

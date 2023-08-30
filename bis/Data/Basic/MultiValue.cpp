@@ -368,7 +368,7 @@ std::u16string MultiValue::Stringfy() const
 		return u"$" + xybase::string::to_utf16(std::to_string(value.realValue));
 		break;
 	case MultiValue::MVT_STRING:
-		return Stringfy(*value.stringValue);
+		return u"\"" + Stringfy(*value.stringValue) + u"\"";
 		break;
 	case MVT_ARRAY:
 	{

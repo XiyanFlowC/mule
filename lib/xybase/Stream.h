@@ -24,6 +24,7 @@ namespace xybase
 		bool isBigEndian = false;
 
 	public:
+
 		virtual ~Stream();
 
 		virtual uint8_t ReadUInt8() = 0;

@@ -47,3 +47,7 @@ void mule::Data::Basic::Type::DataHandler::AppendMetadatum(std::u16string name, 
 {
 }
 
+void mule::Data::Basic::Type::DataHandler::SetStream(xybase::Stream *stream)
+{
+}
+

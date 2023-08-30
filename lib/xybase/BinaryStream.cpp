@@ -11,10 +11,10 @@ using namespace xybase;
 #define ftell ftello64
 #endif
 
-BinaryStream::BinaryStream(std::u16string path, bool isBigEndian)
+BinaryStream::BinaryStream(std::u16string path, bool truncate, bool isBigEndian)
 	: name(path)
 {
-	stream = fopen(xybase::string::to_string(path).c_str(), "rb+");
+	stream = fopen(xybase::string::to_string(path).c_str(), truncate ? "wb+" : "rb+");
 	if (stream == nullptr)
 	{
 		throw IOException(path, u"Open file error.");

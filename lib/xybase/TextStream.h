@@ -1,35 +1,27 @@
 #pragma once
 
-#ifndef XY_BINARY_STREAM_H__
-#define XY_BINARY_STREAM_H__
+#ifndef XY_TEXT_STREAM
+#define XY_TEXT_STREAM
 
-#include <cstdint>
-#include <cerrno>
-#include <cstring>
-#include <cstdlib>
+#include <cstdio>
+#include <string>
+
 #include "Stream.h"
-#include "Exception/IOException.h"
-#include "Exception/InvalidOperationException.h"
-#include "StringBuilder.h"
 
 namespace xybase
 {
-	class BinaryStream : public xybase::Stream
+	class TextStream : public Stream
 	{
-	protected:
-		FILE *stream;
-		bool isOpen;
-		std::u16string name;
-
 	public:
-		/**
-		 * @brief 创建二进制流用于读写
-		 * @param path 目标文件路径
-		 * @param truncate 
-		 * @param isBigEndian 是否为大端序文件
-		*/
-		BinaryStream(std::u16string path, bool truncate = false, bool isBigEndian = false);
-		~BinaryStream();
+		FILE *stream;
+
+		TextStream(std::string path, int mode);
+
+		virtual ~TextStream();
+
+		void Close();
+
+		virtual std::string ReadLine();
 
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
@@ -41,8 +33,7 @@ namespace xybase
 		virtual int64_t ReadInt64() override;
 		virtual float ReadFloat() override;
 		virtual double ReadDouble() override;
-		virtual std::string ReadString() override;
-		virtual void ReadBytes(char *buffer, int limit) override;
+		virtual void Write(char value);
 		virtual void Write(uint8_t value) override;
 		virtual void Write(int8_t value) override;
 		virtual void Write(uint16_t value) override;
@@ -54,10 +45,16 @@ namespace xybase
 		virtual void Write(float value) override;
 		virtual void Write(double value) override;
 		virtual void Write(const std::string &value) override;
-		virtual void Write(const char *buffer, size_t size) override;
 		virtual size_t Tell() override;
-		virtual void Seek(long long offset, int mode = SEEK_SET) override;
-		virtual void Close() override;
+		virtual void Seek(long long offset, int mode) override;
+	private:
+		virtual std::string ReadString() override;
+
+		virtual void ReadBytes(char *buffer, int limit) override;
+
+		virtual void Write(const char *buffer, size_t size) override;
+
+		bool open;
 	};
 }
 

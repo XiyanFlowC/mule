@@ -9,6 +9,8 @@
 
 #include <string>
 
+#include "StringBuilder.h"
+
 namespace xybase
 {
 	namespace string
@@ -220,6 +222,13 @@ namespace xybase
 		*/
 		std::string to_string(const std::wstring &str) noexcept;
 
+		/**
+		 * @brief Parse string to integer (up to base 36)
+		 * @tparam T Type of the string unit.
+		 * @param str String.
+		 * @param base Base.
+		 * @return Parsed integer.
+		*/
 		template<typename T = char>
 		unsigned long long stoi(const std::basic_string<T> &str, int base = 10)
 		{
@@ -244,6 +253,23 @@ namespace xybase
 				else break;
 			}
 			return ret;
+		}
+
+		template<typename T = char>
+		std::basic_string<T> itos(unsigned long long value, int base = 10)
+		{
+			static const char *pre = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			if (value == 0) return static_cast<T>('0');
+
+			StringBuilder<T> sb;
+			
+			while (value)
+			{
+				sb.Append(static_cast<T>(pre[value % base]));
+				value /= base;
+			}
+
+			return sb.ToString();
 		}
 	}
 }

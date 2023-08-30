@@ -1,20 +1,18 @@
 #pragma once
 
-#ifndef CSTYLE_INIT_HANDLER_H__
-#define CSTYLE_INIT_HANDLER_H__
+#ifndef CSV_HANDLER_H__
+#define CSV_HANDLER_H__
 
 #include <Data/Basic/Type.h>
-#include <StringBuilder.h>
-#include <Exception/InvalidOperationException.h>
 
 namespace mule
 {
-	namespace Cpp
+	namespace Csv
 	{
-		class CStyleInitHandler : public mule::Data::Basic::Type::DataHandler
+		class CsvHandler : public mule::Data::Basic::Type::DataHandler
 		{
 		public:
-			CStyleInitHandler();
+
 
 			/**
 			 * @brief 缩进符号个数
@@ -41,18 +39,19 @@ namespace mule
 			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
 			virtual void SetStream(xybase::Stream *stream) override;
 		private:
-			xybase::Stream *stream;
-
 			enum {
-				CSIHS_IDLE,
-				CSIHS_READ,
-				CSIHS_WRITE,
-			} state;
+				CHS_IDLE,
+				CHS_READ,
+				CHS_READ_TRAILCELL,
+				CHS_WRITE,
+				CHS_WRITE_TRAILCELL,
+			} status;
+
+			xybase::Stream *stream = nullptr;
 
 			int layer = 0;
 		};
 	}
 }
 
-#endif // !CSTYLE_INIT_HANDLER_H__
-
+#endif /* End of Csv_HANDLER_H__*/

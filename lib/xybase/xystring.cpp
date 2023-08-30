@@ -1,6 +1,7 @@
 #include "xystring.h"
 #include <locale>
 #include <cstdlib>
+#include <cassert>
 #include "StringBuilder.h"
 
 std::u8string xybase::string::to_utf8(long codepoint)
@@ -335,7 +336,7 @@ std::u8string xybase::string::to_utf8(const std::u16string &str) noexcept
             ++i; // Skip the trail surrogate, as it's already processed
         }
         else {
-            // Singular trailsurrogate
+            // Singular trail surrogate
             if ((c & 0xFC00) == 0xDC00) continue;
 
             sb += to_utf8(to_codepoint(str.substr(i, 2)));
@@ -357,12 +358,13 @@ std::u8string xybase::string::to_utf8(const std::string &str) noexcept
 
 std::wstring xybase::string::to_wstring(const std::string &str) noexcept
 {
-    mbstate_t state = mbstate_t{};
+    mbstate_t state{};
     const char *pstr = str.c_str();
     size_t size = mbsrtowcs(NULL, &pstr, 0, &state);
-    if (size == -1) return L"";
+    if (size == (size_t)-1) return L"";
+    assert(mbsinit(&state));
     wchar_t *buf = new wchar_t[size + 1];
-    mbsrtowcs(buf, &pstr, str.size(), &state);
+    int tmp = mbsrtowcs(buf, &pstr, size + 1, &state);
     buf[size] = 0;
     std::wstring ret {buf};
     delete[] buf;
@@ -423,12 +425,13 @@ std::string xybase::string::to_string(const std::u32string &str) noexcept
 
 std::string xybase::string::to_string(const std::wstring &str) noexcept
 {
-    mbstate_t state = mbstate_t{};
+    mbstate_t state {};
     const wchar_t *pstr = str.c_str();
     size_t size = wcsrtombs(NULL, &pstr, 0, &state);
-    if (size == -1) return "";
+    if (size == (size_t)-1) return "";
+    assert(mbsinit(&state));
     char *buf = new char[size + 1];
-    wcsrtombs(buf, &pstr, str.size(), &state);
+    int tmp = wcsrtombs(buf, &pstr, size + 1, &state);
     buf[size] = 0;
     std::string ret {buf};
     delete[] buf;

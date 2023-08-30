@@ -6,16 +6,26 @@
 #include <Data/Mappifier.h>
 #include <Stream/ElfStream.h>
 
+#include "CStyleInitHandler.h"
+#include "../Xml/XmlHandler.h"
+#include "../Csv/CsvHandler.h"
+
 using namespace mule::Data;
 
 mule::Data::Basic::Type::DataHandler *BisEnvGetHandler(const char16_t *name)
 {
-	static char16_t mappifierName[] = u"mappifier";
-	//static mule::Data::Mappifier _mapp;
-	if (memcmp(name, mappifierName, sizeof(mappifierName)))
-		return nullptr;
-	//return &_mapp;
-	return new mule::Data::Mappifier();
+	static char16_t cStyleName[] = u"c-style";
+	static char16_t xmlHandlerName[] = u"xml";
+	static char16_t csvName[] = u"csv";
+
+	if (!memcmp(name, cStyleName, sizeof(cStyleName)))
+		return new mule::Cpp::CStyleInitHandler();
+	if (!memcmp(name, xmlHandlerName, sizeof(xmlHandlerName)))
+		return new mule::Xml::XmlHandler();
+	if (!memcmp(name, csvName, sizeof(csvName)))
+		return new mule::Csv::CsvHandler();
+
+	return nullptr;
 }
 
 xybase::Stream *BisEnvApplyStream(const char16_t *name, xybase::Stream *infraStream)
@@ -52,7 +62,7 @@ TypeCreator *BisEnvGetCreators()
 }
 
 mule::Cpp::PluginDescription mule::Cpp::bisDesc = {
-	"bis",
+	"bis-sis basic",
 	"xiyan",
 	"MIT",
 	1, 0,
