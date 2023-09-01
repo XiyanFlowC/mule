@@ -40,10 +40,10 @@ Type* TypeCreator::CreateType(std::u16string info)
 
 Type *TypeCreator::CreateType(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo)
 {
-	Type *result = DoCreateObject(info);
+	Type *result = DoCreateObject(info, metainfo);
 	if (result != nullptr) return result;
 
-	if (nextCreator != nullptr) return nextCreator->CreateType(info);
+	if (nextCreator != nullptr) return nextCreator->CreateType(info, metainfo);
 	return nullptr;
 }
 

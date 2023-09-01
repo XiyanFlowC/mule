@@ -34,24 +34,26 @@ namespace xybase
 
 		size_t Length();
 
-		size_t Size();
+		size_t Capacity();
 
 		void Resize(size_t size);
+
+		void Clear();
 
 		Tunit *ToString();
 	protected:
 
 		Tunit *buffer;
-		size_t currentSize, length;
+		size_t capacity, length;
 	};
 
 	template <typename Tunit>
 	StringBuilder<Tunit>::StringBuilder(int initialSize, const Tunit *initialContent)
 	{
-		currentSize = initialSize ? initialSize : 16;
+		capacity = initialSize ? initialSize : 16;
 		length = 0;
 
-		buffer = (Tunit *)malloc(currentSize * sizeof(Tunit));
+		buffer = (Tunit *)malloc(capacity * sizeof(Tunit));
 		if (buffer == nullptr) throw RuntimeException(u"Memory allocation falied.", errno);
 
 		if (initialContent != nullptr)
@@ -71,9 +73,9 @@ namespace xybase
 	{
 		buffer[length++] = ch;
 
-		if (length == currentSize)
+		if (length == capacity)
 		{
-			Resize(currentSize << 1);
+			Resize(capacity << 1);
 		}
 		return *this;
 	}
@@ -125,9 +127,15 @@ namespace xybase
 	}
 
 	template <typename Tunit>
-	size_t StringBuilder<Tunit>::Size()
+	size_t StringBuilder<Tunit>::Capacity()
 	{
-		return currentSize;
+		return capacity;
+	}
+	
+	template<typename Tunit>
+	void StringBuilder<Tunit>::Clear()
+	{
+		length = 0;
 	}
 
 	template<typename Tunit>
@@ -140,11 +148,11 @@ namespace xybase
 		{
 			tmp = (Tunit *)malloc(size * sizeof(Tunit)); // try again in another way.
 			if (tmp == nullptr) throw RuntimeException(u"Memory re-allocation failed.", errno);
-			memcpy(tmp, buffer, currentSize);
+			memcpy(tmp, buffer, capacity);
 			free(buffer);
 		}
 		buffer = tmp;
-		currentSize = size;
+		capacity = size;
 	}
 
 	template<typename Tunit>

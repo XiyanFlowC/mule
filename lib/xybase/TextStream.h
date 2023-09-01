@@ -23,6 +23,7 @@ namespace xybase
 
 		virtual std::string ReadLine();
 
+		virtual char ReadChar();
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
 		virtual uint16_t ReadUInt16() override;
@@ -45,6 +46,7 @@ namespace xybase
 		virtual void Write(float value) override;
 		virtual void Write(double value) override;
 		virtual void Write(const std::string &value) override;
+		virtual void Write(const char *value);
 		virtual size_t Tell() override;
 		virtual void Seek(long long offset, int mode) override;
 	private:

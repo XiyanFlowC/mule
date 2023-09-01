@@ -1,6 +1,7 @@
 #include "CStyleInitHandler.h"
 
 #include <xystring.h>
+#include <Exception/NotImplementedException.h>
 
 using namespace mule::Data::Basic;
 
@@ -104,6 +105,7 @@ void mule::Cpp::CStyleInitHandler::OnSheetReadEnd()
 
 void mule::Cpp::CStyleInitHandler::OnSheetWriteStart()
 {
+	throw xybase::NotImplementedException();
 	if (state != CSIHS_IDLE)
 		throw xybase::InvalidOperationException(u"This handler is not idle for write.", 10000);
 	state = CSIHS_WRITE;

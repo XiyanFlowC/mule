@@ -4,6 +4,7 @@
 #include <Data/Array.h>
 #include <Data/Referrence.h>
 #include <Data/Mappifier.h>
+#include <Data/TableRef.h>
 #include <Stream/ElfStream.h>
 
 #include "CStyleInitHandler.h"
@@ -55,8 +56,9 @@ xybase::FileContainer *BisEnvApplyContainer(const char16_t *name, xybase::Stream
 TypeCreator *BisEnvGetCreators()
 {
 	auto ret = new Array::ArrayCreator();
-	ret->nextCreator = new Referrence::ReferrenceCreator();
-	ret->nextCreator->nextCreator = new BasicFieldCreator();
+	ret->nextCreator = new TableRef::TableRefCreator();
+	ret->nextCreator->nextCreator = new Referrence::ReferrenceCreator();
+	ret->nextCreator->nextCreator->nextCreator = new BasicFieldCreator();
 
 	return ret;
 }

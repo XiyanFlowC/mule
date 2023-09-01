@@ -42,63 +42,91 @@ std::string xybase::TextStream::ReadLine()
 	return sb.ToString();
 }
 
+char xybase::TextStream::ReadChar()
+{
+	return fgetc(stream);
+}
+
 uint8_t xybase::TextStream::ReadUInt8()
 {
-	return 0;
+	return ReadUInt64();
 }
 
 int8_t xybase::TextStream::ReadInt8()
 {
-	return 0;
+	return ReadInt64();
 }
 
 uint16_t xybase::TextStream::ReadUInt16()
 {
-	return 0;
+	return ReadUInt64();
 }
 
 int16_t xybase::TextStream::ReadInt16()
 {
-	return 0;
+	return ReadInt64();
 }
 
 uint32_t xybase::TextStream::ReadUInt32()
 {
-	return 0;
+	return ReadUInt64();
 }
 
 int32_t xybase::TextStream::ReadInt32()
 {
-	return 0;
+	return ReadInt64();
 }
 
 uint64_t xybase::TextStream::ReadUInt64()
 {
-	return 0;
+	uint64_t ret{};
+	if (1 != fscanf(stream, "%llu", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	return ret;
 }
 
 int64_t xybase::TextStream::ReadInt64()
 {
-	return 0;
+	int64_t ret{};
+	if (1 != fscanf(stream, "%lld", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	return ret;
 }
 
 float xybase::TextStream::ReadFloat()
 {
-	return 0.0f;
+	float ret{};
+	if (1 != fscanf(stream, "%f", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	return ret;
 }
 
 double xybase::TextStream::ReadDouble()
 {
-	return 0.0;
+	double ret{};
+		if (1 != fscanf(stream, "%lf", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	return ret;
 }
 
 std::string xybase::TextStream::ReadString()
 {
-	return std::string();
+	StringBuilder<char> sb;
+
+	if (feof(stream))
+	{
+		throw IOException(u"", u"Read at EOF.");
+	}
+
+	int ch = fgetc(stream);
+
+	while (ch != EOF && ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n')
+		sb.Append(ch);
+
+	if (ch != EOF) ungetc(ch, stream);
+
+	return sb.ToString();
 }
 
 void xybase::TextStream::ReadBytes(char *buffer, int limit)
 {
+	throw InvalidOperationException(u"Cannot read raw bytes from a text stream.", 2350);
 }
 
 void xybase::TextStream::Write(char value)
@@ -159,6 +187,11 @@ void xybase::TextStream::Write(double value)
 void xybase::TextStream::Write(const std::string &value)
 {
 	fprintf(stream, "%s", value.c_str());
+}
+
+void xybase::TextStream::Write(const char *value)
+{
+	fprintf(stream, "%s", value);
 }
 
 void xybase::TextStream::Write(const char *buffer, size_t size)

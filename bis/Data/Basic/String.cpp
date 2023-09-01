@@ -31,11 +31,21 @@ MultiValue mule::Data::Basic::String::DoRead(xybase::Stream *stream)
 {
 	MultiValue tmp(xybase::string::to_utf16(stream->ReadString()));
 	lastSize = tmp.value.stringValue->length();
+	tmp.metadata[u"size"] = lastSize;
 	return tmp;
 }
 
 void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue &value)
 {
 	if (!value.IsType(MultiValue::MVT_STRING)) throw xybase::InvalidParameterException(u"value", u"Type mismatch!", 19004);
-	stream->Write(xybase::string::to_string(*(value.value.stringValue)));
+
+	auto data = xybase::string::to_string(*(value.value.stringValue));
+
+	auto &&itr = value.metadata.find(u"size");
+	if (itr != value.metadata.end())
+	{
+		if (data.size() > itr->second.value.unsignedValue) throw xybase::InvalidParameterException(u"value", u"Too large for this string space.", 19010);
+	}
+
+	stream->Write(data);
 }

@@ -382,15 +382,11 @@ int applyStream(int id, std::string x)
         return -2;
     }
 
-    if (x == "elf")
-    {
-        streams[streamd] = new mule::Stream::ElfStream(stream->second);
-        return streamd++;
-    }
-    else
-    {
-        return -3;
-    }
+    auto ret = mule::Cpp::Environment::GetInstance().ApplyStream(xybase::string::to_utf16(x), stream->second);
+    if (ret == nullptr) return -3;
+
+    streams[streamd] = ret;
+    return streamd;
 }
 
 int updateSheet(int vd, MultiValue mv)

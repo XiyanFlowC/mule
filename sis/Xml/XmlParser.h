@@ -122,6 +122,14 @@ namespace mule
         {
             // 去除空白字符
             index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
+
+            // 去除顶层注释（喵的越写越乱了，找时间换成开源Xml解析库得了
+            while (xml[index] == '<' && xml[index + 1] == '!' && xml[index + 2] == '-' && xml[index + 3] == '-')
+            {
+                index = xml.find(str_encflip<Ch>("-->"), index + 4) + 3;
+                index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
+            }
+
             // 节点起始
             if (xml[index] == '<')
             {
@@ -178,6 +186,7 @@ namespace mule
                 {
                     // 去除空白字符
                     index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
+
                     // 处理标签节点
                     if (xml[index] == '<' && xml[index + 1] != '!')
                     {
@@ -202,6 +211,12 @@ namespace mule
                         {
                             node.AddChild(ParseNode(xml));
                         }
+                    }
+                    // 处理注释
+                    else if (xml[index] == '<' && xml[index + 1] == '!' && xml[index + 2] == '-' && xml[index + 3] == '-')
+                    {
+                        index = xml.find(str_encflip<Ch>("-->"), index + 4);
+                        index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 3);
                     }
                     // 文本节点
                     else

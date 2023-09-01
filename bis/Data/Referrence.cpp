@@ -15,7 +15,6 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
-	dataHandler->AppendMetadatum(u"size", referent->GetLastSize());
 	stream->Seek(loc, 0);
 }
 

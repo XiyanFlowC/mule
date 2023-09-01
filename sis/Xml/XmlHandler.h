@@ -3,6 +3,7 @@
 #ifndef XML_HANDLER_H__
 #define XML_HANDLER_H__
 
+#include <TextStream.h>
 #include <Data/Basic/Type.h>
 
 namespace mule
@@ -12,6 +13,8 @@ namespace mule
 		class XmlHandler : public mule::Data::Basic::Type::DataHandler
 		{
 		public:
+			XmlHandler();
+
 			/**
 			 * @brief 缩进符号个数
 			*/
@@ -36,14 +39,21 @@ namespace mule
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
 			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
 			virtual void SetStream(xybase::Stream *stream) override;
+
+			std::map<std::string, std::string> entities;
 		private:
+			void ProcessAttributes(char &ch, xybase::StringBuilder<char8_t> &sb);
 			enum {
 				XHS_IDLE,
 				XHS_READ,
 				XHS_WRITE,
 			} status;
 
-			xybase::Stream *stream = nullptr;
+			xybase::TextStream *stream = nullptr;
+
+			std::map<std::u16string, Data::Basic::MultiValue> metadata;
+
+			std::u16string nodeName;
 
 			int layer = 0;
 		};
