@@ -94,6 +94,9 @@ namespace mule
 
 			virtual void ReadBytes(char *buffer, int limit) override;
 			virtual void Write(const char *buffer, size_t size) override;
+
+			// 通过 StreamBasic 继承
+			virtual std::u16string GetName() override;
 		};
 	}
 }

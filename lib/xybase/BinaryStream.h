@@ -31,6 +31,7 @@ namespace xybase
 		BinaryStream(std::u16string path, bool truncate = false, bool isBigEndian = false);
 		~BinaryStream();
 
+		virtual std::u16string GetName() override;
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
 		virtual uint16_t ReadUInt16() override;

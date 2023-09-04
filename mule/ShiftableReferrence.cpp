@@ -37,7 +37,7 @@ void ShiftableReferrence::Write(xybase::Stream *stream, DataHandler *dataHandler
 	referent->Write(stream, dataHandler);
 	const MultiValue &mv = dataHandler->OnDataWrite();
 	stream->Write((int32_t)MemoryManager::GetInstance().GetMemory(stream).Alloc(referent->EvalSize(mv), 4));
-	stream->Seek(loc, 0);
+	stream->Seek(loc, SEEK_SET);
 }
 
 size_t ShiftableReferrence::Size() const

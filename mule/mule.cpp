@@ -18,7 +18,8 @@ int main(int argc, char **argv)
 	Configuration::GetInstance().SetEnvironmentRootPath(argv[1]);
 	Configuration::GetInstance().TargetFile = argv[2];
 	crc32_init();
-
+	
+	// Lua environment initialisation
 	LuaHost::GetInstance().LoadLuaStandardLibs();
 	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua")));
 	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.dll")));
@@ -28,8 +29,6 @@ int main(int argc, char **argv)
 	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableReferrence::ShiftableReferrenceCreator());
 
 	mule::Cpp::Environment::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
-
-	TypeManager::GetInstance().RegisterObjectCreator(new VarChar::VarCharCreator());
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 

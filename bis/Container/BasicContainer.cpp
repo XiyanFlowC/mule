@@ -54,6 +54,7 @@ void mule::BasicContainer::Close(int id)
 BasicContainer::BasicContainer(xybase::Stream * stream)
 {
 	file = stream;
+	name = stream->GetName() + u":";
 }
 
 xybase::Stream *BasicContainer::Open(std::u16string name, FileOpenMode mode)
@@ -66,7 +67,7 @@ xybase::Stream *BasicContainer::Open(std::u16string name, FileOpenMode mode)
 	if (mode == FOM_TRUNCATE) it->second.curSize = 0;
 	
 	fdMap[curId] = &it->second;
-	return new InnerFile(curId++, it->second.size, it->second.offset, this);
+	return new InnerFile(curId++, it->second.size, it->second.offset, this, name);
 }
 
 std::list<std::u16string> BasicContainer::List()
@@ -86,6 +87,11 @@ void mule::BasicContainer::Close()
 	file->Close();
 }
 
+std::u16string mule::BasicContainer::GetName()
+{
+	return name;
+}
+
 void mule::BasicContainer::MakeDir(std::u16string path)
 {
 }
@@ -94,8 +100,11 @@ void mule::BasicContainer::Remove(std::u16string target, bool recursive)
 {
 }
 
-mule::BasicContainer::InnerFile::InnerFile(int token, size_t size, size_t offset, BasicContainer *host)
-	: token(token), host(host), size(size), offset(offset) { }
+mule::BasicContainer::InnerFile::InnerFile(int token, size_t size, size_t offset, BasicContainer *host, const std::u16string &name)
+	: token(token), host(host), size(size), offset(offset)
+{
+	this->name = host->GetName() + name;
+}
 
 uint8_t mule::BasicContainer::InnerFile::ReadUInt8()
 {
@@ -319,4 +328,9 @@ void mule::BasicContainer::InnerFile::Seek(long long offset, int mode)
 void mule::BasicContainer::InnerFile::Close()
 {
 	host->Close(token);
+}
+
+std::u16string mule::BasicContainer::InnerFile::GetName()
+{
+	return name;
 }

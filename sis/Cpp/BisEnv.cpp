@@ -5,6 +5,7 @@
 #include <Data/Referrence.h>
 #include <Data/Mappifier.h>
 #include <Data/TableRef.h>
+#include <Data/VarChar.h>
 #include <Data/Storage/BinaryBlock.h>
 #include <Stream/ElfStream.h>
 
@@ -61,6 +62,7 @@ TypeCreator *BisEnvGetCreators()
 	ret->nextCreator->nextCreator = new Referrence::ReferrenceCreator();
 	ret->nextCreator->nextCreator->nextCreator = new BasicFieldCreator();
 	ret->nextCreator->nextCreator->nextCreator->nextCreator = new Storage::BinaryBlock::BinaryBlockCreator();
+	ret->nextCreator->nextCreator->nextCreator->nextCreator->nextCreator = new VarChar::VarCharCreator();
 
 	return ret;
 }

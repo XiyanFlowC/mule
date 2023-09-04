@@ -12,6 +12,7 @@ namespace xybase
 {
 	class TextStream : public Stream
 	{
+		std::u16string name;
 	public:
 		FILE *stream;
 
@@ -20,6 +21,8 @@ namespace xybase
 		virtual ~TextStream();
 
 		void Close();
+
+		virtual std::u16string GetName() override;
 
 		virtual std::string ReadLine();
 

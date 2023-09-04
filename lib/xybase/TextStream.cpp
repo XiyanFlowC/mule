@@ -13,6 +13,8 @@ xybase::TextStream::TextStream(std::string path, int mode)
 		throw IOException(string::to_utf16(path), u"Failed to initialise TextStream.");
 	}
 
+	name = xybase::string::to_utf16(path);
+
 	open = true;
 }
 
@@ -27,6 +29,11 @@ void xybase::TextStream::Close()
 		fclose(stream);
 
 	open = false;
+}
+
+std::u16string xybase::TextStream::GetName()
+{
+	return name;
 }
 
 std::string xybase::TextStream::ReadLine()
@@ -80,28 +87,28 @@ int32_t xybase::TextStream::ReadInt32()
 uint64_t xybase::TextStream::ReadUInt64()
 {
 	uint64_t ret{};
-	if (1 != fscanf(stream, "%llu", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	if (1 != fscanf(stream, "%llu", &ret)) throw IOException(name, u"Unspecified/Format error.");
 	return ret;
 }
 
 int64_t xybase::TextStream::ReadInt64()
 {
 	int64_t ret{};
-	if (1 != fscanf(stream, "%lld", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	if (1 != fscanf(stream, "%lld", &ret)) throw IOException(name, u"Unspecified/Format error.");
 	return ret;
 }
 
 float xybase::TextStream::ReadFloat()
 {
 	float ret{};
-	if (1 != fscanf(stream, "%f", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+	if (1 != fscanf(stream, "%f", &ret)) throw IOException(name, u"Unspecified/Format error.");
 	return ret;
 }
 
 double xybase::TextStream::ReadDouble()
 {
 	double ret{};
-		if (1 != fscanf(stream, "%lf", &ret)) throw IOException(u"", u"Unspecified/Format error.");
+		if (1 != fscanf(stream, "%lf", &ret)) throw IOException(name, u"Unspecified/Format error.");
 	return ret;
 }
 
@@ -111,7 +118,7 @@ std::string xybase::TextStream::ReadString()
 
 	if (feof(stream))
 	{
-		throw IOException(u"", u"Read at EOF.");
+		throw IOException(name, u"Read at EOF.");
 	}
 
 	int ch = fgetc(stream);

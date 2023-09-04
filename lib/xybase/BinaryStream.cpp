@@ -33,6 +33,11 @@ BinaryStream::~BinaryStream()
 #endif
 #define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw IOException(name, std::u16string(u"Read error."))
 
+std::u16string xybase::BinaryStream::GetName()
+{
+	return name;
+}
+
 uint8_t BinaryStream::ReadUInt8()
 {
 	uint8_t ret;

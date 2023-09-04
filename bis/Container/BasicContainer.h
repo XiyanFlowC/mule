@@ -20,6 +20,7 @@ namespace mule
 
 		int curId = 0;
 
+		std::u16string name;
 	protected:
 
 		xybase::Stream *file;
@@ -73,14 +74,14 @@ namespace mule
 #else
 			static const bool bigEndianSystem = true;
 #endif
-
+			std::u16string name;
 		public:
 
 			bool isBigEndian = false;
 
 			~InnerFile();
 
-			InnerFile(int token, size_t size, size_t offset, BasicContainer *host);
+			InnerFile(int token, size_t size, size_t offset, BasicContainer *host, const std::u16string &name);
 
 			virtual uint8_t ReadUInt8() override;
 			virtual int8_t ReadInt8() override;
@@ -109,6 +110,9 @@ namespace mule
 			virtual size_t Tell() override;
 			virtual void Seek(long long offset, int mode) override;
 			virtual void Close() override;
+
+			// 通过 Stream 继承
+			virtual std::u16string GetName() override;
 		};
 
 		struct FileDesc
@@ -135,7 +139,10 @@ namespace mule
 
 	private:
 		std::map<int, FileDesc *> fdMap;
-	};
+
+		// 通过 FileContainer 继承
+		virtual std::u16string GetName() override;
+};
 
 	template<>
 	void BasicContainer::Write<const std::string &>(int id, const std::string &value);

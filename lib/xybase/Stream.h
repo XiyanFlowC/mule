@@ -25,6 +25,8 @@ namespace xybase
 
 	public:
 
+		virtual std::u16string GetName() = 0;
+
 		virtual ~Stream();
 
 		virtual uint8_t ReadUInt8() = 0;

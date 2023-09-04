@@ -163,6 +163,11 @@ void ElfStream::Write(const char *buffer, size_t size)
 	stream->Write(buffer, size);
 }
 
+std::u16string mule::Stream::ElfStream::GetName()
+{
+	return stream->GetName() + u"|elf";
+}
+
 ElfFormatErrorException::ElfFormatErrorException(std::u16string msg, int line)
 	: RuntimeException(msg, line)
 {
