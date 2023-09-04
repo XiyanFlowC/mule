@@ -1,7 +1,10 @@
 #include "ShiftableReferrence.h"
 
 #include <xyutils.h>
+#include <Data/Storage/DataManager.h>
 #include <Stream/ElfStream.h>
+
+#define SRMM_DATAFILE_ID (0x0A00'0000)
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
@@ -33,10 +36,13 @@ void ShiftableReferrence::Read(xybase::Stream *stream, DataHandler *dataHandler)
 
 void ShiftableReferrence::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	size_t loc = stream->Tell();
-	referent->Write(stream, dataHandler);
 	const MultiValue &mv = dataHandler->OnDataWrite();
-	stream->Write((int32_t)MemoryManager::GetInstance().GetMemory(stream).Alloc(referent->EvalSize(mv), 4));
+	size_t ptr = MemoryManager::GetInstance().GetMemory(stream).Alloc(referent->EvalSize(mv), 4);
+	stream->Write((int32_t)ptr);
+	size_t loc = stream->Tell();
+	stream->Seek(ptr, SEEK_SET);
+	// 实际执行写入
+	referent->Write(stream, dataHandler);
 	stream->Seek(loc, SEEK_SET);
 }
 
@@ -69,10 +75,40 @@ Type *ShiftableReferrence::ShiftableReferrenceCreator::DoCreateObject(std::u16st
 	return nullptr;
 }
 
+ShiftableReferrence::MemoryManager::MemoryManager()
+{
+	FILE *cache = mule::Data::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID);
+
+	size_t size;
+	fscanf(cache, "%llu\n", &size);
+	for (size_t i = 0; i < size; ++i)
+	{
+		char buffer[1024];
+		if (!fscanf(cache, "%[^\n]", buffer))
+		{
+			fclose(cache);
+			fprintf(stderr, "Failed to load cache.");
+			return;
+		}
+		size_t count;
+		fscanf(cache, "%llu", &count);
+		fprintf(stderr, "File %s On Reg...", buffer);
+		auto fm = memories[xybase::string::to_utf16(buffer)];
+		for (size_t j = 0; j < size; ++j)
+		{
+			unsigned int pos, len;
+			fscanf(cache, "%u %u\n", &pos, &len);
+			fm.RegisterFragment(pos, len);
+		}
+	}
+
+	fclose(cache);
+}
+
 void ShiftableReferrence::MemoryManager::DisposeStream(xybase::Stream *stream)
 {
-	if (memories.contains(stream))
-		memories.erase(stream);
+	if (memories.contains(stream->GetName()))
+		memories.erase(stream->GetName());
 }
 
 ShiftableReferrence::MemoryManager &ShiftableReferrence::MemoryManager::GetInstance()
@@ -83,5 +119,22 @@ ShiftableReferrence::MemoryManager &ShiftableReferrence::MemoryManager::GetInsta
 
 mule::Data::Space::FragmentManager ShiftableReferrence::MemoryManager::GetMemory(xybase::Stream *stream)
 {
-	return memories[stream];
+	return memories[stream->GetName()];
+}
+
+void ShiftableReferrence::MemoryManager::SaveFreeSpace()
+{
+	FILE *file = mule::Data::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID, true);
+	fprintf(file, "%llu\n", memories.size());
+	for (auto &&item : memories)
+	{
+		fprintf(file, "%s\n", xybase::string::to_string(item.first).c_str());
+		auto &frags = item.second.GetFragments();
+		fprintf(file, "%lld\n", frags.size());
+		for (auto &frag : frags)
+		{
+			fprintf(file, "%X %u\n", frag->GetBegining(), frag->GetSize());
+		}
+	}
+	fclose(file);
 }

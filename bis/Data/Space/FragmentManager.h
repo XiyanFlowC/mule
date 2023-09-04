@@ -28,6 +28,8 @@ namespace mule
 				*/
 				FragmentManager();
 
+				const std::list<Fragment *> &GetFragments() const;
+
 				/**
 				 * @brief Register a fragment to the manager.
 				 * @param frag The fragment need to be registered.

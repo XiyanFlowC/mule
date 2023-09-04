@@ -17,13 +17,17 @@ protected:
 
 	class MemoryManager
 	{
-		std::map<xybase::Stream *, mule::Data::Space::FragmentManager> memories;
+		std::map<std::u16string, mule::Data::Space::FragmentManager> memories;
 	public:
+		MemoryManager();
+
 		void DisposeStream(xybase::Stream *stream);
 
 		static MemoryManager &GetInstance();
 
 		mule::Data::Space::FragmentManager GetMemory(xybase::Stream * stream);
+
+		void SaveFreeSpace();
 	};
 
 	int GetAlign(size_t loc, xybase::Stream *stream);

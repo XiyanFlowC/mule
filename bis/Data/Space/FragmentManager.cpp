@@ -6,6 +6,11 @@ FragmentManager::FragmentManager()
 {
 }
 
+const std::list<Fragment *> &mule::Data::Space::FragmentManager::GetFragments() const
+{
+	return frags;
+}
+
 void FragmentManager::RegisterFragment(const Fragment &frag)
 {
 	for (auto f : frags)
