@@ -12,11 +12,6 @@ int mule::Xml::XmlHandler::type = 0;
 
 mule::Xml::XmlHandler::XmlHandler()
 {
-	entities["amp"] = "&";
-	entities["qout"] = "\"";
-	entities["lt"] = "<";
-	entities["gt"] = ">";
-	entities["apos"] = "'";
 	status = XHS_IDLE;
 }
 
@@ -72,6 +67,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		char ch = stream->ReadChar();
 		while (ch != '<') ch = stream->ReadChar();
 
+		// 获取标签名
 		ch = stream->ReadChar();
 		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
 		{
@@ -80,57 +76,48 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		}
 		
 		std::u8string tag = sb.ToString();
-		sb.Clear();
+		sb += ch;
 
 		if (xybase::string::to_utf16(tag) != name) throw xybase::RuntimeException(u"Format error, except " + name + u", but got " + xybase::string::to_utf16(name), 9002);
 
-		ProcessAttributes(ch, sb);
+		// 组合类型内部仍为元素，找到结束点同步即可
+		if (realm->IsComposite())
+		{
+			while (ch != '>') ch = stream->ReadChar();
+			return;
+		}
+
+		// 非组合类型须解析内部元素
+		ReadTagAndParse(tag, sb, realm->GetTypeName() == u"string");
 	}
 }
 
-void mule::Xml::XmlHandler::ProcessAttributes(char &ch, xybase::StringBuilder<char8_t> &sb)
+void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString)
 {
-	while (ch != '>')
+	std::u8string endTag = u8"</" + tagName + u8">";
+
+	bool repeat = true;
+	int cmp = 0;
+	while (repeat)
 	{
-		// 获取特性名
-		ch = stream->ReadChar();
-		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n') ch = stream->ReadChar();
-
+		char ch = stream->ReadChar();
+		if (ch == endTag[cmp]) cmp++;
+		if (cmp == endTag.size()) repeat = false;
 		sb.Append(ch);
-		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '=')
-		{
-			sb.Append(ch);
-			ch = stream->ReadChar();
-		}
+	}
+	auto root = xmlParser.Parse(sb.ToString());
+	
+	std::u16string text {};
+	if (root.children.empty()) return;
+	for (auto &&child : root.children)
+	{
+		if (child.IsTextNode()) text.append(child.GetText());
+	}
 
-		std::u16string attrName = xybase::string::to_utf16(sb.ToString());
-		sb.Clear();
-
-		if (ch != '=')
-		{
-			do
-			{
-				ch = stream->ReadChar();
-			} while (ch != '=');
-		}
-
-		// 获取特性值
-		while (ch != '\'' && ch != '\"') ch = stream->ReadChar();
-		char endCh = ch;
-		ch = stream->ReadChar();
-		while (ch != endCh)
-		{
-			sb.Append(ch);
-			ch = stream->ReadChar();
-		}
-		std::u16string attrValue = xybase::string::to_utf16(sb.ToString());
-		sb.Clear();
-
-		metadata[attrName] = mule::Data::Basic::MultiValue::Parse(attrValue);
-		do
-		{
-			ch = stream->ReadChar();
-		} while (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n');
+	element = isString ? MultiValue{text} : MultiValue::Parse(text);
+	for (auto &&attr : root.attributes)
+	{
+		element.metadata[attr.first] = MultiValue::Parse(attr.second);
 	}
 }
 
@@ -155,10 +142,12 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 	else
 	{
 		int c;
-		do
-		{
-			c = stream->ReadChar();
-		} while (c != '>');
+		// 非组合类型已经在Enter时完成读入和解析，这里只需要找到结束点同步即可
+		if (realm->IsComposite())
+			do
+			{
+				c = stream->ReadChar();
+			} while (c != '>');
 	}
 }
 
@@ -198,11 +187,18 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		}
 
 		std::u8string tag = sb.ToString();
-		sb.Clear();
 
-		if (xybase::string::to_utf16(tag) != realm->GetTypeName()) throw xybase::RuntimeException(u"Format error, except " + realm->GetTypeName() + u", but got " + xybase::string::to_utf16(realm->GetTypeName()), 9002);
+		if (xybase::string::to_utf16(tag) != realm->GetTypeName()) throw xybase::RuntimeException(u"Format error, except " + realm->GetTypeName() + u", but got " + realm->GetTypeName(), 9002);
 
-		ProcessAttributes(ch, sb);
+		// 组合类型内部仍为元素，找到结束点同步即可
+		if (realm->IsComposite())
+		{
+			while (ch != '>') ch = stream->ReadChar();
+			return;
+		}
+
+		// 非组合类型须解析内部元素
+		ReadTagAndParse(tag, sb, realm->GetTypeName() == u"string");
 	}
 }
 
@@ -227,10 +223,12 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 	else
 	{
 		int c;
-		do
-		{
-			c = stream->ReadChar();
-		} while (c != '>');
+		// 非组合类型已经在Enter时完成读入和解析，这里只需要找到结束点同步即可
+		if (realm->IsComposite())
+			do
+			{
+				c = stream->ReadChar();
+			} while (c != '>');
 	}
 }
 
@@ -249,20 +247,6 @@ void mule::Xml::XmlHandler::OnDataRead(const MultiValue &value)
 	stream->Write(">");
 	if (value.IsType(MultiValue::MVT_STRING))
 	{
-		/*auto in = value.Stringfy();
-		auto loc = in.find(u"&");
-		while (loc != std::string::npos)
-		{
-			in = in.replace(loc, 3, u"&amp;");
-			loc = in.find(u"&", loc + 5);
-		}
-		loc = in.find(u"<");
-		while (loc != std::string::npos)
-		{
-			in = in.replace(loc, 3, u"&lt;");
-			loc = in.find(u"<", loc + 5);
-		}
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(in).c_str()));*/
 		stream->Write("<![CDATA[");
 		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*value.value.stringValue).c_str()));
 		stream->Write("]]>");
@@ -273,50 +257,8 @@ void mule::Xml::XmlHandler::OnDataRead(const MultiValue &value)
 
 MultiValue mule::Xml::XmlHandler::OnDataWrite()
 {
-	xybase::StringBuilder<char8_t> sb;
-
-	char c;
-
-	c = stream->ReadChar();
-	while (c != EOF) {
-
-		if (c == '<')
-		{
-			c = stream->ReadChar();
-			if (c == '!')
-			{
-
-			}
-			else
-			{
-				sb.Append('<');
-				sb.Append(c);
-			}
-		}
-
-		if (c == '&')
-		{
-			std::string enty;
-			while (c != ';')
-			{
-				enty += c;
-				c = stream->ReadChar();
-			}
-			sb.Append((const char8_t *)entities[enty].c_str());
-		}
-		sb.Append(c);
-		c = stream->ReadChar();
-	}
-	stream->ReadChar();
-
-	std::u16string text = xybase::string::to_utf16(sb.ToString());
-	text.erase(0, text.find_first_not_of(u" \t\n\r\f\v"));
-	text.erase(text.find_last_not_of(u" \t\n\r\f\v") + 1);
-
-	MultiValue ret = MultiValue::Parse(text);
-	ret.metadata = metadata;
-	metadata.clear();
-	return ret;
+	// 元素解析已经在上面完成，这里直接返回即可。
+	return element;
 }
 
 void mule::Xml::XmlHandler::SetStream(xybase::Stream *stream)

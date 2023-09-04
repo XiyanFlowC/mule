@@ -79,8 +79,16 @@ Basic::Type *mule::Data::TypeManager::GetOrCreateType(std::u16string name, const
 	// 若没有创建器则直接返回
 	if (first == nullptr) return nullptr;
 
-	// 返回创建结果（不保存，不复用）
-	return first->CreateType(name, metainfo);
+	auto mangledName = name + u"%$%";
+	for (auto &&pair : metainfo)
+	{
+		mangledName += pair.first + u"%:%" + pair.second + u"%;%";
+	}
+
+	if (objects.contains(mangledName)) return objects[mangledName];
+
+	// 返回创建结果
+	return objects[mangledName] = first->CreateType(name, metainfo);
 }
 
 Basic::Type *TypeManager::GetType(std::u16string name)

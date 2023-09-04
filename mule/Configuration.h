@@ -12,8 +12,6 @@ class Configuration
 public:
 	static Configuration& GetInstance();
 
-	unsigned int dataInfoFile = 0x00000000;
-
 	std::string ScriptsDir = "./scripts/";
 
 	std::string DataDir = "./data/";

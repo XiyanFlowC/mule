@@ -1,10 +1,12 @@
 #include "luaenv.h"
 
+#include <Data/Storage/DataManager.h>
 #include <Cpp/Environment.h>
 #include <TextStream.h>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
+using namespace mule::Data::Storage;
 
 std::map<int, xybase::Stream *> streams;
 int streamd = 0;
@@ -262,7 +264,7 @@ int writeTable(int fd, int vd, std::string handler)
 
     if (handler == "mappifier")
     {
-        auto v = values[vd];
+        MultiValue v = values[vd];
         for (auto &&pair : titr->second)
         {
             Mappifier m;
@@ -416,12 +418,12 @@ unsigned int exportFile(int fd)
     }
 
     auto &&stream = it->second;
-    stream->Seek(0, 2);
+    stream->Seek(0, SEEK_END);
     size_t length = stream->Tell();
-    stream->Seek(0, 0);
+    stream->Seek(0, SEEK_SET);
     char *buffer = new char[length];
     BinaryData bd{ buffer, length, false };
-    return ResourceManager::GetInstance().SaveData(bd);
+    return DataManager::GetInstance().SaveData(bd);
 }
 
 int importFile(int fd, unsigned int id)
@@ -432,7 +434,7 @@ int importFile(int fd, unsigned int id)
         return -1;
     }
 
-    BinaryData bd = ResourceManager::GetInstance().LoadData(id);
+    BinaryData bd = DataManager::GetInstance().LoadData(id);
     
     auto &&stream = it->second;
     stream->Seek(0, 0);

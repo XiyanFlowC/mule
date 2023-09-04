@@ -5,6 +5,7 @@
 #include <Data/Referrence.h>
 #include <Data/Mappifier.h>
 #include <Data/TableRef.h>
+#include <Data/Storage/BinaryBlock.h>
 #include <Stream/ElfStream.h>
 
 #include "CStyleInitHandler.h"
@@ -59,6 +60,7 @@ TypeCreator *BisEnvGetCreators()
 	ret->nextCreator = new TableRef::TableRefCreator();
 	ret->nextCreator->nextCreator = new Referrence::ReferrenceCreator();
 	ret->nextCreator->nextCreator->nextCreator = new BasicFieldCreator();
+	ret->nextCreator->nextCreator->nextCreator->nextCreator = new Storage::BinaryBlock::BinaryBlockCreator();
 
 	return ret;
 }

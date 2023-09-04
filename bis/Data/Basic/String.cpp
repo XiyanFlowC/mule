@@ -29,8 +29,9 @@ size_t mule::Data::Basic::String::EvalSize(const MultiValue &obj) const
 
 MultiValue mule::Data::Basic::String::DoRead(xybase::Stream *stream)
 {
-	MultiValue tmp(xybase::string::to_utf16(stream->ReadString()));
-	lastSize = tmp.value.stringValue->length();
+	auto rawString = stream->ReadString();
+	MultiValue tmp(xybase::string::to_utf16(rawString));
+	lastSize = rawString.size();
 	tmp.metadata[u"size"] = lastSize;
 	return tmp;
 }

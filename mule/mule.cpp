@@ -32,7 +32,6 @@ int main(int argc, char **argv)
 	TypeManager::GetInstance().RegisterObjectCreator(new VarChar::VarCharCreator());
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
-	std::string infoFile(ResourceManager::GetInstance().LoadData(Configuration::GetInstance().dataInfoFile).GetData());
 
 	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_utf16(Configuration::GetInstance().TargetFile.c_str())));
 

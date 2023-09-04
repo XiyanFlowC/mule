@@ -15,11 +15,12 @@ namespace mule
 		class Array : public Basic::Type
 		{
 		protected:
-			std::u16string name;
+			std::u16string sizeCache;
 
 			size_t length;
 
 			Basic::Type *innerObject;
+
 		public:
 			class ArrayCreator : public TypeCreator
 			{

@@ -6,6 +6,9 @@
 #include <TextStream.h>
 #include <Data/Basic/Type.h>
 
+#include "XmlNode.h"
+#include "XmlParser.h"
+
 namespace mule
 {
 	namespace Xml
@@ -39,10 +42,11 @@ namespace mule
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
 			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
 			virtual void SetStream(xybase::Stream *stream) override;
+		protected:
+			mule::Xml::XmlParser<mule::Xml::XmlNode, char8_t> xmlParser;
 
-			std::map<std::string, std::string> entities;
 		private:
-			void ProcessAttributes(char &ch, xybase::StringBuilder<char8_t> &sb);
+			void ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString);
 			enum {
 				XHS_IDLE,
 				XHS_READ,
@@ -51,7 +55,7 @@ namespace mule
 
 			xybase::TextStream *stream = nullptr;
 
-			std::map<std::u16string, Data::Basic::MultiValue> metadata;
+			mule::Data::Basic::MultiValue element;
 
 			std::u16string nodeName;
 

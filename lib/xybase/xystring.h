@@ -259,7 +259,7 @@ namespace xybase
 		std::basic_string<T> itos(unsigned long long value, int base = 10)
 		{
 			static const char *pre = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			if (value == 0) return static_cast<T>('0');
+			if (value == 0) return std::basic_string<T>{'0'};
 
 			StringBuilder<T> sb;
 			
