@@ -75,7 +75,7 @@ ElfStream::~ElfStream()
 	Close();
 }
 
-size_t ElfStream::Tell()
+size_t ElfStream::Tell() const
 {
 	return OffsetToAddress(stream->Tell());
 }
@@ -127,7 +127,7 @@ size_t ElfStream::GetAlign(size_t address)
 	throw xybase::InvalidParameterException(u"offset", u"Address out of range.", __LINE__);
 }
 
-size_t ElfStream::AddressToOffset(size_t address)
+size_t ElfStream::AddressToOffset(size_t address) const
 {
 	for (int i = 0; i < header->phnum; ++i)
 	{
@@ -140,7 +140,7 @@ size_t ElfStream::AddressToOffset(size_t address)
 	throw xybase::InvalidParameterException(u"offset", u"Address out of range.", __LINE__);
 }
 
-size_t ElfStream::OffsetToAddress(size_t offset)
+size_t ElfStream::OffsetToAddress(size_t offset) const
 {
 	for (int i = 0; i < header->phnum; ++i)
 	{
@@ -163,9 +163,14 @@ void ElfStream::Write(const char *buffer, size_t size)
 	stream->Write(buffer, size);
 }
 
-std::u16string mule::Stream::ElfStream::GetName()
+std::u16string mule::Stream::ElfStream::GetName() const
 {
 	return stream->GetName() + u"|elf";
+}
+
+void mule::Stream::ElfStream::Flush()
+{
+	stream->Flush();
 }
 
 ElfFormatErrorException::ElfFormatErrorException(std::u16string msg, int line)

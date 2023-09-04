@@ -33,7 +33,12 @@ BinaryStream::~BinaryStream()
 #endif
 #define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw IOException(name, std::u16string(u"Read error."))
 
-std::u16string xybase::BinaryStream::GetName()
+void xybase::BinaryStream::Flush()
+{
+	fflush(stream);
+}
+
+std::u16string xybase::BinaryStream::GetName() const
 {
 	return name;
 }
@@ -166,7 +171,7 @@ std::string BinaryStream::ReadString()
 
 void BinaryStream::ReadBytes(char* buffer, int limit)
 {
-	fread(buffer, limit, 1, stream);
+	if (1 != fread(buffer, limit, 1, stream)) throw IOException(name, u"Unknown error.");
 }
 
 #undef BS_CPP_BSREADEX
@@ -254,7 +259,7 @@ void BinaryStream::Write(const char* buffer, size_t size)
 }
 #undef BS_CPP_BSWRITEEX
 
-size_t BinaryStream::Tell()
+size_t BinaryStream::Tell() const
 {
 	return ftell(stream);
 }

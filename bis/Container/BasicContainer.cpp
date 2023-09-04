@@ -17,11 +17,11 @@ void mule::BasicContainer::ReadBytes(int id, char *buffer, int size)
 template<>
 void mule::BasicContainer::Write<const std::string &>(int id, const std::string &value)
 {
-	if (locs[id] + value.size() >= fdMap[id]->size)
+	if (locs[id] + value.size() > fdMap[id]->size)
 		throw xybase::OutOfRangeException(u"Write exceed maximum size.", __LINE__);
-	if (file->Tell() != locs[id])
+	if (file->Tell() != locs[id] + fdMap[id]->offset)
 	{
-		file->Seek(locs[id], 0);
+		file->Seek(locs[id] + fdMap[id]->offset, 0);
 	}
 	file->Write(value.c_str(), value.size());
 	locs[id] += value.size();
@@ -30,11 +30,11 @@ void mule::BasicContainer::Write<const std::string &>(int id, const std::string 
 
 void mule::BasicContainer::Write(int id, const char *buffer, size_t size)
 {
-	if (locs[id] + size >= fdMap[id]->size)
+	if (locs[id] + size > fdMap[id]->size)
 		throw xybase::OutOfRangeException(u"Write exceed maximum size.", __LINE__);
-	if (file->Tell() != locs[id])
+	if (file->Tell() != locs[id] + fdMap[id]->offset)
 	{
-		file->Seek(locs[id], 0);
+		file->Seek(locs[id] + fdMap[id]->offset, 0);
 	}
 	file->Write(buffer, size);
 	locs[id] += size;
@@ -90,6 +90,11 @@ void mule::BasicContainer::Close()
 std::u16string mule::BasicContainer::GetName()
 {
 	return name;
+}
+
+void mule::BasicContainer::Flush()
+{
+	file->Flush();
 }
 
 void mule::BasicContainer::MakeDir(std::u16string path)
@@ -304,7 +309,7 @@ void mule::BasicContainer::InnerFile::Write(const char *buffer, size_t size)
 	host->Write(token, buffer, size);
 }
 
-size_t mule::BasicContainer::InnerFile::Tell()
+size_t mule::BasicContainer::InnerFile::Tell() const
 {
 	return host->locs[token];
 }
@@ -330,7 +335,12 @@ void mule::BasicContainer::InnerFile::Close()
 	host->Close(token);
 }
 
-std::u16string mule::BasicContainer::InnerFile::GetName()
+std::u16string mule::BasicContainer::InnerFile::GetName() const
 {
 	return name;
+}
+
+void mule::BasicContainer::InnerFile::Flush()
+{
+	host->Flush();
 }

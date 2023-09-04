@@ -20,9 +20,11 @@ namespace xybase
 
 		virtual ~TextStream();
 
-		void Close();
+		virtual void Flush() override;
 
-		virtual std::u16string GetName() override;
+		void Close() override;
+
+		virtual std::u16string GetName() const override;
 
 		virtual std::string ReadLine();
 
@@ -50,7 +52,7 @@ namespace xybase
 		virtual void Write(double value) override;
 		virtual void Write(const std::string &value) override;
 		virtual void Write(const char *value);
-		virtual size_t Tell() override;
+		virtual size_t Tell() const override;
 		virtual void Seek(long long offset, int mode) override;
 	private:
 		virtual std::string ReadString() override;

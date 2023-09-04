@@ -240,7 +240,7 @@ int readTable(int fd, std::string handler)
 
         for (auto &&pair : titr->second)
         {
-            xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + ".txt", 1);
+            xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, 1);
             proc->SetStream(stream);
             std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
             pair.second->Read(sitr->second, proc);
@@ -252,27 +252,28 @@ int readTable(int fd, std::string handler)
     return valued - 1;
 }
 
-int writeTable(int fd, int vd, std::string handler)
+int writeTable(int fd, std::string handler)
 {
     auto &&titr = tbls.find(fd);
     auto &&sitr = streams.find(fd);
-    auto &&vitr = values.find(vd);
-    if (titr == tbls.end() || sitr == streams.end() || vitr == values.end())
+    if (titr == tbls.end() || sitr == streams.end())
     {
         return -2;
     }
 
-    if (handler == "mappifier")
+    auto proc = mule::Cpp::Environment::GetInstance().GetHandler(xybase::string::to_utf16(handler));
+
+    if (proc == nullptr) return -3;
+
+    for (auto &&pair : titr->second)
     {
-        MultiValue v = values[vd];
-        for (auto &&pair : titr->second)
-        {
-            Mappifier m;
-            m.SetMap((*v.value.mapValue)[xybase::string::to_utf16(pair.first)]);
-            pair.second->Write(sitr->second, &m);
-        }
+        xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, 0);
+        proc->SetStream(stream);
+        std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
+        pair.second->Write(sitr->second, proc);
+        stream->Close();
+        delete stream;
     }
-    else return -3;
 
     return 0;
 }
@@ -422,6 +423,7 @@ unsigned int exportFile(int fd)
     size_t length = stream->Tell();
     stream->Seek(0, SEEK_SET);
     char *buffer = new char[length];
+    stream->ReadBytes(buffer, length);
     BinaryData bd{ buffer, length, false };
     return DataManager::GetInstance().SaveData(bd);
 }

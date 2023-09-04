@@ -30,9 +30,9 @@ namespace mule
 		{
 			if (locs[id] + sizeof(T) >= fdMap[id]->curSize)
 				throw xybase::OutOfRangeException(u"Try to read after EOF.", __LINE__);
-			if (file->Tell() != locs[id])
+			if (file->Tell() != locs[id] + fdMap[id]->offset)
 			{
-				file->Seek(locs[id], 0);
+				file->Seek(locs[id] + fdMap[id]->offset, 0);
 			}
 			T ret{};
 			file->ReadBytes(reinterpret_cast<char *>(&ret), sizeof(T));
@@ -47,9 +47,9 @@ namespace mule
 		{
 			if (locs[id] + sizeof(T) >= fdMap[id]->size)
 				throw xybase::OutOfRangeException(u"Write exceed maximum size.", __LINE__);
-			if (file->Tell() != locs[id])
+			if (file->Tell() != locs[id] + fdMap[id]->offset)
 			{
-				file->Seek(locs[id], 0);
+				file->Seek(locs[id] + fdMap[id]->offset, 0);
 			}
 			file->Write(data);
 			locs[id] += sizeof(T);
@@ -107,12 +107,15 @@ namespace mule
 			virtual void Write(double value) override;
 			virtual void Write(const std::string &value) override;
 			virtual void Write(const char *buffer, size_t size) override;
-			virtual size_t Tell() override;
+			virtual size_t Tell() const override;
 			virtual void Seek(long long offset, int mode) override;
 			virtual void Close() override;
 
 			// 通过 Stream 继承
-			virtual std::u16string GetName() override;
+			virtual std::u16string GetName() const override;
+
+			// 通过 Stream 继承
+			virtual void Flush() override;
 		};
 
 		struct FileDesc
@@ -142,6 +145,9 @@ namespace mule
 
 		// 通过 FileContainer 继承
 		virtual std::u16string GetName() override;
+
+		// 通过 FileContainer 继承
+		virtual void Flush() override;
 };
 
 	template<>

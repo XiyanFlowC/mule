@@ -23,6 +23,11 @@ xybase::TextStream::~TextStream()
 	Close();
 }
 
+void xybase::TextStream::Flush()
+{
+	fflush(stream);
+}
+
 void xybase::TextStream::Close()
 {
 	if (open)
@@ -31,7 +36,7 @@ void xybase::TextStream::Close()
 	open = false;
 }
 
-std::u16string xybase::TextStream::GetName()
+std::u16string xybase::TextStream::GetName() const
 {
 	return name;
 }
@@ -206,7 +211,7 @@ void xybase::TextStream::Write(const char *buffer, size_t size)
 	throw InvalidOperationException(u"TextStream cannot write binary content.", 2351);
 }
 
-size_t xybase::TextStream::Tell()
+size_t xybase::TextStream::Tell() const
 {
 	return ftell(stream);
 }

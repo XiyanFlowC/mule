@@ -25,7 +25,9 @@ namespace xybase
 
 	public:
 
-		virtual std::u16string GetName() = 0;
+		virtual void Flush() = 0;
+
+		virtual std::u16string GetName() const = 0;
 
 		virtual ~Stream();
 
@@ -77,7 +79,7 @@ namespace xybase
 
 		virtual void Write(const char* buffer, size_t size) = 0;
 
-		virtual size_t Tell() = 0;
+		virtual size_t Tell() const = 0;
 
 		// mode: 0 SET 1 CUR 2 END
 		virtual void Seek(long long offset, int mode) = 0;

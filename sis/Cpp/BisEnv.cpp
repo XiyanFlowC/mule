@@ -17,7 +17,7 @@ using namespace mule::Data;
 
 mule::Data::Basic::Type::DataHandler *BisEnvGetHandler(const char16_t *name)
 {
-	static char16_t cStyleName[] = u"c-style";
+	static char16_t cStyleName[] = u"inc";
 	static char16_t xmlHandlerName[] = u"xml";
 	static char16_t csvName[] = u"csv";
 

@@ -189,4 +189,5 @@ void xybase::StreamBasic::Write(double value)
 
 void xybase::StreamBasic::Write(const std::string &value)
 {
+	Write(value.c_str(), value.size() + 1);
 }

@@ -15,12 +15,16 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
+	dataHandler->AppendMetadatum(u"ptr", MultiValue((unsigned long long)ptr));
 	stream->Seek(loc, 0);
 }
 
 void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	int ptr = stream->ReadInt32();
+	// 避免从这里读入（喵的不刷洗的话会从缓存里读到不干净的东西，我他喵的到底为什么要这么写啊）
+	//stream->Flush();
+	//int ptr = stream->ReadInt32();
+	int ptr = dataHandler->OnDataWrite().metadata[u"ptr"].value.unsignedValue;
 
 	if (ptr == 0)
 	{

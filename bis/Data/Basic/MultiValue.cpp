@@ -479,6 +479,12 @@ void MultiValue::ParseInt(const std::u16string &value)
 				type = MVT_UINT; // 二进制输入默认无符号
 				state = 5; // 二进制输入
 			}
+			else if ('u' == *itr) // 0u，无符号数‘0’
+			{
+				type = MVT_UINT;
+				res = 0;
+				goto mvpi_forout;
+			}
 			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
 			break;
 		case 3:
@@ -698,7 +704,7 @@ MultiValue MultiValue::Parse(const std::u16string &value)
 	{
 		ret.ParseReal(value);
 	}
-	else if (value[0] >= '0' && value[0] <= '9')
+	else if ((value[0] >= '0' && value[0] <= '9') || value[0] == '-')
 	{
 		ret.ParseInt(value);
 	}

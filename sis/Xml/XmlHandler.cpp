@@ -102,10 +102,11 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	{
 		char ch = stream->ReadChar();
 		if (ch == endTag[cmp]) cmp++;
+		else cmp = 0;
 		if (cmp == endTag.size()) repeat = false;
 		sb.Append(ch);
 	}
-	auto root = xmlParser.Parse(sb.ToString());
+	auto root = xmlParser.Parse(xybase::string::to_utf8("<") + sb.ToString());
 	
 	std::u16string text {};
 	if (root.children.empty()) return;
@@ -133,6 +134,28 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 				{
 					stream->Write(type ? " " : "\t");
 				}
+		}
+		else
+		{
+			stream->Write("<");
+			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
+			for (auto &&datum : element.metadata)
+			{
+				stream->Write(" ");
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
+				stream->Write("='");
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
+				stream->Write("'");
+			}
+			stream->Write(">");
+			if (element.IsType(MultiValue::MVT_STRING))
+			{
+				stream->Write("<![CDATA[");
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
+				stream->Write("]]>");
+			}
+			else
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(element.Stringfy()).c_str()));
 		}
 
 		stream->Write("</");
@@ -187,6 +210,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		}
 
 		std::u8string tag = sb.ToString();
+		sb += ch;
 
 		if (xybase::string::to_utf16(tag) != realm->GetTypeName()) throw xybase::RuntimeException(u"Format error, except " + realm->GetTypeName() + u", but got " + realm->GetTypeName(), 9002);
 
@@ -215,6 +239,28 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 					stream->Write(type ? " " : "\t");
 				}
 		}
+		else
+		{
+			stream->Write("<");
+			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
+			for (auto &&datum : element.metadata)
+			{
+				stream->Write(" ");
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
+				stream->Write("='");
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
+				stream->Write("'");
+			}
+			stream->Write(">");
+			if (element.IsType(MultiValue::MVT_STRING))
+			{
+				stream->Write("<![CDATA[");
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
+				stream->Write("]]>");
+			}
+			else
+				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(element.Stringfy()).c_str()));
+		}
 
 		stream->Write("</");
 		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(realm->GetTypeName()).c_str()));
@@ -234,25 +280,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 
 void mule::Xml::XmlHandler::OnDataRead(const MultiValue &value)
 {
-	stream->Write("<");
-	stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
-	for (auto &&datum : value.metadata)
-	{
-		stream->Write(" ");
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
-		stream->Write("='");
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
-		stream->Write("'");
-	}
-	stream->Write(">");
-	if (value.IsType(MultiValue::MVT_STRING))
-	{
-		stream->Write("<![CDATA[");
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*value.value.stringValue).c_str()));
-		stream->Write("]]>");
-	}
-	else
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(value.Stringfy()).c_str()));
+	element = value;
 }
 
 MultiValue mule::Xml::XmlHandler::OnDataWrite()
@@ -265,4 +293,9 @@ void mule::Xml::XmlHandler::SetStream(xybase::Stream *stream)
 {
 	this->stream = dynamic_cast<xybase::TextStream *>(stream);
 	if (this->stream == nullptr) throw xybase::InvalidParameterException(u"stream", u"Not a text stream for output.", 3505);
+}
+
+void mule::Xml::XmlHandler::AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv)
+{
+	element.metadata[name] = mv;
 }

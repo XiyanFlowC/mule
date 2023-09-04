@@ -81,7 +81,7 @@ namespace mule
 		public:
 			ElfStream(xybase::Stream *stream);
 			~ElfStream();
-			virtual size_t Tell() override;
+			virtual size_t Tell() const override;
 			virtual void Seek(long long offset, int mode = SEEK_SET) override;
 			virtual void Close() override;
 
@@ -89,14 +89,17 @@ namespace mule
 			virtual size_t TellOffset();
 
 			size_t GetAlign(size_t address);
-			size_t AddressToOffset(size_t address);
-			size_t OffsetToAddress(size_t offset);
+			size_t AddressToOffset(size_t address) const;
+			size_t OffsetToAddress(size_t offset) const;
 
 			virtual void ReadBytes(char *buffer, int limit) override;
 			virtual void Write(const char *buffer, size_t size) override;
 
 			// 通过 StreamBasic 继承
-			virtual std::u16string GetName() override;
+			virtual std::u16string GetName() const override;
+
+			// 通过 StreamBasic 继承
+			virtual void Flush() override;
 		};
 	}
 }

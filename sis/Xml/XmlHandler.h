@@ -42,6 +42,8 @@ namespace mule
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
 			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
 			virtual void SetStream(xybase::Stream *stream) override;
+
+			virtual void AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv) override;
 		protected:
 			mule::Xml::XmlParser<mule::Xml::XmlNode, char8_t> xmlParser;
 

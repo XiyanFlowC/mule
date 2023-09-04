@@ -31,7 +31,8 @@ namespace xybase
 		BinaryStream(std::u16string path, bool truncate = false, bool isBigEndian = false);
 		~BinaryStream();
 
-		virtual std::u16string GetName() override;
+		virtual void Flush() override;
+		virtual std::u16string GetName() const override;
 		virtual uint8_t ReadUInt8() override;
 		virtual int8_t ReadInt8() override;
 		virtual uint16_t ReadUInt16() override;
@@ -56,7 +57,7 @@ namespace xybase
 		virtual void Write(double value) override;
 		virtual void Write(const std::string &value) override;
 		virtual void Write(const char *buffer, size_t size) override;
-		virtual size_t Tell() override;
+		virtual size_t Tell() const override;
 		virtual void Seek(long long offset, int mode = SEEK_SET) override;
 		virtual void Close() override;
 	};

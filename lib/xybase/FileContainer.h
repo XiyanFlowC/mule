@@ -22,6 +22,8 @@ namespace xybase
 			FOM_TRUNCATE,
 		};
 
+		virtual void Flush() = 0;
+
 		virtual xybase::Stream *Open(std::u16string name, FileOpenMode mode = FOM_READ_WRITE) = 0;
 
 		virtual std::list<std::u16string> List() = 0;
