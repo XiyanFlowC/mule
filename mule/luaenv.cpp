@@ -445,6 +445,17 @@ int importFile(int fd, unsigned int id)
     return 0;
 }
 
+int SaveMemory()
+{
+    ShiftableReferrence::MemoryManager::GetInstance().SaveFreeSpace();
+    return 0;
+}
+
+std::string setLocale(std::string loc)
+{
+    return setlocale(LC_ALL, loc.c_str());
+}
+
 void InitialiseLuaEnvironment(xybase::Stream *stream)
 {
     streams[streamd++] = stream;
@@ -487,6 +498,9 @@ void InitialiseLuaEnvironment(xybase::Stream *stream)
     lua.RegisterFunction("getsheet", getSheet);
     lua.RegisterFunction("updatesheet", updateSheet);
     lua.RegisterFunction("newsheet", newSheet);
+
+    lua.RegisterFunction("savemem", SaveMemory);
+    lua.RegisterFunction("setlocale", setLocale);
 
     generator.indent = 2;
 }

@@ -37,7 +37,13 @@ void ShiftableReferrence::Read(xybase::Stream *stream, DataHandler *dataHandler)
 void ShiftableReferrence::Write(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	const MultiValue &mv = dataHandler->OnDataWrite();
-	size_t ptr = MemoryManager::GetInstance().GetMemory(stream).Alloc(referent->EvalSize(mv), 4);
+	// 分配空间
+	size_t ptr;
+	if (mv.IsType(MultiValue::MVT_STRING))
+		ptr = MemoryManager::GetInstance().AssignFor(stream, *mv.value.stringValue, referent->EvalSize(mv));
+	else
+		throw xybase::InvalidParameterException(u"mv", u"Not a string, unable to shift!", __LINE__);
+
 	stream->Write((int32_t)ptr);
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, SEEK_SET);
@@ -78,6 +84,8 @@ Type *ShiftableReferrence::ShiftableReferrenceCreator::DoCreateObject(std::u16st
 ShiftableReferrence::MemoryManager::MemoryManager()
 {
 	FILE *cache = mule::Data::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID);
+
+	if (cache == nullptr) return;
 
 	size_t size;
 	fscanf(cache, "%llu\n", &size);
@@ -120,6 +128,26 @@ ShiftableReferrence::MemoryManager &ShiftableReferrence::MemoryManager::GetInsta
 mule::Data::Space::FragmentManager ShiftableReferrence::MemoryManager::GetMemory(xybase::Stream *stream)
 {
 	return memories[stream->GetName()];
+}
+
+size_t ShiftableReferrence::MemoryManager::AssignFor(xybase::Stream *stream, const std::u16string &str, size_t size)
+{
+	auto &&name = stream->GetName();
+	auto &&cache = assign.find(name);
+	if (cache != assign.end())
+	{
+		auto &&loc = cache->second.find(str);
+		if (loc != cache->second.end())
+		{
+			return loc->second;
+		}
+		else
+		{
+			return cache->second[str] = GetMemory(stream).Alloc(size, 4);
+		}
+	}
+
+	return assign[name][str] = GetMemory(stream).Alloc(size, 4);
 }
 
 void ShiftableReferrence::MemoryManager::SaveFreeSpace()

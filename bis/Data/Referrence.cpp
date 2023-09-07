@@ -15,7 +15,7 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
 	referent->Read(stream, dataHandler);
-	dataHandler->AppendMetadatum(u"ptr", MultiValue((unsigned long long)ptr));
+	dataHandler->AppendMetadatum(u"ptr", MultiValue((uint64_t)ptr));
 	stream->Seek(loc, 0);
 }
 
