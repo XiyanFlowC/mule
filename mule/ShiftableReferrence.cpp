@@ -153,12 +153,12 @@ size_t ShiftableReferrence::MemoryManager::AssignFor(xybase::Stream *stream, con
 void ShiftableReferrence::MemoryManager::SaveFreeSpace()
 {
 	FILE *file = mule::Data::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID, true);
-	fprintf(file, "%llu\n", memories.size());
+	fprintf(file, "%llu\n", static_cast<unsigned long long>(memories.size()));
 	for (auto &&item : memories)
 	{
 		fprintf(file, "%s\n", xybase::string::to_string(item.first).c_str());
 		auto &frags = item.second.GetFragments();
-		fprintf(file, "%lld\n", frags.size());
+		fprintf(file, "%lld\n", static_cast<long long>(frags.size()));
 		for (auto &frag : frags)
 		{
 			fprintf(file, "%X %u\n", frag->GetBegining(), frag->GetSize());

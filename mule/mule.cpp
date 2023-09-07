@@ -18,7 +18,7 @@ int main(int argc, char **argv)
 	Configuration::GetInstance().SetEnvironmentRootPath(argv[1]);
 	Configuration::GetInstance().TargetFile = argv[2];
 	crc32_init();
-	
+
 	// Lua environment initialisation
 	LuaHost::GetInstance().LoadLuaStandardLibs();
 	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua")));
@@ -71,7 +71,7 @@ int main(int argc, char **argv)
 					{
 						for (size_t i = 0; i < ret.GetLength(); ++i)
 						{
-							printf(" %llu => %s\n", i, xybase::string::to_string(ret.value.arrayValue[i].ToString()).c_str());
+							printf(" %zu => %s\n", i, xybase::string::to_string(ret.value.arrayValue[i].ToString()).c_str());
 						}
 					}
 					else if (exList)

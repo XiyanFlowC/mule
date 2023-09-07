@@ -1,6 +1,7 @@
 #include "xystring.h"
 #include <locale>
 #include <cstdlib>
+#include <cstdint>
 #include <cassert>
 #include "StringBuilder.h"
 
