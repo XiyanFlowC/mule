@@ -235,7 +235,7 @@ int readTable(int fd, std::string handler)
     else
     {
         auto proc = mule::Cpp::Environment::GetInstance().GetHandler(xybase::string::to_utf16(handler));
-        
+
         if (proc == nullptr) return -3;
 
         for (auto &&pair : titr->second)
@@ -437,11 +437,11 @@ int importFile(int fd, unsigned int id)
     }
 
     BinaryData bd = DataManager::GetInstance().LoadData(id);
-    
+
     auto &&stream = it->second;
     stream->Seek(0, 0);
     stream->Write(bd.GetData(), bd.GetLength());
-    
+
     return 0;
 }
 
