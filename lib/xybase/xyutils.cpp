@@ -18,9 +18,9 @@ int xybase::io::access(const char *path, AccessMode mode)
     return ::_access(path, mode_);
 #else
     int mode_ = 0;
-    if (mode & PM_EXECUTE) mode_ |= 0111;
-    if (mode & PM_READ) mode_ |= 0222;
-    if (mode & PM_WRITE) mode_ |= 0444;
+    if (mode & PM_EXECUTE) mode_ |= X_OK;
+    if (mode & PM_READ) mode_ |= R_OK;
+    if (mode & PM_WRITE) mode_ |= W_OK;
     return ::access(path, mode_);
 #endif
 }
