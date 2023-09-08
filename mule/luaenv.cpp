@@ -453,7 +453,9 @@ int SaveMemory()
 
 std::string setLocale(std::string loc)
 {
-    return setlocale(LC_ALL, loc.c_str());
+    char * ret = setlocale(LC_ALL, loc.c_str());
+    if (ret == nullptr) throw xybase::InvalidParameterException(u"loc", u"Failed to set locale.", 0x1000);
+    return std::string{ret};
 }
 
 void InitialiseLuaEnvironment(xybase::Stream *stream)
