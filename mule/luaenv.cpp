@@ -3,6 +3,7 @@
 #include <Data/Storage/DataManager.h>
 #include <Cpp/Environment.h>
 #include <TextStream.h>
+#include <cstdio>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
