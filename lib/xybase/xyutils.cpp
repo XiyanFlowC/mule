@@ -30,6 +30,6 @@ int xybase::io::mkdir(const char *path)
 #ifdef _WIN32
     return ::_mkdir(path);
 #else
-    return ::mkdir(path, 0777);
+    return ::mkdir(path, 0755);
 #endif
 }

@@ -8,6 +8,8 @@
 
 namespace xybase
 {
+	const char endianTester[] = { '\xFF', 0};
+
 	/*
 	* Abstract class to handle the file I/O. Platform isolation.
 	* Avoid to using C/C++ default streaming I/O to handle the BE/LE correctly and
@@ -16,11 +18,8 @@ namespace xybase
 	class Stream
 	{
 	protected:
-#ifndef BIG_ENDIAN_SYSTEM
-		static const bool bigEndianSystem = false;
-#else
-		static const bool bigEndianSystem = true;
-#endif
+		static bool bigEndianSystem;
+
 		bool isBigEndian = false;
 
 	public:

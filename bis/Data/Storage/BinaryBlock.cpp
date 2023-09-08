@@ -6,6 +6,11 @@
 using namespace mule::Data::Basic;
 using namespace mule::Data::Storage;
 
+mule::Data::Storage::BinaryBlock::BinaryBlock(size_t size)
+	: size(size)
+{
+}
+
 void BinaryBlock::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	char *buffer = new char[size];
@@ -53,7 +58,6 @@ mule::Data::Basic::Type *BinaryBlock::BinaryBlockCreator::DoCreateObject(std::u1
 	size_t size = xybase::string::stoi(info.substr(4, loc - 4));
 	if (size == 0) return nullptr;
 
-	auto ret = new BinaryBlock{};
-	ret->size = size;
+	auto ret = new BinaryBlock{size};
 	return ret;
 }

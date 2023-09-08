@@ -28,11 +28,6 @@ BinaryStream::~BinaryStream()
 	if (isOpen) Close();
 }
 
-#ifdef BS_CPP_BSREADEX
-#error Macro BS_CPP_BSREADEX pre-defined alarm!
-#endif
-#define BS_CPP_BSREADEX(size) if (0 == fread(&ret, size, 1, stream)) throw IOException(name, std::u16string(u"Read error."))
-
 void xybase::BinaryStream::Flush()
 {
 	fflush(stream);
@@ -46,21 +41,21 @@ std::u16string xybase::BinaryStream::GetName() const
 uint8_t BinaryStream::ReadUInt8()
 {
 	uint8_t ret;
-	BS_CPP_BSREADEX(1);
+	ReadBytes((char *) & ret, sizeof(ret));
 	return ret;
 }
 
 int8_t BinaryStream::ReadInt8()
 {
 	int8_t ret;
-	BS_CPP_BSREADEX(1);
+	ReadBytes((char *)&ret, sizeof(ret));
 	return ret;
 }
 
 uint16_t BinaryStream::ReadUInt16()
 {
 	uint16_t ret;
-	BS_CPP_BSREADEX(2);
+	ReadBytes((char *)&ret, sizeof(ret));
 
 	if (isBigEndian ^ bigEndianSystem)
 	{
@@ -84,7 +79,7 @@ int16_t BinaryStream::ReadInt16()
 uint32_t BinaryStream::ReadUInt32()
 {
 	uint32_t ret;
-	BS_CPP_BSREADEX(4);
+	ReadBytes((char *)&ret, sizeof(ret));
 
 	if (isBigEndian ^ bigEndianSystem)
 	{
@@ -108,7 +103,7 @@ int32_t BinaryStream::ReadInt32()
 uint64_t BinaryStream::ReadUInt64()
 {
 	uint64_t ret;
-	BS_CPP_BSREADEX(8);
+	ReadBytes((char *)&ret, sizeof(ret));
 
 	if (isBigEndian ^ bigEndianSystem)
 	{
@@ -171,24 +166,17 @@ std::string BinaryStream::ReadString()
 
 void BinaryStream::ReadBytes(char* buffer, int limit)
 {
-	if (1 != fread(buffer, limit, 1, stream)) throw IOException(name, u"Unknown error.");
+	if (1 != fread(buffer, limit, 1, stream)) throw IOException(name, u"Read error.");
 }
-
-#undef BS_CPP_BSREADEX
-
-#ifdef BS_CPP_BSWRITEEX
-#error Macro BS_CPP_BSWRITEEX have been defiend already!
-#endif
-#define BS_CPP_BSWRITEEX(size) if (0 == fwrite(&value, size, 1, stream)) throw IOException(name, u"Write error.")
 
 void BinaryStream::Write(uint8_t value)
 {
-	BS_CPP_BSWRITEEX(1);
+	Write((char *)&value, sizeof(value));
 }
 
 void BinaryStream::Write(int8_t value)
 {
-	BS_CPP_BSWRITEEX(1);
+	Write((char *)&value, sizeof(value));
 }
 
 void BinaryStream::Write(uint16_t value)
@@ -198,7 +186,7 @@ void BinaryStream::Write(uint16_t value)
 		value = (value & 0xFF) << 8 | (value & 0xFF00) >> 8;
 	}
 
-	BS_CPP_BSWRITEEX(2);
+	Write((char *)&value, sizeof(value));
 }
 
 void BinaryStream::Write(int16_t value)
@@ -213,7 +201,7 @@ void BinaryStream::Write(uint32_t value)
 		value = (value & 0xFF) << 24 | (value & 0xFF00) << 8 | (value & 0xFF0000) >> 8 | (value & 0xFF000000) >> 24;
 	}
 
-	BS_CPP_BSWRITEEX(4);
+	Write((char *)&value, sizeof(value));
 }
 
 void BinaryStream::Write(int32_t value)
@@ -230,7 +218,7 @@ void BinaryStream::Write(uint64_t value)
 			(value & 0xFF00000000000000) >> 56;
 	}
 
-	BS_CPP_BSWRITEEX(8);
+	Write((char *)&value, sizeof(value));
 }
 
 void BinaryStream::Write(int64_t value)
@@ -255,9 +243,8 @@ void BinaryStream::Write(const std::string& value)
 
 void BinaryStream::Write(const char* buffer, size_t size)
 {
-	if (1 != fwrite(buffer, size, 1, stream)) throw IOException(name, u"Write error: ");
+	if (1 != fwrite(buffer, size, 1, stream)) throw IOException(name, u"Write error.");
 }
-#undef BS_CPP_BSWRITEEX
 
 size_t BinaryStream::Tell() const
 {

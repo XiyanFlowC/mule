@@ -6,8 +6,9 @@ xybase::Exception::Exception(const std::u16string &message, int err)
 	: message(message), err(err)
 {
 	auto ret = xybase::string::to_utf8(message);
-	buf = new char[ret.size()];
+	buf = new char[ret.size() + 1];
 	memcpy(buf, ret.c_str(), ret.size());
+	buf[ret.size()] = '\0';
 }
 
 xybase::Exception::~Exception()

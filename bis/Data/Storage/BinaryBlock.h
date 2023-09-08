@@ -14,6 +14,7 @@ namespace mule
 		{
 			class BinaryBlock : public mule::Data::Basic::Type
 			{
+				BinaryBlock(size_t size);
 			public:
 				class BinaryBlockCreator : public mule::Data::TypeCreator
 				{

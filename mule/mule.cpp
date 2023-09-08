@@ -14,6 +14,9 @@ int main(int argc, char **argv)
 		exit(-1);
 	}
 
+	// 设定为用户偏好的语言环境
+	setlocale(LC_ALL, "");
+
 	// Initialisation
 	Configuration::GetInstance().SetEnvironmentRootPath(argv[1]);
 	Configuration::GetInstance().TargetFile = argv[2];
@@ -23,6 +26,16 @@ int main(int argc, char **argv)
 	LuaHost::GetInstance().LoadLuaStandardLibs();
 	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua")));
 	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.dll")));
+
+	// Set variable
+	LuaHost::GetInstance().SetGlobal("mule", MultiValue{MultiValue::MVT_MAP});
+	LuaHost::GetInstance().SetGlobal("mule.system", MultiValue{
+#ifdef WIN32
+		u"windows"
+#else
+		u"linux"
+#endif // WIN32
+		});
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
@@ -117,6 +130,7 @@ int main(int argc, char **argv)
 	{
 		fputs("Error when execute lua script.\n", stderr);
 		fputs(ex.what(), stderr);
+		fputs(xybase::string::to_string(*(LuaHost::GetInstance().GetValue(LuaHost::GetInstance().GetStackTop()).value.stringValue)).c_str(), stderr);
 	}
 
 	return 0;

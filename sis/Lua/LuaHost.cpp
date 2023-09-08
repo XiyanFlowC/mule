@@ -15,6 +15,7 @@ LuaHost::~LuaHost()
 {
 	if (disposable)
 		lua_close(L);
+	disposable = false;
 }
 
 LuaHost& LuaHost::GetInstance()
