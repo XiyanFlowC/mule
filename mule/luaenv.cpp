@@ -3,6 +3,7 @@
 #include <Data/Storage/DataManager.h>
 #include <Cpp/Environment.h>
 #include <TextStream.h>
+#include <cstdio>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
@@ -453,7 +454,11 @@ int SaveMemory()
 
 std::string setLocale(std::string loc)
 {
-    return setlocale(LC_ALL, loc.c_str());
+    char* result = setlocale(LC_ALL, loc.c_str());
+    if (result == nullptr) {
+        throw std::runtime_error("Failed to set locale to " + loc + ".");
+    }
+    return result;
 }
 
 void InitialiseLuaEnvironment(xybase::Stream *stream)
