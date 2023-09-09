@@ -5,7 +5,7 @@ using namespace xybase;
 
 void Fragment::EliminateBegining(unsigned int size)
 {
-	if (size >= this->size) throw InvalidParameterException(u"size", u"Cannot larger than this->size.", __LINE__);
+	if (size > this->size) throw InvalidParameterException(u"size", u"Cannot larger than this->size.", __LINE__);
 
 	begin += size;
 	this->size -= size;
@@ -20,13 +20,12 @@ void Fragment::EliminateEnding(unsigned int size)
 
 bool Fragment::IsOverlapsWith(const Fragment &frag) const
 {
-	return (begin >= frag.begin && begin < frag.GetEnding() && GetEnding() >= frag.GetEnding())
-		|| (GetEnding() > frag.begin && GetEnding() <= frag.GetEnding() && begin < frag.begin);
+	return !(GetEnding() < frag.begin || begin > frag.GetEnding());
 }
 
 bool Fragment::IsContains(const Fragment &frag) const
 {
-	return begin >= frag.begin && GetEnding() <= frag.GetEnding();
+	return begin <= frag.begin && GetEnding() >= frag.GetEnding();
 }
 
 bool Fragment::IsContains(unsigned int position) const

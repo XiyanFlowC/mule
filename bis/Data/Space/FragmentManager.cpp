@@ -1,5 +1,7 @@
 #include "FragmentManager.h"
 
+#include <Exception/InvalidOperationException.h>
+
 using namespace mule::Data::Space;
 
 FragmentManager::FragmentManager()
@@ -22,6 +24,7 @@ void FragmentManager::RegisterFragment(const Fragment &frag)
 		if (f->IsOverlapsWith(frag))
 		{
 			f->Merge(frag);
+			return;
 		}
 	}
 	frags.push_back(new Fragment(frag));
@@ -86,5 +89,5 @@ unsigned int FragmentManager::Alloc(size_t size, int align)
 			return ret;
 		}
 	}
-	return -1;
+	throw xybase::InvalidOperationException(u"Run out of memory.", 32751);
 }

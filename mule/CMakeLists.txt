@@ -1,4 +1,4 @@
-add_executable (mule "mule.cpp" "mule.h" "Configuration.cpp" "Configuration.h" "ShiftableReferrence.cpp" "ShiftableReferrence.h"   "ResourceManager.h" "ResourceManager.cpp" "crc32.h" "crc32.cpp"     "luaenv.cpp" "luaenv.h")
+add_executable (mule "mule.cpp" "mule.h" "Configuration.cpp" "Configuration.h" "ShiftableString.cpp" "ShiftableString.h"   "ResourceManager.h" "ResourceManager.cpp" "crc32.h" "crc32.cpp"     "luaenv.cpp" "luaenv.h")
 
 target_link_libraries (mule PRIVATE sis sislua)
 

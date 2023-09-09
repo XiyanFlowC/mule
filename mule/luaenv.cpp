@@ -448,7 +448,7 @@ int importFile(int fd, unsigned int id)
 
 int SaveMemory()
 {
-    ShiftableReferrence::MemoryManager::GetInstance().SaveFreeSpace();
+    ShiftableString::MemoryManager::GetInstance().SaveFreeSpace();
     return 0;
 }
 

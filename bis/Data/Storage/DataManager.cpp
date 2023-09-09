@@ -86,8 +86,10 @@ FILE *mule::Data::Storage::DataManager::OpenRaw(unsigned int id, bool create)
 {
     char path[32];
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
+    std::string pp = xybase::string::to_string(dataPath) + path;
+    if (xybase::io::access(pp.substr(0, pp.find_last_of('/')).c_str(), xybase::io::PM_READWRITE)) CreateDirectoryRecursively(pp.substr(0, pp.find_last_of('/')));
 
-    FILE *f = fopen((xybase::string::to_string(dataPath) + path).c_str(), create ? "wb" : "rb");
+    FILE *f = fopen(pp.c_str(), create ? "wb" : "rb");
 
     return f;
 }

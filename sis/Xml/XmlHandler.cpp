@@ -187,13 +187,13 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		if (realm->IsComposite())
 		{
 			stream->Write("<");
-			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(realm->GetTypeName()).c_str()));
+			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
 			stream->Write(">");
 
 			stream->Write("\n");
 			layer++;
 		}
-		else nodeName = realm->GetTypeName();
+		else nodeName = u"item";
 	}
 	else if (status == XHS_WRITE)
 	{
@@ -212,7 +212,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		std::u8string tag = sb.ToString();
 		sb += ch;
 
-		if (xybase::string::to_utf16(tag) != realm->GetTypeName()) throw xybase::RuntimeException(u"Format error, except " + realm->GetTypeName() + u", but got " + realm->GetTypeName(), 9002);
+		if (xybase::string::to_utf16(tag) != u"item") throw xybase::RuntimeException(u"Format error, except " u"item" u", but got " + xybase::string::to_utf16(tag), 9002);
 
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
@@ -263,7 +263,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 		}
 
 		stream->Write("</");
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(realm->GetTypeName()).c_str()));
+		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
 		stream->Write(">\n");
 	}
 	else

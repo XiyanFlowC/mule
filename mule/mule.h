@@ -30,4 +30,4 @@
 #include "crc32.h"
 #include "Configuration.h"
 #include "ResourceManager.h"
-#include "ShiftableReferrence.h"
+#include "ShiftableString.h"

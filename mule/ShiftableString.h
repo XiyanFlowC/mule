@@ -10,14 +10,9 @@
 #include <Data/TypeCreator.h>
 #include <Data/TypeManager.h>
 
-/**
- * @brief 仅限移位String！！！
-*/
-class ShiftableReferrence : public mule::Data::Basic::Type
+class ShiftableString : public mule::Data::Basic::Type
 {
 protected:
-	mule::Data::Basic::Type *referent;
-
 	int GetAlign(size_t loc, xybase::Stream *stream);
 
 public:
@@ -35,14 +30,14 @@ public:
 
 		static MemoryManager &GetInstance();
 
-		mule::Data::Space::FragmentManager GetMemory(xybase::Stream *stream);
+		mule::Data::Space::FragmentManager &GetMemory(xybase::Stream *stream);
 
 		size_t AssignFor(xybase::Stream *stream, const std::u16string &str, size_t size);
 
 		void SaveFreeSpace();
 	};
 
-	class ShiftableReferrenceCreator : public mule::Data::TypeCreator
+	class ShiftableStringCreator : public mule::Data::TypeCreator
 	{
 		virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info) override;
 	};

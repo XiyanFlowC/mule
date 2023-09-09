@@ -117,7 +117,7 @@ size_t ElfStream::TellOffset()
 
 size_t ElfStream::GetAlign(size_t address)
 {
-	for (int i = 0; i < header->phnum; ++i)
+	for (int i = 0; i < header->shnum; ++i)
 	{
 		if (shs[i].addr <= address && static_cast<unsigned long long>(shs[i].addr) + shs[i].size > address)
 		{

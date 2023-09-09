@@ -1,5 +1,7 @@
 #include "Referrence.h"
 
+#include <iostream>
+#include <xystring.h>
 using namespace mule::Data::Basic;
 
 void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandler)
@@ -24,6 +26,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 	// 避免从这里读入（喵的不刷洗的话会从缓存里读到不干净的东西，我他喵的到底为什么要这么写啊）
 	//stream->Flush();
 	//int ptr = stream->ReadInt32();
+	stream->Seek(Size(), SEEK_CUR);
 	int ptr = dataHandler->OnDataWrite().metadata[u"ptr"].value.unsignedValue;
 
 	if (ptr == 0)
@@ -33,7 +36,15 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, 0);
-	referent->Write(stream, dataHandler);
+	try
+	{
+		referent->Write(stream, dataHandler);
+	}
+	catch (xybase::InvalidParameterException &ex)
+	{
+		std::cerr << "ptr: " << ptr << std::endl;
+		std::cerr << xybase::string::to_string(ex.GetMessage()) << std::endl;
+	}
 	stream->Seek(loc, 0);
 }
 

@@ -39,7 +39,7 @@ int main(int argc, char **argv)
 
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
-	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableReferrence::ShiftableReferrenceCreator());
+	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableString::ShiftableStringCreator());
 
 	mule::Cpp::Environment::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
