@@ -24,7 +24,6 @@
 #include <Xml/XmlParser.h>
 #include <Xml/MvXmlNode.h>
 #include <Xml/XmlNode.h>
-#include <Cpp/StructureBuilder.h>
 #include <Cpp/Environment.h>
 #include <Cpp/BisEnv.h>
 

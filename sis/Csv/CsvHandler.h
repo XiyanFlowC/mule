@@ -45,7 +45,7 @@ namespace mule
 				CHS_READ_TRAILCELL,
 				CHS_WRITE,
 				CHS_WRITE_TRAILCELL,
-			} status;
+			} status = CHS_IDLE;
 
 			xybase::Stream *stream = nullptr;
 

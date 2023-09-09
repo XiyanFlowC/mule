@@ -4,7 +4,7 @@
 #include <Data/Storage/DataManager.h>
 #include <Stream/ElfStream.h>
 
-#define SRMM_DATAFILE_ID (0x0A00'0000)
+#define SRMM_DATAFILE_ID (0x0A00'3939)
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
@@ -41,6 +41,11 @@ void ShiftableReferrence::Write(xybase::Stream *stream, DataHandler *dataHandler
 	size_t ptr;
 	if (mv.IsType(MultiValue::MVT_STRING))
 		ptr = MemoryManager::GetInstance().AssignFor(stream, *mv.value.stringValue, referent->EvalSize(mv));
+	else if (mv.IsType(MultiValue::MVT_NULL))
+	{
+		stream->Write((uint32_t)0);
+		return;
+	}
 	else
 		throw xybase::InvalidParameterException(u"mv", u"Not a string, unable to shift!", __LINE__);
 
@@ -59,7 +64,7 @@ size_t ShiftableReferrence::Size() const
 
 std::u16string ShiftableReferrence::GetTypeName() const
 {
-	return referent->GetTypeName() + u'&';
+	return u"rstring";
 }
 
 void ShiftableReferrence::StreamDispose(xybase::Stream *stream)
@@ -69,7 +74,7 @@ void ShiftableReferrence::StreamDispose(xybase::Stream *stream)
 
 Type *ShiftableReferrence::ShiftableReferrenceCreator::DoCreateObject(std::u16string info)
 {
-	if (info.ends_with(u"&"))
+	if (info.ends_with(u"rstring"))
 	{
 		Type *inner = TypeManager::GetInstance().GetOrCreateType(info.substr(info.length() - 1));
 		if (inner == nullptr) return nullptr;
