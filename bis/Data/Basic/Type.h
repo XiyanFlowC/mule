@@ -77,7 +77,7 @@ namespace mule
 				 * @brief 获得类型名（运行期反射协助用）
 				 * @return 类型名
 				*/
-				virtual std::u16string GetTypeName() const = 0;
+				virtual std::u16string GetDataType() const = 0;
 
 				/**
 				 * @brief 获得上一次读取的大小

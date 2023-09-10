@@ -79,7 +79,7 @@ size_t ShiftableString::Size() const
 	return size_t(4);
 }
 
-std::u16string ShiftableString::GetTypeName() const
+std::u16string ShiftableString::GetDataType() const
 {
 	return u"sstring";
 }

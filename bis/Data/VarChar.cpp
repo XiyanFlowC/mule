@@ -20,7 +20,7 @@ size_t mule::Data::VarChar::Size() const
 	return length;
 }
 
-std::u16string mule::Data::VarChar::GetTypeName() const
+std::u16string mule::Data::VarChar::GetDataType() const
 {
 	return u"varchar(" + xybase::string::to_utf16(std::to_string(length)) + u')';
 }

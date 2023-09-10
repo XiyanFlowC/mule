@@ -29,7 +29,7 @@ namespace mule
 			virtual void Read(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
 			virtual void Write(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
 			virtual size_t Size() const override;
-			virtual std::u16string GetTypeName() const override;
+			virtual std::u16string GetDataType() const override;
 			virtual bool IsComposite() const override;
 
 		private:

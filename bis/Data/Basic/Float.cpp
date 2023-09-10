@@ -5,7 +5,7 @@ using namespace mule::Data::Basic;
 mule::Data::Basic::Float::Float() { }
 
 
-std::u16string mule::Data::Basic::Float::GetTypeName() const
+std::u16string mule::Data::Basic::Float::GetDataType() const
 {
 	return std::u16string(u"float");
 }

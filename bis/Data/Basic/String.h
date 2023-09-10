@@ -21,7 +21,7 @@ namespace mule
 				size_t lastSize;
 			public:
 				virtual size_t Size() const override;
-				virtual std::u16string GetTypeName() const override;
+				virtual std::u16string GetDataType() const override;
 
 				virtual size_t GetLastSize() const override;
 				virtual size_t EvalSize(const MultiValue &obj) const override;

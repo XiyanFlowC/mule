@@ -88,7 +88,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		}
 
 		// 非组合类型须解析内部元素
-		ReadTagAndParse(tag, sb, realm->GetTypeName() == u"string");
+		ReadTagAndParse(tag, sb, realm->GetDataType() == u"string");
 	}
 }
 
@@ -222,7 +222,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		}
 
 		// 非组合类型须解析内部元素
-		ReadTagAndParse(tag, sb, realm->GetTypeName() == u"string");
+		ReadTagAndParse(tag, sb, realm->GetDataType() == u"string");
 	}
 }
 

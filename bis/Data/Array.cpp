@@ -31,9 +31,9 @@ size_t mule::Data::Array::Size() const
 	return length * innerObject->Size();
 }
 
-std::u16string mule::Data::Array::GetTypeName() const
+std::u16string mule::Data::Array::GetDataType() const
 {
-	return innerObject->GetTypeName() + u"[" + xybase::string::to_utf16(std::to_string(length)) + u"]";
+	return innerObject->GetDataType() + u"[" + xybase::string::to_utf16(std::to_string(length)) + u"]";
 }
 
 bool mule::Data::Array::IsComposite() const

@@ -39,7 +39,7 @@ size_t BinaryBlock::Size() const
 	return size;
 }
 
-std::u16string BinaryBlock::GetTypeName() const
+std::u16string BinaryBlock::GetDataType() const
 {
 	return u"binary{" + xybase::string::itos<char16_t>(size) + u"}";
 }

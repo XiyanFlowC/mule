@@ -61,7 +61,7 @@ int mule::Data::Table::Length() const
 	return length;
 }
 
-std::u16string mule::Data::Table::GetTypeName() const
+std::u16string mule::Data::Table::GetDataType() const
 {
 	return u"table";
 }

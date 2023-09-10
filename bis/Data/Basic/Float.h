@@ -18,7 +18,7 @@ namespace mule
 
 				virtual size_t Size() const override;
 
-				virtual std::u16string GetTypeName() const override;
+				virtual std::u16string GetDataType() const override;
 
 
 			protected:

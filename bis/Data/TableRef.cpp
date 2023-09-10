@@ -8,9 +8,9 @@ size_t mule::Data::TableRef::Size() const
 	return size_t(0);
 }
 
-std::u16string mule::Data::TableRef::GetTypeName() const
+std::u16string mule::Data::TableRef::GetDataType() const
 {
-	return infraType->GetTypeName() + u'@';
+	return infraType->GetDataType() + u'@';
 }
 
 void mule::Data::TableRef::Read(xybase::Stream *stream, DataHandler *dataHandler)

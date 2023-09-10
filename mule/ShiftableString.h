@@ -47,7 +47,7 @@ public:
 	virtual size_t Size() const override;
 
 	// 通过 Type 继承
-	virtual std::u16string GetTypeName() const override;
+	virtual std::u16string GetDataType() const override;
 
 	void StreamDispose(xybase::Stream *stream);
 

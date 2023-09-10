@@ -51,7 +51,7 @@ std::u16string mule::Data::Structure::GetName() const
 	return name;
 }
 
-std::u16string mule::Data::Structure::GetTypeName() const
+std::u16string mule::Data::Structure::GetDataType() const
 {
 	return name;
 }
@@ -95,7 +95,7 @@ mule::Data::Structure::Field::Field(std::u16string name, Type *obj)
 {
 }
 
-std::u16string mule::Data::Structure::Field::GetTypeName() const
+std::u16string mule::Data::Structure::Field::GetDataType() const
 {
-	return u"field[" + object->GetTypeName() + u',' + name + u']';
+	return u"field[" + object->GetDataType() + u',' + name + u']';
 }

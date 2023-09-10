@@ -9,7 +9,7 @@ size_t String::Size() const
 	return size_t(-1);
 }
 
-std::u16string mule::Data::Basic::String::GetTypeName() const
+std::u16string mule::Data::Basic::String::GetDataType() const
 {
 	return u"string";
 }

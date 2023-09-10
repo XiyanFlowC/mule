@@ -29,7 +29,7 @@ namespace mule
 			};
 
 			virtual size_t Size() const override;
-			virtual std::u16string GetTypeName() const override;
+			virtual std::u16string GetDataType() const override;
 
 			virtual mule::Data::Basic::MultiValue DoRead(xybase::Stream *stream) override;
 			virtual void DoWrite(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value) override;

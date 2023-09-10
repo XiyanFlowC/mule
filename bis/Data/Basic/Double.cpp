@@ -9,7 +9,7 @@ size_t mule::Data::Basic::Double::Size() const
 	return sizeof(double);
 }
 
-std::u16string mule::Data::Basic::Double::GetTypeName() const
+std::u16string mule::Data::Basic::Double::GetDataType() const
 {
 	return std::u16string(u"double");
 }

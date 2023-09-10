@@ -53,9 +53,9 @@ size_t mule::Data::Referrence::Size() const
 	return size_t(sizeof(int32_t));
 }
 
-std::u16string mule::Data::Referrence::GetTypeName() const
+std::u16string mule::Data::Referrence::GetDataType() const
 {
-	return referent->GetTypeName() + u'*';
+	return referent->GetDataType();
 }
 
 bool mule::Data::Referrence::IsComposite() const

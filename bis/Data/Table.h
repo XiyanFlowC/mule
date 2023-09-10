@@ -44,7 +44,7 @@ namespace mule {
 			*/
 			int Length() const;
 
-			std::u16string GetTypeName() const override;
+			std::u16string GetDataType() const override;
 
 			bool IsComposite() const override;
 

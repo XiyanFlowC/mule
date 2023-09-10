@@ -35,7 +35,7 @@ namespace mule
 
 				Type *object;
 
-				virtual std::u16string GetTypeName() const override;
+				virtual std::u16string GetDataType() const override;
 			};
 
 			/**
@@ -75,7 +75,7 @@ namespace mule
 
 			virtual std::u16string GetName() const;
 
-			virtual std::u16string GetTypeName() const override;
+			virtual std::u16string GetDataType() const override;
 
 			virtual bool IsComposite() const override;
 		protected:
