@@ -34,14 +34,14 @@ void ShiftableString::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	}
 	
 	size_t loc = stream->Tell();
-	stream->Seek(ptr, 0);
+	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
 	auto raw = stream->ReadString();
 	dataHandler->OnDataRead(MultiValue{ xybase::string::to_utf16(raw) });
 	dataHandler->AppendMetadatum(u"ptr", ptr);
 	dataHandler->AppendMetadatum(u"size", raw.size());
 	if (raw != "")
 		MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(raw.size() + 1, GetAlign(ptr, stream))));
-	stream->Seek(loc, 0);
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
 void ShiftableString::Write(xybase::Stream *stream, DataHandler *dataHandler)
@@ -59,10 +59,10 @@ void ShiftableString::Write(xybase::Stream *stream, DataHandler *dataHandler)
 
 		stream->Write((int32_t)ptr);
 		size_t loc = stream->Tell();
-		stream->Seek(ptr, SEEK_SET);
+		stream->Seek(ptr, xybase::Stream::SM_BEGIN);
 		// 实际执行写入
 		stream->Write(str.c_str(), str.size() + 1);
-		stream->Seek(loc, SEEK_SET);
+		stream->Seek(loc, xybase::Stream::SM_BEGIN);
 	}
 	else if (mv.IsType(MultiValue::MVT_NULL))
 	{
@@ -70,7 +70,7 @@ void ShiftableString::Write(xybase::Stream *stream, DataHandler *dataHandler)
 		return;
 	}
 	else
-		throw xybase::InvalidParameterException(u"mv", u"Not a string, unable to shift!", __LINE__);
+		throw xybase::InvalidParameterException(L"mv", L"Not a string, unable to shift!", __LINE__);
 
 }
 

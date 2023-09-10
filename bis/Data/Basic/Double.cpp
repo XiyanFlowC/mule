@@ -21,6 +21,6 @@ MultiValue mule::Data::Basic::Double::DoRead(xybase::Stream *stream)
 
 void mule::Data::Basic::Double::DoWrite(xybase::Stream *stream, const MultiValue &value)
 {
-	if (!value.IsType(MultiValue::MVT_REAL)) throw xybase::InvalidParameterException(u"value", u"Type mismatch!", 19001);
+	if (!value.IsType(MultiValue::MVT_REAL)) throw xybase::InvalidParameterException(L"value", L"Type mismatch!", 19001);
 	stream->Write((double)value.value.realValue);
 }

@@ -7,18 +7,18 @@ using namespace mule::Container;
 IsoContainer::IsoContainer(xybase::Stream *stream)
     : BasicContainer(stream)
 {
-    stream->Seek(0x8000, 0);
+    stream->Seek(0x8000, xybase::Stream::SM_BEGIN);
     PrimaryVolume volume{};
     stream->ReadBytes(reinterpret_cast<char *>(&volume), sizeof(PrimaryVolume));
     ParseDirectory(stream, volume.rootDirectoryRecord.locationOfExtentLe * ISO_BLOCK_SIZE, "");
 }
 
 void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std::string path) {
-    isoFile->Seek(offset, 0);
+    isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
 
     while (true) {
         uint8_t size = isoFile->ReadUInt8();
-        isoFile->Seek(offset, 0);
+        isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
         if (size == 0) break;
         DirectoryEntry *entry = reinterpret_cast<DirectoryEntry *>(new char[size]);
         isoFile->ReadBytes(reinterpret_cast<char *>(entry), size);
@@ -31,7 +31,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
             {
                 // Move to the next entry
                 offset += entry->length;
-                isoFile->Seek(offset, 0);
+                isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
                 delete[] entry;
                 continue; /* . & ..，忽略 */
             }
@@ -50,7 +50,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
 
         // Move to the next entry
         offset += entry->length;
-        isoFile->Seek(offset, 0);
+        isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
         delete[] entry;
     }
 }

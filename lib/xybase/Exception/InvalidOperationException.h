@@ -13,7 +13,7 @@ namespace xybase
 	class InvalidOperationException : public RuntimeException
 	{
 	public:
-		InvalidOperationException(const std::u16string &message, int err);
+		InvalidOperationException(const std::wstring &message, int err);
 	};
 }
 

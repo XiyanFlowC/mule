@@ -21,14 +21,14 @@ void mule::Data::TableRef::Read(xybase::Stream *stream, DataHandler *dataHandler
 	if ((!tloc.IsType(Basic::MultiValue::MVT_UINT) && !tloc.IsType(Basic::MultiValue::MVT_INT))
 		|| (!tsiz.IsType(Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Basic::MultiValue::MVT_INT))) return;
 
-	stream->Seek(tloc.value.signedValue, 0);
+	stream->Seek(tloc.value.signedValue, xybase::Stream::SM_BEGIN);
 	for (int i = 0; i < tsiz.value.signedValue; ++i)
 	{
 		dataHandler->OnRealmEnter(infraType, i);
 		infraType->Read(stream, dataHandler);
 		dataHandler->OnRealmExit(infraType, i);
 	}
-	stream->Seek(loc, 0);
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
 void mule::Data::TableRef::Write(xybase::Stream *stream, DataHandler *dataHandler)
@@ -39,14 +39,14 @@ void mule::Data::TableRef::Write(xybase::Stream *stream, DataHandler *dataHandle
 	if ((!tloc.IsType(Basic::MultiValue::MVT_UINT) && !tloc.IsType(Basic::MultiValue::MVT_INT))
 		|| (!tsiz.IsType(Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Basic::MultiValue::MVT_INT))) return;
 
-	stream->Seek(tloc.value.signedValue, 0);
+	stream->Seek(tloc.value.signedValue, xybase::Stream::SM_BEGIN);
 	for (int i = 0; i < tsiz.value.signedValue; ++i)
 	{
 		dataHandler->OnRealmEnter(infraType, i);
 		infraType->Write(stream, dataHandler);
 		dataHandler->OnRealmExit(infraType, i);
 	}
-	stream->Seek(loc, 0);
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
 bool mule::Data::TableRef::IsComposite() const

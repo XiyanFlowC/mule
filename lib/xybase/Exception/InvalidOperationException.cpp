@@ -2,7 +2,7 @@
 
 #include "../xystring.h"
 
-xybase::InvalidOperationException::InvalidOperationException(const std::u16string &message, int err)
+xybase::InvalidOperationException::InvalidOperationException(const std::wstring &message, int err)
 	: RuntimeException(message, INVALID_OPERATION_EXCEPTION_LEAD | err)
 {
 }

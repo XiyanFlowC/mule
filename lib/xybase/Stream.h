@@ -11,7 +11,7 @@ namespace xybase
 	const char endianTester[] = { '\xFF', 0};
 
 	/*
-	* Abstract class to handle the file I/O. Platform isolation.
+	* Abstract class to handle the file I/O. For platform isolation.
 	* Avoid to using C/C++ default streaming I/O to handle the BE/LE correctly and
 	* ensure the upper layer need not handle BE/LE, addressing, etc.
 	*/
@@ -80,8 +80,22 @@ namespace xybase
 
 		virtual size_t Tell() const = 0;
 
-		// mode: 0 SET 1 CUR 2 END
-		virtual void Seek(long long offset, int mode) = 0;
+		/**
+		 * @brief 寻址方式（基准）
+		*/
+		enum SeekMode
+		{
+			SM_BEGIN,
+			SM_CURRENT,
+			SM_END
+		};
+		
+		/**
+		 * @brief 寻址
+		 * @param offset 偏移
+		 * @param mode 寻址模式
+		*/
+		virtual void Seek(long long offset, SeekMode mode) = 0;
 
 		virtual void Close() = 0;
 	};

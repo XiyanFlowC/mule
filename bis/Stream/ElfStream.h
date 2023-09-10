@@ -67,7 +67,7 @@ namespace mule
 		class ElfFormatErrorException : public xybase::RuntimeException
 		{
 		public:
-			ElfFormatErrorException(std::u16string message, int line);
+			ElfFormatErrorException(std::wstring message, int line);
 		};
 
 		class ElfStream : public xybase::StreamBasic
@@ -82,10 +82,10 @@ namespace mule
 			ElfStream(xybase::Stream *stream);
 			~ElfStream();
 			virtual size_t Tell() const override;
-			virtual void Seek(long long offset, int mode = SEEK_SET) override;
+			virtual void Seek(long long offset, SeekMode mode = SM_BEGIN) override;
 			virtual void Close() override;
 
-			virtual void SeekOffset(size_t offset, int mode = SEEK_SET);
+			virtual void SeekOffset(size_t offset, SeekMode mode = SM_BEGIN);
 			virtual size_t TellOffset();
 
 			size_t GetAlign(size_t address);

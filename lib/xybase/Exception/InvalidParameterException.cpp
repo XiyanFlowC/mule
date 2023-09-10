@@ -2,13 +2,13 @@
 
 #include "../xystring.h"
 
-xybase::InvalidParameterException::InvalidParameterException(const std::u16string &param, const std::u16string &message, int err)
-	: param(param), Exception(u"Parameter: [" + param + u"] is invalid: " + message, INVALID_PARAMETER_EXCPETION_LEAD | err)
+xybase::InvalidParameterException::InvalidParameterException(const std::wstring &param, const std::wstring &message, int err)
+	: param(param), Exception(L"Parameter: [" + param + L"] is invalid: " + message, INVALID_PARAMETER_EXCPETION_LEAD | err)
 {
 }
 
 
-const std::u16string &xybase::InvalidParameterException::GetParam() const
+const std::wstring &xybase::InvalidParameterException::GetParam() const
 {
 	return param;
 }

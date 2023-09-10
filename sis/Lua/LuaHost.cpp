@@ -55,7 +55,7 @@ void LuaHost::RunScript(const char* path)
 	LoadScript(path);
 	int result = lua_pcall(L, 0, LUA_MULTRET, 0);
 	if (result != LUA_OK) throw LuaException(
-		u"Run script " + xybase::string::to_utf16(path) + u" failed: " + xybase::string::to_utf16(lua_tostring(L, -1)),
+		L"Run script " + xybase::string::to_wstring(path) + L" failed: " + xybase::string::to_wstring(lua_tostring(L, -1)),
 		__LINE__);
 }
 
@@ -63,12 +63,12 @@ MultiValue mule::Lua::LuaHost::RunString(const char *str)
 {
 	if (luaL_loadstring(L, str) != LUA_OK)
 	{
-		throw LuaException(u"Load error: " + xybase::string::to_utf16(lua_tostring(L, -1)), __LINE__);
+		throw LuaException(L"Load error: " + xybase::string::to_wstring(lua_tostring(L, -1)), __LINE__);
 	}
 	
 	if (lua_pcall(L, 0, LUA_MULTRET, 0) != LUA_OK)
 	{
-		throw LuaException(u"Failed to execute: " + xybase::string::to_utf16(lua_tostring(L, -1)), __LINE__);
+		throw LuaException(L"Failed to execute: " + xybase::string::to_wstring(lua_tostring(L, -1)), __LINE__);
 	}
 
 	int num = lua_gettop(L);
@@ -89,7 +89,7 @@ void LuaHost::LoadScript(const char* path)
 {
 	int result = luaL_loadfile(L, path);
 	if (result != LUA_OK)
-		throw LuaException(u"Cannot load file [" + xybase::string::to_utf16(path) + u"], err:" + xybase::string::to_utf16(std::to_string(result)), __LINE__);
+		throw LuaException(L"Cannot load file [" + xybase::string::to_wstring(path) + L"], err:" + xybase::string::to_wstring(std::to_string(result)), __LINE__);
 }
 
 void LuaHost::RegisterFunction(const std::string& name, lua_CFunction func)
@@ -105,13 +105,13 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetGlobal(const std::string &n
 	if (dotIndex != std::string::npos)
 	{
 		lua_getglobal(L, name.substr(startIndex, dotIndex - startIndex).c_str());
-		if (lua_isnil(L, -1)) throw LuaException(u"Invalid table " + xybase::string::to_utf16(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
+		if (lua_isnil(L, -1)) throw LuaException(L"Invalid table " + xybase::string::to_wstring(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
 		startIndex = dotIndex + 1;
 		dotIndex = name.find_first_of('.', startIndex);
 		while (dotIndex != std::string::npos)
 		{
 			lua_getfield(L, -1, name.substr(startIndex, dotIndex - startIndex).c_str());
-			if (lua_isnil(L, -1)) throw LuaException(u"Invalid table " + xybase::string::to_utf16(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
+			if (lua_isnil(L, -1)) throw LuaException(L"Invalid table " + xybase::string::to_wstring(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
 			startIndex = dotIndex + 1;
 			dotIndex = name.find_first_of('.', startIndex);
 		}
@@ -165,7 +165,7 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
 
 		ret.SetValue(result);
 	}
-	else throw LuaException(u"Unhandlable value.", __LINE__);
+	else throw LuaException(L"Unhandlable value.", __LINE__);
 	return ret;
 }
 
@@ -177,13 +177,13 @@ void mule::Lua::LuaHost::SetGlobal(const std::string &name, const mule::Data::Ba
 	if (dotIndex != std::string::npos)
 	{
 		lua_getglobal(L, name.substr(startIndex, dotIndex - startIndex).c_str());
-		if (lua_isnil(L, -1)) throw LuaException(u"Invalid table " + xybase::string::to_utf16(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
+		if (lua_isnil(L, -1)) throw LuaException(L"Invalid table " + xybase::string::to_wstring(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
 		startIndex = dotIndex + 1;
 		dotIndex = name.find_first_of('.', startIndex);
 		while (dotIndex != std::string::npos)
 		{
 			lua_getfield(L, -1, name.substr(startIndex, dotIndex - startIndex).c_str());
-			if (lua_isnil(L, -1)) throw LuaException(u"Invalid table " + xybase::string::to_utf16(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
+			if (lua_isnil(L, -1)) throw LuaException(L"Invalid table " + xybase::string::to_wstring(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
 			startIndex = dotIndex + 1;
 			dotIndex = name.find_first_of('.', startIndex);
 		}
@@ -207,13 +207,13 @@ MultiValue LuaHost::Call(const std::string name, int count, ...)
 	if (dotIndex != std::string::npos)
 	{
 		lua_getglobal(L, name.substr(startIndex, dotIndex - startIndex).c_str());
-		if (lua_isnil(L, -1)) throw LuaException(u"Invalid table " + xybase::string::to_utf16(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
+		if (lua_isnil(L, -1)) throw LuaException(L"Invalid table " + xybase::string::to_wstring(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
 		startIndex = dotIndex + 1;
 		dotIndex = name.find_first_of('.', startIndex);
 		while (dotIndex != std::string::npos)
 		{
 			lua_getfield(L, -1, name.substr(startIndex, dotIndex - startIndex).c_str());
-			if (lua_isnil(L, -1)) throw LuaException(u"Invalid table " + xybase::string::to_utf16(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
+			if (lua_isnil(L, -1)) throw LuaException(L"Invalid table " + xybase::string::to_wstring(name.substr(startIndex, dotIndex - startIndex)), __LINE__);
 			startIndex = dotIndex + 1;
 			dotIndex = name.find_first_of('.', startIndex);
 		}
@@ -304,7 +304,7 @@ void mule::Lua::LuaHost::SetStackTop(int idx)
 	lua_settop(L, idx);
 }
 
-LuaException::LuaException(std::u16string desc, int line)
+LuaException::LuaException(std::wstring desc, int line)
 	: Exception(desc, line)
 {
 }

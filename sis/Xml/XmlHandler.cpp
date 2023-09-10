@@ -17,25 +17,25 @@ mule::Xml::XmlHandler::XmlHandler()
 
 void mule::Xml::XmlHandler::OnSheetReadStart()
 {
-	if (status != XHS_IDLE) throw xybase::InvalidOperationException(u"Cannot read whilst this handler is busy.", 3501);
+	if (status != XHS_IDLE) throw xybase::InvalidOperationException(L"Cannot read whilst this handler is busy.", 3501);
 	status = XHS_READ;
 }
 
 void mule::Xml::XmlHandler::OnSheetReadEnd()
 {
-	if (status != XHS_READ) throw xybase::InvalidOperationException(u"Cannot stop read whilst this handler is not read.", 3502);
+	if (status != XHS_READ) throw xybase::InvalidOperationException(L"Cannot stop read whilst this handler is not read.", 3502);
 	status = XHS_IDLE;
 }
 
 void mule::Xml::XmlHandler::OnSheetWriteStart()
 {
-	if (status != XHS_IDLE) throw xybase::InvalidOperationException(u"Cannot write whilst this handler is busy.", 3503);
+	if (status != XHS_IDLE) throw xybase::InvalidOperationException(L"Cannot write whilst this handler is busy.", 3503);
 	status = XHS_WRITE;
 }
 
 void mule::Xml::XmlHandler::OnSheetWriteEnd()
 {
-	if (status != XHS_WRITE) throw xybase::InvalidOperationException(u"Cannot stop write whilst this handler is not write.", 3504);
+	if (status != XHS_WRITE) throw xybase::InvalidOperationException(L"Cannot stop write whilst this handler is not write.", 3504);
 	status = XHS_IDLE;
 }
 
@@ -78,7 +78,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		std::u8string tag = sb.ToString();
 		sb += ch;
 
-		if (xybase::string::to_utf16(tag) != name) throw xybase::RuntimeException(u"Format error, except " + name + u", but got " + xybase::string::to_utf16(name), 9002);
+		if (xybase::string::to_utf16(tag) != name) throw xybase::RuntimeException(L"Format error, except " + xybase::string::to_wstring(name) + L", but got " + xybase::string::to_wstring(name), 9002);
 
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
@@ -212,7 +212,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		std::u8string tag = sb.ToString();
 		sb += ch;
 
-		if (xybase::string::to_utf16(tag) != u"item") throw xybase::RuntimeException(u"Format error, except " u"item" u", but got " + xybase::string::to_utf16(tag), 9002);
+		if (xybase::string::to_utf16(tag) != u"item") throw xybase::RuntimeException(L"Format error, except " L"item" L", but got " + xybase::string::to_wstring(tag), 9002);
 
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
@@ -292,7 +292,7 @@ MultiValue mule::Xml::XmlHandler::OnDataWrite()
 void mule::Xml::XmlHandler::SetStream(xybase::Stream *stream)
 {
 	this->stream = dynamic_cast<xybase::TextStream *>(stream);
-	if (this->stream == nullptr) throw xybase::InvalidParameterException(u"stream", u"Not a text stream for output.", 3505);
+	if (this->stream == nullptr) throw xybase::InvalidParameterException(L"stream", L"Not a text stream for output.", 3505);
 }
 
 void mule::Xml::XmlHandler::AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv)

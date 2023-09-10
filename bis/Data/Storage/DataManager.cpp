@@ -42,7 +42,7 @@ mule::Data::Storage::DataManager::~DataManager()
 void mule::Data::Storage::DataManager::Initialisation(const std::u16string &datadir)
 {
     if (xybase::io::access(xybase::string::to_string(datadir).c_str(), xybase::io::AccessMode::PM_READWRITE))
-        throw xybase::InvalidParameterException(u"datadir", u"Inaccessible path.", 100);
+        throw xybase::InvalidParameterException(L"datadir", L"Inaccessible path.", 100);
     dataPath = datadir;
 
     auto data = OpenRaw(0);
@@ -58,7 +58,7 @@ BinaryData DataManager::LoadData(std::string name)
     auto &&it = fileInfos.find(name);
     if (it == fileInfos.end())
     {
-        throw xybase::RuntimeException(u"Unkown id for data " + xybase::string::to_utf16(name), __LINE__);
+        throw xybase::RuntimeException(L"Unkown id for data " + xybase::string::to_wstring(name), __LINE__);
     }
     return LoadData(it->second.id);
 }
@@ -69,7 +69,7 @@ BinaryData DataManager::LoadData(unsigned int id)
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
 
     FILE *f = fopen((xybase::string::to_string(dataPath) + path).c_str(), "rb");
-    if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open data file.");
+    if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open data file.");
 
     fseek(f, 0, SEEK_END);
     size_t length = ftell(f);
@@ -118,7 +118,7 @@ unsigned int DataManager::SaveData(const BinaryData &data, unsigned int id)
     FILE *f = fopen(pp.c_str(), "wb");
     if (f == NULL)
     {
-        throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open file to write ");
+        throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open file to write ");
     }
 
     fwrite(data.GetData(), data.GetLength(), 1, f);

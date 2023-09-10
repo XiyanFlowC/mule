@@ -8,25 +8,25 @@ using namespace xybase;
 
 void mule::Data::Mappifier::OnSheetReadStart()
 {
-	if (status != DHMS_IDLE) throw InvalidOperationException(u"Start read when not in idle.", __LINE__);
+	if (status != DHMS_IDLE) throw InvalidOperationException(L"Start read when not in idle.", __LINE__);
 	status = DHMS_READ;
 }
 
 void mule::Data::Mappifier::OnSheetWriteStart()
 {
-	if (status != DHMS_IDLE) throw InvalidOperationException(u"Start write when not in idle.", __LINE__);
+	if (status != DHMS_IDLE) throw InvalidOperationException(L"Start write when not in idle.", __LINE__);
 	status = DHMS_WRITE;
 }
 
 void mule::Data::Mappifier::OnSheetReadEnd()
 {
-	if (status != DHMS_READ) throw InvalidOperationException(u"End read when not in read.", __LINE__);
+	if (status != DHMS_READ) throw InvalidOperationException(L"End read when not in read.", __LINE__);
 	status = DHMS_IDLE;
 }
 
 void mule::Data::Mappifier::OnSheetWriteEnd()
 {
-	if (status != DHMS_WRITE) throw InvalidOperationException(u"End write when not in write.", __LINE__);
+	if (status != DHMS_WRITE) throw InvalidOperationException(L"End write when not in write.", __LINE__);
 	status = DHMS_IDLE;
 }
 
@@ -44,7 +44,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, const std::u16string& name
 		auto *itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
 		{
-			throw InvalidOperationException(u"Not map but entered a realm.", __LINE__);
+			throw InvalidOperationException(L"Not map but entered a realm.", __LINE__);
 		}
 		else
 		{
@@ -130,7 +130,7 @@ void mule::Data::Mappifier::OnRealmEnter(Type *realm, int idx)
 		auto* itr = values.top();
 		if (itr->type != MultiValue::MVT_MAP)
 		{
-			throw InvalidOperationException(u"Not map but entered a realm.", __LINE__);
+			throw InvalidOperationException(L"Not map but entered a realm.", __LINE__);
 		}
 		else
 		{

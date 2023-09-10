@@ -92,14 +92,14 @@ void mule::Cpp::CStyleInitHandler::SetStream(xybase::Stream *stream)
 void mule::Cpp::CStyleInitHandler::OnSheetReadStart()
 {
 	if (state != CSIHS_IDLE)
-		throw xybase::InvalidOperationException(u"This handler is not idle for read.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not idle for read.", 10000);
 	state = CSIHS_READ;
 }
 
 void mule::Cpp::CStyleInitHandler::OnSheetReadEnd()
 {
 	if (state != CSIHS_READ)
-		throw xybase::InvalidOperationException(u"This handler is not reading.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not reading.", 10000);
 	state = CSIHS_IDLE;
 }
 
@@ -107,13 +107,13 @@ void mule::Cpp::CStyleInitHandler::OnSheetWriteStart()
 {
 	throw xybase::NotImplementedException();
 	if (state != CSIHS_IDLE)
-		throw xybase::InvalidOperationException(u"This handler is not idle for write.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not idle for write.", 10000);
 	state = CSIHS_WRITE;
 }
 
 void mule::Cpp::CStyleInitHandler::OnSheetWriteEnd()
 {
 	if (state != CSIHS_WRITE)
-		throw xybase::InvalidOperationException(u"This handler is not writing.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not writing.", 10000);
 	state = CSIHS_IDLE;
 }

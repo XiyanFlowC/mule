@@ -17,7 +17,7 @@ void mule::Data::Basic::BasicType::Write(xybase::Stream *stream, DataHandler *da
 	{
 		size_t size = Size();
 		if (size == static_cast<size_t>(-1)) return;
-		stream->Seek(size, 1);
+		stream->Seek(size, xybase::Stream::SM_CURRENT);
 		return;
 	}
 

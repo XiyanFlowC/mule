@@ -15,10 +15,10 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 	}
 
 	size_t loc = stream->Tell();
-	stream->Seek(ptr, 0);
+	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
 	referent->Read(stream, dataHandler);
 	dataHandler->AppendMetadatum(u"ptr", MultiValue((uint64_t)ptr));
-	stream->Seek(loc, 0);
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
 void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHandler)
@@ -26,7 +26,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 	// 避免从这里读入（喵的不刷洗的话会从缓存里读到不干净的东西，我他喵的到底为什么要这么写啊）
 	//stream->Flush();
 	//int ptr = stream->ReadInt32();
-	stream->Seek(Size(), SEEK_CUR);
+	stream->Seek(Size(), xybase::Stream::SM_CURRENT);
 	int ptr = dataHandler->OnDataWrite().metadata[u"ptr"].value.unsignedValue;
 
 	if (ptr == 0)
@@ -35,7 +35,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 	}
 
 	size_t loc = stream->Tell();
-	stream->Seek(ptr, 0);
+	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
 	try
 	{
 		referent->Write(stream, dataHandler);
@@ -45,7 +45,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 		std::cerr << "ptr: " << ptr << std::endl;
 		std::cerr << xybase::string::to_string(ex.GetMessage()) << std::endl;
 	}
-	stream->Seek(loc, 0);
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
 size_t mule::Data::Referrence::Size() const

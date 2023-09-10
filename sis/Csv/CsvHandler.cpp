@@ -7,28 +7,28 @@ using namespace mule::Data::Basic;
 void mule::Csv::CsvHandler::OnSheetReadStart()
 {
 	if (status != CHS_IDLE)
-		throw xybase::InvalidOperationException(u"This handler is not idle for read.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not idle for read.", 10000);
 	status = CHS_READ;
 }
 
 void mule::Csv::CsvHandler::OnSheetReadEnd()
 {
 	if (status != CHS_READ)
-		throw xybase::InvalidOperationException(u"This handler is not reading.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not reading.", 10000);
 	status = CHS_IDLE;
 }
 
 void mule::Csv::CsvHandler::OnSheetWriteStart()
 {
 	if (status != CHS_IDLE)
-		throw xybase::InvalidOperationException(u"This handler is not idle for write.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not idle for write.", 10000);
 	status = CHS_WRITE;
 }
 
 void mule::Csv::CsvHandler::OnSheetWriteEnd()
 {
 	if (status != CHS_WRITE)
-		throw xybase::InvalidOperationException(u"This handler is not writing.", 10000);
+		throw xybase::InvalidOperationException(L"This handler is not writing.", 10000);
 	status = CHS_IDLE;
 }
 

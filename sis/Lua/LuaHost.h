@@ -20,7 +20,7 @@ namespace mule
 		class LuaException : public xybase::Exception
 		{
 		public:
-			LuaException(std::u16string desc, int line);
+			LuaException(std::wstring desc, int line);
 		};
 
 		/**

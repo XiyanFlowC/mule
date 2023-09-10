@@ -1,21 +1,19 @@
 #include "TextStream.h"
 
+#include <locale>
+#include "Exception/NotImplementedException.h"
 #include "Exception/InvalidOperationException.h"
 #include "StringBuilder.h"
 #include "xystring.h"
 #include "Exception/IOException.h"
 
-xybase::TextStream::TextStream(std::string path, int mode)
+xybase::TextStream::TextStream(std::string path, std::ios::openmode mode, std::string localeStr)
+	: stream {path, mode}, name {xybase::string::to_wstring(path)}
 {
-	stream = fopen(path.c_str(), mode ? "w" : "r");
-	if (stream == nullptr)
+	if (!localeStr.empty())
 	{
-		throw IOException(string::to_utf16(path), u"Failed to initialise TextStream.");
+		stream.imbue(std::locale{localeStr});
 	}
-
-	name = xybase::string::to_utf16(path);
-
-	open = true;
 }
 
 xybase::TextStream::~TextStream()
@@ -25,38 +23,29 @@ xybase::TextStream::~TextStream()
 
 void xybase::TextStream::Flush()
 {
-	fflush(stream);
+	stream.flush();
 }
 
 void xybase::TextStream::Close()
 {
-	if (open)
-		fclose(stream);
-
-	open = false;
+	stream.close();
 }
 
 std::u16string xybase::TextStream::GetName() const
 {
-	return name;
+	return xybase::string::to_utf16(name);
 }
 
 std::string xybase::TextStream::ReadLine()
 {
-	StringBuilder<char> sb;
-	
-	int ch = fgetc(stream);
-	while (ch != EOF && ch != '\n')
-	{
-		sb += ch;
-	}
-
-	return sb.ToString();
+	std::string ret;
+	std::getline(stream, ret);
+	return ret;
 }
 
 char xybase::TextStream::ReadChar()
 {
-	return fgetc(stream);
+	return stream.get();
 }
 
 uint8_t xybase::TextStream::ReadUInt8()
@@ -92,131 +81,136 @@ int32_t xybase::TextStream::ReadInt32()
 uint64_t xybase::TextStream::ReadUInt64()
 {
 	uint64_t ret{};
-	if (1 != fscanf(stream, "%llu", &ret)) throw IOException(name, u"Unspecified/Format error.");
+	stream >> ret;
 	return ret;
 }
 
 int64_t xybase::TextStream::ReadInt64()
 {
 	int64_t ret{};
-	if (1 != fscanf(stream, "%lld", &ret)) throw IOException(name, u"Unspecified/Format error.");
+	stream >> ret;
 	return ret;
 }
 
 float xybase::TextStream::ReadFloat()
 {
 	float ret{};
-	if (1 != fscanf(stream, "%f", &ret)) throw IOException(name, u"Unspecified/Format error.");
+	stream >> ret;
 	return ret;
 }
 
 double xybase::TextStream::ReadDouble()
 {
 	double ret{};
-		if (1 != fscanf(stream, "%lf", &ret)) throw IOException(name, u"Unspecified/Format error.");
+	stream >> ret;
 	return ret;
 }
 
 std::string xybase::TextStream::ReadString()
 {
-	StringBuilder<char> sb;
-
-	if (feof(stream))
-	{
-		throw IOException(name, u"Read at EOF.");
-	}
-
-	int ch = fgetc(stream);
-
-	while (ch != EOF && ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n')
-		sb.Append(ch);
-
-	if (ch != EOF) ungetc(ch, stream);
-
-	return sb.ToString();
+	std::string ret;
+	stream >> ret;
+	return ret;
 }
 
 void xybase::TextStream::ReadBytes(char *buffer, int limit)
 {
-	throw InvalidOperationException(u"Cannot read raw bytes from a text stream.", 2350);
+	throw InvalidOperationException(L"Cannot read raw bytes from a text stream.", 2350);
 }
 
 void xybase::TextStream::Write(char value)
 {
-	fprintf(stream, "%c", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(uint8_t value)
 {
-	fprintf(stream, "%hhu", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(int8_t value)
 {
-	fprintf(stream, "%hhd", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(uint16_t value)
 {
-	fprintf(stream, "%hu", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(int16_t value)
 {
-	fprintf(stream, "%hd", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(uint32_t value)
 {
-	fprintf(stream, "%u", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(int32_t value)
 {
-	fprintf(stream, "%d", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(uint64_t value)
 {
-	fprintf(stream, "%llu", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(int64_t value)
 {
-	fprintf(stream, "%lld", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(float value)
 {
-	fprintf(stream, "%f", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(double value)
 {
-	fprintf(stream, "%lf", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(const std::string &value)
 {
-	fprintf(stream, "%s", value.c_str());
+	stream << value;
 }
 
 void xybase::TextStream::Write(const char *value)
 {
-	fprintf(stream, "%s", value);
+	stream << value;
 }
 
 void xybase::TextStream::Write(const char *buffer, size_t size)
 {
-	throw InvalidOperationException(u"TextStream cannot write binary content.", 2351);
+	throw InvalidOperationException(L"TextStream cannot write binary content.", 2351);
 }
 
 size_t xybase::TextStream::Tell() const
 {
-	return ftell(stream);
+	throw xybase::NotImplementedException();
 }
 
-void xybase::TextStream::Seek(long long offset, int mode)
+void xybase::TextStream::Seek(long long offset, SeekMode mode)
 {
-	fseek(stream, offset, mode);
+	std::ios_base::seekdir sm;
+	switch (mode)
+	{
+	case xybase::Stream::SM_BEGIN:
+		sm = std::ios::beg;
+		break;
+	case xybase::Stream::SM_CURRENT:
+		sm = std::ios::cur;
+		break;
+	case xybase::Stream::SM_END:
+		sm = std::ios::end;
+		break;
+	default:
+		throw xybase::InvalidParameterException(L"mode", L"Invalid seek mode.", 6542);
+		break;
+	}
+	stream.seekg(offset, sm);
+	stream.seekp(offset, sm);
 }

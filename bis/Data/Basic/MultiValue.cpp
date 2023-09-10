@@ -8,7 +8,7 @@ using namespace mule::Data::Basic;
 
 const MultiValue MultiValue::MV_NULL = MultiValue(MultiValue::MVT_NULL);
 
-InvalidRValueException::InvalidRValueException(std::u16string description, int line) : xybase::Exception(description, line)
+InvalidRValueException::InvalidRValueException(std::wstring description, int line) : xybase::Exception(description, line)
 {
 }
 
@@ -450,7 +450,7 @@ void MultiValue::ParseInt(const std::u16string &value)
 			{
 				state = 2; // 确认是否为十六进制数
 			}
-			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"unexpected character.", __LINE__);
 			break;
 		case 1:
 			if ('0' <= *itr && *itr <= '9')
@@ -462,7 +462,7 @@ void MultiValue::ParseInt(const std::u16string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"unexpected character.", __LINE__);
 			break;
 		case 2:
 			if ('1' <= *itr && *itr <= '7')
@@ -485,7 +485,7 @@ void MultiValue::ParseInt(const std::u16string &value)
 				res = 0;
 				goto mvpi_forout;
 			}
-			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"unexpected character.", __LINE__);
 			break;
 		case 3:
 			if ('0' <= *itr && *itr <= '9')
@@ -505,7 +505,7 @@ void MultiValue::ParseInt(const std::u16string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"unexpected character.", __LINE__);
 			break;
 		case 4:
 			if ('0' <= *itr && *itr <= '7')
@@ -517,14 +517,14 @@ void MultiValue::ParseInt(const std::u16string &value)
 				type = MVT_UINT;
 				goto mvpi_forout; // 脱离循环
 			}
-			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"unexpected character.", __LINE__);
 			break;
 		case 5:
 			if (*itr == '0' || *itr == '1')
 			{
 				res = (res << 1) | (*itr - '0');
 			}
-			else throw xybase::InvalidParameterException(u"value", u"unexpected character.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"unexpected character.", __LINE__);
 		}
 	}
 	mvpi_forout:
@@ -629,7 +629,7 @@ void MultiValue::ParseString(const std::u16string &value, bool isBareString)
 		}
 	}
 	// 没有终结的引号
-	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw xybase::InvalidParameterException(u"value", u"Not a valid string representation.", __LINE__);
+	if (state != (isBareString ? MVPS_NORMAL : MVPS_OUT)) throw xybase::InvalidParameterException(L"value", L"Not a valid string representation.", __LINE__);
 
 	this->value.stringValue = new std::u16string(sb.ToString());
 }
@@ -646,7 +646,7 @@ void MultiValue::ParseReal(const std::u16string &value)
 		{
 			if (ch == '-') isNeg = 1;
 			else if (ch == '.') break;
-			else throw xybase::InvalidParameterException(u"value", u"not a valid real number.", __LINE__);
+			else throw xybase::InvalidParameterException(L"value", L"not a valid real number.", __LINE__);
 		}
 
 		if (flag)
@@ -784,7 +784,7 @@ void MultiValue::SetValue()
 
 MultiValue MultiValue::operator+(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(L"Type mismatching!", __LINE__);
 	
 	switch (type)
 	{
@@ -801,13 +801,13 @@ MultiValue MultiValue::operator+(const MultiValue& rvalue) const
 		return MultiValue(*value.stringValue + *rvalue.value.stringValue);
 		break;
 	default:
-		throw xybase::Exception(u"Type unknown.", __LINE__);
+		throw xybase::Exception(L"Type unknown.", __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator-(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(L"Type mismatching!", __LINE__);
 
 	switch (type)
 	{
@@ -821,16 +821,16 @@ MultiValue MultiValue::operator-(const MultiValue& rvalue) const
 		return MultiValue(value.realValue - rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw xybase::InvalidOperationException(u"String connot be subtracted.", __LINE__);
+		throw xybase::InvalidOperationException(L"String connot be subtracted.", __LINE__);
 		break;
 	default:
-		throw xybase::Exception(u"Type unknown.", __LINE__);
+		throw xybase::Exception(L"Type unknown.", __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator*(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(L"Type mismatching!", __LINE__);
 
 	switch (type)
 	{
@@ -844,16 +844,16 @@ MultiValue MultiValue::operator*(const MultiValue& rvalue) const
 		return MultiValue(value.realValue * rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw xybase::InvalidOperationException(u"String connot be multiplied.", __LINE__);
+		throw xybase::InvalidOperationException(L"String connot be multiplied.", __LINE__);
 		break;
 	default:
-		throw xybase::Exception(u"Type unknown.", __LINE__);
+		throw xybase::Exception(L"Type unknown.", __LINE__);
 	}
 }
 
 MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 {
-	if (type != rvalue.type) throw InvalidRValueException(u"Type mismatching!", __LINE__);
+	if (type != rvalue.type) throw InvalidRValueException(L"Type mismatching!", __LINE__);
 
 	switch (type)
 	{
@@ -867,10 +867,10 @@ MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 		return MultiValue(value.realValue / rvalue.value.realValue);
 		break;
 	case MVT_STRING:
-		throw xybase::InvalidOperationException(u"String connot be divided.", __LINE__);
+		throw xybase::InvalidOperationException(L"String connot be divided.", __LINE__);
 		break;
 	default:
-		throw xybase::Exception(u"Type unknown.", __LINE__);
+		throw xybase::Exception(L"Type unknown.", __LINE__);
 	}
 }
 

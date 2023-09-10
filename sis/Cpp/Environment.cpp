@@ -46,14 +46,14 @@ void mule::Cpp::Environment::OpenPlugin(std::string moduleName, std::string path
 
 	if (libraryHandle == NULL)
 	{
-		throw xybase::InvalidParameterException(u"path", u"Cannot load specified plugin.", __LINE__);
+		throw xybase::InvalidParameterException(L"path", L"Cannot load specified plugin.", __LINE__);
 	}
 
 	handlers[moduleName] = libraryHandle;
 
 	PluginDescription *(*getDesc)() = (PluginDescription *(*)())GetFunction(moduleName, "GetDescription");
 	if (getDesc == nullptr)
-		throw xybase::RuntimeException(u"Try to load an invalid plugin.", __LINE__);
+		throw xybase::RuntimeException(L"Try to load an invalid plugin.", __LINE__);
 	
 	auto desc = getDesc();
 	LoadDescription(desc);
@@ -73,7 +73,7 @@ void *mule::Cpp::Environment::GetFunction(std::string moduleName, std::string fu
 	auto &&itr = handlers.find(moduleName);
 	if (itr == handlers.end())
 	{
-		throw xybase::InvalidParameterException(u"moduleName", u"Unregistered module.", __LINE__);
+		throw xybase::InvalidParameterException(L"moduleName", L"Unregistered module.", __LINE__);
 	}
 	
 	return
@@ -89,7 +89,7 @@ void mule::Cpp::Environment::ClosePlugin(std::string moduleName)
 	auto &&itr = handlers.find(moduleName);
 	if (itr == handlers.end())
 	{
-		throw xybase::InvalidParameterException(u"moduleName", u"Unregistered module.", __LINE__);
+		throw xybase::InvalidParameterException(L"moduleName", L"Unregistered module.", __LINE__);
 	}
 
 #ifdef _WIN32

@@ -3,7 +3,7 @@
 #ifndef XY_TEXT_STREAM
 #define XY_TEXT_STREAM
 
-#include <cstdio>
+#include <fstream>
 #include <string>
 
 #include "Stream.h"
@@ -12,11 +12,11 @@ namespace xybase
 {
 	class TextStream : public Stream
 	{
-		std::u16string name;
+		std::wstring name;
 	public:
-		FILE *stream;
+		std::fstream stream;
 
-		TextStream(std::string path, int mode);
+		TextStream(std::string path, std::ios::openmode mode, std::string localeStr = {});
 
 		virtual ~TextStream();
 
@@ -53,15 +53,13 @@ namespace xybase
 		virtual void Write(const std::string &value) override;
 		virtual void Write(const char *value);
 		virtual size_t Tell() const override;
-		virtual void Seek(long long offset, int mode) override;
+		virtual void Seek(long long offset, SeekMode mode) override;
 	private:
 		virtual std::string ReadString() override;
 
 		virtual void ReadBytes(char *buffer, int limit) override;
 
 		virtual void Write(const char *buffer, size_t size) override;
-
-		bool open;
 	};
 }
 

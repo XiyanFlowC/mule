@@ -136,7 +136,22 @@ int seekFile(int fd, long long offset, int mode)
         return -1;
     }
 
-    itr->second->Seek(offset, mode);
+    xybase::Stream::SeekMode sm {};
+    switch (mode)
+    {
+    case 0:
+        sm = xybase::Stream::SM_BEGIN;
+        break;
+    case 1:
+        sm = xybase::Stream::SM_CURRENT;
+        break;
+    case 2:
+        sm = xybase::Stream::SM_END;
+        break;
+    default:
+        return -2;
+    }
+    itr->second->Seek(offset, sm);
 
     return 0;
 }
@@ -268,7 +283,7 @@ int writeTable(int fd, std::string handler)
 
     for (auto &&pair : titr->second)
     {
-        xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, 0);
+        xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, std::ios::in);
         proc->SetStream(stream);
         std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
         pair.second->Write(sitr->second, proc);
@@ -420,9 +435,9 @@ unsigned int exportFile(int fd)
     }
 
     auto &&stream = it->second;
-    stream->Seek(0, SEEK_END);
+    stream->Seek(0, xybase::Stream::SM_END);
     size_t length = stream->Tell();
-    stream->Seek(0, SEEK_SET);
+    stream->Seek(0, xybase::Stream::SM_BEGIN);
     char *buffer = new char[length];
     stream->ReadBytes(buffer, length);
     BinaryData bd{ buffer, length, false };
@@ -440,7 +455,7 @@ int importFile(int fd, unsigned int id)
     BinaryData bd = DataManager::GetInstance().LoadData(id);
 
     auto &&stream = it->second;
-    stream->Seek(0, 0);
+    stream->Seek(0, xybase::Stream::SM_BEGIN);
     stream->Write(bd.GetData(), bd.GetLength());
 
     return 0;
@@ -455,7 +470,7 @@ int SaveMemory()
 std::string setLocale(std::string loc)
 {
     char * ret = setlocale(LC_ALL, loc.c_str());
-    if (ret == nullptr) throw xybase::InvalidParameterException(u"loc", u"Failed to set locale.", 0x1000);
+    if (ret == nullptr) throw xybase::InvalidParameterException(L"loc", L"Failed to set locale.", 0x1000);
     return std::string{ret};
 }
 

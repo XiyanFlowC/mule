@@ -11,12 +11,12 @@ namespace xybase
 	class IOException : public RuntimeException
 	{
 	public:
-		IOException(const std::u16string &filename, const std::u16string &message, int err = errno);
+		IOException(const std::wstring &filename, const std::wstring &message, int err = errno);
 
-		virtual const std::u16string &GetFileName() const;
+		virtual const std::wstring &GetFileName() const;
 
 	protected:
-		std::u16string filename;
+		std::wstring filename;
 	};
 }
 

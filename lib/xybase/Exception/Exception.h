@@ -11,18 +11,18 @@ namespace xybase
 	class Exception : public std::exception
 	{
 	public:
-		Exception(const std::u16string &message, int err);
+		Exception(const std::wstring &message, int err);
 
 		virtual ~Exception();
 
 		virtual const char *what() const noexcept override;
 
-		virtual const std::u16string &GetMessage() const;
+		virtual const std::wstring &GetMessage() const;
 
 		virtual int GetErrorCode() const;
 
 	protected:
-		std::u16string message;
+		std::wstring message;
 		int err;
 		char *buf;
 	};

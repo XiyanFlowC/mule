@@ -1,12 +1,12 @@
 #include "IOException.h"
 #include "../xyutils.h"
 
-xybase::IOException::IOException(const std::u16string &filename, const std::u16string &message, int err)
-	: RuntimeException(message + u" (When operate file [" + filename + u"])", err), filename(filename)
+xybase::IOException::IOException(const std::wstring &filename, const std::wstring &message, int err)
+	: RuntimeException(message + L" (When operate file [" + filename + L"])", err), filename(filename)
 {
 }
 
-const std::u16string &xybase::IOException::GetFileName() const
+const std::wstring &xybase::IOException::GetFileName() const
 {
 	return filename;
 }

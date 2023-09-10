@@ -15,7 +15,7 @@ Table::Table(Type *structure, const std::u16string &name, int length, size_t off
 
 void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 {
-	stream->Seek(offset, SEEK_SET);
+	stream->Seek(offset, xybase::Stream::SM_BEGIN);
 	dataHandler->OnSheetReadStart();
 	dataHandler->OnRealmEnter((Type *)this, name);
 	for (int i = 0; i < length; ++i) {
@@ -39,7 +39,7 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 
 void Table::Write(xybase::Stream *stream, Type::DataHandler *dataHandler)
 {
-	stream->Seek(offset, SEEK_SET);
+	stream->Seek(offset, xybase::Stream::SM_BEGIN);
 	dataHandler->OnSheetWriteStart();
 	dataHandler->OnRealmEnter((Type *)this, name);
 	for (int i = 0; i < length; ++i) {

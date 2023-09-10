@@ -35,7 +35,7 @@ void mule::Data::VarChar::DoWrite(xybase::Stream *stream, const MultiValue &valu
 {
 	if (value.GetType() != Basic::MultiValue::MVT_STRING)
 	{
-		stream->Seek(Size(), 1);
+		stream->Seek(Size(), xybase::Stream::SM_CURRENT);
 		return;
 	}
 	auto &&str = *value.value.stringValue;

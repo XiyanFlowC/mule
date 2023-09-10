@@ -89,5 +89,5 @@ unsigned int FragmentManager::Alloc(size_t size, int align)
 			return ret;
 		}
 	}
-	throw xybase::InvalidOperationException(u"Run out of memory.", 32751);
+	throw xybase::InvalidOperationException(L"Cannot alloc anymore.", 32751);
 }

@@ -13,12 +13,12 @@ namespace xybase
 	class InvalidParameterException : public Exception
 	{
 	public:
-		InvalidParameterException(const std::u16string & param, const std::u16string &message, int err);
+		InvalidParameterException(const std::wstring & param, const std::wstring &message, int err);
 
-		virtual const std::u16string &GetParam() const;
+		virtual const std::wstring &GetParam() const;
 
 	protected:
-		std::u16string param;
+		std::wstring param;
 	};
 }
 #endif

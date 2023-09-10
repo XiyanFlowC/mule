@@ -20,7 +20,7 @@ namespace mule
 			class InvalidRValueException : public xybase::Exception
 			{
 			public:
-				InvalidRValueException(std::u16string description, int line);
+				InvalidRValueException(std::wstring description, int line);
 			};
 
 			/**

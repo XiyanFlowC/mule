@@ -26,7 +26,7 @@ void BinaryBlock::Write(xybase::Stream *stream, DataHandler *dataHandler)
 	MultiValue mv = dataHandler->OnDataWrite();
 	if (!mv.IsType(MultiValue::MVT_UINT))
 	{
-		stream->Seek(size, SEEK_CUR);
+		stream->Seek(size, xybase::Stream::SM_CURRENT);
 		return;
 	}
 	

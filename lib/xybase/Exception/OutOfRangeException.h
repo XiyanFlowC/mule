@@ -12,7 +12,7 @@ namespace xybase
 	class OutOfRangeException : public RuntimeException
 	{
 	public:
-		OutOfRangeException(const std::u16string & message, int err);
+		OutOfRangeException(const std::wstring & message, int err);
 	};
 }
 

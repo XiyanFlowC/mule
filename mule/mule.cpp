@@ -45,7 +45,7 @@ int main(int argc, char **argv)
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 
-	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_utf16(Configuration::GetInstance().TargetFile.c_str())));
+	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_wstring(Configuration::GetInstance().TargetFile.c_str())));
 
 	// setlocale(LC_ALL, "ja-JP");
 	// setlocale(LC_ALL, "zh-CN");

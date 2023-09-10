@@ -19,7 +19,7 @@ BinaryData ResourceManager::LoadResource(std::string path)
     FILE *f = fopen((Configuration::GetInstance().ResourcesDir + path).c_str(), "rb");
     if (f == NULL)
     {
-        if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open resource file.");
+        if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open resource file.");
     }
 
     fseek(f, 0, SEEK_END);
@@ -45,7 +45,7 @@ void ResourceManager::LoadDefinition(std::string def)
 
     if (f == NULL)
     {
-        if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(path), u"Unable to open definition file.");
+        if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open definition file.");
     }
 
     fseek(f, 0, SEEK_END);
@@ -137,7 +137,7 @@ std::string ResourceManager::LoadSheet(std::string sheetName)
     FILE *f = fopen((Configuration::GetInstance().SheetsDir + sheetName + ".xml").c_str(), "r");
     if (f == NULL)
     {
-        if (f == NULL) throw xybase::IOException(xybase::string::to_utf16(Configuration::GetInstance().SheetsDir + sheetName + ".xml"), u"Unable to open sheet.");
+        if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(Configuration::GetInstance().SheetsDir + sheetName + ".xml"), L"Unable to open sheet.");
     }
 
     fseek(f, 0, SEEK_END);
@@ -158,7 +158,7 @@ void ResourceManager::SaveSheet(std::string sheetName, std::string sheet)
     FILE *f = fopen((Configuration::GetInstance().SheetsDir + sheetName + ".xml").c_str(), "w");
     if (f == NULL)
     {
-        throw xybase::IOException(xybase::string::to_utf16(Configuration::GetInstance().SheetsDir + sheetName + ".xml"), u"Unable to open sheet for write.");
+        throw xybase::IOException(xybase::string::to_wstring(Configuration::GetInstance().SheetsDir + sheetName + ".xml"), L"Unable to open sheet for write.");
     }
 
     fwrite(sheet.c_str(), sheet.size(), 1, f);

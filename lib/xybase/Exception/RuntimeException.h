@@ -13,18 +13,18 @@ namespace xybase
 	class RuntimeException : public std::exception
 	{
 	public:
-		RuntimeException(const std::u16string &message, int err);
+		RuntimeException(const std::wstring &message, int err);
 
 		virtual ~RuntimeException();
 
 		virtual const char *what() const noexcept override;
 
-		virtual const std::u16string &GetMessage() const;
+		virtual const std::wstring &GetMessage() const;
 
 		virtual int GetErrorCode() const;
 
 	protected:
-		std::u16string message;
+		std::wstring message;
 		int err;
 		char *buf;
 	};
