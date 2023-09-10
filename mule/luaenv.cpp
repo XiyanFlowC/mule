@@ -256,7 +256,7 @@ int readTable(int fd, std::string handler)
 
         for (auto &&pair : titr->second)
         {
-            xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, 1);
+            xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, std::ios::out | std::ios::trunc);
             proc->SetStream(stream);
             std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
             pair.second->Read(sitr->second, proc);

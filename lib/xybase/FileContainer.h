@@ -12,6 +12,8 @@ namespace xybase
 	class FileContainer
 	{
 	public:
+		virtual ~FileContainer();
+
 		virtual std::u16string GetName() = 0;
 
 		enum FileOpenMode
