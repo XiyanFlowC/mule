@@ -6,19 +6,22 @@
 #include <cstdint>
 #include <string>
 
+#include "xyapi.h"
+
 namespace xybase
 {
 	const char endianTester[] = { '\xFF', 0};
+
+	extern XY_API bool bigEndianSystem;
 
 	/*
 	* Abstract class to handle the file I/O. For platform isolation.
 	* Avoid to using C/C++ default streaming I/O to handle the BE/LE correctly and
 	* ensure the upper layer need not handle BE/LE, addressing, etc.
 	*/
-	class Stream
+	class XY_API Stream
 	{
 	protected:
-		static bool bigEndianSystem;
 
 		bool isBigEndian = false;
 

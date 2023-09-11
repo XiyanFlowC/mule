@@ -365,7 +365,7 @@ std::wstring xybase::string::to_wstring(const std::string &str) noexcept
     if (size == (size_t)-1) return L"";
     assert(mbsinit(&state));
     wchar_t *buf = new wchar_t[size + 1];
-    int tmp = mbsrtowcs(buf, &pstr, size + 1, &state);
+    mbsrtowcs(buf, &pstr, size + 1, &state);
     buf[size] = 0;
     std::wstring ret {buf};
     delete[] buf;
@@ -432,7 +432,7 @@ std::string xybase::string::to_string(const std::wstring &str) noexcept
     if (size == (size_t)-1) return "";
     assert(mbsinit(&state));
     char *buf = new char[size + 1];
-    int tmp = wcsrtombs(buf, &pstr, size + 1, &state);
+    wcsrtombs(buf, &pstr, size + 1, &state);
     buf[size] = 0;
     std::string ret {buf};
     delete[] buf;

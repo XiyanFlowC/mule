@@ -9,7 +9,7 @@
 
 namespace xybase
 {
-	class FileContainer
+	class XY_API FileContainer
 	{
 	public:
 		virtual ~FileContainer();

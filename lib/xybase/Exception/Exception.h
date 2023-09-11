@@ -6,9 +6,11 @@
 #include <exception>
 #include <string>
 
+#include "../xyapi.h"
+
 namespace xybase
 {
-	class Exception : public std::exception
+	class XY_API Exception : public std::exception
 	{
 	public:
 		Exception(const std::wstring &message, int err);

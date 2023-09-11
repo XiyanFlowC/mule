@@ -5,9 +5,11 @@
 
 #include "Exception.h"
 
+#include "../xyapi.h"
+
 namespace xybase
 {
-	class NotImplementedException : public Exception
+	class XY_API NotImplementedException : public Exception
 	{
 	public:
 		NotImplementedException();

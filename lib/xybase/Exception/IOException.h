@@ -6,9 +6,11 @@
 #include "RuntimeException.h"
 #include <string>
 
+#include "../xyapi.h"
+
 namespace xybase
 {
-	class IOException : public RuntimeException
+	class XY_API IOException : public RuntimeException
 	{
 	public:
 		IOException(const std::wstring &filename, const std::wstring &message, int err = errno);

@@ -9,6 +9,8 @@ set (USING_LUA ON)
 
 set (CXX_STANDARD_REQUIRED ON)
 
+set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 if (MSVC)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
 endif()

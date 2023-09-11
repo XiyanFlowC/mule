@@ -6,11 +6,13 @@
 #include "Exception.h"
 #include <string>
 
+#include "../xyapi.h"
+
 namespace xybase
 {
 	const int INVALID_PARAMETER_EXCPETION_LEAD = 0x0001'0000;
 
-	class InvalidParameterException : public Exception
+	class XY_API InvalidParameterException : public Exception
 	{
 	public:
 		InvalidParameterException(const std::wstring & param, const std::wstring &message, int err);

@@ -1,6 +1,7 @@
 #include "RuntimeException.h"
 #include <cstring>
 #include "../xyutils.h"
+#include "../xystring.h"
 
 xybase::RuntimeException::RuntimeException(const std::wstring &message, int err)
 	: message(message), err(RUNTIME_EXCEPTION_LEAD | err)

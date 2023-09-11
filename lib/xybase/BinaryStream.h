@@ -12,9 +12,11 @@
 #include "Exception/InvalidOperationException.h"
 #include "StringBuilder.h"
 
+#include "xyapi.h"
+
 namespace xybase
 {
-	class BinaryStream : public xybase::StreamBasic
+	class XY_API BinaryStream : public xybase::StreamBasic
 	{
 	protected:
 		FILE *stream;

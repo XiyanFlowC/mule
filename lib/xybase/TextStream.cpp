@@ -50,32 +50,32 @@ char xybase::TextStream::ReadChar()
 
 uint8_t xybase::TextStream::ReadUInt8()
 {
-	return ReadUInt64();
+	return (uint8_t)ReadUInt64();
 }
 
 int8_t xybase::TextStream::ReadInt8()
 {
-	return ReadInt64();
+	return (int8_t)ReadInt64();
 }
 
 uint16_t xybase::TextStream::ReadUInt16()
 {
-	return ReadUInt64();
+	return (uint16_t)ReadUInt64();
 }
 
 int16_t xybase::TextStream::ReadInt16()
 {
-	return ReadInt64();
+	return (int16_t)ReadInt64();
 }
 
 uint32_t xybase::TextStream::ReadUInt32()
 {
-	return ReadUInt64();
+	return (uint32_t)ReadUInt64();
 }
 
 int32_t xybase::TextStream::ReadInt32()
 {
-	return ReadInt64();
+	return (int32_t)ReadInt64();
 }
 
 uint64_t xybase::TextStream::ReadUInt64()

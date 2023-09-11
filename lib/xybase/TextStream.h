@@ -8,9 +8,11 @@
 
 #include "Stream.h"
 
+#include "xyapi.h"
+
 namespace xybase
 {
-	class TextStream : public Stream
+	class XY_API TextStream : public Stream
 	{
 		std::wstring name;
 	public:

@@ -6,11 +6,13 @@
 #include "RuntimeException.h"
 #include <string>
 
+#include "../xyapi.h"
+
 namespace xybase
 {
 	const int INVALID_OPERATION_EXCEPTION_LEAD = 0x0001'0000;
 
-	class InvalidOperationException : public RuntimeException
+	class XY_API InvalidOperationException : public RuntimeException
 	{
 	public:
 		InvalidOperationException(const std::wstring &message, int err);

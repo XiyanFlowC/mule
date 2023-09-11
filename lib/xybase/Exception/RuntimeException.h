@@ -6,11 +6,13 @@
 #include <exception>
 #include <string>
 
+#include "../xyapi.h"
+
 namespace xybase
 {
 	const int RUNTIME_EXCEPTION_LEAD = 0x0100'0000;
 
-	class RuntimeException : public std::exception
+	class XY_API RuntimeException : public std::exception
 	{
 	public:
 		RuntimeException(const std::wstring &message, int err);

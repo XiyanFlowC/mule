@@ -1,7 +1,17 @@
 #include "BinaryStream.h"
+
+#include "xystring.h"
 #include "xyutils.h"
 
 using namespace xybase;
+
+#ifdef WIN32
+#define fseek _fseeki64
+#define ftell _ftelli64
+#else
+#define fseek fseeko64
+#define ftell ftello64
+#endif // WIN32
 
 BinaryStream::BinaryStream(std::wstring path, const wchar_t *mode, bool isBigEndian)
 	: name(path)

@@ -22,35 +22,35 @@ namespace xybase
 		 * @param codePoint Code Point.
 		 * @return The utf-8 encoded string.
 		*/
-		std::u8string to_utf8(long codePoint);
+		std::u8string XY_API to_utf8(long codePoint);
 
 		/**
 		 * @brief Encode a codepoint to utf-16
 		 * @param codepoint Code Point.
 		 * @return The utf-16 encoded string.
 		*/
-		std::u16string to_utf16(long codepoint);
+		std::u16string XY_API to_utf16(long codepoint);
 
 		/**
 		 * @brief Encode a codepoint to utf-32
 		 * @param codepoint Code Point.
 		 * @return The utf-32 encoded string.
 		*/
-		std::u32string to_utf32(long codepoint);
+		std::u32string XY_API to_utf32(long codepoint);
 
 		/**
 		 * @brief Get the codepoint for utf-8 (only process the first character).
 		 * @param str The character need to be processed.
 		 * @return The codepoint of given character.
 		*/
-		long to_codepoint(const std::u8string &str);
+		long XY_API to_codepoint(const std::u8string &str);
 
 		/**
 		 * @brief Get the codepoint for utf-16 (only process the first character).
 		 * @param str The character need to be processed.
 		 * @return The codepoint of given character.
 		*/
-		long to_codepoint(const std::u16string &str);
+		long XY_API to_codepoint(const std::u16string &str);
 
 		/* String type conversions. */
 
@@ -59,168 +59,168 @@ namespace xybase
 		 * @param str 
 		 * @return 
 		*/
-		std::u32string to_utf32(const std::string &str) noexcept;
+		std::u32string XY_API to_utf32(const std::string &str) noexcept;
 
 		/**
 		 * @brief Convert utf8 string to utf32 string
 		 * @param str 
 		 * @return 
 		*/
-		std::u32string to_utf32(const std::u8string &str) noexcept;
+		std::u32string XY_API to_utf32(const std::u8string &str) noexcept;
 
 		/**
 		 * @brief Convert utf16 string to utf32 string
 		 * @param str 
 		 * @return 
 		*/
-		std::u32string to_utf32(const std::u16string &str) noexcept;
+		std::u32string XY_API to_utf32(const std::u16string &str) noexcept;
 
 		/**
 		 * @brief Identical conversion.
 		 * @param str 
 		 * @return 
 		*/
-		std::u32string to_utf32(const std::u32string &str) noexcept;
+		std::u32string XY_API to_utf32(const std::u32string &str) noexcept;
 
 		/**
 		 * @brief Convert wstring to ucs-4 string
 		 * @param str 
 		 * @return 
 		*/
-		std::u32string to_utf32(const std::wstring &str) noexcept;
+		std::u32string XY_API to_utf32(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Convert local string to utf-16
 		 * @param str 
 		 * @return 
 		*/
-		std::u16string to_utf16(const std::string &str) noexcept;
+		std::u16string XY_API to_utf16(const std::string &str) noexcept;
 
 		/**
 		 * @brief Convert utf-8 to utf-16
 		 * @param str utf-8 string
 		 * @return utf-16 string
 		*/
-		std::u16string to_utf16(const std::u8string &str) noexcept;
+		std::u16string XY_API to_utf16(const std::u8string &str) noexcept;
 
 		/**
 		 * @brief Identical transform
 		 * @param str 
 		 * @return 
 		*/
-		std::u16string to_utf16(const std::u16string &str) noexcept;
+		std::u16string XY_API to_utf16(const std::u16string &str) noexcept;
 
 		/**
 		 * @brief Convert UCS-4 to Utf-16
 		 * @param str 
 		 * @return 
 		*/
-		std::u16string to_utf16(const std::u32string &str) noexcept;
+		std::u16string XY_API to_utf16(const std::u32string &str) noexcept;
 
 		/**
 		 * @brief Convert a wstring to utf16 string
 		 * @param str 
 		 * @return 
 		*/
-		std::u16string to_utf16(const std::wstring &str) noexcept;
+		std::u16string XY_API to_utf16(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Convert wstring to utf-8 string
 		 * @param str 
 		 * @return 
 		*/
-		std::u8string to_utf8(const std::wstring &str) noexcept;
+		std::u8string XY_API to_utf8(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Convert utf-16 to utf-8
 		 * @param str utf-16 string
 		 * @return utf-8 string
 		*/
-		std::u8string to_utf8(const std::u16string &str) noexcept;
+		std::u8string XY_API to_utf8(const std::u16string &str) noexcept;
 
 		/**
 		 * @brief identical transform
 		 * @param str 
 		 * @return 
 		*/
-		std::u8string to_utf8(const std::u8string &str) noexcept;
+		std::u8string XY_API to_utf8(const std::u8string &str) noexcept;
 
 		/**
 		 * @brief Convert local string to utf-8 string
 		 * @param str 
 		 * @return 
 		*/
-		std::u8string to_utf8(const std::string &str) noexcept;
+		std::u8string XY_API to_utf8(const std::string &str) noexcept;
 
 		/**
 		 * @brief 
 		 * @param str 
 		 * @return 
 		*/
-		std::wstring to_wstring(const std::string &str) noexcept;
+		std::wstring XY_API to_wstring(const std::string &str) noexcept;
 
 		/**
 		 * @brief Convert to wstring (platform specified)
 		 * @param str 
 		 * @return 
 		*/
-		std::wstring to_wstring(const std::u8string &str) noexcept;
+		std::wstring XY_API to_wstring(const std::u8string &str) noexcept;
 
 		/**
 		 * @brief Convert to wstring
 		 * @param str UTF-16 string
 		 * @return 
 		*/
-		std::wstring to_wstring(const std::u16string &str) noexcept;
+		std::wstring XY_API to_wstring(const std::u16string &str) noexcept;
 
 		/**
 		 * @brief Convert to wstring
 		 * @param str UCS-4 string
 		 * @return 
 		*/
-		std::wstring to_wstring(const std::u32string &str) noexcept;
+		std::wstring XY_API to_wstring(const std::u32string &str) noexcept;
 
 		/**
 		 * @brief Identical conversion
 		 * @param str 
 		 * @return 
 		*/
-		std::wstring to_wstring(const std::wstring &str) noexcept;
+		std::wstring XY_API to_wstring(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Identical conversion
 		 * @param str 
 		 * @return 
 		*/
-		std::string to_string(const std::string &str) noexcept;
+		std::string XY_API to_string(const std::string &str) noexcept;
 
 		/**
 		 * @brief Convert utf8 string to local string
 		 * @param str 
 		 * @return 
 		*/
-		std::string to_string(const std::u8string &str) noexcept;
+		std::string XY_API to_string(const std::u8string &str) noexcept;
 
 		/**
 		 * @brief Convert utf16 string to local string
 		 * @param str 
 		 * @return 
 		*/
-		std::string to_string(const std::u16string &str) noexcept;
+		std::string XY_API to_string(const std::u16string &str) noexcept;
 
 		/**
 		 * @brief Convert utf32 string to local string
 		 * @param str 
 		 * @return 
 		*/
-		std::string to_string(const std::u32string &str) noexcept;
+		std::string XY_API to_string(const std::u32string &str) noexcept;
 
 		/**
 		 * @brief Convert wstring to local string
 		 * @param str 
 		 * @return 
 		*/
-		std::string to_string(const std::wstring &str) noexcept;
+		std::string XY_API to_string(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Parse string to integer (up to base 36)

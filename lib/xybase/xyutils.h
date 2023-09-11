@@ -5,23 +5,27 @@
 
 #define XY_ALIGN(n, b) ((n) < 0 ? (n) & ~((b) - 1) : ((n + (b) - 1) & ~((b) - 1))
 
-#include "xystring.h"
+#include "xyapi.h"
 
 namespace xybase
 {
 	namespace io
 	{
-		enum AccessMode
-		{
-			PM_READ = 0x1,
-			PM_WRITE = 0x2,
-			PM_READWRITE = 0x3,
-			PM_EXECUTE = 0x4,
-		};
+		using AccessMode = int;
 
-		int access(const char *path, AccessMode mode);
+		const AccessMode PM_READ = 0x1;
+		const AccessMode PM_WRITE = 0x2;
+		const AccessMode PM_EXECUTE = 0x4;
 
-		int mkdir(const char *path);
+		/**
+		 * @brief 获得是否能以指定权限访问指定路径
+		 * @param path 指定路径
+		 * @param mode 要测试的访问权限
+		 * @return 
+		*/
+		int XY_API access(const char *path, AccessMode mode);
+
+		int XY_API mkdir(const char *path);
 	}
 }
 

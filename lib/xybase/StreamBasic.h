@@ -6,12 +6,14 @@
 #include "StringBuilder.h"
 #include "Stream.h"
 
+#include "xyapi.h"
+
 namespace xybase
 {
 	/**
 	 * @brief 提供基于ReadBytes和Write的其他函数实现，简化Stream实现类需编写的方法。
 	*/
-	class StreamBasic : public Stream
+	class XY_API StreamBasic : public Stream
 	{
 	public:
 		virtual ~StreamBasic();
