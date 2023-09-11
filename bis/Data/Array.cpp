@@ -1,5 +1,6 @@
 #include "Array.h"
-#include "../xybase/xyutils.h"
+#include <xyutils.h>
+#include <xystring.h>
 #include "Basic/ContextManager.h"
 
 using namespace mule::Data::Basic;

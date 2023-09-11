@@ -8,6 +8,7 @@
 #include <functional>
 
 #include <StringBuilder.h>
+#include <xystring.h>
 #include <xyutils.h>
 
 namespace mule

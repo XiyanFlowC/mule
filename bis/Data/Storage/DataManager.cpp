@@ -12,14 +12,14 @@ int DataManager::CreateDirectoryRecursively(std::string path, size_t index)
 
     if (endIndex == std::string::npos)
     {
-        if (xybase::io::access(path.c_str(), xybase::io::PM_READWRITE))
+        if (xybase::io::access(path.c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
         {
             return xybase::io::mkdir(path.c_str());
         }
     }
 
     std::string curPath = path.substr(0, endIndex);
-    if (xybase::io::access(curPath.c_str(), xybase::io::PM_READWRITE))
+    if (xybase::io::access(curPath.c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
     {
         xybase::io::mkdir(curPath.c_str());
     }
@@ -41,7 +41,7 @@ mule::Data::Storage::DataManager::~DataManager()
 
 void mule::Data::Storage::DataManager::Initialisation(const std::u16string &datadir)
 {
-    if (xybase::io::access(xybase::string::to_string(datadir).c_str(), xybase::io::AccessMode::PM_READWRITE))
+    if (xybase::io::access(xybase::string::to_string(datadir).c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
         throw xybase::InvalidParameterException(L"datadir", L"Inaccessible path.", 100);
     dataPath = datadir;
 
@@ -87,7 +87,7 @@ FILE *mule::Data::Storage::DataManager::OpenRaw(unsigned int id, bool create)
     char path[32];
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
     std::string pp = xybase::string::to_string(dataPath) + path;
-    if (xybase::io::access(pp.substr(0, pp.find_last_of('/')).c_str(), xybase::io::PM_READWRITE)) CreateDirectoryRecursively(pp.substr(0, pp.find_last_of('/')));
+    if (xybase::io::access(pp.substr(0, pp.find_last_of('/')).c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE)) CreateDirectoryRecursively(pp.substr(0, pp.find_last_of('/')));
 
     FILE *f = fopen(pp.c_str(), create ? "wb" : "rb");
 
@@ -114,7 +114,7 @@ unsigned int DataManager::SaveData(const BinaryData &data, unsigned int id)
 
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
     std::string pp = xybase::string::to_string(dataPath) + path;
-    if (xybase::io::access(pp.substr(0, pp.find_last_of('/')).c_str(), xybase::io::PM_READWRITE)) CreateDirectoryRecursively(pp.substr(0, pp.find_last_of('/')));
+    if (xybase::io::access(pp.substr(0, pp.find_last_of('/')).c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE)) CreateDirectoryRecursively(pp.substr(0, pp.find_last_of('/')));
     FILE *f = fopen(pp.c_str(), "wb");
     if (f == NULL)
     {

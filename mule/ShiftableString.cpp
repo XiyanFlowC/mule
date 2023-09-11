@@ -1,5 +1,6 @@
 #include "ShiftableString.h"
 
+#include <xystring.h>
 #include <xyutils.h>
 #include <Data/Storage/DataManager.h>
 #include <Stream/ElfStream.h>

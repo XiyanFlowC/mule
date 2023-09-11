@@ -100,6 +100,11 @@ void mule::Cpp::Environment::ClosePlugin(std::string moduleName)
 	handlers.erase(itr);
 }
 
+const std::list<PluginDescription *> &mule::Cpp::Environment::GetDescriptions()
+{
+	return descriptions;
+}
+
 mule::Data::Basic::Type::DataHandler *mule::Cpp::Environment::GetHandler(const std::u16string &name)
 {
 	for (auto &&itr : descriptions)

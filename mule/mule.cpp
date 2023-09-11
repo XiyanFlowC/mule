@@ -47,17 +47,12 @@ int main(int argc, char **argv)
 
 	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_wstring(Configuration::GetInstance().TargetFile.c_str())));
 
-	// setlocale(LC_ALL, "ja-JP");
-	// setlocale(LC_ALL, "zh-CN");
 	// Execution
 	try
 	{
 		if (argv[3] == std::string{"interact"})
 		{
 			puts("=====================================");
-			//puts("MULE who f**ked ArTonelico");
-			//puts("MULE User-configurable Large-file Editor");
-			//puts("MULE is a Utility for Limited Editing");
 			puts("Multiple-purpose User-configurable Large-file Editor");
 			puts("=====================================");
 			puts("Interaction Mode [Lua based]");

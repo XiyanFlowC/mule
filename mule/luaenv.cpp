@@ -470,7 +470,10 @@ int SaveMemory()
 std::string setLocale(std::string loc)
 {
     char * ret = setlocale(LC_ALL, loc.c_str());
-    if (ret == nullptr) throw xybase::InvalidParameterException(L"loc", L"Failed to set locale.", 0x1000);
+    if (ret == nullptr)
+    {
+        return "!Failed!";
+    }
     return std::string{ret};
 }
 

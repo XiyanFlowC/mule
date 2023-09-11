@@ -74,7 +74,7 @@ namespace mule
 				virtual size_t Size() const = 0;
 
 				/**
-				 * @brief 获得类型名（运行期反射协助用）
+				 * @brief 获得数据类型名
 				 * @return 类型名
 				*/
 				virtual std::u16string GetDataType() const = 0;

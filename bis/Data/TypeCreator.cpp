@@ -62,7 +62,7 @@ Basic::Type *mule::Data::BasicFieldCreator::DoCreateObject(std::u16string info, 
 	BasicType *ret = nullptr;
 	if (info.starts_with(u"int"))
 	{
-		int size = xybase::string::stoi(info.substr(3));
+		int size = (int)xybase::string::stoi(info.substr(3));
 		if (size != 8 && size != 16 && size != 32 && size != 64)
 		{
 			return nullptr;
@@ -72,7 +72,7 @@ Basic::Type *mule::Data::BasicFieldCreator::DoCreateObject(std::u16string info, 
 	}
 	else if (info.starts_with(u"uint"))
 	{
-		int size = xybase::string::stoi(info.substr(4));
+		int size = (int)xybase::string::stoi(info.substr(4));
 		if (size != 8 && size != 16 && size != 32 && size != 64)
 		{
 			return nullptr;
