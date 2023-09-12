@@ -3,8 +3,8 @@
 #define VAR_CHAR_H__
 
 #include "Basic/BasicType.h"
-#include "TypeCreator.h"
-#include "../xybase/xyutils.h"
+#include <Data/TypeCreator.h>
+#include <xyutils.h>
 
 namespace mule
 {

@@ -3,7 +3,7 @@
 #ifndef STRUCTURE_H__
 #define STRUCTURE_H__
 
-#include "Basic/Type.h"
+#include <Data/Basic/Type.h>
 #include <list>
 
 namespace mule

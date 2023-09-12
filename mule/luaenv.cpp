@@ -92,7 +92,7 @@ int openFile(std::string name)
         name = name.substr(devIndex + 1);
     }
 
-    auto ret = con->Open(xybase::string::to_utf16(name), xybase::FileContainer::FOM_READ_WRITE);
+    auto ret = con->Open(xybase::string::to_utf16(name), xybase::FOM_READ | xybase::FOM_WRITE);
     if (ret == nullptr)
     {
         return -1;
@@ -236,20 +236,6 @@ int readTable(int fd, std::string handler)
         return -2;
     }
 
-    if (handler == "mappifier")
-    {
-        MultiValue v{ MultiValue::MVT_MAP };
-        for (auto &&pair : titr->second)
-        {
-            Mappifier m;
-            std::wcout << L"Now processing " << xybase::string::to_wstring(pair.first) << std::endl;
-            pair.second->Read(sitr->second, &m);
-            (*v.value.mapValue)[xybase::string::to_utf16(pair.first)] = m.GetMap();
-        }
-        values[valued++] = v;
-    }
-    else
-    {
         auto proc = mule::Cpp::Environment::GetInstance().GetHandler(xybase::string::to_utf16(handler));
 
         if (proc == nullptr) return -3;
@@ -263,7 +249,6 @@ int readTable(int fd, std::string handler)
             stream->Close();
             delete stream;
         }
-    }
 
     return valued - 1;
 }

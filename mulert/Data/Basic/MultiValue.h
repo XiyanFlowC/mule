@@ -11,13 +11,15 @@
 #include <Exception/InvalidParameterException.h>
 #include <Exception/InvalidOperationException.h>
 
+#include "../../mulert_api.h"
+
 namespace mule
 {
 	namespace Data
 	{
 		namespace Basic
 		{
-			class InvalidRValueException : public xybase::Exception
+			class MULERT_API InvalidRValueException : public xybase::Exception
 			{
 			public:
 				InvalidRValueException(std::wstring description, int line);
@@ -26,7 +28,7 @@ namespace mule
 			/**
 			 * @brief 多用途值对象
 			*/
-			class MultiValue
+			class MULERT_API MultiValue
 			{
 				/**
 				 * @brief 引用类型引用计数器

@@ -15,7 +15,6 @@
 #include <Data/Referrence.h>
 #include <Data/TypeCreator.h>
 #include <Data/Table.h>
-#include <Data/Mappifier.h>
 #include <Data/VarChar.h>
 #include <Container/IsoContainer.h>
 #include <Stream/ElfStream.h>

@@ -3,8 +3,8 @@
 #ifndef TABLE_REF_H__
 #define TABLE_REF_H__
 
-#include "Basic/Type.h"
-#include "TypeCreator.h"
+#include <Data/Basic/Type.h>
+#include <Data/TypeCreator.h>
 
 namespace mule
 {

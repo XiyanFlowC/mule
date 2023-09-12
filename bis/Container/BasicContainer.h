@@ -22,6 +22,12 @@ namespace mule
 		int curId = 0;
 
 		std::u16string name;
+
+		enum {
+			BC_IDLE,
+			BC_READ,
+			BC_WRITE
+		} state;
 	protected:
 
 		xybase::Stream *file;
@@ -37,7 +43,7 @@ namespace mule
 		{
 			BasicContainer *host;
 
-			int token;
+			int handle;
 
 			size_t size, offset;
 
@@ -48,7 +54,7 @@ namespace mule
 
 			~InnerFile();
 
-			InnerFile(int token, size_t size, size_t offset, BasicContainer *host, const std::u16string &name);
+			InnerFile(int handle, size_t size, size_t offset, BasicContainer *host, const std::u16string &name);
 
 			virtual void ReadBytes(char *buffer, int limit) override;
 			virtual void Write(const char *buffer, size_t size) override;
@@ -71,7 +77,7 @@ namespace mule
 
 		BasicContainer(xybase::Stream *stream);
 
-		virtual xybase::Stream *Open(std::u16string name, FileOpenMode mode) override;
+		virtual xybase::Stream *Open(std::u16string name, xybase::FileOpenMode mode) override;
 
 		virtual std::list<std::u16string> List() override;
 

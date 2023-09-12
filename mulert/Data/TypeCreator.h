@@ -7,6 +7,8 @@
 
 #include "Basic/Type.h"
 
+#include "../mulert_api.h"
+
 namespace mule
 {
 	namespace Data
@@ -15,7 +17,7 @@ namespace mule
 		/**
 		 * @brief 字段创建器，ObjectManager用
 		*/
-		class TypeCreator
+		class MULERT_API TypeCreator
 		{
 		public:
 			virtual ~TypeCreator();
@@ -49,16 +51,6 @@ namespace mule
 
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
 			virtual Basic::Type *DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo);
-		};
-
-		/**
-		 * @brief 基本字段创建器，用于创建整形、浮点型等基础读写器。
-		*/
-		class BasicFieldCreator : public TypeCreator
-		{
-			virtual Basic::Type *DoCreateObject(std::u16string info) override;
-
-			virtual Basic::Type *DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> &metainfo);
 		};
 	}
 }

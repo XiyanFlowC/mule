@@ -3,9 +3,9 @@
 
 #pragma once
 
-#include "Basic/Type.h"
-#include "TypeCreator.h"
-#include "TypeManager.h"
+#include <Data/Basic/Type.h>
+#include <Data/TypeCreator.h>
+#include <Data/TypeManager.h>
 
 namespace mule
 {

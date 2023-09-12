@@ -33,7 +33,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
                 offset += entry->length;
                 isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
                 delete[] entry;
-                continue; /* . & ..，忽略 */
+                continue; /* . & ..，omit */
             }
             // std::cout << "Directory: " << directoryName << std::endl;
 

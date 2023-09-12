@@ -5,7 +5,7 @@
 
 #include <string>
 
-#include "Type.h"
+#include <Data/Basic/Type.h>
 #include "ContextManager.h"
 
 namespace mule

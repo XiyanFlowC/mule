@@ -5,7 +5,7 @@
 
 #include <Exception/InvalidParameterException.h>
 #include "BasicType.h"
-#include "MultiValue.h"
+#include <Data/Basic/MultiValue.h>
 
 namespace mule
 {

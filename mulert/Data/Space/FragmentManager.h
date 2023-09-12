@@ -7,6 +7,8 @@
 
 #include "Fragment.h"
 
+#include "../../mulert_api.h"
+
 namespace mule
 {
 	namespace Data
@@ -18,7 +20,7 @@ namespace mule
 #define cal_align(loc, align) (((loc) < 0) ? ((loc) & ~(align - 1)) : ((loc + (align - 1)) & ~(align - 1)))
 #endif
 
-			class FragmentManager
+			class MULERT_API FragmentManager
 			{
 				std::list<Fragment *> frags;
 

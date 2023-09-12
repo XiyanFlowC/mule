@@ -4,9 +4,11 @@
 #define DATA_MANAGER_H__
 
 #include <string>
+#include <map>
 
 #include "BinaryData.h"
-#include "BinaryBlock.h"
+
+#include "../../mulert_api.h"
 
 namespace mule
 {
@@ -14,7 +16,7 @@ namespace mule
 	{
 		namespace Storage
 		{
-			class DataManager
+			class MULERT_API DataManager
 			{
 
 				int CreateDirectoryRecursively(std::string path, size_t index = 0);

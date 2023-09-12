@@ -15,9 +15,9 @@ namespace xybase
 	extern XY_API bool bigEndianSystem;
 
 	/*
-	* Abstract class to handle the file I/O. For platform isolation.
-	* Avoid to using C/C++ default streaming I/O to handle the BE/LE correctly and
-	* ensure the upper layer need not handle BE/LE, addressing, etc.
+	* 处理文件I/O的抽象类。用于平台隔离。
+	* 避免使用C/C++默认的流式I/O来正确处理BE/LE
+	* 确保上层不需要处理BE/LE、寻址差异等。
 	*/
 	class XY_API Stream
 	{

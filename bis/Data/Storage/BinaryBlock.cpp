@@ -1,7 +1,7 @@
 #include "BinaryBlock.h"
 
 #include <xystring.h>
-#include "DataManager.h"
+#include <Data/Storage/DataManager.h>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data::Storage;

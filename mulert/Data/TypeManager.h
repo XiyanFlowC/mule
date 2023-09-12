@@ -4,10 +4,11 @@
 #define TYPE_MANAGER_H__
 
 #include "Basic/Type.h"
-#include "Structure.h"
 #include "TypeCreator.h"
 #include <map>
 #include <string>
+
+#include "../mulert_api.h"
 
 namespace mule
 {
@@ -17,7 +18,7 @@ namespace mule
 		 * @brief Singleton Type Manager. Used to manage all of the objects in the environment.
 		 * The other components should get registered objects from this class.
 		*/
-		class TypeManager
+		class MULERT_API TypeManager
 		{
 			TypeManager();
 			~TypeManager();

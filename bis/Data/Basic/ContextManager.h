@@ -6,7 +6,7 @@
 #include <map>
 #include <string>
 
-#include "../Basic/MultiValue.h"
+#include <Data/Basic/MultiValue.h>
 
 namespace mule
 {

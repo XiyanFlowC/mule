@@ -6,6 +6,12 @@ using namespace mule;
 
 void mule::BasicContainer::ReadBytes(int id, char *buffer, int size)
 {
+	if (state == BC_WRITE)
+	{
+		file->Flush();
+	}
+	state = BC_READ;
+
 	if (locs[id] + size > fdMap[id]->curSize)
 		throw xybase::OutOfRangeException(L"Try to read after EOF.", __LINE__);
 	if (file->Tell() != locs[id] + fdMap[id]->offset)
@@ -18,6 +24,12 @@ void mule::BasicContainer::ReadBytes(int id, char *buffer, int size)
 
 void mule::BasicContainer::Write(int id, const char *buffer, size_t size)
 {
+	if (state == BC_READ)
+	{
+		file->Seek(0, xybase::Stream::SM_CURRENT);
+	}
+	state = BC_WRITE;
+
 	if (locs[id] + size > fdMap[id]->size)
 		throw xybase::OutOfRangeException(L"Write exceed maximum size.", __LINE__);
 	if (file->Tell() != locs[id] + fdMap[id]->offset)
@@ -40,19 +52,21 @@ void mule::BasicContainer::Close(int id)
 }
 
 BasicContainer::BasicContainer(xybase::Stream * stream)
+	: state{BC_IDLE}
 {
 	file = stream;
 	name = stream->GetName() + u":";
 }
 
-xybase::Stream *BasicContainer::Open(std::u16string name, FileOpenMode mode)
+xybase::Stream *BasicContainer::Open(std::u16string name, xybase::FileOpenMode mode)
 {
 	auto &&it = fileIndices.find(name);
 	if (it == fileIndices.end()) return nullptr;
 	if (it->second.occupied) return nullptr;
 
 	it->second.occupied = true;
-	if (mode == FOM_TRUNCATE) it->second.curSize = 0;
+	if (mode & xybase::FOM_TRUNCATE) it->second.curSize = 0;
+	if (mode & xybase::FOM_APPEND) locs[curId] = it->second.curSize;
 	
 	fdMap[curId] = &it->second;
 	return new InnerFile(curId++, it->second.size, it->second.offset, this, name);
@@ -95,8 +109,8 @@ void mule::BasicContainer::Remove(std::u16string target, bool recursive)
 	throw xybase::NotImplementedException();
 }
 
-mule::BasicContainer::InnerFile::InnerFile(int token, size_t size, size_t offset, BasicContainer *host, const std::u16string &name)
-	: token(token), host(host), size(size), offset(offset)
+mule::BasicContainer::InnerFile::InnerFile(int handle, size_t size, size_t offset, BasicContainer *host, const std::u16string &name)
+	: handle(handle), host(host), size(size), offset(offset)
 {
 	this->name = host->GetName() + name;
 }
@@ -108,38 +122,38 @@ mule::BasicContainer::InnerFile::~InnerFile()
 
 void mule::BasicContainer::InnerFile::ReadBytes(char *buffer, int limit)
 {
-	host->ReadBytes(token, buffer, limit);
+	host->ReadBytes(handle, buffer, limit);
 }
 
 void mule::BasicContainer::InnerFile::Write(const char *buffer, size_t size)
 {
-	host->Write(token, buffer, size);
+	host->Write(handle, buffer, size);
 }
 
 size_t mule::BasicContainer::InnerFile::Tell() const
 {
-	return host->locs[token];
+	return host->locs[handle];
 }
 
 void mule::BasicContainer::InnerFile::Seek(long long offset, SeekMode mode)
 {
 	if (mode == SM_BEGIN)
 	{
-		host->locs[token] = offset;
+		host->locs[handle] = offset;
 	}
 	else if (mode == SM_CURRENT)
 	{
-		host->locs[token] += offset;
+		host->locs[handle] += offset;
 	}
 	else if (mode == SM_END)
 	{
-		host->locs[token] = this->size + offset;
+		host->locs[handle] = this->size + offset;
 	}
 }
 
 void mule::BasicContainer::InnerFile::Close()
 {
-	host->Close(token);
+	host->Close(handle);
 }
 
 std::u16string mule::BasicContainer::InnerFile::GetName() const

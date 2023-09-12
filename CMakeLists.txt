@@ -23,6 +23,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
 
 # 包含子项目。
 add_subdirectory ("lib")
+add_subdirectory ("mulert")
 add_subdirectory ("bis")
 add_subdirectory ("sis")
 add_subdirectory ("mule")

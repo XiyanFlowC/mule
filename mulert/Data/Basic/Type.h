@@ -1,12 +1,11 @@
 #pragma once
 
-#ifndef OBJECT_H__
-#define OBJECT_H__
-
 #include <map>
 #include <string>
 #include <Stream.h>
 #include "MultiValue.h"
+
+#include "../../mulert_api.h"
 
 namespace mule
 {
@@ -14,11 +13,11 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class Type
+			class MULERT_API Type
 			{
 			public:
 
-				class DataHandler
+				class MULERT_API DataHandler
 				{
 				public:
 
@@ -33,28 +32,28 @@ namespace mule
 					/**
 					 * @brief 进入具名领域
 					 * @param realm 领域名
-					 * @param name 
+					 * @param name
 					*/
-					virtual void OnRealmEnter(Type *realm, const std::u16string& name) = 0;
+					virtual void OnRealmEnter(Type *realm, const std::u16string &name) = 0;
 
 					/**
 					 * @brief 离开具名领域
-					 * @param realm 
-					 * @param name 
+					 * @param realm
+					 * @param name
 					*/
-					virtual void OnRealmExit(Type *realm, const std::u16string& name) = 0;
+					virtual void OnRealmExit(Type *realm, const std::u16string &name) = 0;
 
 					/**
 					 * @brief 进入索引领域
-					 * @param realm 
-					 * @param idx 
+					 * @param realm
+					 * @param idx
 					*/
 					virtual void OnRealmEnter(Type *realm, int idx) = 0;
 
 					/**
 					 * @brief 离开索引领域
-					 * @param realm 
-					 * @param idx 
+					 * @param realm
+					 * @param idx
 					*/
 					virtual void OnRealmExit(Type *realm, int idx) = 0;
 
@@ -94,7 +93,7 @@ namespace mule
 
 				/**
 				 * @brief 指示该类型是否为复合类型
-				 * @return 
+				 * @return
 				*/
 				virtual bool IsComposite() const;
 
@@ -115,5 +114,3 @@ namespace mule
 		}
 	}
 }
-
-#endif

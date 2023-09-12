@@ -3,8 +3,8 @@
 
 #include <string>
 
-#include "Basic/Type.h"
-#include "../xybase/Stream.h"
+#include <Data/Basic/Type.h>
+#include <Stream.h>
 
 namespace mule {
 	namespace Data {

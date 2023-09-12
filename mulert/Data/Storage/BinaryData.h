@@ -5,13 +5,15 @@
 
 #include <memory>
 
+#include "../../mulert_api.h"
+
 namespace mule
 {
 	namespace Data
 	{
 		namespace Storage
 		{
-			class BinaryData
+			class MULERT_API BinaryData
 			{
 				std::shared_ptr<char[]> data;
 				size_t length;

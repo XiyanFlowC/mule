@@ -1,7 +1,7 @@
 #include "TableRef.h"
 
 #include "Basic/ContextManager.h"
-#include "TypeManager.h"
+#include <Data/TypeManager.h>
 
 size_t mule::Data::TableRef::Size() const
 {

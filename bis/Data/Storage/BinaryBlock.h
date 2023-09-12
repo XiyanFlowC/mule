@@ -3,8 +3,8 @@
 #ifndef BINARY_BLOCK_H__
 #define BINARY_BLOCK_H__
 
-#include "../Basic/Type.h"
-#include "../TypeCreator.h"
+#include <Data/Basic/Type.h>
+#include <Data/TypeCreator.h>
 
 namespace mule
 {

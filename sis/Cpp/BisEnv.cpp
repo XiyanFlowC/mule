@@ -3,10 +3,10 @@
 #include <Container/IsoContainer.h>
 #include <Data/Array.h>
 #include <Data/Referrence.h>
-#include <Data/Mappifier.h>
 #include <Data/TableRef.h>
 #include <Data/VarChar.h>
 #include <Data/Storage/BinaryBlock.h>
+#include <Data/BasicTypeCreator.h>
 #include <Stream/ElfStream.h>
 
 #include "CStyleInitHandler.h"
@@ -60,7 +60,7 @@ TypeCreator *BisEnvGetCreators()
 	auto ret = new Array::ArrayCreator();
 	ret->nextCreator = new TableRef::TableRefCreator();
 	ret->nextCreator->nextCreator = new Referrence::ReferrenceCreator();
-	ret->nextCreator->nextCreator->nextCreator = new BasicFieldCreator();
+	ret->nextCreator->nextCreator->nextCreator = new BasicTypeCreator();
 	ret->nextCreator->nextCreator->nextCreator->nextCreator = new Storage::BinaryBlock::BinaryBlockCreator();
 	ret->nextCreator->nextCreator->nextCreator->nextCreator->nextCreator = new VarChar::VarCharCreator();
 

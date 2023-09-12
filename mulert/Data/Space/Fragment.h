@@ -5,6 +5,8 @@
 
 #include <Exception/InvalidParameterException.h>
 
+#include "../../mulert_api.h"
+
 namespace mule
 {
 	namespace Data
@@ -14,7 +16,7 @@ namespace mule
 			/**
 			 * @brief 存储片段，用于标记一段左闭右开区间
 			*/
-			class Fragment
+			class MULERT_API Fragment
 			{
 				unsigned int begin, size;
 
