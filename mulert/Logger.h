@@ -39,7 +39,11 @@ namespace mule
 		template<typename... Args>
 		void Output(FILE * dest, const std::wstring &name, const std::wstring &fmt, Args...args) const
 		{
+#ifndef DISABLE_TERMINAL_ANSI_ESCAPE
 			std::wstring vfmt = std::format(L"[{}\033[0m] \033[94;40m{}\033[0m - {}\n", name, className, fmt);
+#else
+			std::wstring vfmt = std::format(L"[{}] {}:\n {}\n", name, className, fmt);
+#endif
 			fputws(std::vformat(vfmt, std::make_wformat_args(args...)).c_str(), dest);
 		}
 	public:
@@ -56,7 +60,11 @@ namespace mule
 		void Debug(const std::wstring &fmt, Args...args) const
 		{
 			if (logLevel > 0) return;
-			Output(LoggerConfig::GetOutput(), L"Debug", fmt, args...);
+#ifndef DISABLE_TERMINAL_ANSI_ESCAPE
+			Output(LoggerConfig::GetOutput(), L"\033[96mDebug", fmt, args...);
+#else
+			Output(LoggerConfig::GetOutput(), L"\033[96mDebug", fmt, args...);
+#endif
 		}
 
 		template<typename... Args>
@@ -70,20 +78,32 @@ namespace mule
 		void Warn(const std::wstring &fmt, Args...args) const
 		{
 			if (logLevel > 2) return;
+#ifndef DISABLE_TERMINAL_ANSI_ESCAPE
 			Output(LoggerConfig::GetOutput(), L"\033[93mWarn", fmt, args...);
+#else
+			Output(LoggerConfig::GetOutput(), L"Warn", fmt, args...);
+#endif
 		}
 
 		template<typename... Args>
 		void Error(const std::wstring &fmt, Args...args) const
 		{
 			if (logLevel > 3) return;
+#ifndef DISABLE_TERMINAL_ANSI_ESCAPE
 			Output(LoggerConfig::GetErrorOutput(), L"\033[91mError", fmt, args...);
+#else
+			Output(LoggerConfig::GetErrorOutput(), L"Error", fmt, args...);
+#endif
 		}
 
 		template<typename... Args>
 		void Fatal(const std::wstring &fmt, Args...args) const
 		{
+#ifndef DISABLE_TERMINAL_ANSI_ESCAPE
 			Output(LoggerConfig::GetErrorOutput(), L"\033[31;103mFatal", fmt, args...);
+#else
+			Output(LoggerConfig::GetErrorOutput(), L"Fatal", fmt, args...);
+#endif
 		}
 	};
 }

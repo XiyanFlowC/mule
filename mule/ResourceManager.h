@@ -23,9 +23,13 @@
 #include "Configuration.h"
 #include "crc32.h"
 
+#include <Logger.h>
+
 class ResourceManager
 {
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
+
+	mule::Logger logger = mule::Logger::GetLogger<ResourceManager>();
 	
 public:
 

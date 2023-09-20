@@ -89,6 +89,7 @@ Basic::Type *mule::Data::TypeManager::GetOrCreateType(std::u16string name, const
 
 	if (objects.contains(mangledName)) return objects[mangledName];
 
+	logger.Info(L"New type {}[mangled] registered.", xybase::string::to_wstring(mangledName));
 	// 返回创建结果
 	return objects[mangledName] = first->CreateType(name, metainfo);
 }

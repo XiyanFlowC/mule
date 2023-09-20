@@ -22,6 +22,8 @@ BinaryData ResourceManager::LoadResource(std::string path)
         if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open resource file.");
     }
 
+    logger.Info(L"Opened resource file {}", xybase::string::to_wstring(path));
+
     fseek(f, 0, SEEK_END);
     size_t length = ftell(f);
     fseek(f, 0, SEEK_SET);
@@ -59,14 +61,14 @@ void ResourceManager::LoadDefinition(std::string def)
     XmlNode root = xmlParser.Parse(buffer);
     if (xmlParser.error != "")
     {
-        fputs(xmlParser.error.c_str(), stderr);
+        logger.Fatal(xybase::string::to_wstring(xmlParser.error).c_str());
         return;
     }
 
     // 处理结构
     if (root.GetName() != u"def")
     {
-        fputs("XML Definition Format Incorrect: Root node (signation) mismatch.\n", stderr);
+        logger.Fatal(L"XML Definition Format Incorrect: Root node (signation) mismatch.");
         return;
     }
 
@@ -74,7 +76,7 @@ void ResourceManager::LoadDefinition(std::string def)
     {
         if (child.IsTextNode())
         {
-            fputs("XML Definition Format Incorrect: No text allowed in def tag.\n", stderr);
+            logger.Fatal(L"XML Definition Format Incorrect: No text allowed in def tag.");
             return;
         }
 
@@ -85,7 +87,7 @@ void ResourceManager::LoadDefinition(std::string def)
             {
                 if (field.GetName() != u"field")
                 {
-                    fputs("XML Definition Format Incorrect: Only feild tag is allowed in struct.\n", stderr);
+                    logger.Fatal(L"XML Definition Format Incorrect: Only feild tag is allowed in struct.");
                     return;
                 }
 
@@ -97,7 +99,7 @@ void ResourceManager::LoadDefinition(std::string def)
                     {
                         if (metadatum.IsTextNode())
                         {
-                            fputs("XML Definition Format Incorrect: No text allowed in tag field.\n", stderr);
+                            logger.Fatal(L"XML Definition Format Incorrect: No text allowed in tag field.");
                             return;
                         }
 
@@ -108,7 +110,7 @@ void ResourceManager::LoadDefinition(std::string def)
                 auto ret = TypeManager::GetInstance().GetOrCreateType(field.GetAttribute(u"type"), metainfo);
                 if (ret == nullptr)
                 {
-                    fprintf(stderr, "Invalid type: %s in definition of type %s\n", xybase::string::to_string(field.GetAttribute(u"type")).c_str(), xybase::string::to_string(child.name).c_str());
+                    logger.Error(L"Invalid type: {} in definition of type {}", xybase::string::to_wstring(field.GetAttribute(u"type")), xybase::string::to_wstring(child.name));
                 }
                 structure->AppendField(field.GetAttribute(u"name"), ret);
             }
@@ -126,7 +128,7 @@ void ResourceManager::LoadDefinition(std::string def)
         else if (child.GetName() == u"")
             continue;
         else
-            fprintf(stderr, "Invalid tag: %s", xybase::string::to_string(child.GetName()).c_str());
+            logger.Warn(L"Invalid tag: {}, ignoring...", xybase::string::to_wstring(child.GetName()));
     }
 
     delete[] buffer;
