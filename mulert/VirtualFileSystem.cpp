@@ -20,12 +20,14 @@ const std::list<std::u16string> &mule::VirtualFileSystem::List(const char16_t *c
 xybase::Stream *mule::VirtualFileSystem::Open(const char16_t *p_path, xybase::FileOpenMode openMode)
 {
 	std::u16string fullpath = p_path;
-	std::u16string root = fullpath.substr(fullpath.find_first_of(':')), path = fullpath.substr(fullpath.find_first_of(':') + 1);
+	std::u16string root = fullpath.substr(0, fullpath.find_first_of(':')), path = fullpath.substr(fullpath.find_first_of(':') + 1);
 
 	logger.Info(L"Opening {} of root {}...", xybase::string::to_wstring(path), xybase::string::to_wstring(root));
 
 	auto &&it = containers.find(root);
 	if (it == containers.end()) return nullptr;
+
+	logger.Info(L"Root {} found.", xybase::string::to_wstring(root));
 	return it->second->Open(path, openMode);
 }
 

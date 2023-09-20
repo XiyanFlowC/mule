@@ -39,7 +39,7 @@ namespace mule
 		template<typename... Args>
 		void Output(FILE * dest, const std::wstring &name, const std::wstring &fmt, Args...args) const
 		{
-			std::wstring vfmt = std::format(L"[{}] {} - {}\n", name, className, fmt);
+			std::wstring vfmt = std::format(L"[{}\033[0m] \033[94;40m{}\033[0m - {}\n", name, className, fmt);
 			fputws(std::vformat(vfmt, std::make_wformat_args(args...)).c_str(), dest);
 		}
 	public:
@@ -70,20 +70,20 @@ namespace mule
 		void Warn(const std::wstring &fmt, Args...args) const
 		{
 			if (logLevel > 2) return;
-			Output(LoggerConfig::GetOutput(), L"Warn", fmt, args...);
+			Output(LoggerConfig::GetOutput(), L"\033[93mWarn", fmt, args...);
 		}
 
 		template<typename... Args>
 		void Error(const std::wstring &fmt, Args...args) const
 		{
 			if (logLevel > 3) return;
-			Output(LoggerConfig::GetErrorOutput(), L"Error", fmt, args...);
+			Output(LoggerConfig::GetErrorOutput(), L"\033[91mError", fmt, args...);
 		}
 
 		template<typename... Args>
 		void Fatal(const std::wstring &fmt, Args...args) const
 		{
-			Output(LoggerConfig::GetErrorOutput(), L"Fatal", fmt, args...);
+			Output(LoggerConfig::GetErrorOutput(), L"\033[31;103mFatal", fmt, args...);
 		}
 	};
 }

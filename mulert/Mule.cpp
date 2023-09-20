@@ -82,9 +82,9 @@ std::wstring mule::Mule::ShowPlugins()
 		sb.Append(L"Plugin ");
 		sb.Append(desc->name);
 		sb.Append(L"\tVer.");
-		sb.Append(desc->majorVer);
+		sb.Append(std::to_wstring(desc->majorVer).c_str());
 		sb.Append('.');
-		sb.Append(desc->minorVer);
+		sb.Append(std::to_wstring(desc->minorVer).c_str());
 		sb.Append('\t');
 		sb.Append(desc->licence);
 		sb.Append(L"\tby ");
