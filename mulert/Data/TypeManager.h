@@ -8,6 +8,7 @@
 #include <map>
 #include <string>
 
+#include "../Logger.h"
 #include "../mulert_api.h"
 
 namespace mule
@@ -20,6 +21,8 @@ namespace mule
 		*/
 		class MULERT_API TypeManager
 		{
+			Logger logger = Logger::GetLogger<TypeManager>();
+
 			TypeManager();
 			~TypeManager();
 		public:

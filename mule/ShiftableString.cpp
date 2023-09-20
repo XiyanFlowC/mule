@@ -2,7 +2,7 @@
 
 #include <xystring.h>
 #include <xyutils.h>
-#include <Data/Storage/DataManager.h>
+#include <Storage/DataManager.h>
 #include <Stream/ElfStream.h>
 
 #define SRMM_DATAFILE_ID (0x0A00'3939)
@@ -45,14 +45,14 @@ void ShiftableString::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
-void ShiftableString::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void ShiftableString::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
-	const MultiValue &mv = dataHandler->OnDataWrite();
+	const MultiValue &mv = fileHandler->OnDataWrite();
 	// 分配空间
 	if (mv.IsType(MultiValue::MVT_STRING))
 	{
 		size_t ptr;
-		auto str = xybase::string::to_string(*dataHandler->OnDataWrite().value.stringValue);
+		auto str = xybase::string::to_string(*fileHandler->OnDataWrite().value.stringValue);
 		/*if (str == "")
 			ptr = 0xA79750;
 		else*/
@@ -102,12 +102,12 @@ Type *ShiftableString::ShiftableStringCreator::DoCreateObject(std::u16string inf
 
 ShiftableString::MemoryManager::MemoryManager()
 {
-	FILE *cache = mule::Data::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID);
+	FILE *cache = mule::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID);
 
 	if (cache == nullptr) return;
 
 	size_t size;
-	fscanf(cache, "%llu\n", &size);
+	fscanf(cache, "%zu\n", &size);
 	for (size_t i = 0; i < size; ++i)
 	{
 		char buffer[1024];
@@ -118,7 +118,7 @@ ShiftableString::MemoryManager::MemoryManager()
 			return;
 		}
 		size_t count;
-		fscanf(cache, "%llu", &count);
+		fscanf(cache, "%zu", &count);
 		fprintf(stderr, "File %s On Reg...", buffer);
 		auto &fm = memories[xybase::string::to_utf16(buffer)];
 		for (size_t j = 0; j < count; ++j)
@@ -172,7 +172,7 @@ size_t ShiftableString::MemoryManager::AssignFor(xybase::Stream *stream, const s
 
 void ShiftableString::MemoryManager::SaveFreeSpace()
 {
-	FILE *file = mule::Data::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID, true);
+	FILE *file = mule::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID, true);
 	fprintf(file, "%llu\n", static_cast<unsigned long long>(memories.size()));
 	for (auto &&item : memories)
 	{

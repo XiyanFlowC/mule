@@ -4,7 +4,7 @@
 #include <xyutils.h>
 #include <Exception/IOException.h>
 
-using namespace mule::Data::Storage;
+using namespace mule::Storage;
 
 int DataManager::CreateDirectoryRecursively(std::string path, size_t index)
 {
@@ -26,20 +26,20 @@ int DataManager::CreateDirectoryRecursively(std::string path, size_t index)
     return CreateDirectoryRecursively(path, endIndex + 1);
 }
 
-DataManager &mule::Data::Storage::DataManager::GetInstance()
+DataManager &mule::Storage::DataManager::GetInstance()
 {
 	static DataManager _inst{};
 	return _inst;
 }
 
-mule::Data::Storage::DataManager::~DataManager()
+mule::Storage::DataManager::~DataManager()
 {
     auto f = OpenRaw(0, true);
     fprintf(f, "%u\n", currentId);
     fclose(f);
 }
 
-void mule::Data::Storage::DataManager::Initialisation(const std::u16string &datadir)
+void mule::Storage::DataManager::Initialise(const std::u16string &datadir)
 {
     if (xybase::io::access(xybase::string::to_string(datadir).c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
         throw xybase::InvalidParameterException(L"datadir", L"Inaccessible path.", 100);
@@ -82,7 +82,7 @@ BinaryData DataManager::LoadData(unsigned int id)
     return BinaryData(buffer, length, false);
 }
 
-FILE *mule::Data::Storage::DataManager::OpenRaw(unsigned int id, bool create)
+FILE *mule::Storage::DataManager::OpenRaw(unsigned int id, bool create)
 {
     char path[32];
     sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
@@ -127,7 +127,7 @@ unsigned int DataManager::SaveData(const BinaryData &data, unsigned int id)
     return id;
 }
 
-unsigned int mule::Data::Storage::DataManager::SaveData(const BinaryData &data)
+unsigned int mule::Storage::DataManager::SaveData(const BinaryData &data)
 {
     while (IsExist(currentId)) currentId++;
 

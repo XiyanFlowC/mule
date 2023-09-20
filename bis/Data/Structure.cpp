@@ -28,11 +28,11 @@ void Structure::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	}
 }
 
-void Structure::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void Structure::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	for (Field *field : fields)
 	{
-		field->Write(stream, dataHandler);
+		field->Write(stream, fileHandler);
 	}
 }
 
@@ -68,11 +68,11 @@ void mule::Data::Structure::Field::Read(xybase::Stream *stream, DataHandler *dat
 	dataHandler->OnRealmExit(object, name);
 }
 
-void mule::Data::Structure::Field::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void mule::Data::Structure::Field::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
-	dataHandler->OnRealmEnter(object, name);
-	object->Write(stream, dataHandler);
-	dataHandler->OnRealmExit(object, name);
+	fileHandler->OnRealmEnter(object, name);
+	object->Write(stream, fileHandler);
+	fileHandler->OnRealmExit(object, name);
 }
 
 size_t mule::Data::Structure::Field::Size() const

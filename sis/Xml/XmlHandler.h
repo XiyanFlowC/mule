@@ -13,7 +13,7 @@ namespace mule
 {
 	namespace Xml
 	{
-		class XmlHandler : public mule::Data::Basic::Type::DataHandler
+		class XmlHandler : public mule::Data::Basic::Type::DataHandler, public mule::Data::Basic::Type::FileHandler
 		{
 		public:
 			XmlHandler();
@@ -40,8 +40,7 @@ namespace mule
 			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, int idx) override;
 			virtual void OnRealmExit(mule::Data::Basic::Type *realm, int idx) override;
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
-			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
-			virtual void SetStream(xybase::Stream *stream) override;
+			virtual const mule::Data::Basic::MultiValue OnDataWrite() override;
 
 			virtual void AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv) override;
 		protected:
@@ -54,8 +53,6 @@ namespace mule
 				XHS_READ,
 				XHS_WRITE,
 			} status;
-
-			xybase::TextStream *stream = nullptr;
 
 			mule::Data::Basic::MultiValue element;
 

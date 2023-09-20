@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 
 	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableString::ShiftableStringCreator());
 
-	mule::Cpp::Environment::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
+	mule::Mule::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 

@@ -14,7 +14,7 @@
 #include <xyutils.h>
 #include <Exception/IOException.h>
 #include <Exception/RuntimeException.h>
-#include <Data/Storage/BinaryData.h>
+#include <Storage/BinaryData.h>
 #include <Data/TypeManager.h>
 #include <Data/Structure.h>
 #include <Xml/XmlParser.h>
@@ -31,7 +31,7 @@ public:
 
 	static ResourceManager &GetInstance();
 
-	mule::Data::Storage::BinaryData LoadResource(std::string path);
+	mule::Storage::BinaryData LoadResource(std::string path);
 
 	xybase::Stream *OpenResource(std::string path, std::function<xybase::Stream *(std::string path)> creator);
 

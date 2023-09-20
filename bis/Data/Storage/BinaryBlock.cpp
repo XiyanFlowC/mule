@@ -1,10 +1,11 @@
 #include "BinaryBlock.h"
 
 #include <xystring.h>
-#include <Data/Storage/DataManager.h>
+#include <Storage/DataManager.h>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data::Storage;
+using namespace mule::Storage;
 
 mule::Data::Storage::BinaryBlock::BinaryBlock(size_t size)
 	: size(size)
@@ -21,9 +22,9 @@ void BinaryBlock::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	dataHandler->OnDataRead(mv);
 }
 
-void BinaryBlock::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void BinaryBlock::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
-	MultiValue mv = dataHandler->OnDataWrite();
+	MultiValue mv = fileHandler->OnDataWrite();
 	if (!mv.IsType(MultiValue::MVT_UINT))
 	{
 		stream->Seek(size, xybase::Stream::SM_CURRENT);

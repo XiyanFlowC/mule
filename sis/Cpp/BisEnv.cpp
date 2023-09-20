@@ -15,7 +15,7 @@
 
 using namespace mule::Data;
 
-mule::Data::Basic::Type::DataHandler *BisEnvGetHandler(const char16_t *name)
+mule::Data::Basic::Type::DataHandler *BisEnvGetDataHandler(const char16_t *name)
 {
 	static char16_t cStyleName[] = u"inc";
 	static char16_t xmlHandlerName[] = u"xml";
@@ -26,7 +26,23 @@ mule::Data::Basic::Type::DataHandler *BisEnvGetHandler(const char16_t *name)
 	if (!memcmp(name, xmlHandlerName, sizeof(xmlHandlerName)))
 		return new mule::Xml::XmlHandler();
 	if (!memcmp(name, csvName, sizeof(csvName)))
-		return new mule::Csv::CsvHandler();
+		return new mule::Csv::CsvOutHandler();
+
+	return nullptr;
+}
+
+mule::Data::Basic::Type::FileHandler *BisEnvGetFileHandler(const char16_t *name)
+{
+	static char16_t cStyleName[] = u"inc";
+	static char16_t xmlHandlerName[] = u"xml";
+	static char16_t csvName[] = u"csv";
+
+	/*if (!memcmp(name, cStyleName, sizeof(cStyleName)))
+		return new mule::Cpp::CStyleInitHandler();*/
+	if (!memcmp(name, xmlHandlerName, sizeof(xmlHandlerName)))
+		return new mule::Xml::XmlHandler();
+	/*if (!memcmp(name, csvName, sizeof(csvName)))
+		return new mule::Csv::CsvOutHandler();*/
 
 	return nullptr;
 }
@@ -67,15 +83,19 @@ TypeCreator *BisEnvGetCreators()
 	return ret;
 }
 
-mule::Cpp::PluginDescription mule::Cpp::bisDesc = {
-	"bis-sis basic",
-	"xiyan",
-	"MIT",
+mule::PluginDescription mule::Cpp::bisDesc = {
+	L"bis-sis basic",
+	L"xiyan",
+	L"MIT",
 	1, 0,
-	"Basic mule features.",
+	L"Elemental features.",
 	BisEnvGetCreators,
-	BisEnvGetHandler,
-	nullptr,
+	BisEnvGetDataHandler,
+	BisEnvGetFileHandler,
 	BisEnvApplyStream,
-	BisEnvApplyContainer
+	BisEnvApplyContainer,
+	nullptr,
+	nullptr,
+	nullptr,
+	nullptr
 };

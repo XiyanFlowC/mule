@@ -1,6 +1,6 @@
 #include "Configuration.h"
 
-#include <Data/Storage/DataManager.h>
+#include <Storage/DataManager.h>
 #include <xystring.h>
 
 Configuration& Configuration::GetInstance()
@@ -21,6 +21,6 @@ void Configuration::SetEnvironmentRootPath(std::string path)
 	ScriptsDir = path + "scr/";
 	SheetsDir = path + "sht/";
 	DataDir = path + "dat/";
-	mule::Data::Storage::DataManager::GetInstance().Initialisation(xybase::string::to_utf16(DataDir));
+	mule::Storage::DataManager::GetInstance().Initialise(xybase::string::to_utf16(DataDir).c_str());
 	DefinitionsDir = path + "def/";
 }

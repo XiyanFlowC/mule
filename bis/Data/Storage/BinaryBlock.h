@@ -23,7 +23,7 @@ namespace mule
 					virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info) override;
 				};
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
+				virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
 				virtual size_t Size() const override;
 				virtual std::u16string GetDataType() const override;
 			protected:

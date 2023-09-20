@@ -78,6 +78,15 @@ namespace mule
             std::map<std::u16string, std::function<std::basic_string<Ch>(XmlNodeT &)>> callbacks;
 
             std::map<std::basic_string<Ch>, std::basic_string<Ch>> entities;
+
+            // buffered strings for comparing
+            std::basic_string<Ch> EMPTY_CHARS;
+            std::basic_string<Ch> COMMENT_END;
+            std::basic_string<Ch> TAGSTR_END;
+            std::basic_string<Ch> CLOSE_TAGSTR_END;
+            std::basic_string<Ch> QOUTES;
+            std::basic_string<Ch> END_OF_QOUTES;
+            std::basic_string<Ch> CDATA_STR;
         };
 
 
@@ -97,6 +106,14 @@ namespace mule
             RegisterEntity(str_encflip<Ch>("gt"), str_encflip<Ch>(">"));
             RegisterEntity(str_encflip<Ch>("apos"), str_encflip<Ch>("'"));
             RegisterEntity(str_encflip<Ch>("quot"), str_encflip<Ch>("\""));
+
+            EMPTY_CHARS = str_encflip<Ch>(" \t\n\r");
+            COMMENT_END = str_encflip<Ch>("-->");
+            TAGSTR_END = str_encflip<Ch>(" \t\n\r>/");
+            CLOSE_TAGSTR_END = str_encflip<Ch>(" \t\n\r>");
+            QOUTES = str_encflip<Ch>("'\"");
+            END_OF_QOUTES = str_encflip<Ch>("]]>");
+            CDATA_STR = str_encflip<Ch>("CDATA");
 
             //// 拓展的通用实体
             //RegisterEntity("lf", "\n");
@@ -122,13 +139,13 @@ namespace mule
         XmlNodeT XmlParser<XmlNodeT, Ch>::ParseNode(const std::basic_string<Ch> &xml)
         {
             // 去除空白字符
-            index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
+            index = xml.find_first_not_of(EMPTY_CHARS, index);
 
             // 去除顶层注释（喵的越写越乱了，找时间换成开源Xml解析库得了
             while (xml[index] == '<' && xml[index + 1] == '!' && xml[index + 2] == '-' && xml[index + 3] == '-')
             {
-                index = xml.find(str_encflip<Ch>("-->"), index + 4) + 3;
-                index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
+                index = xml.find(COMMENT_END, index + 4) + 3;
+                index = xml.find_first_not_of(EMPTY_CHARS, index);
             }
 
             // 节点起始
@@ -139,30 +156,30 @@ namespace mule
                 if (xml[index + 1] == '/')
                 {
                     error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": Unexpected close tag.\n";
-                    index = xml.find(str_encflip<Ch>(">"), index) + 1;
+                    index = xml.find('>', index) + 1;
                     return XmlNodeT::ERROR;
                 }
 
                 // 开启标签
-                index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 1);
-                size_t endIndex = xml.find_first_of(str_encflip<Ch>(" \t\n\r>/"), index);
+                index = xml.find_first_not_of(EMPTY_CHARS, index + 1);
+                size_t endIndex = xml.find_first_of(TAGSTR_END, index);
                 node.SetName(xybase::string::to_utf16(xml.substr(index, endIndex - index)));
 
                 // 处理特性
                 while (true)
                 {
-                    index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), endIndex);
+                    index = xml.find_first_not_of(EMPTY_CHARS, endIndex);
                     if (xml[index] == '>' || xml[index] == '/')
                     {
                         break;
                     }
                     size_t attrEndIndex = xml.find('=', index);
                     std::basic_string<Ch> attrName = xml.substr(index, attrEndIndex - index);
-                    size_t attrValueStart = xml.find_first_of(str_encflip<Ch>("\"'"), attrEndIndex) + 1;
+                    size_t attrValueStart = xml.find_first_of(QOUTES, attrEndIndex) + 1;
                     size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
                     std::basic_string<Ch> attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
                     node.AddAttribute(xybase::string::to_utf16(attrName), xybase::string::to_utf16(attrValue));
-                    endIndex = xml.find_first_of(str_encflip<Ch>(" \t\n\r>/"), attrValueEnd + 1);
+                    endIndex = xml.find_first_of(TAGSTR_END, attrValueEnd + 1);
                 }
 
                 // 空元素标签
@@ -186,7 +203,7 @@ namespace mule
                 while (index < xml.size())
                 {
                     // 去除空白字符
-                    index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index);
+                    index = xml.find_first_not_of(EMPTY_CHARS, index);
 
                     // 处理标签节点
                     if (xml[index] == '<' && xml[index + 1] != '!')
@@ -194,8 +211,8 @@ namespace mule
                         // 处理关闭标签：由于内部元素全部递归解析，此处能遇到的关闭标签一定是该元素的关闭标签
                         if (xml[index + 1] == '/')
                         {
-                            index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 2);
-                            size_t endIndex = xml.find_first_of(str_encflip<Ch>(" \t\n\r>"), index);
+                            index = xml.find_first_not_of(EMPTY_CHARS, index + 2);
+                            size_t endIndex = xml.find_first_of(CLOSE_TAGSTR_END, index);
 
                             // 非相等的关闭标签，忽略
                             if (xybase::string::to_utf16(node.GetName()) != xybase::string::to_utf16(xml.substr(index, endIndex - index)))
@@ -216,8 +233,8 @@ namespace mule
                     // 处理注释
                     else if (xml[index] == '<' && xml[index + 1] == '!' && xml[index + 2] == '-' && xml[index + 3] == '-')
                     {
-                        index = xml.find(str_encflip<Ch>("-->"), index + 4);
-                        index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 3);
+                        index = xml.find(COMMENT_END, index + 4);
+                        index = xml.find_first_not_of(EMPTY_CHARS, index + 3);
                     }
                     // 文本节点
                     else
@@ -249,7 +266,7 @@ namespace mule
                             // 空白字符去尾
                             else if (xml[index] == ' ' || xml[index] == '\t' || xml[index] == '\r' || xml[index] == '\n')
                             {
-                                size_t endOfBlank = xml.find_first_not_of(str_encflip<Ch>(" \t\r\n"), index);
+                                size_t endOfBlank = xml.find_first_not_of(EMPTY_CHARS, index);
                                 // 去尾，立即返回
                                 if (xml[endOfBlank] == '<' && xml[endOfBlank + 1] == '/')
                                 {
@@ -281,11 +298,11 @@ namespace mule
 
                                         auto blockName = xml.substr(blockNameStart, blockNameEnd - blockNameStart);
                                         // 为保持拓展性，此处允许处理CDATA以外的块
-                                        if (blockName == str_encflip<Ch>("CDATA"))
+                                        if (blockName == CDATA_STR)
                                         {
                                             // 处理CDATA块
                                             size_t cdataStart = blockNameEnd + 1;
-                                            index = xml.find(str_encflip<Ch>("]]>"), index);
+                                            index = xml.find(END_OF_QOUTES, index);
                                             sb += xml.substr(cdataStart, index - cdataStart);
                                             index += 3;
                                         }
@@ -293,14 +310,14 @@ namespace mule
                                         {
                                             // 无效块，忽视，不处理
                                             error += "Near " + xybase::string::to_string(xml.substr(index, 32)) + ": unknown block type " + xybase::string::to_string(blockName) + ", ignoring...\n";
-                                            index = xml.find(str_encflip<Ch>("]]>"), index);
+                                            index = xml.find(END_OF_QOUTES, index);
                                             index += 3;
                                         }
                                     }
                                     else if (xml[index + 2] == '-' && xml[index + 3] == '-')
                                     {
-                                        index = xml.find(str_encflip<Ch>("-->"), index + 4);
-                                        index = xml.find_first_not_of(str_encflip<Ch>(" \t\n\r"), index + 3);
+                                        index = xml.find(COMMENT_END, index + 4);
+                                        index = xml.find_first_not_of(EMPTY_CHARS, index + 3);
                                     }
                                 }
                                 // 标签打开

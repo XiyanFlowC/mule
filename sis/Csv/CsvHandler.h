@@ -9,11 +9,9 @@ namespace mule
 {
 	namespace Csv
 	{
-		class CsvHandler : public mule::Data::Basic::Type::DataHandler
+		class CsvOutHandler : public mule::Data::Basic::Type::DataHandler
 		{
 		public:
-
-
 			/**
 			 * @brief 缩进符号个数
 			*/
@@ -27,17 +25,11 @@ namespace mule
 
 			virtual void OnSheetReadEnd() override;
 
-			virtual void OnSheetWriteStart() override;
-
-			virtual void OnSheetWriteEnd() override;
-
 			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, const std::u16string &name) override;
 			virtual void OnRealmExit(mule::Data::Basic::Type *realm, const std::u16string &name) override;
 			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, int idx) override;
 			virtual void OnRealmExit(mule::Data::Basic::Type *realm, int idx) override;
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
-			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
-			virtual void SetStream(xybase::Stream *stream) override;
 		private:
 			enum {
 				CHS_IDLE,
@@ -46,8 +38,6 @@ namespace mule
 				CHS_WRITE,
 				CHS_WRITE_TRAILCELL,
 			} status = CHS_IDLE;
-
-			xybase::Stream *stream = nullptr;
 
 			int layer = 0;
 		};

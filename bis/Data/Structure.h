@@ -22,7 +22,7 @@ namespace mule
 			{
 			public:
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
+				virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
 				virtual size_t Size() const override;
 
 				const std::u16string &GetName() const;
@@ -65,7 +65,7 @@ namespace mule
 			 * @param stream 要进行写入的流
 			 * @param dataHandler 数据处理器
 			*/
-			virtual void Write(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
+			virtual void Write(xybase::Stream *stream, Basic::Type::FileHandler *fileHandler) override;
 
 			/**
 			 * @brief 获取结构体整体大小

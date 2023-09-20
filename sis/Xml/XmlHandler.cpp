@@ -46,16 +46,16 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		for (int i = 0; i < layer; ++i)
 			for (int j = 0; j < ident; ++j)
 			{
-				stream->Write(type ? " " : "\t");
+				outstream->Write(type ? " " : "\t");
 			}
 
 		if (realm->IsComposite())
 		{
-			stream->Write("<");
-			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(name).c_str()));
-			stream->Write(">");
+			outstream->Write("<");
+			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(name).c_str()));
+			outstream->Write(">");
 
-			stream->Write("\n");
+			outstream->Write("\n");
 			layer++;
 		}
 		else nodeName = name;
@@ -64,15 +64,15 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 	{
 		xybase::StringBuilder<char8_t> sb;
 		
-		char ch = stream->ReadChar();
-		while (ch != '<') ch = stream->ReadChar();
+		char ch = instream->ReadChar();
+		while (ch != '<') ch = instream->ReadChar();
 
 		// 获取标签名
-		ch = stream->ReadChar();
+		ch = instream->ReadChar();
 		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
 		{
 			sb += ch;
-			ch = stream->ReadChar();
+			ch = instream->ReadChar();
 		}
 		
 		std::u8string tag = sb.ToString();
@@ -83,7 +83,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
 		{
-			while (ch != '>') ch = stream->ReadChar();
+			while (ch != '>') ch = instream->ReadChar();
 			return;
 		}
 
@@ -97,10 +97,10 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	std::u8string endTag = u8"</" + tagName + u8">";
 
 	bool repeat = true;
-	int cmp = 0;
+	size_t cmp = 0;
 	while (repeat)
 	{
-		char ch = stream->ReadChar();
+		char ch = instream->ReadChar();
 		if (ch == endTag[cmp]) cmp++;
 		else cmp = 0;
 		if (cmp == endTag.size()) repeat = false;
@@ -132,35 +132,35 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 			for (int i = 0; i < layer; ++i)
 				for (int j = 0; j < ident; ++j)
 				{
-					stream->Write(type ? " " : "\t");
+					outstream->Write(type ? " " : "\t");
 				}
 		}
 		else
 		{
-			stream->Write("<");
-			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
+			outstream->Write("<");
+			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
 			for (auto &&datum : element.metadata)
 			{
-				stream->Write(" ");
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
-				stream->Write("='");
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
-				stream->Write("'");
+				outstream->Write(" ");
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
+				outstream->Write("='");
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
+				outstream->Write("'");
 			}
-			stream->Write(">");
+			outstream->Write(">");
 			if (element.IsType(MultiValue::MVT_STRING))
 			{
-				stream->Write("<![CDATA[");
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
-				stream->Write("]]>");
+				outstream->Write("<![CDATA[");
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
+				outstream->Write("]]>");
 			}
 			else
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(element.Stringfy()).c_str()));
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(element.Stringfy()).c_str()));
 		}
 
-		stream->Write("</");
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(name).c_str()));
-		stream->Write(">\n");
+		outstream->Write("</");
+		outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(name).c_str()));
+		outstream->Write(">\n");
 	}
 	else
 	{
@@ -169,7 +169,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 		if (realm->IsComposite())
 			do
 			{
-				c = stream->ReadChar();
+				c = instream->ReadChar();
 			} while (c != '>');
 	}
 }
@@ -181,16 +181,16 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		for (int i = 0; i < layer; ++i)
 			for (int j = 0; j < ident; ++j)
 			{
-				stream->Write(type ? " " : "\t");
+				outstream->Write(type ? " " : "\t");
 			}
 
 		if (realm->IsComposite())
 		{
-			stream->Write("<");
-			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
-			stream->Write(">");
+			outstream->Write("<");
+			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
+			outstream->Write(">");
 
-			stream->Write("\n");
+			outstream->Write("\n");
 			layer++;
 		}
 		else nodeName = u"item";
@@ -199,14 +199,14 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 	{
 		xybase::StringBuilder<char8_t> sb;
 
-		char ch = stream->ReadChar();
-		while (ch != '<') ch = stream->ReadChar();
+		char ch = instream->ReadChar();
+		while (ch != '<') ch = instream->ReadChar();
 
-		ch = stream->ReadChar();
+		ch = instream->ReadChar();
 		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
 		{
 			sb += ch;
-			ch = stream->ReadChar();
+			ch = instream->ReadChar();
 		}
 
 		std::u8string tag = sb.ToString();
@@ -217,7 +217,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
 		{
-			while (ch != '>') ch = stream->ReadChar();
+			while (ch != '>') ch = instream->ReadChar();
 			return;
 		}
 
@@ -236,35 +236,35 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 			for (int i = 0; i < layer; ++i)
 				for (int j = 0; j < ident; ++j)
 				{
-					stream->Write(type ? " " : "\t");
+					outstream->Write(type ? " " : "\t");
 				}
 		}
 		else
 		{
-			stream->Write("<");
-			stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
+			outstream->Write("<");
+			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
 			for (auto &&datum : element.metadata)
 			{
-				stream->Write(" ");
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
-				stream->Write("='");
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
-				stream->Write("'");
+				outstream->Write(" ");
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.first).c_str()));
+				outstream->Write("='");
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(datum.second.Stringfy()).c_str()));
+				outstream->Write("'");
 			}
-			stream->Write(">");
+			outstream->Write(">");
 			if (element.IsType(MultiValue::MVT_STRING))
 			{
-				stream->Write("<![CDATA[");
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
-				stream->Write("]]>");
+				outstream->Write("<![CDATA[");
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
+				outstream->Write("]]>");
 			}
 			else
-				stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(element.Stringfy()).c_str()));
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(element.Stringfy()).c_str()));
 		}
 
-		stream->Write("</");
-		stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
-		stream->Write(">\n");
+		outstream->Write("</");
+		outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
+		outstream->Write(">\n");
 	}
 	else
 	{
@@ -273,7 +273,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 		if (realm->IsComposite())
 			do
 			{
-				c = stream->ReadChar();
+				c = instream->ReadChar();
 			} while (c != '>');
 	}
 }
@@ -283,16 +283,10 @@ void mule::Xml::XmlHandler::OnDataRead(const MultiValue &value)
 	element = value;
 }
 
-MultiValue mule::Xml::XmlHandler::OnDataWrite()
+const MultiValue mule::Xml::XmlHandler::OnDataWrite()
 {
 	// 元素解析已经在上面完成，这里直接返回即可。
 	return element;
-}
-
-void mule::Xml::XmlHandler::SetStream(xybase::Stream *stream)
-{
-	this->stream = dynamic_cast<xybase::TextStream *>(stream);
-	if (this->stream == nullptr) throw xybase::InvalidParameterException(L"stream", L"Not a text stream for output.", 3505);
 }
 
 void mule::Xml::XmlHandler::AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv)

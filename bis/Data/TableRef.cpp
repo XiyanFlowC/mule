@@ -31,7 +31,7 @@ void mule::Data::TableRef::Read(xybase::Stream *stream, DataHandler *dataHandler
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
-void mule::Data::TableRef::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void mule::Data::TableRef::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	auto loc = stream->Tell();
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
@@ -42,9 +42,9 @@ void mule::Data::TableRef::Write(xybase::Stream *stream, DataHandler *dataHandle
 	stream->Seek(tloc.value.signedValue, xybase::Stream::SM_BEGIN);
 	for (int i = 0; i < tsiz.value.signedValue; ++i)
 	{
-		dataHandler->OnRealmEnter(infraType, i);
-		infraType->Write(stream, dataHandler);
-		dataHandler->OnRealmExit(infraType, i);
+		fileHandler->OnRealmEnter(infraType, i);
+		infraType->Write(stream, fileHandler);
+		fileHandler->OnRealmExit(infraType, i);
 	}
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }

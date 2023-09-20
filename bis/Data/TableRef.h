@@ -21,7 +21,7 @@ namespace mule
 			virtual size_t Size() const override;
 			virtual std::u16string GetDataType() const override;
 			virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
-			virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) override;
+			virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
 			virtual bool IsComposite() const override;
 
 			class TableRefCreator : public TypeCreator

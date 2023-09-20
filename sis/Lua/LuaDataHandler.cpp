@@ -15,11 +15,6 @@ void mule::Lua::LuaDataHandler::OnDataRead(const MultiValue &value)
 {
 }
 
-MultiValue mule::Lua::LuaDataHandler::OnDataWrite()
-{
-	return MultiValue();
-}
-
 void mule::Lua::LuaDataHandler::OnRealmEnter(Type *realm, int idx)
 {
 }

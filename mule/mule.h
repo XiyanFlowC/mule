@@ -5,6 +5,7 @@
 
 #include <iostream>
 
+#include <Mule.h>
 #include <BinaryStream.h>
 #include <Lua/LuaHost.h>
 #include <Data/Basic/Integer.h>
@@ -23,7 +24,6 @@
 #include <Xml/XmlParser.h>
 #include <Xml/MvXmlNode.h>
 #include <Xml/XmlNode.h>
-#include <Cpp/Environment.h>
 #include <Cpp/BisEnv.h>
 
 #include "crc32.h"

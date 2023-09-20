@@ -1,5 +1,7 @@
 #include "MvXmlNode.h"
 
+#include <xystring.h>
+
 using namespace mule::Xml;
 using namespace mule::Data::Basic;
 
@@ -67,7 +69,7 @@ std::list<MvXmlNode> mule::Xml::MvXmlNode::GetChildren() const
 	}
 	else*/ for (auto &pair : *mv.value.mapValue)
 	{
-		ret.push_back(MvXmlNode(pair.first.ToString(), pair.second));
+		ret.push_back(MvXmlNode(xybase::string::to_utf16(pair.first.ToString()), pair.second));
 	}
 
 	return ret;
@@ -77,7 +79,7 @@ void mule::Xml::MvXmlNode::AddText(std::u16string str)
 {
 	// 保全现有 metadata
 	auto metadata = mv.metadata;
-	mv = MultiValue::Parse(str);
+	mv = MultiValue::Parse(xybase::string::to_wstring(str));
 	mv.metadata = metadata;
 }
 
@@ -89,7 +91,7 @@ std::u16string mule::Xml::MvXmlNode::GetText() const
 	}
 	else
 	{
-		return mv.Stringfy();
+		return xybase::string::to_utf16(mv.Stringfy());
 	}
 }
 
@@ -106,7 +108,7 @@ std::u16string mule::Xml::MvXmlNode::GetName() const
 void mule::Xml::MvXmlNode::AddAttribute(std::u16string name, std::u16string data)
 {
 	// if (name == u"_type" && data == u"array") counter = 0;
-	mv.metadata[name] = MultiValue::Parse(data);
+	mv.metadata[name] = MultiValue::Parse(xybase::string::to_wstring(data));
 }
 
 std::map<std::u16string, std::u16string> mule::Xml::MvXmlNode::GetAttributes() const
@@ -115,7 +117,7 @@ std::map<std::u16string, std::u16string> mule::Xml::MvXmlNode::GetAttributes() c
 
 	for (auto &&datum : mv.metadata)
 	{
-		ret[datum.first] = datum.second.Stringfy();
+		ret[datum.first] = xybase::string::to_utf16(datum.second.Stringfy());
 	}
 
 	return ret;

@@ -1,6 +1,6 @@
 #include "BinaryData.h"
 #include <cstring>
-using namespace mule::Data::Storage;
+using namespace mule::Storage;
 
 BinaryData::BinaryData(char *data, size_t length, bool duplicate)
 {

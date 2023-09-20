@@ -1,19 +1,19 @@
 #include "luaenv.h"
 
-#include <Data/Storage/DataManager.h>
-#include <Cpp/Environment.h>
+#include <Storage/DataManager.h>
 #include <TextStream.h>
 #include <cstdio>
+#include <Mule.h>
+#include <VirtualFileSystem.h>
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
-using namespace mule::Data::Storage;
+using namespace mule::Storage;
 
 std::map<int, xybase::Stream *> streams;
 int streamd = 0;
 std::map<int, MultiValue> values;
 int valued = 0;
-std::map<std::string, xybase::FileContainer *> containers;
 std::list<Table *> tables;
 
 int mountContainer(int id, std::string type, std::string code)
@@ -29,33 +29,14 @@ int mountContainer(int id, std::string type, std::string code)
         return -2;
     }
 
-    if (containers.contains(code))
-    {
-        return -3;
-    }
+    mule::VirtualFileSystem::GetInstance().Mount(xybase::string::to_utf16(code).c_str(), xybase::string::to_utf16(type).c_str(), stream->second);
 
-    auto cont = mule::Cpp::Environment::GetInstance().GetFileContainer(xybase::string::to_utf16(type), stream->second);
-
-    if (cont == nullptr)
-    {
-        return -4;
-    }
-    else
-    {
-        containers[code] = (new mule::Container::IsoContainer(stream->second));
-        return 0;
-    }
+    return 0;
 }
 
 int unmountContainer(std::string code)
 {
-    if (!containers.contains(code))
-    {
-        return -2;
-    }
-
-    delete containers[code];
-    containers.erase(code);
+    mule::VirtualFileSystem::GetInstance().Unmount(xybase::string::to_utf16(code).c_str());
     return 0;
 }
 
@@ -74,25 +55,15 @@ std::string getDefaultContainer()
 
 int openFile(std::string name)
 {
-    xybase::FileContainer *con;
     size_t devIndex = name.find_first_of(':');
+    std::u16string prefix = u"";
     if (devIndex == std::string::npos)
     {
-        auto &&itr = containers.find(defaultContainer);
-        if (itr == containers.end()) return -2;
-
-        con = itr->second;
-    }
-    else
-    {
-        auto &&itr = containers.find(name.substr(0, devIndex));
-        if (itr == containers.end()) return -3;
-
-        con = itr->second;
-        name = name.substr(devIndex + 1);
+        prefix = xybase::string::to_utf16(defaultContainer) + u':';
     }
 
-    auto ret = con->Open(xybase::string::to_utf16(name), xybase::FOM_READ | xybase::FOM_WRITE);
+    auto ret = mule::VirtualFileSystem::GetInstance().Open((prefix + xybase::string::to_utf16(name)).c_str(), xybase::FOM_READ | xybase::FOM_WRITE);
+
     if (ret == nullptr)
     {
         return -1;
@@ -236,14 +207,14 @@ int readTable(int fd, std::string handler)
         return -2;
     }
 
-        auto proc = mule::Cpp::Environment::GetInstance().GetHandler(xybase::string::to_utf16(handler));
+        auto proc = mule::Mule::GetInstance().GetDataHandler(xybase::string::to_utf16(handler).c_str());
 
         if (proc == nullptr) return -3;
 
         for (auto &&pair : titr->second)
         {
-            xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, std::ios::out | std::ios::trunc);
-            proc->SetStream(stream);
+            xybase::TextStream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, std::ios::out | std::ios::trunc);
+            proc->SetOutStream(stream);
             std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
             pair.second->Read(sitr->second, proc);
             stream->Close();
@@ -262,14 +233,14 @@ int writeTable(int fd, std::string handler)
         return -2;
     }
 
-    auto proc = mule::Cpp::Environment::GetInstance().GetHandler(xybase::string::to_utf16(handler));
+    auto proc = mule::Mule::GetInstance().GetFileHandler(xybase::string::to_utf16(handler).c_str());
 
     if (proc == nullptr) return -3;
 
     for (auto &&pair : titr->second)
     {
-        xybase::Stream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, std::ios::in);
-        proc->SetStream(stream);
+        xybase::TextStream *stream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + pair.first + "." + handler, std::ios::in);
+        proc->SetInStream(stream);
         std::wcout << L"Processing " << xybase::string::to_wstring(pair.first) << std::endl;
         pair.second->Write(sitr->second, proc);
         stream->Close();
@@ -339,13 +310,13 @@ MultiValue getSheet(int vd)
 
 MultiValue listfs(MultiValue dev)
 {
-    xybase::FileContainer *con {};
+    std::u16string device = u"";
     if (dev.IsType(MultiValue::MVT_NULL))
     {
-        auto &&itr = containers.find(defaultContainer);
-        if (itr == containers.end()) return -2;
+        if (defaultContainer.empty())
+            return -2;
 
-        con = itr->second;
+        device = xybase::string::to_utf16(defaultContainer);
     }
     else
     {
@@ -354,13 +325,10 @@ MultiValue listfs(MultiValue dev)
             return -1;
         }
 
-        auto &&itr = containers.find(xybase::string::to_string(*dev.value.stringValue));
-        if (itr == containers.end()) return -2;
-
-        con = itr->second;
+        device = *dev.value.stringValue;
     }
 
-    auto &&lst = con->List();
+    auto &&lst = mule::VirtualFileSystem::GetInstance().List(device.c_str());
 
     MultiValue mv{ MultiValue::MVT_MAP };
 
@@ -386,7 +354,7 @@ int applyStream(int id, std::string x)
         return -2;
     }
 
-    auto ret = mule::Cpp::Environment::GetInstance().ApplyStream(xybase::string::to_utf16(x), stream->second);
+    auto ret = mule::Mule::GetInstance().ApplyStream(xybase::string::to_utf16(x).c_str(), stream->second);
     if (ret == nullptr) return -3;
 
     streams[streamd] = ret;

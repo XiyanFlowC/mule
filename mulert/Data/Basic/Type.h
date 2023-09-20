@@ -2,6 +2,7 @@
 
 #include <map>
 #include <string>
+#include <TextStream.h>
 #include <Stream.h>
 #include "MultiValue.h"
 
@@ -17,17 +18,10 @@ namespace mule
 			{
 			public:
 
-				class MULERT_API DataHandler
+				class MULERT_API Handler
 				{
 				public:
-
-					virtual void OnSheetReadStart();
-
-					virtual void OnSheetReadEnd();
-
-					virtual void OnSheetWriteStart();
-
-					virtual void OnSheetWriteEnd();
+					virtual ~Handler();
 
 					/**
 					 * @brief 进入具名领域
@@ -56,16 +50,43 @@ namespace mule
 					 * @param idx
 					*/
 					virtual void OnRealmExit(Type *realm, int idx) = 0;
+				};
+
+				class MULERT_API DataHandler : virtual public Handler
+				{
+				public:
+					virtual ~DataHandler();
+
+					virtual void OnSheetReadStart() = 0;
+
+					virtual void OnSheetReadEnd() = 0;
 
 					virtual void OnDataRead(const MultiValue &value) = 0;
-
-					virtual MultiValue OnDataWrite() = 0;
 
 					virtual void AppendMetadata(std::map<std::u16string, MultiValue> metadata);
 
 					virtual void AppendMetadatum(std::u16string name, const MultiValue &value);
 
-					virtual void SetStream(xybase::Stream *stream);
+					void SetOutStream(xybase::TextStream *stream);
+				protected:
+					xybase::TextStream *outstream;
+				};
+
+				class MULERT_API FileHandler : virtual public Handler
+				{
+				public:
+					virtual ~FileHandler();
+
+					virtual void OnSheetWriteStart() = 0;
+
+					virtual void OnSheetWriteEnd() = 0;
+
+					virtual const MultiValue OnDataWrite() = 0;
+
+					void SetInStream(xybase::TextStream *stream);
+
+				protected:
+					xybase::TextStream *instream;
 				};
 
 				virtual ~Type();
@@ -109,7 +130,7 @@ namespace mule
 				 * @param stream 数据流
 				 * @param dataHandler 数据处理器（数据源）
 				*/
-				virtual void Write(xybase::Stream *stream, DataHandler *dataHandler) = 0;
+				virtual void Write(xybase::Stream *stream, FileHandler * fileHandler) = 0;
 			};
 		}
 	}

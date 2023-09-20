@@ -10,9 +10,9 @@ void mule::Data::Basic::BasicType::Read(xybase::Stream *stream, DataHandler *dat
 	dataHandler->OnDataRead(val);
 }
 
-void mule::Data::Basic::BasicType::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void mule::Data::Basic::BasicType::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
-	MultiValue value = dataHandler->OnDataWrite();
+	MultiValue value = fileHandler->OnDataWrite();
 	if (MultiValue::MV_NULL == value)
 	{
 		size_t size = Size();

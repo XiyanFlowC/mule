@@ -37,18 +37,18 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 	dataHandler->OnSheetReadEnd();
 }
 
-void Table::Write(xybase::Stream *stream, Type::DataHandler *dataHandler)
+void Table::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	stream->Seek(offset, xybase::Stream::SM_BEGIN);
-	dataHandler->OnSheetWriteStart();
-	dataHandler->OnRealmEnter((Type *)this, name);
+	fileHandler->OnSheetWriteStart();
+	fileHandler->OnRealmEnter((Type *)this, name);
 	for (int i = 0; i < length; ++i) {
-		dataHandler->OnRealmEnter(infraType, i);
-		infraType->Write(stream, dataHandler);
-		dataHandler->OnRealmExit(infraType, i);
+		fileHandler->OnRealmEnter(infraType, i);
+		infraType->Write(stream, fileHandler);
+		fileHandler->OnRealmExit(infraType, i);
 	}
-	dataHandler->OnRealmExit((Type *)this, name);
-	dataHandler->OnSheetWriteEnd();
+	fileHandler->OnRealmExit((Type *)this, name);
+	fileHandler->OnSheetWriteEnd();
 }
 
 size_t mule::Data::Table::Size() const

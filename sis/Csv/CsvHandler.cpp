@@ -4,35 +4,21 @@
 
 using namespace mule::Data::Basic;
 
-void mule::Csv::CsvHandler::OnSheetReadStart()
+void mule::Csv::CsvOutHandler::OnSheetReadStart()
 {
 	if (status != CHS_IDLE)
 		throw xybase::InvalidOperationException(L"This handler is not idle for read.", 10000);
 	status = CHS_READ;
 }
 
-void mule::Csv::CsvHandler::OnSheetReadEnd()
+void mule::Csv::CsvOutHandler::OnSheetReadEnd()
 {
 	if (status != CHS_READ)
 		throw xybase::InvalidOperationException(L"This handler is not reading.", 10000);
 	status = CHS_IDLE;
 }
 
-void mule::Csv::CsvHandler::OnSheetWriteStart()
-{
-	if (status != CHS_IDLE)
-		throw xybase::InvalidOperationException(L"This handler is not idle for write.", 10000);
-	status = CHS_WRITE;
-}
-
-void mule::Csv::CsvHandler::OnSheetWriteEnd()
-{
-	if (status != CHS_WRITE)
-		throw xybase::InvalidOperationException(L"This handler is not writing.", 10000);
-	status = CHS_IDLE;
-}
-
-void mule::Csv::CsvHandler::OnRealmEnter(Type *realm, const std::u16string &name)
+void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, const std::u16string &name)
 {
 	if (realm->IsComposite())
 	{
@@ -40,7 +26,7 @@ void mule::Csv::CsvHandler::OnRealmEnter(Type *realm, const std::u16string &name
 	}
 }
 
-void mule::Csv::CsvHandler::OnRealmExit(Type *realm, const std::u16string &name)
+void mule::Csv::CsvOutHandler::OnRealmExit(Type *realm, const std::u16string &name)
 {
 	if (realm->IsComposite())
 	{
@@ -50,13 +36,13 @@ void mule::Csv::CsvHandler::OnRealmExit(Type *realm, const std::u16string &name)
 			if (status == CHS_READ || status == CHS_READ_TRAILCELL)
 			{
 				status = CHS_READ;
-				stream->Write("\n");
+				outstream->Write("\n");
 			}
 		}
 	}
 }
 
-void mule::Csv::CsvHandler::OnRealmEnter(Type *realm, int idx)
+void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, int idx)
 {
 	if (realm->IsComposite())
 	{
@@ -64,7 +50,7 @@ void mule::Csv::CsvHandler::OnRealmEnter(Type *realm, int idx)
 	}
 }
 
-void mule::Csv::CsvHandler::OnRealmExit(Type *realm, int idx)
+void mule::Csv::CsvOutHandler::OnRealmExit(Type *realm, int idx)
 {
 	if (realm->IsComposite())
 	{
@@ -74,29 +60,19 @@ void mule::Csv::CsvHandler::OnRealmExit(Type *realm, int idx)
 			if (status == CHS_READ || status == CHS_READ_TRAILCELL)
 			{
 				status = CHS_READ;
-				stream->Write("\n");
+				outstream->Write("\n");
 			}
 		}
 	}
 }
 
-void mule::Csv::CsvHandler::OnDataRead(const MultiValue &value)
+void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 {
 	if (status == CHS_READ)
 		status = CHS_READ_TRAILCELL;
 	else if (status == CHS_READ_TRAILCELL)
 	{
-		stream->Write(",");
+		outstream->Write(",");
 	}
-	stream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(value.Stringfy()).c_str()));
-}
-
-MultiValue mule::Csv::CsvHandler::OnDataWrite()
-{
-	return MultiValue();
-}
-
-void mule::Csv::CsvHandler::SetStream(xybase::Stream *stream)
-{
-	this->stream = stream;
+	outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(value.Stringfy()).c_str()));
 }

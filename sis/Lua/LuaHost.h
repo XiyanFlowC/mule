@@ -15,7 +15,7 @@ namespace mule
 	namespace Lua
 	{
 		/**
-		 * @brief Lua 执行时发生的错误
+		 * @brief Errors occured during executing LUA script.
 		*/
 		class LuaException : public xybase::Exception
 		{
@@ -24,7 +24,7 @@ namespace mule
 		};
 
 		/**
-		 * @brief Lua 脚本在本机程序的宿主。
+		 * @brief The host of LUA script in native programme.
 		*/
 		class LuaHost
 		{
@@ -75,11 +75,12 @@ namespace mule
 			void RegisterFunction(const std::string& name, lua_CFunction func);
 
 			/**
-			 * @brief 将一个普通的函数注册到C，自动以lambda包装以兼容
-			 * @tparam ...Args 参数列表
-			 * @tparam RetT 返回值
-			 * @param name 函数名称
-			 * @param func 函数
+			 * @brief Register a function to lua vm.
+			 * The function will be wrapped by a auto-genarated C closure in lua to be called correctly.
+			 * @tparam ...Args Type of the parameters of function.
+			 * @tparam RetT Return type of the function.
+			 * @param name The name to be registered in the lua vm.
+			 * @param func Pointer to the function.
 			*/
 			template<typename RetT, typename... Args>
 			void RegisterFunction(const std::string &name, RetT(*func)(Args...));
@@ -212,7 +213,7 @@ namespace mule
 			{
 				return true;
 			}
-			return false;
+			else return false;
 		}
 
 		template<>

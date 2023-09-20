@@ -1,5 +1,5 @@
 #include "TypeManager.h"
-
+#include "xystring.h"
 using namespace mule::Data;
 
 TypeManager::TypeManager()
@@ -66,6 +66,8 @@ Basic::Type *TypeManager::GetOrCreateType(std::u16string info)
 
 	// 若没有创建器则直接返回
 	if (first == nullptr) return nullptr;
+
+	logger.Info(L"New type {} registered.", xybase::string::to_wstring(info));
 
 	// 保存创建结果并返回
 	return objects[info] = first->CreateType(info);

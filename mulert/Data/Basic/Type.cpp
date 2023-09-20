@@ -1,21 +1,5 @@
 #include "Type.h"
 
-void mule::Data::Basic::Type::DataHandler::OnSheetReadStart()
-{
-}
-
-void mule::Data::Basic::Type::DataHandler::OnSheetReadEnd()
-{
-}
-
-void mule::Data::Basic::Type::DataHandler::OnSheetWriteStart()
-{
-}
-
-void mule::Data::Basic::Type::DataHandler::OnSheetWriteEnd()
-{
-}
-
 mule::Data::Basic::Type::~Type()
 {
 }
@@ -35,6 +19,10 @@ bool mule::Data::Basic::Type::IsComposite() const
 	return false;
 }
 
+mule::Data::Basic::Type::DataHandler::~DataHandler()
+{
+}
+
 void mule::Data::Basic::Type::DataHandler::AppendMetadata(std::map<std::u16string, MultiValue> metadata)
 {
 	for (auto &datum : metadata)
@@ -47,7 +35,20 @@ void mule::Data::Basic::Type::DataHandler::AppendMetadatum(std::u16string name, 
 {
 }
 
-void mule::Data::Basic::Type::DataHandler::SetStream(xybase::Stream *stream)
+void mule::Data::Basic::Type::DataHandler::SetOutStream(xybase::TextStream *stream)
+{
+	outstream = stream;
+}
+
+mule::Data::Basic::Type::Handler::~Handler()
 {
 }
 
+mule::Data::Basic::Type::FileHandler::~FileHandler()
+{
+}
+
+void mule::Data::Basic::Type::FileHandler::SetInStream(xybase::TextStream *stream)
+{
+	instream = stream;
+}

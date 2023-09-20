@@ -8,7 +8,7 @@ using namespace mule::Data::Basic;
 void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	size_t limit = length;
-	if (limit == -1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
+	if (limit == (size_t)-1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	for (size_t i = 0; i < limit; ++i) {
 		dataHandler->OnRealmEnter(innerObject, i);
 		innerObject->Read(stream, dataHandler);
@@ -16,14 +16,14 @@ void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	}
 }
 
-void mule::Data::Array::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void mule::Data::Array::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	size_t limit = length;
-	if (limit == -1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
+	if (limit == (size_t)-1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	for (size_t i = 0; i < limit; ++i) {
-		dataHandler->OnRealmEnter(innerObject, i);
-		innerObject->Write(stream, dataHandler);
-		dataHandler->OnRealmExit(innerObject, i);
+		fileHandler->OnRealmEnter(innerObject, i);
+		innerObject->Write(stream, fileHandler);
+		fileHandler->OnRealmExit(innerObject, i);
 	}
 }
 

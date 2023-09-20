@@ -6,6 +6,7 @@
 #include <string>
 #include <map>
 #include <cstdint>
+#include <format>
 #include <StringBuilder.h>
 #include <Exception/Exception.h>
 #include <Exception/InvalidParameterException.h>
@@ -138,18 +139,20 @@ namespace mule
 				 * @brief 转换为字符串。
 				 * @return 字符串表示值。
 				*/
-				std::u16string ToString() const;
+				std::wstring ToString() const;
 
 				/**
 				 * @brief 序列化为字符串。
 				 * @return 序列化结果。
 				*/
-				std::u16string Stringfy() const;
+				std::wstring Stringfy() const;
 
 				/**
 				 * @brief 反序列化字符串。
 				 * @param value 要解析的字符串对象。
 				*/
+				static MultiValue Parse(const std::wstring &value);
+
 				static MultiValue Parse(const std::u16string &value);
 
 				void SetValue(const std::u16string &value);
@@ -198,10 +201,20 @@ namespace mule
 
 				void DisposeOldValue();
 
-				std::u16string Stringfy(std::u16string str) const;
+				static std::wstring Stringfy(std::wstring str);
 			};
 		}
 	}
 }
+
+template<>
+struct std::formatter<mule::Data::Basic::MultiValue, wchar_t>
+{
+	template<class FormatContext>
+	auto format(const mule::Data::Basic::MultiValue &val, FormatContext &context)
+	{
+		return std::format_to(context.out(), val.ToString());
+	}
+};
 
 #endif

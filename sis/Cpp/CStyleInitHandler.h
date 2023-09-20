@@ -29,17 +29,11 @@ namespace mule
 
 			virtual void OnSheetReadEnd() override;
 
-			virtual void OnSheetWriteStart() override;
-
-			virtual void OnSheetWriteEnd() override;
-
 			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, const std::u16string &name) override;
 			virtual void OnRealmExit(mule::Data::Basic::Type *realm, const std::u16string &name) override;
 			virtual void OnRealmEnter(mule::Data::Basic::Type *realm, int idx) override;
 			virtual void OnRealmExit(mule::Data::Basic::Type *realm, int idx) override;
 			virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) override;
-			virtual mule::Data::Basic::MultiValue OnDataWrite() override;
-			virtual void SetStream(xybase::Stream *stream) override;
 		private:
 			xybase::Stream *stream;
 

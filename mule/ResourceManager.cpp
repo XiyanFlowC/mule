@@ -1,12 +1,12 @@
 #include "ResourceManager.h"
 
 #include <xyutils.h>
-#include <Data/Storage/BinaryData.h>
+#include <Storage/BinaryData.h>
 #include <Lua/LuaHost.h>
 
 using namespace mule::Xml;
 using namespace mule::Data;
-using namespace mule::Data::Storage;
+using namespace mule::Storage;
 
 ResourceManager &ResourceManager::GetInstance()
 {

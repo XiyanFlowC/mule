@@ -21,13 +21,14 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
-void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHandler)
+void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	// 避免从这里读入（喵的不刷洗的话会从缓存里读到不干净的东西，我他喵的到底为什么要这么写啊）
 	//stream->Flush();
 	//int ptr = stream->ReadInt32();
 	stream->Seek(Size(), xybase::Stream::SM_CURRENT);
-	int ptr = dataHandler->OnDataWrite().metadata[u"ptr"].value.unsignedValue;
+	auto val = fileHandler->OnDataWrite();
+	int ptr = val.metadata[u"ptr"].value.unsignedValue;
 
 	if (ptr == 0)
 	{
@@ -38,7 +39,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, DataHandler *dataHand
 	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
 	try
 	{
-		referent->Write(stream, dataHandler);
+		referent->Write(stream, fileHandler);
 	}
 	catch (xybase::InvalidParameterException &ex)
 	{

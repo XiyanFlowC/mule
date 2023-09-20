@@ -34,7 +34,7 @@ namespace mule {
 			 * @param stream 写入的流
 			 * @param dataHandler 数据处理器
 			*/
-			void Write(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
+			void Write(xybase::Stream *stream, Basic::Type::FileHandler *fileHandler) override;
 
 			virtual size_t Size() const override;
 

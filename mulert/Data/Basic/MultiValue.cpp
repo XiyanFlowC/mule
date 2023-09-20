@@ -303,120 +303,120 @@ size_t mule::Data::Basic::MultiValue::GetLength() const
 	return length;
 }
 
-std::u16string MultiValue::ToString() const
+std::wstring MultiValue::ToString() const
 {
 	switch (type)
 	{
 	case MVT_INT:
-		return xybase::string::to_utf16(std::to_string(value.signedValue));
+		return std::to_wstring(value.signedValue);
 		break;
 	case MVT_NULL:
-		return std::u16string(u"(null)");
+		return L"(null)";
 		break;
 	case MVT_REAL:
-		return xybase::string::to_utf16(std::to_string(value.realValue));
+		return std::to_wstring(value.realValue);
 		break;
 	case MVT_STRING:
-		return *value.stringValue;
+		return xybase::string::to_wstring(*value.stringValue);
 		break;
 	case MVT_UINT:
-		return xybase::string::to_utf16(std::to_string(value.unsignedValue));
+		return std::to_wstring(value.unsignedValue);
 		break;
 	case MVT_ARRAY:
 	{
-		std::u16string aret(u"[");
+		std::wstring aret(L"[");
 		for (size_t i = 0; i < length; ++i)
 		{
-			aret += value.arrayValue[i].ToString() + u',';
+			aret += value.arrayValue[i].ToString() + L',';
 		}
-		aret += u"]";
+		aret += L"]";
 		return aret;
 		break;
 	}
 	case MVT_MAP:
 	{
-		std::u16string mret(u"{");
-		for (const std::pair<MultiValue, MultiValue> &pair : *value.mapValue)
+		std::wstring mret(L"{");
+		for (const std::pair<const MultiValue, MultiValue> &pair : *value.mapValue)
 		{
-			mret += pair.first.ToString() + u'=' + pair.second.ToString();
+			mret += pair.first.ToString() + L'=' + pair.second.ToString();
 			mret += ',';
 		}
-		mret += u"}";
+		mret += L"}";
 		return mret;
 		break;
 	}
 	default:
 		abort();
 	}
-	return u"";
+	return L"";
 }
 
-std::u16string MultiValue::Stringfy() const
+std::wstring MultiValue::Stringfy() const
 {
 	switch (type)
 	{
 	case MultiValue::MVT_NULL:
-		return u"null";
+		return L"null";
 		break;
 	case MultiValue::MVT_INT:
-		return xybase::string::to_utf16(std::to_string(value.signedValue));
+		return std::to_wstring(value.signedValue);
 		break;
 	case MultiValue::MVT_UINT:
-		return xybase::string::to_utf16(std::to_string(value.unsignedValue)) + u"u";
+		return std::to_wstring(value.unsignedValue) + L"u";
 		break;
 	case MultiValue::MVT_REAL:
-		return u"$" + xybase::string::to_utf16(std::to_string(value.realValue));
+		return L"$" + std::to_wstring(value.realValue);
 		break;
 	case MultiValue::MVT_STRING:
-		return u"\"" + Stringfy(*value.stringValue) + u"\"";
+		return L"\"" + Stringfy(xybase::string::to_wstring(*value.stringValue)) + L"\"";
 		break;
 	case MVT_ARRAY:
 	{
-		std::u16string aret(u"[");
+		std::wstring aret(L"[");
 		for (size_t i = 0; i < length; ++i)
 		{
-			aret += value.arrayValue[i].Stringfy() + u',';
+			aret += value.arrayValue[i].Stringfy() + L',';
 		}
-		aret += u"]";
+		aret += L"]";
 		return aret;
 		break;
 	}
 	case MVT_MAP:
 	{
-		std::u16string mret(u"{");
-		for (const std::pair<MultiValue, MultiValue> &pair : *value.mapValue)
+		std::wstring mret(L"{");
+		for (const std::pair<const MultiValue, MultiValue> &pair : *value.mapValue)
 		{
-			mret += pair.first.Stringfy() + u'=' + pair.second.Stringfy();
-			mret += u',';
+			mret += pair.first.Stringfy() + L'=' + pair.second.Stringfy();
+			mret += ',';
 		}
-		mret += u"}";
+		mret += L"}";
 		return mret;
 		break;
 	}
 	default:
 		abort();
 	}
-	return u"";
+	return L"";
 }
 
-std::u16string MultiValue::Stringfy(std::u16string str) const
+std::wstring MultiValue::Stringfy(std::wstring str)
 {
-	xybase::StringBuilder<char16_t> sb;
-	for (char16_t ch : str)
+	xybase::StringBuilder<wchar_t> sb;
+	for (wchar_t ch : str)
 	{
 		switch (ch)
 		{
-		case u'\\':
-			sb += u"\\\\";
+		case '\\':
+			sb += L"\\\\";
 			break;
-		case u'\n':
-			sb += u"\\n";
+		case '\n':
+			sb += L"\\n";
 			break;
-		case u'\r':
-			sb += u"\\r";
+		case '\r':
+			sb += L"\\r";
 			break;
-		case u'"':
-			sb += u"\\\"";
+		case '"':
+			sb += L"\\\"";
 			break;
 		default:
 			sb += ch;
@@ -686,7 +686,14 @@ void MultiValue::DisposeOldValue()
 	}
 }
 
-MultiValue MultiValue::Parse(const std::u16string &value)
+MultiValue MultiValue::Parse(const std::wstring &value)
+{
+	if (value == L"null") return MultiValue {MultiValue::MV_NULL};
+
+	return Parse(xybase::string::to_utf16(value));
+}
+
+MultiValue mule::Data::Basic::MultiValue::Parse(const std::u16string &value)
 {
 	MultiValue ret;
 
