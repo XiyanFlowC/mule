@@ -45,7 +45,7 @@ namespace mule
 				static const MultiValue MV_NULL;
 
 				std::map<std::u16string, MultiValue> metadata;
-
+				
 				/**
 				 * @brief 多用途值类型
 				*/

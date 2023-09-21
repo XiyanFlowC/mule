@@ -23,7 +23,7 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 #ifdef _WIN32
 	HMODULE libraryHandle = LoadLibraryW((const wchar_t *)plugin);
 #else
-	void *libraryHandle = dlopen(xybase::string::to_wstring(plugin).c_str(), RTLD_LAZY);
+	void *libraryHandle = dlopen(xybase::string::to_string(plugin).c_str(), RTLD_LAZY);
 #endif
 
 	if (libraryHandle == NULL)

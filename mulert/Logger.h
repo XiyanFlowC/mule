@@ -40,7 +40,7 @@ namespace mule
 		void Output(FILE * dest, const std::wstring &name, const std::wstring &fmt, Args...args) const
 		{
 #ifndef DISABLE_TERMINAL_ANSI_ESCAPE
-			std::wstring vfmt = std::format(L"[{}\033[0m] \033[94;40m{}\033[0m - {}\n", name, className, fmt);
+			std::wstring vfmt = std::format(L"[{}\033[0m] \033[94m{}\033[0m - {}\n", name, className, fmt);
 #else
 			std::wstring vfmt = std::format(L"[{}] {}:\n {}\n", name, className, fmt);
 #endif
@@ -90,7 +90,7 @@ namespace mule
 		{
 			if (logLevel > 3) return;
 #ifndef DISABLE_TERMINAL_ANSI_ESCAPE
-			Output(LoggerConfig::GetErrorOutput(), L"\033[91mError", fmt, args...);
+			Output(LoggerConfig::GetErrorOutput(), L"\033[31mError", fmt, args...);
 #else
 			Output(LoggerConfig::GetErrorOutput(), L"Error", fmt, args...);
 #endif
@@ -100,7 +100,7 @@ namespace mule
 		void Fatal(const std::wstring &fmt, Args...args) const
 		{
 #ifndef DISABLE_TERMINAL_ANSI_ESCAPE
-			Output(LoggerConfig::GetErrorOutput(), L"\033[31;103mFatal", fmt, args...);
+			Output(LoggerConfig::GetErrorOutput(), L"\033[91;43mFatal", fmt, args...);
 #else
 			Output(LoggerConfig::GetErrorOutput(), L"Fatal", fmt, args...);
 #endif
