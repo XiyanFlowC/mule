@@ -10,8 +10,12 @@
 #include <Data/TypeCreator.h>
 #include <Data/TypeManager.h>
 
+#include <Logger.h>
+
 class ShiftableString : public mule::Data::Basic::Type
 {
+	mule::Logger logger = mule::Logger::GetLogger<ShiftableString>();
+
 protected:
 	int GetAlign(size_t loc, xybase::Stream *stream);
 
@@ -19,6 +23,8 @@ public:
 
 	class MemoryManager
 	{
+		mule::Logger logger = mule::Logger::GetLogger<MemoryManager>();
+
 		std::map<std::u16string, mule::Data::Space::FragmentManager> memories;
 
 		std::map<std::u16string, std::map<std::u16string, size_t>> assign;

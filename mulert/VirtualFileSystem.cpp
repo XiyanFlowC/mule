@@ -22,12 +22,10 @@ xybase::Stream *mule::VirtualFileSystem::Open(const char16_t *p_path, xybase::Fi
 	std::u16string fullpath = p_path;
 	std::u16string root = fullpath.substr(0, fullpath.find_first_of(':')), path = fullpath.substr(fullpath.find_first_of(':') + 1);
 
-	logger.Info(L"Opening {} of root {}...", xybase::string::to_wstring(path), xybase::string::to_wstring(root));
-
 	auto &&it = containers.find(root);
 	if (it == containers.end()) return nullptr;
 
-	logger.Info(L"Root {} found.", xybase::string::to_wstring(root));
+	logger.Info(L"Open [{}]: Root [{}] found.", xybase::string::to_wstring(path), xybase::string::to_wstring(root));
 	return it->second->Open(path, openMode);
 }
 
@@ -35,7 +33,7 @@ void mule::VirtualFileSystem::Mount(const char16_t *rootName, xybase::FileContai
 {
 	containers[rootName] = container;
 
-	logger.Info(L"{} mounted to root {}.", xybase::string::to_wstring(container->GetName()), xybase::string::to_wstring(rootName));
+	logger.Info(L"[{}] mounted to root [{}].", xybase::string::to_wstring(container->GetName()), xybase::string::to_wstring(rootName));
 }
 
 void mule::VirtualFileSystem::Mount(const char16_t *rootName, const char16_t *containerType, xybase::Stream *infraStream)

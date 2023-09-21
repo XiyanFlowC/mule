@@ -102,24 +102,27 @@ Type *ShiftableString::ShiftableStringCreator::DoCreateObject(std::u16string inf
 
 ShiftableString::MemoryManager::MemoryManager()
 {
+	logger.Info(L"Starting up...");
 	FILE *cache = mule::Storage::DataManager::GetInstance().OpenRaw(SRMM_DATAFILE_ID);
 
 	if (cache == nullptr) return;
 
+	logger.Info(L"Memory specification file(id:{}) found, loading...", SRMM_DATAFILE_ID);
 	size_t size;
 	fscanf(cache, "%zu\n", &size);
+	logger.Info(L"Found {} cache(s) in total.", size);
 	for (size_t i = 0; i < size; ++i)
 	{
 		char buffer[1024];
 		if (!fscanf(cache, "%[^\n]", buffer))
 		{
 			fclose(cache);
-			fprintf(stderr, "Failed to load cache.");
+			logger.Error(L"Failed to load cache, unable to read, errno={}.", errno);
 			return;
 		}
 		size_t count;
 		fscanf(cache, "%zu", &count);
-		fprintf(stderr, "File %s On Reg...", buffer);
+		logger.Info(L"Loading cache for {}({} fragments contained)...", xybase::string::to_wstring(buffer), count);
 		auto &fm = memories[xybase::string::to_utf16(buffer)];
 		for (size_t j = 0; j < count; ++j)
 		{
