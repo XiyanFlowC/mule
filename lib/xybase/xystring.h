@@ -271,6 +271,60 @@ namespace xybase
 
 			return sb.ToString();
 		}
+
+		/**
+		 * @brief 【模板用】将原始编码的指定字符串转换为类型指定的编码。
+		 * @tparam Ch 目标类型
+		 * @tparam SrcCh 原始字符串类型
+		 * @param str 要转换的字符串
+		 * @return 转完毕的字符串
+		*/
+		template <typename Ch, typename SrcCh>
+		std::basic_string<Ch> to_enc(const std::basic_string<SrcCh> &str)
+		{
+			std::basic_string<Ch> ret;
+			for (auto &&ch : str)
+			{
+				ret.push_back(ch);
+			}
+			return ret;
+		}
+
+		template <typename Ch>
+		std::basic_string<Ch> to_enc(const std::basic_string<Ch> &str)
+		{
+			return str;
+		}
+
+		template <typename SrcCh>
+		std::basic_string<char> to_enc(const std::string &str)
+		{
+			return xybase::string::to_string(str);
+		}
+
+		template <typename SrcCh>
+		std::basic_string<wchar_t> to_enc(const std::string &str)
+		{
+			return xybase::string::to_wstring(str);
+		}
+
+		template <typename SrcCh>
+		std::basic_string<char8_t> to_enc(const std::string &str)
+		{
+			return xybase::string::to_utf8(str);
+		}
+
+		template <typename SrcCh>
+		std::basic_string<char16_t> to_enc(const std::string &str)
+		{
+			return xybase::string::to_utf16(str);
+		}
+
+		template <typename SrcCh>
+		std::basic_string<char32_t> to_enc(const std::string &str)
+		{
+			return xybase::string::to_utf32(str);
+		}
 	}
 }
 
