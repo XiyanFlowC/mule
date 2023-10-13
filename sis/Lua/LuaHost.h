@@ -80,7 +80,7 @@ namespace mule
 			 * @tparam ...Args Type of the parameters of function.
 			 * @tparam RetT Return type of the function.
 			 * @param name The name to be registered in the lua vm.
-			 * @param func Pointer to the function.
+			 * @param func Pointer to the function (which SHOULD be noexcept).
 			*/
 			template<typename RetT, typename... Args>
 			void RegisterFunction(const std::string &name, RetT(*func)(Args...));

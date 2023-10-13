@@ -35,14 +35,14 @@ namespace mule
 		xybase::Stream *Open(const char16_t *path, xybase::FileOpenMode openMode);
 
 		/**
-		 * @brief 挂载一个容器到指定根
+		 * @brief 挂载一个容器到指定根【此后此容器生命期需由本类管理】
 		 * @param rootName 挂载的根名
 		 * @param container 要挂载的容器
 		*/
 		void Mount(const char16_t *rootName, xybase::FileContainer *container);
 
 		/**
-		 * @brief 以指定的type创建文件容器
+		 * @brief 以指定的type创建文件容器，并挂载到指定根
 		 * @param rootName 要挂载的根
 		 * @param containerType 解释流的容器类型
 		 * @param infraStream 要被解释的下层流
@@ -65,6 +65,6 @@ namespace mule
 		 * @brief 注册一个创建器到虚拟文件系统。
 		 * @param creator 指向创建函数的指针
 		*/
-		void RegisterContainerCreator(xybase::FileContainer *(*creator)(const char16_t *, xybase::Stream *));
+		void RegisterContainerCreator(xybase::FileContainer *(*creator)(const char16_t *type, xybase::Stream *infra));
 	};
 }

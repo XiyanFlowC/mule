@@ -25,6 +25,9 @@
 #include <Xml/MvXmlNode.h>
 #include <Xml/XmlNode.h>
 #include <Cpp/BisEnv.h>
+#include <Lua/Api/ContainerOperation.h>
+#include <Lua/Api/StreamOperation.h>
+#include <Lua/Api/SystemOperation.h>
 
 #include "crc32.h"
 #include "Configuration.h"

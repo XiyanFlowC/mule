@@ -37,6 +37,10 @@ int main(int argc, char **argv)
 #endif // WIN32
 		});
 
+	mule::Lua::Api::RegisterContainerOperationFunctions();
+	mule::Lua::Api::RegisterStreamOperationFunctions();
+	mule::Lua::Api::RegisterSystemOperations();
+
 	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
 
 	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableString::ShiftableStringCreator());
