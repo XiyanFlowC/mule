@@ -103,28 +103,12 @@ void mule::Mule::PrintPlugins()
 
 xybase::Stream *mule::Mule::ApplyStream(const char16_t *typeName, xybase::Stream *infraStream)
 {
-	for (const PluginDescription *desc : descriptions)
-	{
-		auto func = desc->ApplyStream;
-		if (func == nullptr) continue;
-
-		xybase::Stream *stream = func(typeName, infraStream);
-		if (stream != nullptr) return stream;
-	}
+	return TranscripterManager::GetInstance().Transcript(typeName, infraStream);
 }
 
 void mule::Mule::MountStream(const char16_t *mountName, const char16_t *typeName, xybase::Stream *infraStream)
 {
-	for (const PluginDescription *desc : descriptions)
-	{
-		auto func = desc->ApplyContainer;
-		if (func == nullptr) continue;
-
-		xybase::FileContainer *container = func(typeName, infraStream);
-		if (container == nullptr) continue;
-
-		VirtualFileSystem::GetInstance().Mount(mountName, container);
-	}
+	VirtualFileSystem::GetInstance().Mount(mountName, typeName, infraStream);
 }
 
 mule::Data::Basic::Type::DataHandler *mule::Mule::GetDataHandler(const char16_t *name)
@@ -205,7 +189,7 @@ void mule::Mule::Export(const char16_t *targetFile, uint32_t id)
 		{
 			transEnd = file.find_first_of('|', transStart);
 			std::u16string trans = file.substr(transStart, transEnd - transStart);
-			auto tmp = TranscripterManager::GetInstance().GetTranscripter(trans.c_str(), streamStack.top());
+			auto tmp = TranscripterManager::GetInstance().Transcript(trans.c_str(), streamStack.top());
 
 			// 打开失败，清理
 			if (tmp == nullptr)
@@ -271,7 +255,7 @@ void mule::Mule::Import(const char16_t *targetFile, uint32_t id)
 		{
 			transEnd = file.find_first_of('|', transStart);
 			std::u16string trans = file.substr(transStart, transEnd - transStart);
-			auto tmp = TranscripterManager::GetInstance().GetTranscripter(trans.c_str(), streamStack.top());
+			auto tmp = TranscripterManager::GetInstance().Transcript(trans.c_str(), streamStack.top());
 
 			// 打开失败，清理
 			if (tmp == nullptr)

@@ -13,6 +13,10 @@ namespace mule
 
 			std::string SetLocale(std::string locale);
 
+			int Confirm(std::string word);
+
+			int PrintPlugins();
+
 			void RegisterSystemOperations();
 		}
 	}

@@ -8,7 +8,7 @@ TranscripterManager &mule::TranscripterManager::GetInstance()
     return _inst;
 }
 
-xybase::Stream *mule::TranscripterManager::GetTranscripter(const char16_t *name, xybase::Stream *infraStream)
+xybase::Stream *mule::TranscripterManager::Transcript(const char16_t *name, xybase::Stream *infraStream)
 {
     for (auto &&transcripter : streamCreators)
     {
@@ -19,7 +19,7 @@ xybase::Stream *mule::TranscripterManager::GetTranscripter(const char16_t *name,
     return nullptr;
 }
 
-xybase::Stream *mule::TranscripterManager::GetTranscripter(int count, const char16_t **parameter)
+xybase::Stream *mule::TranscripterManager::Transcript(int count, const char16_t **parameter)
 {
     for (auto &&transcripter : advancedStreamCreators)
     {

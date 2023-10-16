@@ -24,8 +24,9 @@ xybase::Stream *mule::Lua::LuaEnvironment::GetStream(int idx)
 
 int mule::Lua::LuaEnvironment::SetStream(xybase::Stream *stream)
 {
-	streams[streamd++] = stream;
-	return 0;
+	int sd = streamd++;
+	streams[sd] = stream;
+	return sd;
 }
 
 void mule::Lua::LuaEnvironment::CloseStream(int idx)

@@ -24,7 +24,7 @@ namespace mule
 
 		static VirtualFileSystem &GetInstance();
 
-		const std::list<std::u16string> &List(const char16_t *container);
+		const std::list<std::u16string> List(const char16_t *container);
 
 		/**
 		 * @brief 打开指定路径的流

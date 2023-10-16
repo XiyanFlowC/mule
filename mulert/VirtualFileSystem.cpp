@@ -10,10 +10,10 @@ VirtualFileSystem &mule::VirtualFileSystem::GetInstance()
 	return _inst;
 }
 
-const std::list<std::u16string> &mule::VirtualFileSystem::List(const char16_t *container)
+const std::list<std::u16string> mule::VirtualFileSystem::List(const char16_t *container)
 {
 	auto &&it = containers.find(container);
-	if (it == containers.end()) return {};
+	if (it == containers.end()) return std::list<std::u16string>{};
 	return it->second->List();
 }
 

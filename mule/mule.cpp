@@ -4,7 +4,7 @@ using namespace mule::Lua;
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
-void InitialiseLuaEnvironment(xybase::Stream *);
+void InitialiseLuaEnvironment();
 
 int main(int argc, char **argv)
 {
@@ -49,7 +49,8 @@ int main(int argc, char **argv)
 
 	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
 
-	InitialiseLuaEnvironment(new xybase::BinaryStream(xybase::string::to_wstring(Configuration::GetInstance().TargetFile.c_str())));
+	InitialiseLuaEnvironment();
+	mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(Configuration::GetInstance().TargetFile.c_str())));
 
 	// Execution
 	try

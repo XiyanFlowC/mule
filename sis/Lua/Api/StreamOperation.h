@@ -16,9 +16,7 @@ namespace mule
 
 			int ImportStream(std::string path, int id);
 
-			int ExportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length);
-
-			int ImportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length);
+			int StreamOverStream(int streamId, std::string applier);
 
 			void RegisterStreamOperationFunctions();
 		}

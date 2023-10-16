@@ -48,38 +48,12 @@ int mule::Lua::Api::ImportStream(std::string path, int id)
 	return 0;
 }
 
-int mule::Lua::Api::ExportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
+int mule::Lua::Api::StreamOverStream(int streamId, std::string applier)
 {
-	std::u16string utype = xybase::string::to_utf16(type), utbl = xybase::string::to_utf16(tableName);
-	
-	xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
-	if (stream == nullptr) return -10;
-
-	mule::Data::Basic::Type::DataHandler *hnd = Mule::GetInstance().GetDataHandler(xybase::string::to_utf16(handler).c_str());
-	if (hnd == nullptr) return -11;
-
-	Data::Table *target = new Data::Table(Data::TypeManager::GetInstance().GetType(utype), utbl, length, offset);
-	if (target == nullptr) return -12;
-
-	target->Read(stream, hnd);
-	delete target;
-}
-
-int mule::Lua::Api::ImportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
-{
-	std::u16string utype = xybase::string::to_utf16(type), utbl = xybase::string::to_utf16(tableName);
-
-	xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
-	if (stream == nullptr) return -10;
-
-	mule::Data::Basic::Type::FileHandler *hnd = Mule::GetInstance().GetFileHandler(xybase::string::to_utf16(handler).c_str());
-	if (hnd == nullptr) return -11;
-
-	Data::Table *target = new Data::Table(Data::TypeManager::GetInstance().GetType(utype), utbl, length, offset);
-	if (target == nullptr) return -12;
-
-	target->Write(stream, hnd);
-	delete target;
+	auto infraStream = LuaEnvironment::GetInstance().GetStream(streamId);
+	if (infraStream == nullptr) return -1;
+	auto stream = mule::Mule::GetInstance().ApplyStream(xybase::string::to_utf16(applier).c_str(), infraStream);
+	return LuaEnvironment::GetInstance().SetStream(stream);
 }
 
 void mule::Lua::Api::RegisterStreamOperationFunctions()
@@ -88,6 +62,6 @@ void mule::Lua::Api::RegisterStreamOperationFunctions()
 	LuaHost::GetInstance().RegisterFunction("close", CloseStream);
 	LuaHost::GetInstance().RegisterFunction("export", ExportStream);
 	LuaHost::GetInstance().RegisterFunction("import", ImportStream);
-	LuaHost::GetInstance().RegisterFunction("exportsht", ExportSheet);
-	LuaHost::GetInstance().RegisterFunction("importsht", ImportSheet);
+	LuaHost::GetInstance().RegisterFunction("sos", StreamOverStream);
+	LuaHost::GetInstance().RegisterFunction("applyfile", StreamOverStream);
 }

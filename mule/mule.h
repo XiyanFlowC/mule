@@ -28,6 +28,7 @@
 #include <Lua/Api/ContainerOperation.h>
 #include <Lua/Api/StreamOperation.h>
 #include <Lua/Api/SystemOperation.h>
+#include <Lua/LuaEnvironment.h>
 
 #include "crc32.h"
 #include "Configuration.h"

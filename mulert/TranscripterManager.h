@@ -25,7 +25,7 @@ namespace mule
 		 * @param infraStream 要被转译的流
 		 * @return 转译后的流（转译器对象）
 		*/
-		xybase::Stream *GetTranscripter(const char16_t *name, xybase::Stream *infraStream);
+		xybase::Stream *Transcript(const char16_t *name, xybase::Stream *infraStream);
 
 		/**
 		 * @brief 以指定的参数打开一个流
@@ -33,7 +33,7 @@ namespace mule
 		 * @param parameter 参数
 		 * @return 打开的流
 		*/
-		xybase::Stream *GetTranscripter(int count, const char16_t **parameter);
+		xybase::Stream *Transcript(int count, const char16_t **parameter);
 
 		/**
 		 * @brief 注册转译器创建函数
