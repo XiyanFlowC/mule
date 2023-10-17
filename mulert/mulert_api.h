@@ -30,7 +30,7 @@
 #elif defined(linux)
 
 #if defined(__GNUC__)
-#ifdef MULERT_EXPORT_DLL
+#ifdef MULERT_EXPORTS_DLL
 #define MULERT_API __attribute__((visibility ("default")))
 #else
 #define MULERT_API

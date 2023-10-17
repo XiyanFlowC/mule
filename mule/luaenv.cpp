@@ -88,12 +88,41 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
     delete inStream;
 }
 
+int loadMemory(int streamId, int fileId)
+{
+    xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    auto &memory = ShiftableString::MemoryManager::GetInstance().GetMemory(stream);
+
+    FILE *file = DataManager::GetInstance().OpenRaw(fileId);
+    if (file == nullptr) return -11;
+    int cnt = 0;
+    if (!fscanf(file, "%d", &cnt))
+    {
+        fclose(file);
+        return -12;
+    }
+    for (int i = 0; i < cnt; ++i)
+    {
+        unsigned long long str, len;
+        if (!fscanf(file, "%llX %llu", &str, &len))
+        {
+            fclose(file);
+            return -13;
+        }
+        memory.RegisterFragment(str, len);
+    }
+    fclose(file);
+    return 0;
+}
+
 void InitialiseLuaEnvironment()
 {
     auto &lua = mule::Lua::LuaHost::GetInstance();
     // configuration
     lua.RegisterFunction("loaddef", loadDefine);
     lua.RegisterFunction("savemem", SaveMemory);
+    lua.RegisterFunction("ldmem", loadMemory);
 
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);

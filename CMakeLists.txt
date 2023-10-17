@@ -25,7 +25,7 @@ if (CMAKE_COMPILER_IS_GNUCXX)
   endif()
  endif()
 
- set (CMAKE_DEBUG_POSTFIX "d")
+set (CMAKE_DEBUG_POSTFIX "d")
 
 # 包含子项目。
 add_subdirectory ("lib")

@@ -7,8 +7,6 @@
 
 class Configuration
 {
-	Configuration() {}
-
 public:
 	static Configuration& GetInstance();
 

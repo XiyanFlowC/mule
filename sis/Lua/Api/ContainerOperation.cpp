@@ -11,6 +11,7 @@ int mule::Lua::Api::MountStream(int streamId, std::string type, std::string root
 
 	std::u16string utype = xybase::string::to_utf16(type), uroot = xybase::string::to_utf16(root);
 	VirtualFileSystem::GetInstance().Mount(uroot.c_str(), utype.c_str(), infra);
+	return 0;
 }
 
 int mule::Lua::Api::Unmount(std::string root)
