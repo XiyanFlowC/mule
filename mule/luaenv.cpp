@@ -64,6 +64,7 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
     delete target;
     delete hnd;
     delete outStream;
+    return 0;
 }
 
 int ImportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
@@ -86,6 +87,7 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
     delete target;
     delete hnd;
     delete inStream;
+    return 0;
 }
 
 int loadMemory(int streamId, int fileId)
