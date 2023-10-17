@@ -113,7 +113,6 @@ void mule::Mule::MountStream(const char16_t *mountName, const char16_t *typeName
 
 mule::Data::Basic::Type::DataHandler *mule::Mule::GetDataHandler(const char16_t *name)
 {
-	logger.Info(L"Try to create data handler for {}...", xybase::string::to_wstring(name));
 	for (auto &&desc : descriptions)
 	{
 		if (desc->GetDataHandler != nullptr)
@@ -128,7 +127,6 @@ mule::Data::Basic::Type::DataHandler *mule::Mule::GetDataHandler(const char16_t 
 
 mule::Data::Basic::Type::FileHandler *mule::Mule::GetFileHandler(const char16_t *name)
 {
-	logger.Info(L"Try to create file handler for {}...", xybase::string::to_wstring(name));
 	for (auto &&desc : descriptions)
 	{
 		if (desc->GetFileHandler != nullptr)

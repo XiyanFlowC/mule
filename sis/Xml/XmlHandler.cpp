@@ -115,7 +115,10 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 		if (child.IsTextNode()) text.append(child.GetText());
 	}
 
-	element = isString ? MultiValue{text} : MultiValue::Parse(text);
+	if (text == u"null")
+		element = MultiValue::MV_NULL;
+	else
+		element = isString ? MultiValue{text} : MultiValue::Parse(text);
 	for (auto &&attr : root.attributes)
 	{
 		element.metadata[attr.first] = MultiValue::Parse(attr.second);

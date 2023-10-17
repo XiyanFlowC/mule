@@ -131,6 +131,7 @@ int main(int argc, char **argv)
 		fputs("Error when execute lua script.\n", stderr);
 		fputs(ex.what(), stderr);
 		fputs(xybase::string::to_string(*(LuaHost::GetInstance().GetValue(LuaHost::GetInstance().GetStackTop()).value.stringValue)).c_str(), stderr);
+		return -1;
 	}
 
 	return 0;

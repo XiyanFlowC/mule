@@ -12,8 +12,8 @@ using namespace mule::Data;
 using namespace mule::Stream;
 
 bool ShiftableString::doShift = false;
-int ShiftableString::align = 0;
-#include <iostream>
+int ShiftableString::align = 8;
+
 int ShiftableString::GetAlign(size_t loc, xybase::Stream *stream)
 {
 	if (this->align == 0)

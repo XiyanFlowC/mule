@@ -9,6 +9,8 @@
 
 #include <Data/Basic/MultiValue.h>
 #include <Exception/Exception.h>
+#include <Logger.h>
+#include <xystring.h>
 
 namespace mule
 {
@@ -34,6 +36,8 @@ namespace mule
 			LuaHost();
 
 			~LuaHost();
+
+			Logger logger = Logger::GetLogger<LuaHost>(-1);
 
 		public:
 			/**
@@ -251,12 +255,21 @@ namespace mule
 
 				RetT(*f)(Args...) = reinterpret_cast<RetT(*)(Args...)>(lua_touserdata(Ls, lua_upvalueindex(1)));
 
-				RetT ret = host.CallCFunc(f, std::index_sequence_for<Args...>{});
+				try
+				{
+					RetT ret = host.CallCFunc(f, std::index_sequence_for<Args...>{});
 
-				lua_pop(Ls, static_cast<int>(sizeof...(Args)));
-				
-				host.PushValue(mule::Data::Basic::MultiValue(ret));
-				return 1;
+					lua_pop(Ls, static_cast<int>(sizeof...(Args)));
+
+					host.PushValue(mule::Data::Basic::MultiValue(ret));
+					return 1;
+				}
+				catch (xybase::RuntimeException &ex)
+				{
+					host.logger.Error(L"An exception catched while executing mule-side functions.\n[{:X}] {}", ex.GetErrorCode(), ex.GetMessage());
+					host.PushValue(mule::Data::Basic::MultiValue(xybase::string::to_utf16(ex.GetMessage())));
+					host.PushValue(mule::Data::Basic::MultiValue(ex.GetErrorCode()));
+				}
 			};
 			lua_pushlightuserdata(L, (void *)func);
 			lua_pushcclosure(L, wrapper, 1);
