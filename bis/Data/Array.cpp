@@ -10,9 +10,9 @@ void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	size_t limit = length;
 	if (limit == (size_t)-1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	for (size_t i = 0; i < limit; ++i) {
-		dataHandler->OnRealmEnter(innerObject, i);
+		dataHandler->OnRealmEnter(innerObject, (int)i);
 		innerObject->Read(stream, dataHandler);
-		dataHandler->OnRealmExit(innerObject, i);
+		dataHandler->OnRealmExit(innerObject, (int)i);
 	}
 }
 
@@ -21,9 +21,9 @@ void mule::Data::Array::Write(xybase::Stream *stream, FileHandler * fileHandler)
 	size_t limit = length;
 	if (limit == (size_t)-1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	for (size_t i = 0; i < limit; ++i) {
-		fileHandler->OnRealmEnter(innerObject, i);
+		fileHandler->OnRealmEnter(innerObject, (int)i);
 		innerObject->Write(stream, fileHandler);
-		fileHandler->OnRealmExit(innerObject, i);
+		fileHandler->OnRealmExit(innerObject, (int)i);
 	}
 }
 

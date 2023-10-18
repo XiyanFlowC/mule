@@ -44,7 +44,7 @@ std::u16string xybase::BinaryStream::GetName() const
 	return xybase::string::to_utf16(name);
 }
 
-void BinaryStream::ReadBytes(char* buffer, int limit)
+void BinaryStream::ReadBytes(char* buffer, size_t limit)
 {
 	if (1 != fread(buffer, limit, 1, stream)) throw IOException(name, L"Read error.");
 }

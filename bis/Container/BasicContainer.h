@@ -32,7 +32,7 @@ namespace mule
 
 		xybase::Stream *file;
 
-		void ReadBytes(int id, char *buffer, int size);
+		void ReadBytes(int id, char *buffer, size_t size);
 
 		void Write(int id, const char *buffer, size_t size);
 
@@ -56,7 +56,7 @@ namespace mule
 
 			InnerFile(int handle, size_t size, size_t offset, BasicContainer *host, const std::u16string &name);
 
-			virtual void ReadBytes(char *buffer, int limit) override;
+			virtual void ReadBytes(char *buffer, size_t limit) override;
 			virtual void Write(const char *buffer, size_t size) override;
 			virtual size_t Tell() const override;
 			virtual void Seek(long long offset, SeekMode mode) override;

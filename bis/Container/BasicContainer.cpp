@@ -4,7 +4,7 @@
 
 using namespace mule;
 
-void mule::BasicContainer::ReadBytes(int id, char *buffer, int size)
+void mule::BasicContainer::ReadBytes(int id, char *buffer, size_t size)
 {
 	if (state == BC_WRITE)
 	{
@@ -120,7 +120,7 @@ mule::BasicContainer::InnerFile::~InnerFile()
 	Close();
 }
 
-void mule::BasicContainer::InnerFile::ReadBytes(char *buffer, int limit)
+void mule::BasicContainer::InnerFile::ReadBytes(char *buffer, size_t limit)
 {
 	host->ReadBytes(handle, buffer, limit);
 }

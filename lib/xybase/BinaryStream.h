@@ -35,7 +35,7 @@ namespace xybase
 
 		virtual void Flush() override;
 		virtual std::u16string GetName() const override;
-		virtual void ReadBytes(char *buffer, int limit) override;
+		virtual void ReadBytes(char *buffer, size_t limit) override;
 		virtual void Write(const char *buffer, size_t size) override;
 		virtual size_t Tell() const override;
 		virtual void Seek(long long offset, SeekMode mode = SM_BEGIN) override;

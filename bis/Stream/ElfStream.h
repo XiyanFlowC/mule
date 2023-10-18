@@ -92,7 +92,7 @@ namespace mule
 			size_t AddressToOffset(size_t address) const;
 			size_t OffsetToAddress(size_t offset) const;
 
-			virtual void ReadBytes(char *buffer, int limit) override;
+			virtual void ReadBytes(char *buffer, size_t limit) override;
 			virtual void Write(const char *buffer, size_t size) override;
 
 			// 通过 StreamBasic 继承

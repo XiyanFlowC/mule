@@ -153,7 +153,7 @@ size_t ElfStream::OffsetToAddress(size_t offset) const
 	throw xybase::InvalidParameterException(L"offset", L"Address out of range.", __LINE__);
 }
 
-void ElfStream::ReadBytes(char *buffer, int limit)
+void ElfStream::ReadBytes(char *buffer, size_t limit)
 {
 	stream->ReadBytes(buffer, limit);
 }

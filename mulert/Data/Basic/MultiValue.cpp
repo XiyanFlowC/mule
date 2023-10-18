@@ -641,7 +641,7 @@ void MultiValue::ParseReal(const std::u16string &value)
 	double res = 0.0;
 	int isNeg = 0, flag = 0;
 	double fact = 0.1;
-	for (char ch : value) {
+	for (int ch : value) {
 		if (!isdigit(ch))
 		{
 			if (ch == '-') isNeg = 1;

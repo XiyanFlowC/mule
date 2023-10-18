@@ -113,7 +113,7 @@ std::string xybase::TextStream::ReadString()
 	return ret;
 }
 
-void xybase::TextStream::ReadBytes(char *buffer, int limit)
+void xybase::TextStream::ReadBytes(char *buffer, size_t limit)
 {
 	throw InvalidOperationException(L"Cannot read raw bytes from a text stream.", 2350);
 }

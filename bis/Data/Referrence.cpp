@@ -28,7 +28,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	//int ptr = stream->ReadInt32();
 	stream->Seek(Size(), xybase::Stream::SM_CURRENT);
 	auto val = fileHandler->OnDataWrite();
-	int ptr = val.metadata[u"ptr"].value.unsignedValue;
+	auto ptr = val.metadata[u"ptr"].value.unsignedValue;
 
 	if (ptr == 0)
 	{
@@ -36,7 +36,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	}
 
 	size_t loc = stream->Tell();
-	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
+	stream->Seek((long long)ptr, xybase::Stream::SM_BEGIN);
 	try
 	{
 		referent->Write(stream, fileHandler);

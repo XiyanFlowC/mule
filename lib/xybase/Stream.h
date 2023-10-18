@@ -55,7 +55,7 @@ namespace xybase
 
 		virtual std::string ReadString() = 0;
 
-		virtual void ReadBytes(char* buffer, int limit) = 0;
+		virtual void ReadBytes(char* buffer, size_t limit) = 0;
 
 		virtual void Write(uint8_t value) = 0;
 

@@ -59,7 +59,7 @@ namespace xybase
 	private:
 		virtual std::string ReadString() override;
 
-		virtual void ReadBytes(char *buffer, int limit) override;
+		virtual void ReadBytes(char *buffer, size_t limit) override;
 
 		virtual void Write(const char *buffer, size_t size) override;
 	};
