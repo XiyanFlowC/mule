@@ -10,12 +10,19 @@ int main(int argc, char **argv)
 {
 	if (argc <= 3)
 	{
-		fprintf(stderr, "Usage: %s <path_to_execute_folder> <path_to_target_file(s)> <action> [options...]", argv[0]);
+		std::cerr << "Mule by xiyan" << std::endl;
+		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action>" << std::endl;
 		exit(-1);
 	}
+	fwide(stderr, 1);
+	fwide(stdin, 1);
+	fwide(stdout, 1);
 
 	// 设定为用户偏好的语言环境
 	setlocale(LC_ALL, "");
+
+	// main 用 logger
+	mule::Logger logger{ "<mule>", -1 };
 
 	// Initialisation
 	Configuration::GetInstance().SetEnvironmentRootPath(argv[1]);
@@ -29,7 +36,7 @@ int main(int argc, char **argv)
 
 	// Set variable
 	LuaHost::GetInstance().SetGlobal("mule", MultiValue{MultiValue::MVT_MAP});
-	LuaHost::GetInstance().SetGlobal("mule.system", MultiValue{
+	LuaHost::GetInstance().SetGlobal("mule.os", MultiValue{
 #ifdef WIN32
 		u"windows"
 #else
@@ -57,24 +64,23 @@ int main(int argc, char **argv)
 	{
 		if (argv[3] == std::string{"interact"})
 		{
-			puts("=====================================");
-			puts("Multiple-purpose User-configurable Large-file Editor");
-			puts("=====================================");
-			puts("Interaction Mode [Lua based]");
+			std::wcout << L"=====================================" << std::endl;
+			std::wcout << L"Multiple-purpose User-configurable Large-file Editor" << std::endl;
+			std::wcout << L"=====================================" << std::endl;
+			std::wcout << L"Interaction Mode[Lua based]" << std::endl;
 
 			bool exList = false;
 			int off = 7;
 			while (true)
 			{
-				printf("Lua> ");
+				std::wcout << L"Lua> ";
 				static char buffer[4096] {'r', 'e', 't', 'u', 'r', 'n', ' '};
-				scanf("%[^\n]", buffer + off);
-				getchar();
+				std::cin.getline(buffer, 4096 - 8);
 				if (strcmp(buffer + off, "quit") == 0) break;
 				if (strcmp(buffer + off, "exlist") == 0)
 				{
 					exList ^= true;
-					std::cout << "Extract list : " << (exList ? "Enable" : "Disable") << std::endl;
+					std::wcout << L"Extract list : " << (exList ? L"Enable" : L"Disable") << std::endl;
 					continue;
 				}
 				try
@@ -84,7 +90,7 @@ int main(int argc, char **argv)
 					{
 						for (size_t i = 0; i < ret.GetLength(); ++i)
 						{
-							printf(" %zu => %s\n", i, xybase::string::to_string(ret.value.arrayValue[i].ToString()).c_str());
+							std::wcout << L" " << i << " => " << xybase::string::to_wstring(ret.value.arrayValue[i].ToString()).c_str() << std::endl;
 						}
 					}
 					else if (exList)
@@ -94,28 +100,28 @@ int main(int argc, char **argv)
 							auto &&it = ret.value.mapValue->find(1);
 							if (it != ret.value.mapValue->end())
 							{
-								std::cout << "  => " << xybase::string::to_string(it->second.ToString()) << std::endl;
+								std::wcout << L"  => " << xybase::string::to_wstring(it->second.ToString()) << std::endl;
 								for (size_t i = 2; i <= ret.value.mapValue->size(); ++i)
 								{
 									it = ret.value.mapValue->find((int)i);
 									if (it == ret.value.mapValue->end()) break;
-									std::cout << "  -> " << xybase::string::to_string(it->second.ToString()) << std::endl;
+									std::wcout << L"  -> " << xybase::string::to_wstring(it->second.ToString()) << std::endl;
 								}
 								continue;
 							}
 						}
-						std::cout << "  => " << xybase::string::to_string(ret.ToString()) << std::endl;
+						std::wcout << "  => " << xybase::string::to_wstring(ret.ToString()) << std::endl;
 					}
 					else
-						std::cout << "  => " << xybase::string::to_string(ret.ToString()) << std::endl;
+						std::wcout << "  => " << xybase::string::to_wstring(ret.ToString()) << std::endl;
 				}
 				catch (LuaException &ex)
 				{
-					fprintf(stderr, "Lua Error: %s\n\n", ex.what());
+					std::wcerr << L"Lua Error: " << ex.what() << std::endl << std::endl;
 				}
 				catch (xybase::Exception &ex)
 				{
-					fprintf(stderr, "Error when executing %s:\n%s\n\n", buffer, ex.what());
+					std::wcerr << L"Error when executing " << buffer << L":\n" << ex.what() << L"\n\n";
 				}
 				LuaHost::GetInstance().SetStackTop(0);
 			}
@@ -128,9 +134,7 @@ int main(int argc, char **argv)
 	}
 	catch (mule::Lua::LuaException &ex)
 	{
-		fputs("Error when execute lua script.\n", stderr);
-		fputs(ex.what(), stderr);
-		fputs(xybase::string::to_string(*(LuaHost::GetInstance().GetValue(LuaHost::GetInstance().GetStackTop()).value.stringValue)).c_str(), stderr);
+		logger.Error(L"Error when execute lua script. {}", ex.GetMessage());
 		return -1;
 	}
 
