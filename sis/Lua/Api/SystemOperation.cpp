@@ -34,9 +34,23 @@ int mule::Lua::Api::PrintPlugins()
     return 0;
 }
 
+int mule::Lua::Api::Log(std::string msg)
+{
+    logger.Info(xybase::string::to_wstring(msg));
+    return 0;
+}
+
+int mule::Lua::Api::LoadPlugin(std::string path)
+{
+    Mule::GetInstance().LoadPlugin(xybase::string::to_utf16(path).c_str());
+    return 0;
+}
+
 void mule::Lua::Api::RegisterSystemOperations()
 {
     LuaHost::GetInstance().RegisterFunction("setlocale", SetLocale);
     LuaHost::GetInstance().RegisterFunction("confirm", Confirm);
     LuaHost::GetInstance().RegisterFunction("pplugin", PrintPlugins);
+    LuaHost::GetInstance().RegisterFunction("lplugin", LoadPlugin);
+    LuaHost::GetInstance().RegisterFunction("log", Log);
 }

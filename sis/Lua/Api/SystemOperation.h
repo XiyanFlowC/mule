@@ -17,6 +17,10 @@ namespace mule
 
 			int PrintPlugins();
 
+			int Log(std::string msg);
+
+			int LoadPlugin(std::string path);
+
 			void RegisterSystemOperations();
 		}
 	}

@@ -269,6 +269,7 @@ namespace mule
 					host.logger.Error(L"An exception catched while executing mule-side functions.\n[{:X}] {}", ex.GetErrorCode(), ex.GetMessage());
 					host.PushValue(mule::Data::Basic::MultiValue(xybase::string::to_utf16(ex.GetMessage())));
 					host.PushValue(mule::Data::Basic::MultiValue(ex.GetErrorCode()));
+					return 2;
 				}
 			};
 			lua_pushlightuserdata(L, (void *)func);
