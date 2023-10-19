@@ -17,6 +17,15 @@ mule::Lua::LuaEnvironment::LuaEnvironment()
 	Init();
 }
 
+mule::Lua::LuaEnvironment::~LuaEnvironment()
+{
+	for (auto ritr = streams.rbegin(); ritr != streams.rend(); ++ritr)
+	{
+		ritr->second->Close();
+		delete ritr->second;
+	}
+}
+
 xybase::Stream *mule::Lua::LuaEnvironment::GetStream(int idx)
 {
 	return streams[idx];

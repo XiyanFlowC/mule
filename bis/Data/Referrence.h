@@ -6,6 +6,7 @@
 #include <Data/Basic/Type.h>
 #include <Data/TypeCreator.h>
 #include <Data/TypeManager.h>
+#include <Logger.h>
 
 namespace mule
 {
@@ -20,6 +21,8 @@ namespace mule
 			 * @brief 内部的类型。
 			*/
 			Basic::Type *referent = nullptr;
+
+			Logger logger = Logger::GetLogger<Referrence>();
 		public:
 			class ReferrenceCreator : public TypeCreator
 			{

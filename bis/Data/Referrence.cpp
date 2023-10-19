@@ -43,8 +43,8 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	}
 	catch (xybase::InvalidParameterException &ex)
 	{
-		std::cerr << "ptr: " << ptr << std::endl;
-		std::cerr << xybase::string::to_string(ex.GetMessage()) << std::endl;
+		logger.Warn(L"For reference (ptr: {}), an invalid parameter exception detected. (ignored)", ptr, ex.GetErrorCode());
+		logger.Note(L"[{:X}] {}", ex.GetErrorCode(), ex.GetMessage());
 	}
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }

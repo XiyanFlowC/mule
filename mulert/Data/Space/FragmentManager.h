@@ -24,11 +24,14 @@ namespace mule
 			{
 				std::list<Fragment *> frags;
 
+
 			public:
 				/**
 				 * @brief Create a new, empty fragment manager.
 				*/
 				FragmentManager();
+
+				~FragmentManager();
 
 				const std::list<Fragment *> &GetFragments() const;
 

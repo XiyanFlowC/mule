@@ -39,6 +39,9 @@ bool MultiValue::operator==(const MultiValue& rvalue) const
 	case MVT_NULL:
 		return true;
 		break;
+	case MVT_REAL:
+		return value.realValue == rvalue.value.realValue;
+		break;
 	default:
 		return false;
 	}

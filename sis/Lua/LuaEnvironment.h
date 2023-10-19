@@ -25,6 +25,7 @@ namespace mule {
 			std::atomic_int streamd;
 
 		public:
+			~LuaEnvironment();
 
 			xybase::Stream *GetStream(int idx);
 

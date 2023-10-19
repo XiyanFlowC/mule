@@ -75,6 +75,13 @@ namespace mule
 		}
 
 		template<typename... Args>
+		void Note(const std::wstring &fmt, Args... args) const
+		{
+			if (logLevel > 2) return;
+			Output(LoggerConfig::GetErrorOutput(), L"Note", fmt, args...);
+		}
+
+		template<typename... Args>
 		void Warn(const std::wstring &fmt, Args...args) const
 		{
 			if (logLevel > 2) return;

@@ -54,9 +54,10 @@ void ResourceManager::LoadDefinition(std::string def)
     size_t length = ftell(f);
     fseek(f, 0, SEEK_SET);
 
-    char *buffer = new char[length];
+    char *buffer = new char[length + 1];
     fread(buffer, length, 1, f);
     fclose(f);
+    buffer[length] = '\0';
 
     XmlNode root = xmlParser.Parse(buffer);
     if (xmlParser.error != "")

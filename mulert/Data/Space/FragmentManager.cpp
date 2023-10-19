@@ -4,6 +4,14 @@
 
 using namespace mule::Data::Space;
 
+mule::Data::Space::FragmentManager::~FragmentManager()
+{
+	for (auto ptr : frags)
+	{
+		delete ptr;
+	}
+}
+
 FragmentManager::FragmentManager()
 {
 }
