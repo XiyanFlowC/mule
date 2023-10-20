@@ -61,11 +61,11 @@ namespace mule
 
 					virtual void OnSheetReadEnd() = 0;
 
-					virtual void OnDataRead(const MultiValue &value) = 0;
+					virtual void OnDataRead(const mule::Data::Basic::MultiValue &value) = 0;
 
-					virtual void AppendMetadata(std::map<std::u16string, MultiValue> metadata);
+					virtual void AppendMetadata(std::map<std::u16string, mule::Data::Basic::MultiValue> metadata);
 
-					virtual void AppendMetadatum(std::u16string name, const MultiValue &value);
+					virtual void AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &value);
 
 					void SetOutStream(xybase::TextStream *stream);
 				protected:
@@ -81,7 +81,7 @@ namespace mule
 
 					virtual void OnSheetWriteEnd() = 0;
 
-					virtual const MultiValue OnDataWrite() = 0;
+					virtual const mule::Data::Basic::MultiValue OnDataWrite() = 0;
 
 					void SetInStream(xybase::TextStream *stream);
 
@@ -110,7 +110,7 @@ namespace mule
 				 * @param obj 要评估的数据
 				 * @return 评估所得的大小结果
 				*/
-				virtual size_t EvalSize(const MultiValue &obj) const;
+				virtual size_t EvalSize(const mule::Data::Basic::MultiValue &obj) const;
 
 				/**
 				 * @brief 指示该类型是否为复合类型
@@ -123,14 +123,14 @@ namespace mule
 				 * @param stream 数据流（数据源）
 				 * @param dataHandler 数据处理器
 				*/
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) = 0;
+				virtual void Read(xybase::Stream *stream, mule::Data::Basic::Type::DataHandler *dataHandler) = 0;
 
 				/**
 				 * @brief 从数据源获取数据，写入数据流
 				 * @param stream 数据流
 				 * @param dataHandler 数据处理器（数据源）
 				*/
-				virtual void Write(xybase::Stream *stream, FileHandler * fileHandler) = 0;
+				virtual void Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler * fileHandler) = 0;
 			};
 		}
 	}

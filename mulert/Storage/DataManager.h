@@ -42,15 +42,15 @@ namespace mule
 
 			void Initialise(const std::u16string &datadir);
 
-			BinaryData LoadData(std::string name);
+			mule::Storage::BinaryData LoadData(std::string name);
 
-			BinaryData LoadData(unsigned int id);
+			mule::Storage::BinaryData LoadData(unsigned int id);
 
 			FILE *OpenRaw(unsigned int id, bool create = false);
 
-			unsigned int SaveData(const BinaryData &data, unsigned int id);
+			unsigned int SaveData(const mule::Storage::BinaryData &data, unsigned int id);
 
-			unsigned int SaveData(const BinaryData &data);
+			unsigned int SaveData(const mule::Storage::BinaryData &data);
 		};
 	}
 }

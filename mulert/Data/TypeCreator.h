@@ -28,7 +28,7 @@ namespace mule
 
 			TypeCreator(TypeCreator &pattern);
 
-			TypeCreator *nextCreator;
+			mule::Data::TypeCreator *nextCreator;
 
 			/**
 			 * @brief Try to create a field handler by given information.
