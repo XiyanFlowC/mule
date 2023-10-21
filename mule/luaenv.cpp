@@ -56,7 +56,7 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
     auto outStream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + tableName + "." + handler, std::ios::out);
     hnd->SetOutStream(outStream);
 
-    mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetType(utype), utbl, length, offset);
+    mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), utbl, length, offset);
     if (target == nullptr) return -12;
 
     luaenvLogger.Info(L"Exporting {}", xybase::string::to_wstring(tableName));
@@ -79,7 +79,7 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
     auto inStream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + tableName + "." + handler, std::ios::in);
     hnd->SetInStream(inStream);
 
-    mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetType(utype), utbl, length, offset);
+    mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), utbl, length, offset);
     if (target == nullptr) return -12;
 
     luaenvLogger.Info(L"Importing {}", xybase::string::to_wstring(tableName));

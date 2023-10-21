@@ -25,7 +25,7 @@ namespace mule
 			class ArrayCreator : public TypeCreator
 			{
 			public:
-				virtual Basic::Type *DoCreateObject(std::u16string info) override;
+				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 			};
 
 			virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;

@@ -4,12 +4,12 @@
 
 using namespace mule::Data::Basic;
 
-Type *mule::Data::BasicTypeCreator::DoCreateObject(std::u16string info)
+Type *mule::Data::BasicTypeCreator::DoCreateObject(const std::u16string &info)
 {
 	return DoCreateObject(info, {});
 }
 
-Type *mule::Data::BasicTypeCreator::DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> &metainfo)
+Type *mule::Data::BasicTypeCreator::DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo)
 {
 	BasicType *ret = nullptr;
 	if (info.starts_with(u"int"))

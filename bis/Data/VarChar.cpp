@@ -51,7 +51,7 @@ void mule::Data::VarChar::DoWrite(xybase::Stream *stream, const MultiValue &valu
 	}
 }
 
-mule::Data::Basic::Type *mule::Data::VarChar::VarCharCreator::DoCreateObject(std::u16string info)
+mule::Data::Basic::Type *mule::Data::VarChar::VarCharCreator::DoCreateObject(const std::u16string &info)
 {
 	if (!info.starts_with(u"varchar(") || !info.ends_with(u')'))
 	{

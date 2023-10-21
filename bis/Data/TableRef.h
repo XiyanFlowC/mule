@@ -26,7 +26,7 @@ namespace mule
 
 			class TableRefCreator : public TypeCreator
 			{
-				virtual Basic::Type *DoCreateObject(std::u16string info) override;
+				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 			};
 		};
 	}

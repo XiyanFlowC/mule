@@ -90,7 +90,7 @@ void ShiftableString::StreamDispose(xybase::Stream *stream)
 	MemoryManager::GetInstance().DisposeStream(stream);
 }
 
-Type *ShiftableString::ShiftableStringCreator::DoCreateObject(std::u16string info)
+Type *ShiftableString::ShiftableStringCreator::DoCreateObject(const std::u16string &info)
 {
 	if (info == u"sstring")
 	{

@@ -45,7 +45,7 @@ public:
 
 	class ShiftableStringCreator : public mule::Data::TypeCreator
 	{
-		virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info) override;
+		virtual mule::Data::Basic::Type *DoCreateObject(const std::u16string &info) override;
 	};
 
 	virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;

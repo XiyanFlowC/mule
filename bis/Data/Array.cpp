@@ -42,7 +42,7 @@ bool mule::Data::Array::IsComposite() const
 	return true;
 }
 
-mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(std::u16string info)
+mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(const std::u16string &info)
 {
 	if (!info.ends_with(u"]")) return nullptr;
 

@@ -24,6 +24,7 @@ TypeManager &TypeManager::GetInstance()
 
 void TypeManager::RegisterObject(Basic::Type *object, std::u16string name)
 {
+	logger.Info(L"External object {}({}) registered.", xybase::string::to_wstring(name), xybase::string::to_wstring(object->GetDataType()));
 	objects[name] = object;
 }
 
@@ -67,10 +68,16 @@ Basic::Type *TypeManager::GetOrCreateType(std::u16string info)
 	// 若没有创建器则直接返回
 	if (first == nullptr) return nullptr;
 
-	logger.Info(L"New type {} registered.", xybase::string::to_wstring(info));
+	auto ret = first->CreateType(info);
+	if (ret == nullptr)
+	{
+		logger.Error(L"Failed to create type {}", xybase::string::to_wstring(info));
+	}
+
+	logger.Info(L"New type {} is registered.", xybase::string::to_wstring(info));
 
 	// 保存创建结果并返回
-	return objects[info] = first->CreateType(info);
+	return objects[info] = ret;
 }
 
 Basic::Type *mule::Data::TypeManager::GetOrCreateType(std::u16string name, const std::map<std::u16string, std::u16string> &metainfo)
@@ -98,6 +105,7 @@ Basic::Type *TypeManager::GetType(std::u16string name)
 {
 	if (objects.contains(name)) return objects[name];
 
+	logger.Error(L"Requested type {} has not registered yet.", xybase::string::to_wstring(name));
 	return nullptr;
 }
 

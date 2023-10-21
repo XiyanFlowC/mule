@@ -25,7 +25,7 @@ namespace mule
 			{
 			public:
 
-				virtual Basic::Type *DoCreateObject(std::u16string info) override;
+				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 			};
 
 			virtual size_t Size() const override;

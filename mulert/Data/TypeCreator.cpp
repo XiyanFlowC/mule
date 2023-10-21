@@ -24,7 +24,7 @@ TypeCreator::TypeCreator(TypeCreator& pattern)
 	this->nextCreator = pattern.nextCreator;
 }
 
-Type* TypeCreator::CreateType(std::u16string info)
+Type* TypeCreator::CreateType(const std::u16string & info)
 {
 	Type* result = DoCreateObject(info);
 	if (result != nullptr) return result;
@@ -33,7 +33,7 @@ Type* TypeCreator::CreateType(std::u16string info)
 	return nullptr;
 }
 
-Type *TypeCreator::CreateType(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo)
+Type *TypeCreator::CreateType(const std::u16string & info, const std::map<std::u16string, std::u16string> & metainfo)
 {
 	Type *result = DoCreateObject(info, metainfo);
 	if (result != nullptr) return result;
@@ -42,7 +42,7 @@ Type *TypeCreator::CreateType(std::u16string info, const std::map<std::u16string
 	return nullptr;
 }
 
-Basic::Type *mule::Data::TypeCreator::DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> & metainfo)
+Basic::Type *mule::Data::TypeCreator::DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> & metainfo)
 {
 	return DoCreateObject(info);
 }

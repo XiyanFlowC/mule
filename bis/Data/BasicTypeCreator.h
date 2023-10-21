@@ -18,9 +18,9 @@ namespace mule
 		*/
 		class BasicTypeCreator : public TypeCreator
 		{
-			virtual Basic::Type *DoCreateObject(std::u16string info) override;
+			virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 
-			virtual Basic::Type *DoCreateObject(std::u16string info, const std::map<std::u16string, std::u16string> &metainfo);
+			virtual Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo);
 		};
 	}
 }

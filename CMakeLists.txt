@@ -13,10 +13,8 @@ set (CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 if (MSVC)
   add_definitions(-D_CRT_SECURE_NO_WARNINGS)
-  if(${CMAKE_BUILD_TYPE} STREQUAL "Debug")
   # 使用 ZI 支持热重载
-    set(CMAKE_CXX_FLAGS_DEBUG "/MDd /ZI /Ob0 /Od /RTC1 /Wall")
-  endif()
+  set (CMAKE_CXX_FLAGS_DEBUG "/MDd /ZI /Ob0 /Od /RTC1 /Wall")
 endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)

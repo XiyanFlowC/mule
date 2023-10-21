@@ -69,7 +69,7 @@ mule::Data::Referrence::Referrence(Type *referent)
 	this->referent = referent;
 }
 
-Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(std::u16string info)
+Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(const std::u16string &info)
 {
 	if (!info.ends_with(u"*"))
 	{

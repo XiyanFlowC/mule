@@ -22,14 +22,20 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 {
 #ifdef _WIN32
 	HMODULE libraryHandle = LoadLibraryW((const wchar_t *)plugin);
-#else
-	void *libraryHandle = dlopen(xybase::string::to_string(plugin).c_str(), RTLD_LAZY);
-#endif
 
 	if (libraryHandle == NULL)
 	{
-		throw xybase::InvalidParameterException(L"path", L"Cannot load specified plugin.", __LINE__);
+		logger.Error(L"Load plugin failed, GetLastError(): {}", GetLastError());
+		throw xybase::RuntimeException(L"Cannot load specified plugin", GetLastError());
 	}
+#else
+	void *libraryHandle = dlopen(xybase::string::to_string(plugin).c_str(), RTLD_LAZY);
+
+	if (libraryHandle == NULL)
+	{
+		throw xybase::InvalidParameterException(L"Cannot load specified plugin.", errno);
+	}
+#endif
 
 	PluginDescription *(*getDesc)() = (PluginDescription * (*)())
 #ifdef _WIN32
@@ -40,12 +46,13 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 
 	if (getDesc == nullptr)
 	{
+		logger.Error(L"Specified plugin has no function: GetDescription()");
 #ifdef _WIN32
 		FreeLibrary(libraryHandle);
 #else
 		dlclose(libraryHandle);
 #endif
-		throw xybase::RuntimeException(L"Try to load an invalid plugin.", __LINE__);
+		throw xybase::RuntimeException(L"Try to load an invalid plugin.", 2331);
 	}
 
 	pluginHandlers.push_back(libraryHandle);

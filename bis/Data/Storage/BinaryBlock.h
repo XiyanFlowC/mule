@@ -20,7 +20,7 @@ namespace mule
 				{
 				public:
 
-					virtual mule::Data::Basic::Type *DoCreateObject(std::u16string info) override;
+					virtual mule::Data::Basic::Type *DoCreateObject(const std::u16string &info) override;
 				};
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 				virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;

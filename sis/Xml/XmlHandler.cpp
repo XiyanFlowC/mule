@@ -78,7 +78,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		std::u8string tag = sb.ToString();
 		sb += ch;
 
-		if (xybase::string::to_utf16(tag) != name) throw xybase::RuntimeException(L"Format error, except " + xybase::string::to_wstring(name) + L", but got " + xybase::string::to_wstring(name), 9002);
+		if (xybase::string::to_utf16(tag) != name) throw xybase::RuntimeException(L"Format error, except " + xybase::string::to_wstring(name) + L", but got " + xybase::string::to_wstring(tag), 9002);
 
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())

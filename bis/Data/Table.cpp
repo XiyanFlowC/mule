@@ -18,7 +18,12 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 	stream->Seek(offset, xybase::Stream::SM_BEGIN);
 	dataHandler->OnSheetReadStart();
 	dataHandler->OnRealmEnter((Type *)this, name);
-	for (int i = 0; i < length; ++i) {
+	
+	if (length == 1)
+	{
+		infraType->Read(stream, dataHandler);
+	}
+	else for (int i = 0; i < length; ++i) {
 		try
 		{
 			dataHandler->OnRealmEnter(infraType, i);
@@ -42,7 +47,11 @@ void Table::Write(xybase::Stream *stream, FileHandler * fileHandler)
 	stream->Seek(offset, xybase::Stream::SM_BEGIN);
 	fileHandler->OnSheetWriteStart();
 	fileHandler->OnRealmEnter((Type *)this, name);
-	for (int i = 0; i < length; ++i) {
+	if (length == 1)
+	{
+		infraType->Write(stream, fileHandler);
+	}
+	else for (int i = 0; i < length; ++i) {
 		fileHandler->OnRealmEnter(infraType, i);
 		infraType->Write(stream, fileHandler);
 		fileHandler->OnRealmExit(infraType, i);

@@ -54,7 +54,7 @@ bool mule::Data::TableRef::IsComposite() const
 	return true;
 }
 
-mule::Data::Basic::Type *mule::Data::TableRef::TableRefCreator::DoCreateObject(std::u16string info)
+mule::Data::Basic::Type *mule::Data::TableRef::TableRefCreator::DoCreateObject(const std::u16string &info)
 {
 	size_t splt = info.find_last_of('@');
 	if (splt == std::u16string::npos)
