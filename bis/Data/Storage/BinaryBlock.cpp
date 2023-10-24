@@ -42,7 +42,7 @@ size_t BinaryBlock::Size() const
 
 std::u16string BinaryBlock::GetDataType() const
 {
-	return u"binary{" + xybase::string::itos<char16_t>(size) + u"}";
+	return u"bin{" + xybase::string::itos<char16_t>(size) + u"}";
 }
 
 mule::Data::Basic::Type *BinaryBlock::BinaryBlockCreator::DoCreateObject(const std::u16string &info)

@@ -35,7 +35,7 @@ namespace mule
 			 * @param info
 			 * @return The created Type, nullptr if failed to create.
 			*/
-			Basic::Type *CreateType(const std::u16string & info);
+			mule::Data::Basic::Type *CreateType(const std::u16string & info);
 
 			/**
 			 * @brief Try to create a type handler by given information.
@@ -43,14 +43,14 @@ namespace mule
 			 * @param extraInfo The extra creation information
 			 * @return The created Type, nullptr if failed to create.
 			*/
-			Basic::Type *CreateType(const std::u16string & info, const std::map<std::u16string, std::u16string> & metainfo);
+			mule::Data::Basic::Type *CreateType(const std::u16string & info, const std::map<std::u16string, std::u16string> & metainfo);
 
 		protected:
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
-			virtual Basic::Type *DoCreateObject(const std::u16string &info) = 0;
+			virtual mule::Data::Basic::Type *DoCreateObject(const std::u16string &info) = 0;
 
 			// Return nullptr so that flow can move to the next ring of chain-of-responsiblity
-			virtual Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> & metainfo);
+			virtual mule::Data::Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> & metainfo);
 		};
 	}
 }

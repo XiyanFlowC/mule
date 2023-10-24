@@ -114,7 +114,7 @@ namespace mule
 
 				/**
 				 * @brief 指示该类型是否为复合类型
-				 * @return
+				 * @return 若该类型由子类型构成，则应返回 true，否则为 false
 				*/
 				virtual bool IsComposite() const;
 

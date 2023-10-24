@@ -41,7 +41,7 @@ void ShiftableString::Read(xybase::Stream *stream, DataHandler *dataHandler)
 	dataHandler->AppendMetadatum(u"ptr", ptr);
 	dataHandler->AppendMetadatum(u"size", raw.size());
 	if (raw != "")
-		MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(raw.size() + 1, GetAlign(ptr, stream))));
+		MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(raw.size() + 1, GetAlign(ptr, stream)));
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 

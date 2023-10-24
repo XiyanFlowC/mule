@@ -147,7 +147,7 @@ size_t ElfStream::OffsetToAddress(size_t offset) const
 {
 	for (int i = 0; i < header->phnum; ++i)
 	{
-		if (phs[i].vaddr <= offset && static_cast<unsigned long long>(phs[i].vaddr) + phs[i].filesz > offset)
+		if (phs[i].offset <= offset && static_cast<unsigned long long>(phs[i].offset) + phs[i].filesz > offset)
 		{
 			long long diff = static_cast<long long>(phs[i].offset) - phs[i].vaddr;
 			return offset - diff;

@@ -16,7 +16,7 @@ std::u16string mule::Data::Basic::String::GetDataType() const
 
 size_t mule::Data::Basic::String::GetLastSize() const
 {
-	return lastSize;
+	return lastSize + 1;
 }
 
 size_t mule::Data::Basic::String::EvalSize(const MultiValue &obj) const
@@ -50,4 +50,5 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 	}
 
 	stream->Write(data);
+	lastSize = data.size();
 }

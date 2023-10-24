@@ -3,7 +3,7 @@
 #ifndef XYUTILS_H__
 #define XYUTILS_H__
 
-#define XY_ALIGN(n, b) ((n) < 0 ? (n) & ~((b) - 1) : ((n + (b) - 1) & ~((b) - 1))
+#define XY_ALIGN(n, b) ((n) < 0 ? (n) & ~((b) - 1) : ((n + (b) - 1) & ~((b) - 1)))
 
 #include "xyapi.h"
 
