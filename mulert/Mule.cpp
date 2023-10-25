@@ -22,7 +22,7 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 {
 #ifdef _WIN32
 	std::wstring pluginFile((const wchar_t *)plugin);
-	pluginFile += ".dll";
+	pluginFile += L".dll";
 	HMODULE libraryHandle = LoadLibraryW(pluginFile.c_str());
 
 	if (libraryHandle == NULL)
