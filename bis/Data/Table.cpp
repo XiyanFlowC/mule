@@ -32,8 +32,8 @@ void Table::Read(xybase::Stream *stream, Type::DataHandler *dataHandler)
 		}
 		catch (xybase::Exception& ex)
 		{
-			std::cerr << "Error when read, abort for now, at " << i << " (Error: " << ex.GetErrorCode() << std::endl;
-			std::cerr << ex.what() << std::endl;
+			logger.Error(L"Error when reading {} (0x{:08X}). Aborted.", i, ex.GetErrorCode());
+			logger.Note(L"Exception: {}", ex.GetMessage());
 			break;
 		}
 	}

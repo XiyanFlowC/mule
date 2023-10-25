@@ -42,9 +42,21 @@ int mule::Lua::Api::ExportStream(std::string path, int id)
 	return 0;
 }
 
+int mule::Lua::Api::ExtractStream(std::string path, int offset, int length, int id)
+{
+	Mule::GetInstance().Extract(xybase::string::to_utf16(path).c_str(), offset, length, id);
+	return 0;
+}
+
 int mule::Lua::Api::ImportStream(std::string path, int id)
 {
 	Mule::GetInstance().Import(xybase::string::to_utf16(path).c_str(), id);
+	return 0;
+}
+
+int mule::Lua::Api::PatchStream(std::string path, int offset, int length, int id)
+{
+	Mule::GetInstance().Patch(xybase::string::to_utf16(path).c_str(), offset, length, id);
 	return 0;
 }
 
@@ -61,7 +73,9 @@ void mule::Lua::Api::RegisterStreamOperationFunctions()
 	LuaHost::GetInstance().RegisterFunction("open", OpenStream);
 	LuaHost::GetInstance().RegisterFunction("close", CloseStream);
 	LuaHost::GetInstance().RegisterFunction("export", ExportStream);
+	LuaHost::GetInstance().RegisterFunction("extract", ExtractStream);
 	LuaHost::GetInstance().RegisterFunction("import", ImportStream);
+	LuaHost::GetInstance().RegisterFunction("patch", PatchStream);
 	LuaHost::GetInstance().RegisterFunction("sos", StreamOverStream);
 	LuaHost::GetInstance().RegisterFunction("applyfile", StreamOverStream);
 }

@@ -48,6 +48,13 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
 {
     std::u16string utype = xybase::string::to_utf16(type), utbl = xybase::string::to_utf16(tableName);
 
+    size_t reppos = utbl.find('/');
+    while (reppos != std::u16string::npos)
+    {
+        utbl = utbl.replace(reppos, 1, u"-");
+        reppos = utbl.find('/', reppos);
+    }
+
     xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
     if (stream == nullptr) return -10;
 
@@ -70,6 +77,13 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
 int ImportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
 {
     std::u16string utype = xybase::string::to_utf16(type), utbl = xybase::string::to_utf16(tableName);
+
+    size_t reppos = utbl.find('/');
+    while (reppos != std::u16string::npos)
+    {
+        utbl = utbl.replace(reppos, 1, u"-");
+        reppos = utbl.find('/', reppos);
+    }
 
     xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
     if (stream == nullptr) return -10;

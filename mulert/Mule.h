@@ -102,11 +102,29 @@ namespace mule
 		void Export(const char16_t *targetFile, uint32_t id);
 
 		/**
+		 * @brief 从指定文件抽取数据段，保存到数据文件
+		 * @param targetFile 指定的文件全限定路径。
+		 * @param offset 偏移量
+		 * @param length 长度
+		 * @param id 数据文件 ID。
+		*/
+		void Extract(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
+
+		/**
 		 * @brief 从数据文件导入到指定文件。
 		 * @param targetFile 文件全限定路径。包括根和全部转义流名。
 		 * @param id 数据文件ID
 		*/
 		void Import(const char16_t *targetFile, uint32_t id);
+
+		/**
+		 * @brief 从数据文件获得的数据覆盖到指定位置。
+		 * @param targetFile 指定的文件全限定路径。
+		 * @param offset 偏移量
+		 * @param length 长度
+		 * @param id 数据文件 ID。
+		*/
+		void Patch(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
 
 		/**
 		 * @brief 加载指定的插件动态库。

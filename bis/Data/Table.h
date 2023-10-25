@@ -5,6 +5,7 @@
 
 #include <Data/Basic/Type.h>
 #include <Stream.h>
+#include <Logger.h>
 
 namespace mule {
 	namespace Data {
@@ -12,6 +13,7 @@ namespace mule {
 		 * @brief 表。读写时在流中定位首地址的元素。
 		*/
 		class Table : public Basic::Type {
+			Logger logger = Logger::GetLogger<Table>();
 		public:
 			/**
 			 * @brief 某个在流中的一列数据，其单元为 structure

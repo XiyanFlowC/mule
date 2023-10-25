@@ -172,121 +172,61 @@ void mule::Mule::Export(const char16_t *targetFile, uint32_t id)
 {
 	logger.Debug(L"抽取文件{}到{}。", xybase::string::to_wstring(targetFile), id);
 
-	// 全限定名具有如下形式：device:dir/dir/file.bin|transformer|transformer
-	// device:dir/dir/file.bin 为 VirtualFileSystem可处理之部分
-	// 剩余部分须逐个适用对应Stream转义器
-	std::u16string file{targetFile};
-	size_t pathEnd = file.find_first_of('|');
+	VirtualFileSystem::GetInstance().CascadeProcess(targetFile, [=](xybase::Stream *target) -> void {
+		target->Seek(0, xybase::Stream::SM_END);
+		size_t size = target->Tell();
+		target->Seek(0, xybase::Stream::SM_BEGIN);
+		char *buffer = new char[size];
+		target->ReadBytes(buffer, size);
 
-	// 打开基本流
-	std::u16string path = file.substr(pathEnd);
-	xybase::Stream *baseStream = VirtualFileSystem::GetInstance().Open(path.c_str(), xybase::FOM_READ);
-	std::stack<xybase::Stream *> streamStack;
+		Storage::BinaryData bd(buffer, size, false);
+		Storage::DataManager::GetInstance().SaveData(bd, id);
+	}, xybase::FOM_READ);
 
-	if (baseStream == nullptr) throw xybase::InvalidParameterException(L"targetFile", L"File does not exist or cannot be read.", 7885);
+	
+	logger.Debug(L"抽取完毕。");
+}
 
-	streamStack.push(baseStream);
-	if (pathEnd != std::u16string::npos)
-	{
-		size_t transStart = pathEnd + 1, transEnd;
-		// 逐级查找、打开转译器
-		do
-		{
-			transEnd = file.find_first_of('|', transStart);
-			std::u16string trans = file.substr(transStart, transEnd - transStart);
-			auto tmp = TranscripterManager::GetInstance().Transcript(trans.c_str(), streamStack.top());
+void mule::Mule::Extract(const char16_t *targetFile, size_t offset, size_t length, uint32_t id)
+{
+	logger.Debug(L"抽取数据{}({}, size={})到{}。", xybase::string::to_wstring(targetFile), offset, length, id);
 
-			// 打开失败，清理
-			if (tmp == nullptr)
-			{
-				while (!streamStack.empty())
-				{
-					auto stream = streamStack.top();
-					delete stream;
-					streamStack.pop();
-				}
-				logger.Error(L"Specified transcripter: {} is not available.", xybase::string::to_wstring(trans));
-				throw xybase::InvalidParameterException(L"targetFile", L"Specified transcripter not found.", 7886);
-			}
-		} while (transStart != std::u16string::npos);
-	}
+	VirtualFileSystem::GetInstance().CascadeProcess(targetFile, [=](xybase::Stream *target) -> void {
+		target->Seek(offset, xybase::Stream::SM_BEGIN);
+		char *buffer = new char[length];
+		target->ReadBytes(buffer, length);
 
-	auto target = streamStack.top();
-	target->Seek(0, xybase::Stream::SM_END);
-	size_t size = target->Tell();
-	target->Seek(0, xybase::Stream::SM_BEGIN);
-	char *buffer = new char[size];
-	target->ReadBytes(buffer, size);
+		Storage::BinaryData bd(buffer, length, false);
+		Storage::DataManager::GetInstance().SaveData(bd, id);
+	}, xybase::FOM_READ);
 
-	Storage::BinaryData bd(buffer, size, false);
-	Storage::DataManager::GetInstance().SaveData(bd, id);
 
-	logger.Info(L"File {}(size={}) was saved to {}.", xybase::string::to_wstring(path), size, id);
-
-	// 保存结束，清理
-	while (!streamStack.emplace())
-	{
-		auto stream = streamStack.top();
-		delete stream;
-		streamStack.pop();
-	}
 	logger.Debug(L"抽取完毕。");
 }
 
 void mule::Mule::Import(const char16_t *targetFile, uint32_t id)
 {
-	// 和 Export 重复，需要重构
 	logger.Debug(L"插入文件{}从{}。", xybase::string::to_wstring(targetFile), id);
 
-	// 全限定名具有如下形式：device:dir/dir/file.bin|transformer|transformer
-	// device:dir/dir/file.bin 为 VirtualFileSystem可处理之部分
-	// 剩余部分须逐个适用对应Stream转义器
-	std::u16string file{targetFile};
-	size_t pathEnd = file.find_first_of('|');
+	VirtualFileSystem::GetInstance().CascadeProcess(targetFile, [=](xybase::Stream *target) -> void {
+		Storage::BinaryData bd = Storage::DataManager::GetInstance().LoadData(id);
 
-	// 打开基本流
-	std::u16string path = file.substr();
-	xybase::Stream *baseStream = VirtualFileSystem::GetInstance().Open(targetFile, xybase::FOM_WRITE);
-	std::stack<xybase::Stream *> streamStack;
+		target->Write(bd.GetData(), bd.GetLength());
+	}, xybase::FOM_WRITE);
 
-	if (baseStream == nullptr) throw xybase::InvalidParameterException(L"targetFile", L"File does not exist or cannot be read.", 7885);
-
-	streamStack.push(baseStream);
-	if (pathEnd != std::u16string::npos)
-	{
-		size_t transStart = pathEnd + 1, transEnd;
-		// 逐级查找、打开转译器
-		do
-		{
-			transEnd = file.find_first_of('|', transStart);
-			std::u16string trans = file.substr(transStart, transEnd - transStart);
-			auto tmp = TranscripterManager::GetInstance().Transcript(trans.c_str(), streamStack.top());
-
-			// 打开失败，清理
-			if (tmp == nullptr)
-			{
-				while (!streamStack.empty())
-				{
-					auto stream = streamStack.top();
-					delete stream;
-					streamStack.pop();
-				}
-				throw xybase::InvalidParameterException(L"targetFile", L"Specified transcripter not found.", 7886);
-			}
-		} while (transStart != std::u16string::npos);
-	}
-
-	Storage::BinaryData bd = Storage::DataManager::GetInstance().LoadData(id);
-
-	auto target = streamStack.top();
-	target->Write(bd.GetData(), bd.GetLength());
-
-	// 保存结束，清理
-	while (!streamStack.emplace())
-	{
-		auto stream = streamStack.top();
-		delete stream;
-		streamStack.pop();
-	}
 	logger.Debug(L"插入完毕。");
+}
+
+void mule::Mule::Patch(const char16_t *targetFile, size_t offset, size_t length, uint32_t id)
+{
+	logger.Debug(L"修补数据{}({}, size={})从{}。", xybase::string::to_wstring(targetFile), offset, length, id);
+
+	VirtualFileSystem::GetInstance().CascadeProcess(targetFile, [=](xybase::Stream *target) -> void {
+		Storage::BinaryData bd = Storage::DataManager::GetInstance().LoadData(id);
+
+		target->Seek(0, xybase::Stream::SM_BEGIN);
+		target->Write(bd.GetData(), bd.GetLength());
+	}, xybase::FOM_WRITE);
+
+	logger.Debug(L"修补完毕。");
 }

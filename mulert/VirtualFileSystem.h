@@ -2,6 +2,7 @@
 
 #include <FileContainer.h>
 #include <string>
+#include <functional>
 #include <map>
 #include <list>
 
@@ -33,6 +34,14 @@ namespace mule
 		 * @return 打开的流
 		*/
 		xybase::Stream *Open(const char16_t *path, xybase::FileOpenMode openMode);
+
+		/**
+		 * @brief 级联打开文件，调用闭包后关闭
+		 * @param targetFile 文件全限定路径
+		 * @param openMode 打开方式
+		 * @param lambda 回调闭包
+		*/
+		void CascadeProcess(const char16_t *targetFile, std::function<void(xybase::Stream *target)> lambda, xybase::FileOpenMode openMode);
 
 		/**
 		 * @brief 挂载一个容器到指定根【此后此容器生命期需由本类管理】

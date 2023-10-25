@@ -1,6 +1,8 @@
 #include "VirtualFileSystem.h"
 #include <Exception/InvalidParameterException.h>
 #include <xystring.h>
+#include <stack>
+#include "TranscripterManager.h"
 
 using namespace mule;
 
@@ -27,6 +29,58 @@ xybase::Stream *mule::VirtualFileSystem::Open(const char16_t *p_path, xybase::Fi
 
 	logger.Info(L"Open [{}]: Root [{}] found.", xybase::string::to_wstring(path), xybase::string::to_wstring(root));
 	return it->second->Open(path, openMode);
+}
+
+void mule::VirtualFileSystem::CascadeProcess(const char16_t *targetFile, std::function<void(xybase::Stream *target)> lambda, xybase::FileOpenMode openMode)
+{
+	// 全限定名具有如下形式：device:dir/dir/file.bin|transformer|transformer
+	// device:dir/dir/file.bin 为 VirtualFileSystem可处理之部分
+	// 剩余部分须逐个适用对应Stream转义器
+	std::u16string file{ targetFile };
+	size_t pathEnd = file.find_first_of('|');
+
+	// 打开基本流
+	std::u16string path = file.substr(pathEnd);
+	xybase::Stream *baseStream = VirtualFileSystem::GetInstance().Open(path.c_str(), openMode);
+	std::stack<xybase::Stream *> streamStack;
+
+	if (baseStream == nullptr) throw xybase::InvalidParameterException(L"targetFile", L"File does not exist or cannot be read.", 7885);
+
+	streamStack.push(baseStream);
+	if (pathEnd != std::u16string::npos)
+	{
+		size_t transStart = pathEnd + 1, transEnd;
+		// 逐级查找、打开转译器
+		do
+		{
+			transEnd = file.find_first_of('|', transStart);
+			std::u16string trans = file.substr(transStart, transEnd - transStart);
+			auto tmp = TranscripterManager::GetInstance().Transcript(trans.c_str(), streamStack.top());
+
+			// 打开失败，清理
+			if (tmp == nullptr)
+			{
+				while (!streamStack.empty())
+				{
+					auto stream = streamStack.top();
+					delete stream;
+					streamStack.pop();
+				}
+				logger.Error(L"Specified transcripter: {} is not available.", xybase::string::to_wstring(trans));
+				throw xybase::InvalidParameterException(L"targetFile", L"Specified transcripter not found.", 7886);
+			}
+		} while (transStart != std::u16string::npos);
+	}
+
+	lambda(streamStack.top());
+
+	// 保存结束，清理
+	while (!streamStack.emplace())
+	{
+		auto stream = streamStack.top();
+		delete stream;
+		streamStack.pop();
+	}
 }
 
 void mule::VirtualFileSystem::Mount(const char16_t *rootName, xybase::FileContainer *container)
