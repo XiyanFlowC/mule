@@ -33,7 +33,7 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 
 	if (libraryHandle == NULL)
 	{
-		throw xybase::InvalidParameterException(L"Cannot load specified plugin.", errno);
+		throw xybase::RuntimeException(L"Cannot load specified plugin.", errno);
 	}
 #endif
 
