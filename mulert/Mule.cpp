@@ -21,7 +21,9 @@ using namespace mule;
 void mule::Mule::LoadPlugin(const char16_t *plugin)
 {
 #ifdef _WIN32
-	HMODULE libraryHandle = LoadLibraryW((const wchar_t *)plugin);
+	std::wstring pluginFile((const wchar_t *)plugin);
+	pluginFile += ".dll";
+	HMODULE libraryHandle = LoadLibraryW(pluginFile.c_str());
 
 	if (libraryHandle == NULL)
 	{
@@ -29,7 +31,13 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 		throw xybase::RuntimeException(L"Cannot load specified plugin", GetLastError());
 	}
 #else
-	void *libraryHandle = dlopen(xybase::string::to_string(plugin).c_str(), RTLD_LAZY);
+	std::string pluginFile = xybase::string::to_string(plugin);
+	size_t pathEnd = pluginFile.find_last_of('/');
+	pluginFile = 
+		(pathEnd == std::string::npos
+		? ("lib" + pluginFile)
+		: (pluginFile.replace(pathEnd, 1, "/lib"))) + ".so";
+	void *libraryHandle = dlopen(pluginFile.c_str(), RTLD_LAZY);
 
 	if (libraryHandle == NULL)
 	{
