@@ -11,7 +11,7 @@ target_include_directories (xybase_dyn INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 include (GNUInstallDirs)
 install (TARGETS xybase DESTINATION ${CMAKE_INSTALL_LIBDIR}/xybase)
-install (TARGETS xybase_dyn DESTINATION ${CMAKE_INSTALL_BINDIR}/xybase)
+install (TARGETS xybase_dyn DESTINATION ${CMAKE_INSTALL_LIBDIR}/xybase)
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xybase FILES_MATCHING PATTERN "*.h")
 
 if (MSVC)

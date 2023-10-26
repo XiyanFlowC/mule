@@ -14,7 +14,7 @@ target_link_libraries (mulert PUBLIC xybase_dyn ${CMAKE_DL_LIBS})
 target_link_libraries (mulert_sta PUBLIC xybase ${CMAKE_DL_LIBS})
 
 include (GNUInstallDirs)
-install (TARGETS mulert DESTINATION ${CMAKE_INSTALL_BINDIR}/mule)
+install (TARGETS mulert DESTINATION ${CMAKE_INSTALL_LIBDIR}/mule)
 install (TARGETS mulert_sta DESTINATION ${CMAKE_INSTALL_LIBDIR}/mule)
 install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mule FILES_MATCHING PATTERN "*.h")
 

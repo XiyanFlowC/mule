@@ -46,7 +46,14 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 	if (itr != value.metadata.end())
 	{
 		if (data.size() > itr->second.value.unsignedValue)
-			throw xybase::InvalidParameterException(L"value", L"Too large for this string space.", 19010);
+			throw xybase::InvalidParameterException(
+				L"value",
+				std::format(
+					L"Too large (size {} exceeded {}), string={}",
+					data.size(),
+					itr->second.value.unsignedValue,
+					xybase::string::to_wstring(*value.value.stringValue)),
+				19010);
 	}
 
 	stream->Write(data);
