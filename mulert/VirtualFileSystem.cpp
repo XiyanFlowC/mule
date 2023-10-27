@@ -31,6 +31,17 @@ xybase::Stream *mule::VirtualFileSystem::Open(const char16_t *p_path, xybase::Fi
 	return it->second->Open(path, openMode);
 }
 
+void mule::VirtualFileSystem::Remove(const char16_t *p_path, bool recursive)
+{
+	std::u16string fullpath = p_path;
+	std::u16string root = fullpath.substr(0, fullpath.find_first_of(':')), path = fullpath.substr(fullpath.find_first_of(':') + 1);
+
+	auto &&it = containers.find(root);
+	if (it == containers.end()) return;
+
+	it->second->Remove(path, recursive);
+}
+
 void mule::VirtualFileSystem::CascadeProcess(const char16_t *targetFile, std::function<void(xybase::Stream *target)> lambda, xybase::FileOpenMode openMode)
 {
 	// 全限定名具有如下形式：device:dir/dir/file.bin|transformer|transformer

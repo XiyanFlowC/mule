@@ -132,6 +132,26 @@ int loadMemory(int streamId, int fileId)
     return 0;
 }
 
+int cvttxt(std::string target, std::string cvt, std::string output, std::string param)
+{
+    Mule::GetInstance().ConvertToText(
+        xybase::string::to_utf16(target).c_str(),
+        xybase::string::to_utf16(cvt).c_str(),
+        xybase::string::to_utf16(Configuration::GetInstance().ResourcesDir + output).c_str(),
+        xybase::string::to_utf16(param).c_str());
+    return 0;
+}
+
+int cvtbin(std::string text, std::string cvt, std::string target, std::string param)
+{
+    Mule::GetInstance().ConvertToText(
+        xybase::string::to_utf16(Configuration::GetInstance().ResourcesDir + text).c_str(),
+        xybase::string::to_utf16(cvt).c_str(),
+        xybase::string::to_utf16(target).c_str(),
+        xybase::string::to_utf16(param).c_str());
+    return 0;
+}
+
 void InitialiseLuaEnvironment()
 {
     auto &lua = mule::Lua::LuaHost::GetInstance();
@@ -142,4 +162,7 @@ void InitialiseLuaEnvironment()
 
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);
+
+    lua.RegisterFunction("cvttxt", cvttxt);
+    lua.RegisterFunction("cvtbin", cvtbin);
 }

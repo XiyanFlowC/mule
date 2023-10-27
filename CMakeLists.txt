@@ -31,6 +31,7 @@ add_subdirectory ("mulert")
 add_subdirectory ("bis")
 add_subdirectory ("sis")
 add_subdirectory ("mule")
+add_subdirectory ("advstr")
 
 
 if(MSVC)

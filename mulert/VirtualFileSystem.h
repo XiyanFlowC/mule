@@ -36,6 +36,13 @@ namespace mule
 		xybase::Stream *Open(const char16_t *path, xybase::FileOpenMode openMode);
 
 		/**
+		 * @brief 从文件系统中移除一个文件
+		 * @param path 指定的文件路径
+		 * @param recursive 递归移除子目录
+		*/
+		void Remove(const char16_t *path, bool recursive = false);
+
+		/**
 		 * @brief 级联打开文件，调用闭包后关闭
 		 * @param targetFile 文件全限定路径
 		 * @param openMode 打开方式

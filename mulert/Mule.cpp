@@ -18,6 +18,23 @@
 
 using namespace mule;
 
+void mule::Mule::ConvertToBinary(const char16_t *sourceText, const char16_t *converter, const char16_t *target, const char16_t *param)
+{
+	xybase::Stream *output = VirtualFileSystem::GetInstance().Open(target, xybase::FOM_WRITE);
+	xybase::TextStream input{ xybase::string::to_string(sourceText), std::ios::in };
+	for (auto &&desc : descriptions)
+	{
+		if (desc->ConvertToText != nullptr)
+		{
+			int ret = desc->ConvertToBinary(converter, &input, output, param);
+			if (ret == 0) return;
+		}
+	}
+
+	delete output;
+	logger.Error(L"无法完成转换{}，所有插件都没有正常响应指定的转换器{}。", xybase::string::to_wstring(target), xybase::string::to_wstring(converter));
+}
+
 void mule::Mule::LoadPlugin(const char16_t *plugin)
 {
 #ifdef _WIN32
@@ -237,4 +254,21 @@ void mule::Mule::Patch(const char16_t *targetFile, size_t offset, size_t length,
 	}, xybase::FOM_WRITE);
 
 	logger.Debug(L"修补完毕。");
+}
+
+void mule::Mule::ConvertToText(const char16_t *target, const char16_t *converter, const char16_t *dest, const char16_t *param)
+{
+	xybase::Stream *input = VirtualFileSystem::GetInstance().Open(target, xybase::FOM_READ);
+	xybase::TextStream output{ xybase::string::to_string(dest), std::ios::out | std::ios::trunc };
+	for (auto &&desc : descriptions)
+	{
+		if (desc->ConvertToText != nullptr)
+		{
+			int ret = desc->ConvertToText(converter, input, &output, param);
+			if (ret == 0) return;
+		}
+	}
+
+	delete input;
+	logger.Error(L"无法完成转换，所有插件都没有正常响应指定的转换器{}。", xybase::string::to_wstring(converter));
 }

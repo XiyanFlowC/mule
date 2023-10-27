@@ -75,11 +75,11 @@ namespace mule
 		/**
 		 * @brief 使用指定的转换器将输入流转换为文本流输出
 		*/
-		void (*ConvertText)(const char16_t *converter, xybase::Stream *input, xybase::TextStream *output);
+		int (*ConvertToText)(const char16_t *converter, xybase::Stream *input, xybase::TextStream *output, const char16_t *param);
 		/**
 		 * @brief 使用指定的转换器将文本流输入转换为二进制流输出
 		*/
-		void (*ConvertBinary)(const char16_t *converter, xybase::TextStream *input, xybase::Stream *output);
+		int (*ConvertToBinary)(const char16_t *converter, xybase::TextStream *input, xybase::Stream *output, const char16_t *param);
 	};
 
 	/**
@@ -125,6 +125,24 @@ namespace mule
 		 * @param id 数据文件 ID。
 		*/
 		void Patch(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
+
+		/**
+		 * @brief 转换文件到给定的文本
+		 * @param target 目标文件在虚拟文件系统中的路径
+		 * @param converter 转换器
+		 * @param dest 目的位置
+		 * @param param 参数字符串
+		*/
+		void ConvertToText(const char16_t *target, const char16_t *converter, const char16_t *dest, const char16_t *param);
+
+		/**
+		 * @brief 转文本到给定的文件
+		 * @param sourceText 原始文本文件名
+		 * @param converter 转换器
+		 * @param target 目标二进制文件在虚拟文件系统中的路径
+		 * @param param 参数字符串
+		*/
+		void ConvertToBinary(const char16_t *sourceText, const char16_t *converter, const char16_t *target, const char16_t *param);
 
 		/**
 		 * @brief 加载指定的插件动态库。

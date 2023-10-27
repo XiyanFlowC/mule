@@ -166,11 +166,11 @@ size_t ShiftableString::MemoryManager::AssignFor(xybase::Stream *stream, const s
 		}
 		else
 		{
-			return cache->second[str] = GetMemory(stream).Alloc(size, 16);
+			return cache->second[str] = GetMemory(stream).Alloc(size, 8);
 		}
 	}
 
-	return assign[name][str] = GetMemory(stream).Alloc(size, 16);
+	return assign[name][str] = GetMemory(stream).Alloc(size, 8);
 }
 
 void ShiftableString::MemoryManager::SaveFreeSpace()
