@@ -133,7 +133,7 @@ namespace mule
 		 * @param dest 目的位置
 		 * @param param 参数字符串
 		*/
-		void ConvertToText(const char16_t *target, const char16_t *converter, const char16_t *dest, const char16_t *param);
+		void ConvertToText(xybase::Stream *target, const char16_t *converter, xybase::TextStream *dest, const char16_t *param);
 
 		/**
 		 * @brief 转文本到给定的文件
@@ -142,7 +142,7 @@ namespace mule
 		 * @param target 目标二进制文件在虚拟文件系统中的路径
 		 * @param param 参数字符串
 		*/
-		void ConvertToBinary(const char16_t *sourceText, const char16_t *converter, const char16_t *target, const char16_t *param);
+		void ConvertToBinary(xybase::TextStream *sourceText, const char16_t *converter, xybase::Stream *target, const char16_t *param);
 
 		/**
 		 * @brief 加载指定的插件动态库。

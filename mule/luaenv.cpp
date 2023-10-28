@@ -132,22 +132,24 @@ int loadMemory(int streamId, int fileId)
     return 0;
 }
 
-int cvttxt(std::string target, std::string cvt, std::string output, std::string param)
+int cvttxt(int stream, std::string cvt, std::string output, std::string param)
 {
+    xybase::TextStream out(Configuration::GetInstance().ResourcesDir + output, std::ios::out);
     Mule::GetInstance().ConvertToText(
-        xybase::string::to_utf16(target).c_str(),
+        LuaEnvironment::GetInstance().GetStream(stream),
         xybase::string::to_utf16(cvt).c_str(),
-        xybase::string::to_utf16(Configuration::GetInstance().ResourcesDir + output).c_str(),
+        &out,
         xybase::string::to_utf16(param).c_str());
     return 0;
 }
 
-int cvtbin(std::string text, std::string cvt, std::string target, std::string param)
+int cvtbin(std::string text, std::string cvt, int stream, std::string param)
 {
-    Mule::GetInstance().ConvertToText(
-        xybase::string::to_utf16(Configuration::GetInstance().ResourcesDir + text).c_str(),
+    xybase::TextStream in(Configuration::GetInstance().ResourcesDir + text, std::ios::in);
+    Mule::GetInstance().ConvertToBinary(
+        &in,
         xybase::string::to_utf16(cvt).c_str(),
-        xybase::string::to_utf16(target).c_str(),
+        LuaEnvironment::GetInstance().GetStream(stream),
         xybase::string::to_utf16(param).c_str());
     return 0;
 }
