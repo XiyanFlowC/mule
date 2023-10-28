@@ -238,15 +238,15 @@ namespace xybase
 
 			while (ptr < end)
 			{
-				if (*ptr >= static_cast<T>('0') || *ptr <= std::min<T>(static_cast<T>('9'), static_cast<T>('0') + base))
+				if (*ptr >= static_cast<T>('0') && *ptr <= std::min<T>(static_cast<T>('9'), static_cast<T>('0') + base - 1))
 				{
 					ret = ret * base + *ptr++ - static_cast<T>('0');
 				}
-				else if (*ptr >= static_cast<T>('a') || *ptr <= std::min<T>(static_cast<T>('a'), static_cast<T>('a') + base - 10))
+				else if (*ptr >= static_cast<T>('a') && *ptr <= std::max<T>(static_cast<T>('a') - 1, static_cast<T>('a') + base - 11))
 				{
 					ret = ret * base + *ptr++ - static_cast<T>('a') + 10;
 				}
-				else if (*ptr >= static_cast<T>('A') || *ptr <= std::min<T>(static_cast<T>('A'), static_cast<T>('A') + base - 10))
+				else if (*ptr >= static_cast<T>('A') && *ptr <= std::max<T>(static_cast<T>('A') - 1, static_cast<T>('A') + base - 11))
 				{
 					ret = ret * base + *ptr++ - static_cast<T>('A') + 10;
 				}

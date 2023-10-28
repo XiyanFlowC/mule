@@ -8,9 +8,9 @@
 int str_ex(xybase::Stream *input, xybase::TextStream *output, int begin, int end)
 {
 	const int step = 8, threshold = 4;
+	input->Seek(begin, xybase::Stream::SM_BEGIN);
 	while (input->Tell() < end)
 	{
-		input->Seek(begin, xybase::Stream::SM_BEGIN);
 		auto str = input->ReadString();
 		auto addr = input->Tell();
 		if (str.size() < threshold)

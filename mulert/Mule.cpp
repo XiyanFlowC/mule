@@ -42,6 +42,7 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 	if (libraryHandle == NULL)
 	{
 		logger.Error(L"Load plugin failed, GetLastError(): {}", GetLastError());
+		logger.Note(L"Specified plugin: {}", xybase::string::to_wstring(plugin));
 		throw xybase::RuntimeException(L"Cannot load specified plugin", GetLastError());
 	}
 #else
@@ -55,6 +56,7 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 
 	if (libraryHandle == NULL)
 	{
+		logger.Error(L"Failed to load plugin: {}", xybase::string::to_wstring(plugin));
 		throw xybase::RuntimeException(L"Cannot load specified plugin.", errno);
 	}
 #endif
@@ -68,7 +70,9 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 
 	if (getDesc == nullptr)
 	{
-		logger.Error(L"Specified plugin has no function: GetDescription()");
+		logger.Error(L"Specified library/object has no function: GetDescription()");
+		logger.Note(L"Specified plugin: {}", xybase::string::to_wstring(plugin));
+		logger.Note(L"Specified DLL/SO is not a valid mule plugin.");
 #ifdef _WIN32
 		FreeLibrary(libraryHandle);
 #else
@@ -264,5 +268,5 @@ void mule::Mule::ConvertToText(xybase::Stream *target, const char16_t *converter
 		}
 	}
 
-	logger.Error(L"无法完成转换，所有插件都没有正常响应指定的转换器{}。", xybase::string::to_wstring(converter));
+	logger.Error(L"Failed to convert to text, none of the plugins responded to the specified converter {}。", xybase::string::to_wstring(converter));
 }
