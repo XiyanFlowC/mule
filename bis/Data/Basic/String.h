@@ -4,6 +4,7 @@
 #define STRING_OBJECT_H__
 
 #include "BasicType.h"
+#include <Logger.h>
 
 namespace mule
 {
@@ -17,6 +18,7 @@ namespace mule
 			*/
 			class String : public BasicType
 			{
+				Logger logger = Logger::GetLogger<String>();
 			protected:
 				size_t lastSize;
 			public:

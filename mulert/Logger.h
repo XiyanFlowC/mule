@@ -86,7 +86,7 @@ namespace mule
 		{
 			if (logLevel > 2) return;
 #ifndef DISABLE_TERMINAL_ANSI_ESCAPE
-			Output(LoggerConfig::GetOutput(), L"\033[93mWarn", fmt, args...);
+			Output(LoggerConfig::GetErrorOutput(), L"\033[93mWarn", fmt, args...);
 #else
 			Output(LoggerConfig::GetOutput(), L"Warn", fmt, args...);
 #endif

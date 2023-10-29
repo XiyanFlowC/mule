@@ -54,6 +54,11 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 					itr->second.value.unsignedValue,
 					xybase::string::to_wstring(*value.value.stringValue)),
 				19010);
+		if (value.value.stringValue->size() && data.size() == 0)
+		{
+			logger.Warn(L"Encode string failed.");
+			logger.Note(L"String={}", xybase::string::to_wstring(*value.value.stringValue));
+		}
 	}
 
 	stream->Write(data);

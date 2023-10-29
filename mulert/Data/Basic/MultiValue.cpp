@@ -647,8 +647,16 @@ void MultiValue::ParseReal(const std::u16string &value)
 	for (int ch : value) {
 		if (!isdigit(ch))
 		{
-			if (ch == '-') isNeg = 1;
-			else if (ch == '.') break;
+			if (ch == '-')
+			{
+				isNeg = 1;
+				continue;
+			}
+			else if (ch == '.')
+			{
+				flag = 1;
+				continue;
+			}
 			else throw xybase::InvalidParameterException(L"value", L"not a valid real number.", __LINE__);
 		}
 

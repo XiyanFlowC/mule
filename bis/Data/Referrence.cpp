@@ -48,7 +48,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	// 避免从这里读入（喵的不刷洗的话会从缓存里读到不干净的东西，我他喵的到底为什么要这么写啊）
 	//stream->Flush();
 	//int ptr = stream->ReadInt32();
-	stream->Seek(Size(), xybase::Stream::SM_CURRENT);
+	// stream->Seek(Size(), xybase::Stream::SM_CURRENT);
 
 	auto val = fileHandler->OnDataWrite();
 	size_t ptr;
@@ -62,6 +62,7 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	else
 		ptr = val.metadata[u"ptr"].value.unsignedValue;
 
+	stream->Write((uint32_t)ptr);
 	if (ptr == 0)
 	{
 		return;
