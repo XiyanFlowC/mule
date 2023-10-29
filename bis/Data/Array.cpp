@@ -2,16 +2,34 @@
 #include <xyutils.h>
 #include <xystring.h>
 #include "Basic/ContextManager.h"
+#include "Basic/BasicType.h"
 
 using namespace mule::Data::Basic;
+
+const std::u16string ARRAY_SIZE_INFINITY = u"<inf>";
 
 void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	size_t limit = length;
-	if (limit == (size_t)-1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
+	if (limit == (size_t)-1 && sizeCache != ARRAY_SIZE_INFINITY) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	for (size_t i = 0; i < limit; ++i) {
 		dataHandler->OnRealmEnter(innerObject, (int)i);
-		innerObject->Read(stream, dataHandler);
+		try
+		{
+			innerObject->Read(stream, dataHandler);
+		}
+		catch (Basic::BasicType::ConstraintViolationException &ex)
+		{
+			if (sizeCache == ARRAY_SIZE_INFINITY)
+			{
+				dataHandler->OnRealmExit(innerObject, (int) i);
+				break;
+			}
+			else
+			{
+				throw Basic::BasicType::ConstraintViolationException(ex.GetMessage());
+			}
+		}
 		dataHandler->OnRealmExit(innerObject, (int)i);
 	}
 }
@@ -19,10 +37,25 @@ void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 void mule::Data::Array::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	size_t limit = length;
-	if (limit == (size_t)-1) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
+	if (limit == (size_t)-1 && sizeCache != ARRAY_SIZE_INFINITY) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	for (size_t i = 0; i < limit; ++i) {
 		fileHandler->OnRealmEnter(innerObject, (int)i);
-		innerObject->Write(stream, fileHandler);
+		try
+		{
+			innerObject->Write(stream, fileHandler);
+		}
+		catch (Basic::BasicType::ConstraintViolationException &ex)
+		{
+			if (sizeCache == ARRAY_SIZE_INFINITY)
+			{
+				fileHandler->OnRealmExit(innerObject, (int)i);
+				break;
+			}
+			else
+			{
+				throw ex;
+			}
+		}
 		fileHandler->OnRealmExit(innerObject, (int)i);
 	}
 }
@@ -53,6 +86,8 @@ mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(const s
 	std::u16string cache;
 	if (isdigit(info[startIndex + 1]))
 		size = static_cast<int>(xybase::string::stoi(info.substr(startIndex + 1, info.length() - startIndex - 2)));
+	else if (info[startIndex + 1] == u']')
+		cache = ARRAY_SIZE_INFINITY;
 	else
 		cache = info.substr(startIndex + 1, info.length() - startIndex - 2);
 

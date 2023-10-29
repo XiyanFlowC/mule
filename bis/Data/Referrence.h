@@ -27,6 +27,7 @@ namespace mule
 			class ReferrenceCreator : public TypeCreator
 			{
 				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
+				virtual Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo) override;
 			};
 
 			virtual void Read(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;

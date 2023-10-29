@@ -33,7 +33,6 @@ add_subdirectory ("sis")
 add_subdirectory ("mule")
 add_subdirectory ("advstr")
 
-
 if(MSVC)
   target_compile_options(sislua PUBLIC "/utf-8")
   target_compile_options(bis PUBLIC "/utf-8")

@@ -7,8 +7,8 @@ xybase::RuntimeException::RuntimeException(const std::wstring &message, int err)
 	: message(message), err(RUNTIME_EXCEPTION_LEAD | err)
 {
 	auto ret = xybase::string::to_utf8(message);
-	buf = new char[ret.size()];
-	memcpy(buf, ret.c_str(), ret.size());
+	buf = new char[ret.size() + 1];
+	memcpy(buf, ret.c_str(), ret.size() + 1);
 }
 
 xybase::RuntimeException::~RuntimeException()

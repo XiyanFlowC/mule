@@ -8,8 +8,7 @@ xybase::Exception::Exception(const std::wstring &message, int err)
 {
 	auto ret = xybase::string::to_string(message);
 	buf = new char[ret.size() + 1];
-	memcpy(buf, ret.c_str(), ret.size());
-	buf[ret.size()] = '\0';
+	memcpy(buf, ret.c_str(), ret.size() + 1);
 }
 
 xybase::Exception::~Exception()

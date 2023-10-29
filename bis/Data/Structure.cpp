@@ -1,5 +1,7 @@
 #include "Structure.h"
 
+#include "Basic/BasicType.h"
+
 using namespace mule::Data;
 using namespace mule::Data::Basic;
 
@@ -64,14 +66,30 @@ bool mule::Data::Structure::IsComposite() const
 void mule::Data::Structure::Field::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	dataHandler->OnRealmEnter(object, name);
-	object->Read(stream, dataHandler);
+	try
+	{
+		object->Read(stream, dataHandler);
+	}
+	catch (BasicType::ConstraintViolationException &ex)
+	{
+		dataHandler->OnRealmExit(object, name);
+		throw BasicType::ConstraintViolationException(ex.GetMessage());
+	}
 	dataHandler->OnRealmExit(object, name);
 }
 
 void mule::Data::Structure::Field::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	fileHandler->OnRealmEnter(object, name);
-	object->Write(stream, fileHandler);
+	try
+	{
+		object->Write(stream, fileHandler);
+	}
+	catch (BasicType::ConstraintViolationException &ex)
+	{
+		fileHandler->OnRealmExit(object, name);
+		throw BasicType::ConstraintViolationException(ex.GetMessage());
+	}
 	fileHandler->OnRealmExit(object, name);
 }
 

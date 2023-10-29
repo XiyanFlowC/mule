@@ -53,5 +53,19 @@ Type *mule::Data::BasicTypeCreator::DoCreateObject(const std::u16string &info, c
 		ret->cacheVariableName = itr->second;
 	}
 
+	itr = metainfo.find(u"constraint");
+	if (itr != metainfo.end())
+	{
+		auto &&cons = itr->second;
+		auto condition = cons.substr(0, cons.find(':'));
+		ret->comparator = MultiValue::Parse(cons.substr(cons.find(':') + 1));
+		if (condition == u"lt") ret->constraintType = BasicType::BTCT_LT;
+		if (condition == u"nlt") ret->constraintType = BasicType::BTCT_NLT;
+		if (condition == u"gt") ret->constraintType = BasicType::BTCT_GT;
+		if (condition == u"ngt") ret->constraintType = BasicType::BTCT_NGT;
+		if (condition == u"eq") ret->constraintType = BasicType::BTCT_EQ;
+		if (condition == u"neq") ret->constraintType = BasicType::BTCT_NEQ;
+	}
+
 	return ret;
 }

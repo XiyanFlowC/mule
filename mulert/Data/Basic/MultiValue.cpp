@@ -712,7 +712,7 @@ MultiValue mule::Data::Basic::MultiValue::Parse(const std::u16string &value)
 	}
 	else if (value[0] == '$')
 	{
-		ret.ParseReal(value);
+		ret.ParseReal(value.substr(1));
 	}
 	else if ((value[0] >= '0' && value[0] <= '9') || value[0] == '-')
 	{

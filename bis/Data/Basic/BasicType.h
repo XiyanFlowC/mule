@@ -22,8 +22,29 @@ namespace mule
 				virtual MultiValue DoRead(xybase::Stream *stream) = 0;
 
 				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) = 0;
+
+				void DoConstraintCheck(const MultiValue &value);
 				
 			public:
+
+				enum ConstraintType
+				{
+					BTCT_NONE,
+					BTCT_EQ,
+					BTCT_LT,
+					BTCT_GT,
+					BTCT_NEQ,
+					BTCT_NLT,
+					BTCT_NGT
+				} constraintType = BTCT_NONE;
+
+				MultiValue comparator = MultiValue::MV_NULL;
+
+				class ConstraintViolationException : public xybase::RuntimeException
+				{
+					public:
+						ConstraintViolationException(const std::wstring &msg);
+				};
 
 				std::u16string cacheVariableName;
 

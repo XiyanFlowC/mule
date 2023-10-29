@@ -134,6 +134,7 @@ int loadMemory(int streamId, int fileId)
 
 int cvttxt(int stream, std::string cvt, std::string output, std::string param)
 {
+    luaenvLogger.Info(L"Converting to {}...", xybase::string::to_wstring(output));
     xybase::TextStream out(Configuration::GetInstance().ResourcesDir + output, std::ios::out);
     Mule::GetInstance().ConvertToText(
         LuaEnvironment::GetInstance().GetStream(stream),
@@ -145,6 +146,7 @@ int cvttxt(int stream, std::string cvt, std::string output, std::string param)
 
 int cvtbin(std::string text, std::string cvt, int stream, std::string param)
 {
+    luaenvLogger.Info(L"Converting from {}...", xybase::string::to_wstring(text));
     xybase::TextStream in(Configuration::GetInstance().ResourcesDir + text, std::ios::in);
     Mule::GetInstance().ConvertToBinary(
         &in,

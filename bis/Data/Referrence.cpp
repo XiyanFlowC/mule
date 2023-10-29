@@ -10,13 +10,35 @@ void mule::Data::Referrence::Read(xybase::Stream *stream, DataHandler *dataHandl
 
 	if (ptr == 0)
 	{
-		dataHandler->OnDataRead(MultiValue::MV_NULL);
+		if (referent->IsComposite())
+		{
+			auto dummy = TypeManager::GetInstance().GetOrCreateType(u"uint32");
+			dataHandler->OnRealmEnter(dummy, u"ptr");
+			dataHandler->OnDataRead(MultiValue((uint64_t)ptr));
+			dataHandler->OnRealmExit(dummy, u"ptr");
+		}
+		else
+		{
+			dataHandler->OnDataRead(MultiValue::MV_NULL);
+			dataHandler->AppendMetadatum(u"ptr", (uint64_t)ptr);
+		}
 		return;
 	}
 
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
-	referent->Read(stream, dataHandler);
+	if (referent->IsComposite())
+	{
+		auto dummy = TypeManager::GetInstance().GetOrCreateType(u"uint32");
+		dataHandler->OnRealmEnter(dummy, u"ptr");
+		dataHandler->OnDataRead(MultiValue((uint64_t)ptr));
+		dataHandler->OnRealmExit(dummy, u"ptr");
+		dataHandler->OnRealmEnter(referent, u"referent");
+		referent->Read(stream, dataHandler);
+		dataHandler->OnRealmExit(referent, u"referent");
+	}
+	else
+		referent->Read(stream, dataHandler);
 	dataHandler->AppendMetadatum(u"ptr", MultiValue((uint64_t)ptr));
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
@@ -27,8 +49,18 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	//stream->Flush();
 	//int ptr = stream->ReadInt32();
 	stream->Seek(Size(), xybase::Stream::SM_CURRENT);
+
 	auto val = fileHandler->OnDataWrite();
-	auto ptr = val.metadata[u"ptr"].value.unsignedValue;
+	size_t ptr;
+	if (referent->IsComposite())
+	{
+		auto dummy = TypeManager::GetInstance().GetOrCreateType(u"uint32");
+		fileHandler->OnRealmEnter(dummy, u"ptr");
+		ptr = fileHandler->OnDataWrite().value.unsignedValue;
+		fileHandler->OnRealmExit(dummy, u"ptr");
+	}
+	else
+		ptr = val.metadata[u"ptr"].value.unsignedValue;
 
 	if (ptr == 0)
 	{
@@ -39,7 +71,14 @@ void mule::Data::Referrence::Write(xybase::Stream *stream, FileHandler * fileHan
 	stream->Seek((long long)ptr, xybase::Stream::SM_BEGIN);
 	try
 	{
-		referent->Write(stream, fileHandler);
+		if (referent->IsComposite())
+		{
+			fileHandler->OnRealmEnter(referent, u"referent");
+			referent->Write(stream, fileHandler);
+			fileHandler->OnRealmExit(referent, u"referent");
+		}
+		else
+			referent->Write(stream, fileHandler);
 	}
 	catch (xybase::InvalidParameterException &ex)
 	{
@@ -61,6 +100,7 @@ std::u16string mule::Data::Referrence::GetDataType() const
 
 bool mule::Data::Referrence::IsComposite() const
 {
+	//return true;
 	return referent->IsComposite();
 }
 
@@ -77,6 +117,20 @@ Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(const std::u16st
 	}
 
 	Basic::Type *innerType = TypeManager::GetInstance().GetOrCreateType(info.substr(0, info.size() - 1));
+	if (innerType == nullptr) return nullptr;
+
+	Referrence *referrer = new Referrence(innerType);
+	return referrer;
+}
+
+Type *mule::Data::Referrence::ReferrenceCreator::DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo)
+{
+	if (!info.ends_with(u"*"))
+	{
+		return nullptr;
+	}
+
+	Basic::Type *innerType = TypeManager::GetInstance().GetOrCreateType(info.substr(0, info.size() - 1), metainfo);
 	if (innerType == nullptr) return nullptr;
 
 	Referrence *referrer = new Referrence(innerType);
