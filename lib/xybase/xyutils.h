@@ -4,6 +4,8 @@
 #define XYUTILS_H__
 
 #define XY_ALIGN(n, b) ((n) < 0 ? (n) & ~((b) - 1) : ((n + (b) - 1) & ~((b) - 1)))
+#define XY_MAX(a, b) ((a) > (b) ? (a) : (b))
+#define XY_MIN(a, b) ((a) > (b) ? (b) : (a))
 
 #include "xyapi.h"
 

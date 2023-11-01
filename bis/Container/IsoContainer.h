@@ -3,7 +3,7 @@
 #ifndef ISO_CONTAINER_H__
 #define ISO_CONTAINER_H__
 
-#include "BasicContainer.h"
+#include <FileContainerBasic.h>
 
 namespace mule
 {
@@ -76,7 +76,7 @@ namespace mule
 
 #pragma pack(pop)
 
-        class IsoContainer : public mule::BasicContainer
+        class IsoContainer : public xybase::FileContainerBasic
         {
         private:
             void ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std::string path);

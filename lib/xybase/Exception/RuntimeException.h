@@ -10,7 +10,7 @@
 
 namespace xybase
 {
-	const int RUNTIME_EXCEPTION_LEAD = 0x0100'0000;
+	const int RUNTIME_EXCEPTION_LEAD = 0x8000'0000;
 
 	class XY_API RuntimeException : public std::exception
 	{

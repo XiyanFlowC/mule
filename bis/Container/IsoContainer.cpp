@@ -3,9 +3,10 @@
 #include <xystring.h>
 
 using namespace mule::Container;
+using namespace xybase;
 
 IsoContainer::IsoContainer(xybase::Stream *stream)
-    : BasicContainer(stream)
+    : FileContainerBasic(stream)
 {
     stream->Seek(0x8000, xybase::Stream::SM_BEGIN);
     PrimaryVolume volume{};
@@ -45,7 +46,7 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
             std::string fileName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
             uint32_t fileSize = entry->dataLengthLe;
             uint32_t fileOffset = entry->locationOfExtentLe * ISO_BLOCK_SIZE;
-            fileIndices[xybase::string::to_utf16(path + '/' + fileName)] = FileDesc{ fileOffset, fileSize, fileSize, false };
+            files[xybase::string::to_utf16(path + '/' + fileName)] = new FileEntry{fileOffset, fileSize, xybase::string::to_utf16(path + '/' + fileName), false};
         }
 
         // Move to the next entry

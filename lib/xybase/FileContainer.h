@@ -63,6 +63,13 @@ namespace xybase
 		 * @param recursive 是否递归删除子项（目录有效，文件忽略此参数）。
 		*/
 		virtual void Remove(std::u16string path, bool recursive = false) = 0;
+
+		/**
+		 * @brief 检查一个文件或目录是否存在。
+		 * @param path 文件或目录的路径。
+		 * @return 存在则为真，否则为假。
+		*/
+		virtual bool Exists(std::u16string path) = 0;
 	};
 }
 

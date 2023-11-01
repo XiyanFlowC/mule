@@ -10,7 +10,7 @@
 
 namespace xybase
 {
-	const int INVALID_PARAMETER_EXCPETION_LEAD = 0x0001'0000;
+	const int INVALID_PARAMETER_EXCPETION_LEAD = 0x2000'0000;
 
 	class XY_API InvalidParameterException : public Exception
 	{
