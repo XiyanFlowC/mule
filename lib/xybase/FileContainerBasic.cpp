@@ -148,7 +148,14 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 
 std::list<std::u16string> xybase::FileContainerBasic::List()
 {
-	return std::list<std::u16string>();
+	std::list<std::u16string> ret;
+
+	for (auto &&fe : files)
+	{
+		ret.push_back(fe.second->path);
+	}
+
+	return ret;
 }
 
 void xybase::FileContainerBasic::MakeDir(std::u16string path)
