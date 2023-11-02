@@ -55,8 +55,8 @@ int str_im(xybase::TextStream *input, xybase::Stream *output)
 		{
 			logger.Error(L"String size ({}) exceeded the limitation ({})!", rawStr.size(), size);
 			logger.Note(L"When processing input file {}.", xybase::string::to_wstring(input->GetName()));
-			logger.Note(L"When patching output file {}.", xybase::string::to_wstring(input->GetName()));
-			logger.Note(L"String={}", xybase::string::to_wstring(rawStr));
+			logger.Note(L"When patching output file {}.", xybase::string::to_wstring(output->GetName()));
+			logger.Note(L"Position={}", addr);
 			continue;
 		}
 		output->Seek(addr, xybase::Stream::SM_BEGIN);

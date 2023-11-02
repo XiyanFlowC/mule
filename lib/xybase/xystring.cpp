@@ -133,7 +133,7 @@ std::u32string xybase::string::to_utf32(const std::u8string &str) noexcept
 
     while (i < str.length()) {
         uint32_t res = 0;
-        int leng = 0;
+        int leng = 1;
 
         if (str[i] & 0x80) {
             if ((str[0] & 0xE0) == 0xC0) {

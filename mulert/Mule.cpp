@@ -20,6 +20,9 @@ using namespace mule;
 
 void mule::Mule::ConvertToBinary(xybase::TextStream *sourceText, const char16_t *converter, xybase::Stream *target, const char16_t *param)
 {
+	if (target == nullptr) throw xybase::InvalidParameterException(L"target", L"target is null!!!", 99523);
+	if (sourceText == nullptr) throw xybase::InvalidParameterException(L"sourceText", L"sourceText is null!!!", 99524);
+
 	for (auto &&desc : descriptions)
 	{
 		if (desc->ConvertToText != nullptr)
