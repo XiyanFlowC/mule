@@ -158,7 +158,8 @@ void mule::Mule::OpenAndMount(const char16_t *root, const char16_t *params)
 		if (desc->OpenContainer != nullptr)
 		{
 			// 处理参数
-			char16_t *buffer = new char16_t[wstrlen(params)];
+			char16_t *buffer = new char16_t[wstrlen(params) + 1];
+			memcpy(buffer, params, wstrlen(params) * 2 + 2);
 			std::vector<char16_t *> pl;
 			char16_t *ptr = buffer;
 			pl.push_back(ptr);

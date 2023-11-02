@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 			{
 				std::wcout << L"Lua> ";
 				static char buffer[4096] {'r', 'e', 't', 'u', 'r', 'n', ' '};
-				std::cin.getline(buffer, 4096 - 8);
+				std::cin.getline(buffer + 7, 4096 - 8);
 				if (strcmp(buffer + off, "quit") == 0) break;
 				if (strcmp(buffer + off, "exlist") == 0)
 				{

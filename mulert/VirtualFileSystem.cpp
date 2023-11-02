@@ -1,5 +1,5 @@
 #include "VirtualFileSystem.h"
-#include <Exception/InvalidParameterException.h>
+#include <Exception/InvalidOperationException.h>
 #include <xystring.h>
 #include <stack>
 #include "TranscripterManager.h"
@@ -51,11 +51,11 @@ void mule::VirtualFileSystem::CascadeProcess(const char16_t *targetFile, std::fu
 	size_t pathEnd = file.find_first_of('|');
 
 	// 打开基本流
-	std::u16string path = file.substr(pathEnd);
+	std::u16string path = file.substr(0, pathEnd);
 	xybase::Stream *baseStream = VirtualFileSystem::GetInstance().Open(path.c_str(), openMode);
 	std::stack<xybase::Stream *> streamStack;
 
-	if (baseStream == nullptr) throw xybase::InvalidParameterException(L"targetFile", L"File does not exist or cannot be read.", 7885);
+	if (baseStream == nullptr) throw xybase::InvalidOperationException(L"Faile to open " + xybase::string::to_wstring(path), 7885);
 
 	streamStack.push(baseStream);
 	if (pathEnd != std::u16string::npos)

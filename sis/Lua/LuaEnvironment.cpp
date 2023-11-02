@@ -43,6 +43,7 @@ void mule::Lua::LuaEnvironment::CloseStream(int idx)
 	auto &&stream = streams[idx];
 	stream->Close();
 	delete stream;
+	streams.erase(idx);
 }
 
 LuaEnvironment &mule::Lua::LuaEnvironment::GetInstance()
