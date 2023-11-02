@@ -18,7 +18,7 @@ xybase::HostFsMapper::HostFsMapper(std::u16string rootPath)
 
 std::u16string xybase::HostFsMapper::GetName()
 {
-	return std::u16string(xybase::string::to_utf16(std::to_string((unsigned long long)this)));
+	return rootPath + u"{mapper}:";
 }
 
 void xybase::HostFsMapper::Flush()

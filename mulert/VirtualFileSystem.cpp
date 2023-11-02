@@ -86,7 +86,7 @@ void mule::VirtualFileSystem::CascadeProcess(const char16_t *targetFile, std::fu
 	lambda(streamStack.top());
 
 	// 保存结束，清理
-	while (!streamStack.emplace())
+	while (!streamStack.empty())
 	{
 		auto stream = streamStack.top();
 		delete stream;
