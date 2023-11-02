@@ -183,6 +183,13 @@ namespace mule
 		void MountStream(const char16_t *mountName, const char16_t *typeName, xybase::Stream *infraStream);
 
 		/**
+		 * @brief 打开并挂载。
+		 * @param root 要挂载的根。
+		 * @param params 开启参数。
+		*/
+		void OpenAndMount(const char16_t *root, const char16_t *params);
+
+		/**
 		 * @brief 按名称获取数据处理器
 		 * @param name 处理器名称
 		 * @return 取得的处理器，失败返回 nullptr

@@ -1,5 +1,6 @@
 #include "ContainerOperation.h"
 
+#include <Mule.h>
 #include <VirtualFileSystem.h>
 #include <xystring.h>
 #include "../LuaEnvironment.h"
@@ -41,10 +42,17 @@ int mule::Lua::Api::ListRoots()
 	return 0;
 }
 
+int mule::Lua::Api::OpenAndMount(std::string root, std::string param)
+{
+	Mule::GetInstance().OpenAndMount(xybase::string::to_utf16(root).c_str(), xybase::string::to_utf16(param).c_str());
+	return 0;
+}
+
 void mule::Lua::Api::RegisterContainerOperationFunctions()
 {
 	LuaHost::GetInstance().RegisterFunction("mount", MountStream);
 	LuaHost::GetInstance().RegisterFunction("unmount", Unmount);
 	LuaHost::GetInstance().RegisterFunction("list", List);
+	LuaHost::GetInstance().RegisterFunction("openpack", OpenAndMount);
 	LuaHost::GetInstance().RegisterFunction("listroots", ListRoots);
 }

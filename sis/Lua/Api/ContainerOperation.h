@@ -17,6 +17,8 @@ namespace mule
 
 			int ListRoots();
 
+			int OpenAndMount(std::string root, std::string param);
+
 			void RegisterContainerOperationFunctions();
 		}
 	}

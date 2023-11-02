@@ -144,6 +144,53 @@ void mule::Mule::MountStream(const char16_t *mountName, const char16_t *typeName
 	VirtualFileSystem::GetInstance().Mount(mountName, typeName, infraStream);
 }
 
+size_t wstrlen(const char16_t *str)
+{
+	size_t ret = 0;
+	while (*str++) ++ret;
+	return ret;
+}
+
+void mule::Mule::OpenAndMount(const char16_t *root, const char16_t *params)
+{
+	for (auto &&desc : descriptions)
+	{
+		if (desc->OpenContainer != nullptr)
+		{
+			// 处理参数
+			char16_t *buffer = new char16_t[wstrlen(params)];
+			std::vector<char16_t *> pl;
+			char16_t *ptr = buffer;
+			pl.push_back(ptr);
+			while (*ptr)
+			{
+				if (*ptr == u' ')
+				{
+					*ptr++ = '\0';
+					while (*ptr == u' ') ++ptr;
+					pl.push_back(ptr);
+					continue;
+				}
+				++ptr;
+			}
+			char16_t **para = new char16_t *[pl.size()];
+			for (int i = 0; i < pl.size(); ++i)
+			{
+				para[i] = pl[i];
+			}
+
+			auto ret = desc->OpenContainer(pl.size(), (const char16_t **)para);
+			delete[] buffer;
+			delete[] para;
+
+			if (ret != nullptr)
+			{
+				VirtualFileSystem::GetInstance().Mount(root, ret);
+			}
+		}
+	}
+}
+
 mule::Data::Basic::Type::DataHandler *mule::Mule::GetDataHandler(const char16_t *name)
 {
 	for (auto &&desc : descriptions)
