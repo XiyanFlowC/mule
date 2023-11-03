@@ -136,7 +136,7 @@ std::u32string xybase::string::to_utf32(const std::u8string &str) noexcept
         int leng = 1;
 
         if (str[i] & 0x80) {
-            if ((str[0] & 0xE0) == 0xC0) {
+            if ((str[i] & 0xE0) == 0xC0) {
                 leng = 2;
                 res = str[i] & 0x1F;
             }

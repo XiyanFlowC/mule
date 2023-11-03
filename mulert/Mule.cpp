@@ -229,14 +229,14 @@ mule::Mule::Mule()
 
 mule::Mule::~Mule()
 {
-	for (auto &&handler : pluginHandlers)
+	/*for (auto &&handler : pluginHandlers)
 	{
 #ifdef _WIN32
 		FreeLibrary((HMODULE)handler);
 #else
 		dlclose(handler);
 #endif
-	}
+	}*/
 }
 
 Mule &mule::Mule::GetInstance()

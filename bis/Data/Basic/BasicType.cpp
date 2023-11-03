@@ -1,4 +1,5 @@
 #include "BasicType.h"
+#include "BasicType.h"
 
 mule::Data::Basic::BasicType::ConstraintViolationException::ConstraintViolationException(const std::wstring &msg)
 	: xybase::RuntimeException(msg, 0xFC0E)
@@ -63,4 +64,8 @@ void mule::Data::Basic::BasicType::DoConstraintCheck(const MultiValue &value)
 		throw xybase::InvalidOperationException(L"Invalid constraint type.", 0x8F52);
 		break;
 	}
+}
+
+mule::Data::Basic::BasicType::~BasicType()
+{
 }

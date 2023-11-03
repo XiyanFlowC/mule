@@ -27,6 +27,8 @@ namespace mule
 				
 			public:
 
+				virtual ~BasicType();
+
 				enum ConstraintType
 				{
 					BTCT_NONE,
