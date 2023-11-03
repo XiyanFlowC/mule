@@ -94,7 +94,7 @@ namespace mule
 				virtual size_t Size() const = 0;
 
 				/**
-				 * @brief 获得数据类型名
+				 * @brief 获得最终的数据的类型名。该类型名指示该类产出/接受哪一类数据
 				 * @return 类型名
 				*/
 				virtual std::u16string GetDataType() const = 0;

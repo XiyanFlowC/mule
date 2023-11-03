@@ -40,11 +40,12 @@ namespace mule
 		void Output(FILE * dest, const std::wstring &name, const std::wstring &fmt, Args...args) const
 		{
 #ifndef DISABLE_TERMINAL_ANSI_ESCAPE
-			std::wstring vfmt = std::format(L"[{}\033[0m] \033[94m{}\033[0m - {}\n", name, className, fmt);
+			std::wstring vfmt = std::format(L"[{}\033[0m] \033[94m{}\033[0m - {}", name, className, fmt);
 #else
-			std::wstring vfmt = std::format(L"[{0}] {2} ({1})\n", name, className, fmt);
+			std::wstring vfmt = std::format(L"[{0}] {2} ({1})", name, className, fmt);
 #endif
 			fputws(std::vformat(vfmt, std::make_wformat_args(args...)).c_str(), dest);
+			fputws(L"\n", dest);
 		}
 	public:
 

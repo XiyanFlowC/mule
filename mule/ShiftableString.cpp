@@ -82,7 +82,7 @@ size_t ShiftableString::Size() const
 
 std::u16string ShiftableString::GetDataType() const
 {
-	return u"sstring";
+	return u"string";
 }
 
 void ShiftableString::StreamDispose(xybase::Stream *stream)

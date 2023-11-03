@@ -114,7 +114,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 	{
 		.cursor = 0,
 		.size = fe->size,
-		.capacity = fe->size,
+		.capacity = XY_ALIGN(fe->size, align),
 		.stream = ret,
 		.baseEntry = fe,
 		.readable = false,
