@@ -69,7 +69,7 @@ std::wstring CodeCvt::CvtToWString(const std::string &str)
 	{
 		if (current)
 		{
-			auto wc = cp2uc[current | ch];
+			auto wc = cp2uc[(current | (ch & 0xFF)) & 0xFFFF];
 			if (wc == 0)
 			{
 				wc = U'�';
