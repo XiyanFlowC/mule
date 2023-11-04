@@ -34,7 +34,7 @@ int str_ex(xybase::Stream *input, xybase::TextStream *output, int begin, int end
 
 int str_im(xybase::TextStream *input, xybase::Stream *output)
 {
-	mule::Logger logger{ "<fn_str_im>", mule::LoggerConfig::GetLogLevel() };
+	mule::Logger logger{ "<fn_str_im>", mule::LoggerConfig::GetInstance().GetLogLevel() };
 	std::string line;
 	auto &&stream = input->stream;
 	stream.imbue(std::locale{});

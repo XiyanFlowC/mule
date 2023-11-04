@@ -105,7 +105,7 @@ void CodeCvt::Init(const char *cp)
 	cp2uc.clear();
 	uint64_t count = *((uint64_t *)cp);
 	if (count & 3) abort();
-	count >>= 4;
+	count >>= 3;
 	CodePageEntry *cpe = (CodePageEntry *)(cp + sizeof(uint64_t));
 	for (uint64_t i = 0; i < count; ++i)
 	{

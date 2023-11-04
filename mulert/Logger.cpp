@@ -2,11 +2,16 @@
 
 #include <xystring.h>
 
-int mule::LoggerConfig::logLevel = 0;
+mule::LoggerConfig::LoggerConfig()
+	: logLevel(0), output(stdout), errout(stderr)
+{
+}
 
-FILE *mule::LoggerConfig::output = stdout;
-
-FILE *mule::LoggerConfig::errout = stderr;
+mule::LoggerConfig &mule::LoggerConfig::GetInstance()
+{
+	static LoggerConfig _inst;
+	return _inst;
+}
 
 void mule::LoggerConfig::LoggerInit(int p_logLevel, FILE *p_out, FILE *p_errout)
 {

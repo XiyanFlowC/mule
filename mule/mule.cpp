@@ -11,7 +11,8 @@ int main(int argc, char **argv)
 	if (argc <= 3)
 	{
 		std::cerr << "Mule by xiyan" << std::endl;
-		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action>" << std::endl;
+		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action> [options]" << std::endl;
+		std::cerr << "Options:\n-l  less log." << std::endl;
 		exit(-1);
 	}
 	fwide(stderr, 1);
@@ -20,6 +21,11 @@ int main(int argc, char **argv)
 
 	// 设定为用户偏好的语言环境
 	setlocale(LC_ALL, "");
+	if (argc >= 5)
+	{
+		if (0 == strcmp("-l", argv[4]))
+			mule::LoggerConfig::GetInstance().LoggerInit(2, stdout, stderr);
+	}
 
 	// main 用 logger
 	mule::Logger logger{ "<mule>", -1 };
