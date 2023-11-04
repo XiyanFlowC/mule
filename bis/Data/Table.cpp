@@ -7,6 +7,9 @@ using namespace mule::Data;
 
 Table::Table(Type *structure, const std::u16string &name, int length, size_t offset)
 {
+	if (structure == nullptr)
+		throw xybase::InvalidParameterException(L"structure", L"should not be null!", 25200);
+
 	this->infraType = structure;
 	this->length = length;
 	this->offset = offset;

@@ -161,8 +161,7 @@ int loadcodepage(int code)
     if (code == 0)
         xybase::string::set_string_cvt(nullptr, nullptr);
 
-    init_codepage(DataManager::GetInstance().LoadData(code).GetData());
-    xybase::string::set_string_cvt(cvt_to_wstring, cvt_to_string);
+    CodeCvt::GetInstance().Init(DataManager::GetInstance().LoadData(code).GetData());
     return 0;
 }
 

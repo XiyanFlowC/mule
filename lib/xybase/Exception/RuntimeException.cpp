@@ -28,5 +28,5 @@ const std::wstring &xybase::RuntimeException::GetMessage() const
 
 int xybase::RuntimeException::GetErrorCode() const
 {
-	return err;
+	return err & 0xFF'FFFF;
 }
