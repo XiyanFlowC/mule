@@ -80,7 +80,7 @@ std::wstring CodeCvt::CvtToWString(const std::string &str)
 		}
 		else
 		{
-			if (ch > 0x7F)
+			if (ch & 0x80)
 			{
 				current = ch << 8;
 			}
