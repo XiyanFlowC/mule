@@ -1,8 +1,6 @@
 #include "codepage.h"
 #include <xystring.h>
 #include <StringBuilder.h>
-static std::map<uint32_t, uint32_t> uc2cp;
-static std::map<uint32_t, uint32_t> cp2uc;
 
 std::string cvt_to_string(const std::wstring &str)
 {
