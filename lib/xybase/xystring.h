@@ -223,6 +223,13 @@ namespace xybase
 		std::string XY_API to_string(const std::wstring &str) noexcept;
 
 		/**
+		 * @brief Set costum string converter (of multibyte string and wide string
+		 * @param p_mbcstowcs function converts MBC string to WC string
+		 * @param p_wcstombcs function converts WC string to MBC string
+		*/
+		void XY_API set_string_cvt(std::wstring(*p_mbcstowcs)(const std::string &), std::string(*p_wcstombcs)(const std::wstring &)) noexcept;
+
+		/**
 		 * @brief Parse string to integer (up to base 36)
 		 * @tparam T Type of the string unit.
 		 * @param str String.

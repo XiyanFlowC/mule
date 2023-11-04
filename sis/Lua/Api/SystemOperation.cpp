@@ -10,14 +10,17 @@ mule::Logger mule::Lua::Api::logger {"<LuaSystemApi>", 0};
 
 std::string mule::Lua::Api::SetLocale(std::string locale)
 {
-	logger.Info(L"Set global locale to {}...", xybase::string::to_wstring(locale));
+	/*logger.Info(L"Set global locale to {}...", xybase::string::to_wstring(locale));
     char *ret = setlocale(LC_ALL, locale.c_str());
     if (ret == nullptr)
     {
         logger.Error(L"Failed to set locale.");
         return "!Failed!";
     }
-	logger.Info(L"Success.");
+	logger.Info(L"Success.");*/
+    logger.Warn(L"SetLocale was muted. No changes will be made.");
+    auto ret = setlocale(LC_ALL, nullptr);
+    if (ret == nullptr) return "";
     return ret;
 }
 

@@ -23,10 +23,10 @@ int mule::Lua::Api::Unmount(std::string root)
 
 int mule::Lua::Api::List(std::string root)
 {
-	wprintf(L"根 %s 的文件列表：\n", xybase::string::to_wstring(root).c_str());
+	wprintf(L"根 %ls 的文件列表：\n", xybase::string::to_wstring(root).c_str());
 	for (auto &&item : VirtualFileSystem::GetInstance().List(xybase::string::to_utf16(root).c_str()))
 	{
-		wprintf(L"%s\n", xybase::string::to_wstring(item).c_str());
+		wprintf(L"%ls\n", xybase::string::to_wstring(item).c_str());
 	}
 
 	return 0;
@@ -37,7 +37,7 @@ int mule::Lua::Api::ListRoots()
 	fputws(L"已注册的根：\n", stdout);
 	for (auto &&root : VirtualFileSystem::GetInstance().ListRoots())
 	{
-		wprintf(L"%s\n", xybase::string::to_wstring(root).c_str());
+		wprintf(L"%ls\n", xybase::string::to_wstring(root).c_str());
 	}
 	return 0;
 }

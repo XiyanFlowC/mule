@@ -6,7 +6,7 @@
 #include <Mule.h>
 #include <Lua/LuaEnvironment.h>
 #include <VirtualFileSystem.h>
-
+#include "codepage.h"
 using mule::Lua::LuaEnvironment;
 using mule::Mule;
 
@@ -156,6 +156,16 @@ int cvtbin(std::string text, std::string cvt, int stream, std::string param)
     return 0;
 }
 
+int loadcodepage(int code)
+{
+    if (code == 0)
+        xybase::string::set_string_cvt(nullptr, nullptr);
+
+    init_codepage(DataManager::GetInstance().LoadData(code).GetData());
+    xybase::string::set_string_cvt(cvt_to_wstring, cvt_to_string);
+    return 0;
+}
+
 void InitialiseLuaEnvironment()
 {
     auto &lua = mule::Lua::LuaHost::GetInstance();
@@ -169,4 +179,6 @@ void InitialiseLuaEnvironment()
 
     lua.RegisterFunction("cvttxt", cvttxt);
     lua.RegisterFunction("cvtbin", cvtbin);
+
+    lua.RegisterFunction("codemap", loadcodepage);
 }
