@@ -109,13 +109,13 @@ long xybase::string::to_codepoint(const std::u16string &str)
         char16_t trailSurrogate = str[1];
 
         // Singular lead surrogate
-        if ((trailSurrogate & 0xDF00) != 0xDC00) return 0;
+        if ((trailSurrogate & 0xFC00) != 0xDC00) return 0xFFFD;
 
         return 0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF);
     }
     else {
         // Singular trailsurrogate
-        if ((str[0] & 0xFC00) == 0xDC00) return 0;
+        if ((str[0] & 0xFC00) == 0xDC00) return 0xFFFD;
 
         return str[0];
     }
@@ -150,11 +150,14 @@ std::u32string xybase::string::to_utf32(const std::u8string &str) noexcept
             }
             else {
                 // Invalid UTF-8 encoding
+                sb += u'�';
+                i += 1;
                 continue;
             }
 
-            if (i + leng >= str.size())
+            if (i + leng > str.size())
             {
+                sb += u'�';
                 break;
             }
 
@@ -164,13 +167,14 @@ std::u32string xybase::string::to_utf32(const std::u8string &str) noexcept
                 }
                 else {
                     // Invalid UTF-8 encoding
-                    continue;
+                    res = u'�';
+                    break;
                 }
             }
         }
         else {
             // ASCII character
-            res = str[0];
+            res = str[i];
         }
 
         sb += res;
@@ -187,19 +191,35 @@ std::u32string xybase::string::to_utf32(const std::u16string &str) noexcept
 
     while (i < str.size())
     {
-        if (str[i] >= 0xD800 && str[i] <= 0xDBFF && i + 1 < str.length()) {
+        if (str[i] >= 0xD800 && str[i] <= 0xDBFF) {
+            // Singular lead surrogate
+            if (i + 1 < str.length())
+            {
+                sb += u'�';
+                break;
+            }
+
             // Surrogate pair for characters U+10000 to U+10FFFF
             char16_t leadSurrogate = str[i++];
             char16_t trailSurrogate = str[i++];
 
             // Singular lead surrogate
-            if ((trailSurrogate & 0xDF00) != 0xDC00) continue;
+            if ((trailSurrogate & 0xFC00) != 0xDC00)
+            {
+                sb += u'�';
+                sb += trailSurrogate;
+                continue;
+            }
 
             sb += static_cast<char32_t>(0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF));
         }
         else {
             // Singular trailsurrogate
-            if ((str[i] & 0xFC00) == 0xDC00) continue;
+            if ((str[i] & 0xFC00) == 0xDC00)
+            {
+                sb += u'�';
+                continue;
+            }
 
             sb += str[i++];
         }
@@ -320,13 +340,28 @@ std::u8string xybase::string::to_utf8(const std::u16string &str) noexcept
             sb += static_cast<char>((c >> 6) | 0xC0); // First 5 bits
             sb += static_cast<char>((c & 0x3F) | 0x80); // Last 6 bits
         }
-        else if (c >= 0xD800 && c <= 0xDBFF && i + 1 < str.length()) {
+        else if (c >= 0xD800 && c <= 0xDBFF) {
+            // Singular lead surrogate
+            if (i + 1 < str.length())
+            {
+                sb += 0xEF;
+                sb += 0xBF;
+                sb += 0xBD;
+                break;
+            }
+
             // Surrogate pair for characters U+10000 to U+10FFFF
             char16_t leadSurrogate = c;
             char16_t trailSurrogate = str[i + 1];
 
             // Singular lead surrogate
-            if ((trailSurrogate & 0xDF00) != 0xDC00) continue;
+            if ((trailSurrogate & 0xFC00) != 0xDC00)
+            {
+                sb += 0xEF;
+                sb += 0xBF;
+                sb += 0xBD;
+                continue;
+            }
 
             uint32_t codepoint = 0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF);
             sb += static_cast<char>((codepoint >> 18) | 0xF0); // First 3 bits
@@ -338,7 +373,13 @@ std::u8string xybase::string::to_utf8(const std::u16string &str) noexcept
         }
         else {
             // Singular trail surrogate
-            if ((c & 0xFC00) == 0xDC00) continue;
+            if ((c & 0xFC00) == 0xDC00)
+            {
+                sb += 0xEF;
+                sb += 0xBF;
+                sb += 0xBD;
+                continue;
+            }
 
             sb += to_utf8(to_codepoint(str.substr(i, 2)));
         }
