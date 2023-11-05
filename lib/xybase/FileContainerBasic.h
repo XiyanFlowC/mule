@@ -18,6 +18,8 @@ namespace xybase
 	*/
 	class XY_API FileContainerBasic : public FileContainer
 	{
+		// 读写状态，0 为读，1 为写
+		int mode;
 	public:
 		FileContainerBasic(xybase::Stream* stream);
 

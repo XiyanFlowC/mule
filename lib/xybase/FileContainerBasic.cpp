@@ -201,6 +201,14 @@ void xybase::FileContainerBasic::Remove(std::u16string path, bool recursive)
 
 void xybase::FileContainerBasic::Write(unsigned long long handle, const char *buffer, size_t limit)
 {
+	/* 读写交织避免，Seek重设流状态 */
+	if (!mode)
+	{
+		mode = 1;
+		infraStream->Seek(0, Stream::SM_CURRENT);
+		infraStream->Flush();
+	}
+
 	auto &target = openedFiles[handle];
 	if (target.cursor + limit > target.capacity)
 		throw InvalidOperationException(L"Too large to write. Exceeded the file capacity: " + xybase::string::itos<wchar_t>(target.capacity), 100000);
@@ -215,6 +223,14 @@ void xybase::FileContainerBasic::Write(unsigned long long handle, const char *bu
 
 void xybase::FileContainerBasic::ReadBytes(unsigned long long handle, char *buffer, size_t length)
 {
+	/* 读写交织避免，Seek重设流状态 */
+	if (mode)
+	{
+		mode = 0;
+		infraStream->Seek(0, Stream::SM_CURRENT);
+		infraStream->Flush();
+	}
+
 	auto &target = openedFiles[handle];
 	if (target.cursor + length > target.size)
 		throw InvalidOperationException(L"Too large to read. Exceeded the file size: " + xybase::string::itos<wchar_t>(target.capacity), 100001);
@@ -238,6 +254,13 @@ void xybase::FileContainerBasic::Seek(unsigned long long handle, long long offse
 		target.cursor = offset;
 		break;
 	case xybase::Stream::SM_CURRENT:
+		/* 读写交织避免用，向下级传递空寻址重置流状态 */
+		if (offset == 0)
+		{
+			infraStream->Seek(0, Stream::SM_CURRENT);
+			break;
+		}
+
 		if (target.cursor + offset > target.capacity
 			|| target.cursor + offset < 0)
 			throw InvalidOperationException(L"Target offset out of range.", 102030);
