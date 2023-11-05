@@ -48,7 +48,7 @@ void xybase::FileContainerBasic::InnerStream::Close()
 }
 
 xybase::FileContainerBasic::FileContainerBasic(xybase::Stream *stream)
-	: infraStream(stream), currentHandle(0)
+	: infraStream(stream), currentHandle(0), mode(-1)
 {
 }
 
