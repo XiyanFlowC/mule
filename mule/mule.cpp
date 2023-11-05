@@ -15,12 +15,13 @@ int main(int argc, char **argv)
 		std::cerr << "Options:\n-l  less log." << std::endl;
 		exit(-1);
 	}
+	// 设定为用户偏好的语言环境
+	setlocale(LC_ALL, "");
+
 	fwide(stderr, 1);
 	fwide(stdin, 1);
 	fwide(stdout, 1);
 
-	// 设定为用户偏好的语言环境
-	setlocale(LC_ALL, "");
 	if (argc >= 5)
 	{
 		if (0 == strcmp("-l", argv[4]))
