@@ -8,6 +8,7 @@
 #define XY_XYSTRING_H__
 
 #include <string>
+#include <stack>
 
 #include "StringBuilder.h"
 
@@ -268,14 +269,19 @@ namespace xybase
 			static const char *pre = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 			if (value == 0) return std::basic_string<T>{'0'};
 
-			StringBuilder<T> sb;
-			
+			std::stack<T> stk;
 			while (value)
 			{
-				sb.Append(static_cast<T>(pre[value % base]));
+				stk.push(static_cast<T>(pre[value % base]));
 				value /= base;
 			}
 
+			StringBuilder<T> sb;
+			while (!stk.empty())
+			{
+				sb.Append(stk.top());
+				stk.pop();
+			}
 			return sb.ToString();
 		}
 

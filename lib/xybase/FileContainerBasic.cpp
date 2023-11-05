@@ -19,7 +19,7 @@ void xybase::FileContainerBasic::InnerStream::Flush()
 
 std::u16string xybase::FileContainerBasic::InnerStream::GetName() const
 {
-	return host->GetName() + u':' + host->openedFiles[fileHandle].baseEntry->path;
+	return host->GetName() + host->openedFiles[fileHandle].baseEntry->path;
 }
 
 void xybase::FileContainerBasic::InnerStream::ReadBytes(char *buffer, size_t limit)
