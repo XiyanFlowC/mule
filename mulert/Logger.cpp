@@ -1,6 +1,7 @@
 #include "Logger.h"
 
 #include <xystring.h>
+#include "Configuration.h"
 
 mule::LoggerConfig::LoggerConfig()
 	: logLevel(0), output(stdout), errout(stderr)
@@ -22,7 +23,7 @@ void mule::LoggerConfig::LoggerInit(int p_logLevel, FILE *p_out, FILE *p_errout)
 
 int mule::LoggerConfig::GetLogLevel()
 {
-	return logLevel;
+	return Configuration::GetInstance().GetSigned(u"mule.log.level", logLevel);
 }
 
 FILE *mule::LoggerConfig::GetOutput()

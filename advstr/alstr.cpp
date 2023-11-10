@@ -4,10 +4,12 @@
 #include <xystring.h>
 #include <VirtualFileSystem.h>
 #include <Exception/NotImplementedException.h>
+#include <Configuration.h>
 
 int str_ex(xybase::Stream *input, xybase::TextStream *output, int begin, int end)
 {
-	const int step = 8, threshold = 4;
+	int step = mule::Configuration::GetInstance().GetSigned(u"addrtext.step", 8),
+		threshold = mule::Configuration::GetInstance().GetSigned(u"addrtext.threshold", 4);
 	input->Seek(begin, xybase::Stream::SM_BEGIN);
 	while (input->Tell() < end)
 	{

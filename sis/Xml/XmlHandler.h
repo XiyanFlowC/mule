@@ -6,8 +6,7 @@
 #include <TextStream.h>
 #include <Data/Basic/Type.h>
 
-#include "XmlNode.h"
-#include "XmlParser.h"
+#include <Xml/XmlParser.h>
 
 namespace mule
 {
@@ -44,7 +43,7 @@ namespace mule
 
 			virtual void AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv) override;
 		protected:
-			mule::Xml::XmlParser<mule::Xml::XmlNode, char8_t> xmlParser;
+			xybase::xml::XmlParser<xybase::xml::XmlNode, char8_t> xmlParser;
 
 		private:
 			void ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString);

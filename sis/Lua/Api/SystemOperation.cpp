@@ -5,6 +5,7 @@
 #include <xystring.h>
 #include <Mule.h>
 #include "../LuaHost.h"
+#include <Configuration.h>
 
 mule::Logger mule::Lua::Api::logger {"<LuaSystemApi>", 0};
 
@@ -49,6 +50,13 @@ int mule::Lua::Api::LoadPlugin(std::string path)
     return 0;
 }
 
+mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::string name, mule::Data::Basic::MultiValue mv)
+{
+    if (mv.IsType(mule::Data::Basic::MultiValue::MVT_NULL)) return mule::Configuration::GetInstance().GetVariable(xybase::string::to_utf16(name).c_str());
+    mule::Configuration::GetInstance().SetVariable(xybase::string::to_utf16(name).c_str(), mv);
+    return 0;
+}
+
 void mule::Lua::Api::RegisterSystemOperations()
 {
     LuaHost::GetInstance().RegisterFunction("setlocale", SetLocale);
@@ -56,4 +64,5 @@ void mule::Lua::Api::RegisterSystemOperations()
     LuaHost::GetInstance().RegisterFunction("pplugin", PrintPlugins);
     LuaHost::GetInstance().RegisterFunction("lplugin", LoadPlugin);
     LuaHost::GetInstance().RegisterFunction("log", Log);
+    LuaHost::GetInstance().RegisterFunction("config", Configuration);
 }

@@ -3,6 +3,7 @@
 #include <xystring.h>
 #include <xyutils.h>
 #include <Exception/IOException.h>
+#include "../Configuration.h"
 
 using namespace mule::Storage;
 
@@ -92,6 +93,11 @@ FILE *mule::Storage::DataManager::OpenRaw(unsigned int id, bool create)
 	FILE *f = fopen(pp.c_str(), create ? "wb" : "rb");
 
 	return f;
+}
+
+mule::Storage::DataManager::DataManager()
+{
+	Initialise(Configuration::GetInstance().GetString(u"mule.data.basedir"));
 }
 
 bool DataManager::IsExist(unsigned int id)

@@ -32,6 +32,7 @@ namespace mule
 
 			uint32_t currentId = 0x0100'0000;
 
+			DataManager();
 		public:
 
 			bool IsExist(unsigned int id);

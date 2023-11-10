@@ -6,6 +6,7 @@
 #include <string>
 #include <list>
 #include <map>
+#include "../xyapi.h"
 
 namespace xybase
 {
@@ -14,7 +15,7 @@ namespace xybase
         /**
          * @brief Xml节点
         */
-        class XmlNode
+        class XY_API XmlNode
         {
         public:
             bool IsTextNode() const;

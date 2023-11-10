@@ -6,6 +6,8 @@
 #include <Mule.h>
 #include <Lua/LuaEnvironment.h>
 #include <VirtualFileSystem.h>
+#include <Xml/XmlDefinition.h>
+#include <Configuration.h>
 #include "codepage.h"
 using mule::Lua::LuaEnvironment;
 using mule::Mule;
@@ -23,7 +25,8 @@ int loadDefine(std::string define)
 
     try
     {
-        ResourceManager::GetInstance().LoadDefinition(define);
+        mule::Xml::XmlDefinition xmlDef;
+        xmlDef.Parse(xybase::string::to_utf16(define));
     }
     catch (xybase::Exception &ex)
     {
@@ -60,7 +63,8 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
 
     mule::Data::Basic::Type::DataHandler *hnd = Mule::GetInstance().GetDataHandler(xybase::string::to_utf16(handler).c_str());
     if (hnd == nullptr) return -11;
-    auto outStream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + tableName + "." + handler, std::ios::out);
+    auto outStream = new xybase::TextStream(
+        xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + tableName + "." + handler, std::ios::out);
     hnd->SetOutStream(outStream);
 
     mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), utbl, length, offset);
@@ -90,7 +94,8 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
 
     mule::Data::Basic::Type::FileHandler *hnd = Mule::GetInstance().GetFileHandler(xybase::string::to_utf16(handler).c_str());
     if (hnd == nullptr) return -11;
-    auto inStream = new xybase::TextStream(Configuration::GetInstance().SheetsDir + tableName + "." + handler, std::ios::in);
+    auto inStream = new xybase::TextStream(
+        xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + tableName + "." + handler, std::ios::in);
     hnd->SetInStream(inStream);
 
     mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), utbl, length, offset);
@@ -135,7 +140,7 @@ int loadMemory(int streamId, int fileId)
 int cvttxt(int stream, std::string cvt, std::string output, std::string param)
 {
     luaenvLogger.Info(L"Converting to {}...", xybase::string::to_wstring(output));
-    xybase::TextStream out(Configuration::GetInstance().ResourcesDir + output, std::ios::out);
+    xybase::TextStream out(xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.resource.basedir")) + output, std::ios::out);
     Mule::GetInstance().ConvertToText(
         LuaEnvironment::GetInstance().GetStream(stream),
         xybase::string::to_utf16(cvt).c_str(),
@@ -147,7 +152,7 @@ int cvttxt(int stream, std::string cvt, std::string output, std::string param)
 int cvtbin(std::string text, std::string cvt, int stream, std::string param)
 {
     luaenvLogger.Info(L"Converting from {}...", xybase::string::to_wstring(text));
-    xybase::TextStream in(Configuration::GetInstance().ResourcesDir + text, std::ios::in);
+    xybase::TextStream in(xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.resource.basedir")) + text, std::ios::in);
     Mule::GetInstance().ConvertToBinary(
         &in,
         xybase::string::to_utf16(cvt).c_str(),

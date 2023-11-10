@@ -16,6 +16,7 @@ namespace xybase
 {
     namespace xml
     {
+
         /**
          * @brief 处理Xml的类
          * @tparam XmlNodeT Xml节点类型
@@ -34,11 +35,11 @@ namespace xybase
             std::string error;
 
         private:
-            XmlNodeT ParseNode(const std::basic_string_view<Ch> &xml);
+            XmlNodeT ParseNode(const std::basic_string<Ch> &xml);
 
             size_t index;
 
-            std::map<std::basic_string<Ch>, std::u16string> entities;
+            std::map<std::basic_string<Ch>, std::basic_string<Ch>> entities;
 
             // buffered strings for comparing
             std::basic_string<Ch> EMPTY_CHARS;
@@ -60,19 +61,19 @@ namespace xybase
         inline XmlParser<XmlNodeT, Ch>::XmlParser()
         {
             // XML 1.0 预定义实体
-            RegisterEntity(to_enc<Ch>("amp"), u"&");
-            RegisterEntity(to_enc<Ch>("lt"), u"<");
-            RegisterEntity(to_enc<Ch>("gt"), u">";
-            RegisterEntity(to_enc<Ch>("apos"), u"'");
-            RegisterEntity(to_enc<Ch>("quot"), u"\"");
+            RegisterEntity(xybase::string::to_enc<Ch, char>("amp"), xybase::string::to_enc<Ch, char>("&"));
+            RegisterEntity(xybase::string::to_enc<Ch, char>("lt"), xybase::string::to_enc<Ch, char>("<"));
+            RegisterEntity(xybase::string::to_enc<Ch, char>("gt"), xybase::string::to_enc<Ch, char>(">"));
+            RegisterEntity(xybase::string::to_enc<Ch, char>("apos"), xybase::string::to_enc<Ch, char>("'"));
+            RegisterEntity(xybase::string::to_enc<Ch, char>("quot"), xybase::string::to_enc<Ch, char>("\""));
 
-            EMPTY_CHARS = to_enc<Ch>(" \t\n\r");
-            COMMENT_END = to_enc<Ch>("-->");
-            TAGSTR_END = to_enc<Ch>(" \t\n\r>/");
-            CLOSE_TAGSTR_END = to_enc<Ch>(" \t\n\r>");
-            QOUTES = to_enc<Ch>("'\"");
-            END_OF_QOUTES = to_enc<Ch>("]]>");
-            CDATA_STR = to_enc<Ch>("CDATA");
+            EMPTY_CHARS = xybase::string::to_enc<Ch, char>(" \t\n\r");
+            COMMENT_END = xybase::string::to_enc<Ch, char>("-->");
+            TAGSTR_END = xybase::string::to_enc<Ch, char>(" \t\n\r>/");
+            CLOSE_TAGSTR_END = xybase::string::to_enc<Ch, char>(" \t\n\r>");
+            QOUTES = xybase::string::to_enc<Ch, char>("'\"");
+            END_OF_QOUTES = xybase::string::to_enc<Ch, char>("]]>");
+            CDATA_STR = xybase::string::to_enc<Ch, char>("CDATA");
 
             //// 拓展的通用实体
             //RegisterEntity("lf", "\n");
@@ -89,7 +90,7 @@ namespace xybase
         }
 
         template<typename XmlNodeT, typename Ch>
-        XmlNodeT XmlParser<XmlNodeT, Ch>::ParseNode(const std::basic_string_view<Ch> &xml)
+        XmlNodeT XmlParser<XmlNodeT, Ch>::ParseNode(const std::basic_string<Ch> &xml)
         {
             // 去除空白字符
             index = xml.find_first_not_of(EMPTY_CHARS, index);
@@ -119,7 +120,7 @@ namespace xybase
                 node.SetName(xybase::string::to_utf16(xml.substr(index, endIndex - index)));
 
                 // 处理特性
-                while (index < xml.length)
+                while (index < xml.length())
                 {
                     index = xml.find_first_not_of(EMPTY_CHARS, endIndex);
                     if (xml[index] == '>' || xml[index] == '/')
@@ -203,15 +204,17 @@ namespace xybase
                                 std::basic_string<Ch> seq = xml.substr(escapeStart, index - escapeStart);
                                 if (seq[0] == '#')
                                 {
+                                    long codepoint;
                                     // 处理直接值
                                     if (seq[1] == 'x')
                                     {
-                                        sb += to_utf<Ch>(static_cast<Ch>(xybase::string::stoi(seq.substr(2), 16)));
+                                        codepoint = static_cast<Ch>(xybase::string::stoi(seq.substr(2), 16));
                                     }
                                     else
                                     {
-                                        sb += to_utf<Ch>(static_cast<Ch>(xybase::string::stoi(seq.substr(1))));
+                                        codepoint = static_cast<Ch>(xybase::string::stoi(seq.substr(1)));
                                     }
+                                    sb += xybase::string::to_enc<Ch, char32_t>(xybase::string::to_utf32(codepoint));
                                 }
                                 else sb += entities[seq];
                                 index++;

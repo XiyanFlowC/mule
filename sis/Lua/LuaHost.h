@@ -261,7 +261,10 @@ namespace mule
 
 					lua_pop(Ls, static_cast<int>(sizeof...(Args)));
 
-					host.PushValue(mule::Data::Basic::MultiValue(ret));
+					if constexpr (std::is_same_v<RetT, mule::Data::Basic::MultiValue>)
+						host.PushValue(ret);
+					else
+						host.PushValue(mule::Data::Basic::MultiValue(ret));
 					return 1;
 				}
 				catch (xybase::RuntimeException &ex)

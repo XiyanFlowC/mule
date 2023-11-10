@@ -12,7 +12,10 @@ int main(int argc, char **argv)
 	{
 		std::cerr << "Mule by xiyan" << std::endl;
 		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action> [options]" << std::endl;
-		std::cerr << "Options:\n-l  less log." << std::endl;
+		std::cerr
+			<< "Options:" << std::endl 
+			<< "-l                  less log." << std::endl
+			<< "-d<name>=<value>    define a variable." << std::endl;
 		exit(-1);
 	}
 	// 设定为用户偏好的语言环境
@@ -22,24 +25,46 @@ int main(int argc, char **argv)
 	fwide(stdin, 1);
 	fwide(stdout, 1);
 
+	// Configurate
+	auto &&conf = mule::Configuration::GetInstance();
+	conf.SetVariable(u"mule.target", xybase::string::to_utf16(argv[2]));
+	auto basedir = xybase::string::to_utf16(argv[1]);
+	if (!basedir.ends_with('/') || !basedir.ends_with('\\')) basedir += '/';
+	conf.SetVariable(u"mule.basedir", basedir);
+	conf.SetVariable(u"mule.data.basedir", conf.GetString(u"mule.basedir") + u"data/");
+	conf.SetVariable(u"mule.resource.basedir", conf.GetString(u"mule.basedir") + u"resources/");
+	conf.SetVariable(u"mule.sheet.basedir", conf.GetString(u"mule.basedir") + u"sheets/");
+	conf.SetVariable(u"mule.script.basedir", conf.GetString(u"mule.resource.basedir") + u"scripts/");
+
 	if (argc >= 5)
 	{
-		if (0 == strcmp("-l", argv[4]))
-			mule::LoggerConfig::GetInstance().LoggerInit(2, stdout, stderr);
+		for (int i = 4; i < argc; ++i)
+		{
+			if (0 == strcmp("-l", argv[i]))
+				mule::LoggerConfig::GetInstance().LoggerInit(2, stdout, stderr);
+			if (0 == memcmp("-d", argv[i], 2))
+			{
+				std::string def(argv[i] + 2);
+				auto defname = def.substr(0, def.find_first_of('='));
+				auto defval = def.substr(def.find_first_of('=') + 1);
+				mule::Configuration::GetInstance()
+					.SetVariable(
+						xybase::string::to_utf16(defname).c_str(),
+						MultiValue::Parse(xybase::string::to_utf16(defval)));
+			}
+		}
 	}
 
 	// main 用 logger
 	mule::Logger logger{ "<mule>", -1 };
 
 	// Initialisation
-	Configuration::GetInstance().SetEnvironmentRootPath(argv[1]);
-	Configuration::GetInstance().TargetFile = argv[2];
 	crc32_init();
 
 	// Lua environment initialisation
 	LuaHost::GetInstance().LoadLuaStandardLibs();
-	LuaHost::GetInstance().SetGlobal("package.path", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.lua;" + Configuration::GetInstance().ScriptsDir + "?/init.lua")));
-	LuaHost::GetInstance().SetGlobal("package.cpath", MultiValue(xybase::string::to_utf16(Configuration::GetInstance().ScriptsDir + "?.dll;" + Configuration::GetInstance().ScriptsDir + "dll/?.dll")));
+	LuaHost::GetInstance().SetGlobal("package.path", conf.GetString(u"mule.script.basedir") + u"?.lua;" + conf.GetString(u"mule.script.basedir") + u"?/init.lua");
+	LuaHost::GetInstance().SetGlobal("package.cpath", conf.GetString(u"mule.script.basedir") + u"?.dll;" + conf.GetString(u"mule.script.basedir") + u"dll/?.dll");
 
 	// Set variable
 	LuaHost::GetInstance().SetGlobal("mule", MultiValue{MultiValue::MVT_MAP});
@@ -55,16 +80,14 @@ int main(int argc, char **argv)
 	mule::Lua::Api::RegisterStreamOperationFunctions();
 	mule::Lua::Api::RegisterSystemOperations();
 
-	LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + "config.lua").c_str());
+	LuaHost::GetInstance().RunScript((xybase::string::to_string(conf.GetString(u"mule.script.basedir")) + "config.lua").c_str());
 
 	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableString::ShiftableStringCreator());
 
 	mule::Mule::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
-	mule::Xml::XmlParser<mule::Xml::XmlNode> xmlParser;
-
 	InitialiseLuaEnvironment();
-	mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(Configuration::GetInstance().TargetFile.c_str())));
+	mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(conf.GetString(u"mule.target"))));
 
 	// Execution
 	try
@@ -136,7 +159,7 @@ int main(int argc, char **argv)
 		}
 		else
 		{
-			LuaHost::GetInstance().RunScript((Configuration::GetInstance().ScriptsDir + argv[3] + ".lua").c_str());
+			LuaHost::GetInstance().RunScript((xybase::string::to_string(conf.GetString(u"mule.script.basedir")) + argv[3] + ".lua").c_str());
 		}
 	}
 	catch (mule::Lua::LuaException &ex)
