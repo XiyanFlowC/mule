@@ -4,6 +4,7 @@
 #include <xyutils.h>
 #include <Storage/DataManager.h>
 #include <Stream/ElfStream.h>
+#include <Configuration.h>
 
 #define SRMM_DATAFILE_ID (0x0A00'3939)
 
@@ -11,23 +12,20 @@ using namespace mule::Data::Basic;
 using namespace mule::Data;
 using namespace mule::Stream;
 
-bool ShiftableString::doShift = false;
-int ShiftableString::align = 8;
-
 int ShiftableString::GetAlign(size_t loc, xybase::Stream *stream)
 {
-	if (this->align == 0)
+	if (mule::Configuration::GetInstance().GetSigned(u"sstring.align") == 0)
 	{
 		ElfStream *elf = dynamic_cast<ElfStream *>(stream);
 		return elf == nullptr ? 1 : (int)elf->GetAlign(loc);
 	}
 	else
-		return this->align;
+		return mule::Configuration::GetInstance().GetSigned(u"sstring.align");
 }
 
 void ShiftableString::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
-	int ptr = stream->ReadInt32();
+	auto ptr = stream->ReadUInt32();
 	if (ptr == 0)
 	{
 		dataHandler->OnDataRead(MultiValue::MV_NULL);

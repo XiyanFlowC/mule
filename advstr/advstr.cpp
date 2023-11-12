@@ -30,7 +30,7 @@ mule::PluginDescription desc{
 	.author = L"xiyan",
 	.licence = L"MIT",
 	.majorVer = 1,
-	.minorVer = 0,
+	.minorVer = 4,
 	.description = L"Provides advanced string operation feature",
 	.ConvertToText = b2t,
 	.ConvertToBinary = t2b

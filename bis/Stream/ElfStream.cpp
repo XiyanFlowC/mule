@@ -67,7 +67,7 @@ ElfStream::ElfStream(xybase::Stream *stream)
 	}
 	stream->ReadBytes((char *)shs, sizeof(section_header) * header->shnum);
 
-	Seek(header->entry);
+	//Seek(header->entry);
 }
 
 ElfStream::~ElfStream()

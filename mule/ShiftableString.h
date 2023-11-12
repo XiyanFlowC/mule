@@ -57,14 +57,6 @@ public:
 
 	void StreamDispose(xybase::Stream *stream);
 
-	/**
-	 * @brief 是否允许移动引用
-	*/
-	static bool doShift;
-	/**
-	 * @brief 对其字节数要求，若为0则自动获取
-	*/
-	static int align;
 };
 
 #endif // End of SHIFTABLE_REFERRENCE_H__
