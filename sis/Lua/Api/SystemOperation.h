@@ -12,17 +12,15 @@ namespace mule
 		{
 			extern Logger logger;
 
-			std::string SetLocale(std::string locale);
-
-			int Confirm(std::string word);
+			int Confirm(std::u8string word);
 
 			int PrintPlugins();
 
-			int Log(std::string msg);
+			int Log(std::u8string msg);
 
-			int LoadPlugin(std::string path);
+			int LoadPlugin(std::u8string path);
 
-			mule::Data::Basic::MultiValue Configuration(std::string name, mule::Data::Basic::MultiValue mv);
+			mule::Data::Basic::MultiValue Configuration(std::u8string name, mule::Data::Basic::MultiValue mv);
 
 			void RegisterSystemOperations();
 		}

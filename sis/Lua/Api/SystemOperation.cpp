@@ -9,27 +9,11 @@
 
 mule::Logger mule::Lua::Api::logger {"<LuaSystemApi>", 0};
 
-std::string mule::Lua::Api::SetLocale(std::string locale)
+int mule::Lua::Api::Confirm(std::u8string word)
 {
-	/*logger.Info(L"Set global locale to {}...", xybase::string::to_wstring(locale));
-    char *ret = setlocale(LC_ALL, locale.c_str());
-    if (ret == nullptr)
-    {
-        logger.Error(L"Failed to set locale.");
-        return "!Failed!";
-    }
-	logger.Info(L"Success.");*/
-    logger.Warn(L"SetLocale was muted. No changes will be made.");
-    auto ret = setlocale(LC_ALL, nullptr);
-    if (ret == nullptr) return "";
-    return ret;
-}
-
-int mule::Lua::Api::Confirm(std::string word)
-{
-    std::string cmp;
-    std::cin >> cmp;
-    return word == cmp ? 0 : -1;
+    std::wstring cmp;
+    std::wcin >> cmp;
+    return word == xybase::string::to_utf8(cmp) ? 0 : -1;
 }
 
 int mule::Lua::Api::PrintPlugins()
@@ -38,19 +22,19 @@ int mule::Lua::Api::PrintPlugins()
     return 0;
 }
 
-int mule::Lua::Api::Log(std::string msg)
+int mule::Lua::Api::Log(std::u8string msg)
 {
-    logger.Info(xybase::string::to_wstring(msg));
+    logger.Info(xybase::string::to_wstring(((char8_t *)msg.c_str())));
     return 0;
 }
 
-int mule::Lua::Api::LoadPlugin(std::string path)
+int mule::Lua::Api::LoadPlugin(std::u8string path)
 {
     Mule::GetInstance().LoadPlugin(xybase::string::to_utf16(path).c_str());
     return 0;
 }
 
-mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::string name, mule::Data::Basic::MultiValue mv)
+mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::u8string name, mule::Data::Basic::MultiValue mv)
 {
     if (mv.IsType(mule::Data::Basic::MultiValue::MVT_NULL)) return mule::Configuration::GetInstance().GetVariable(xybase::string::to_utf16(name).c_str());
     mule::Configuration::GetInstance().SetVariable(xybase::string::to_utf16(name).c_str(), mv);
@@ -59,7 +43,6 @@ mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::string name, mu
 
 void mule::Lua::Api::RegisterSystemOperations()
 {
-    LuaHost::GetInstance().RegisterFunction("setlocale", SetLocale);
     LuaHost::GetInstance().RegisterFunction("confirm", Confirm);
     LuaHost::GetInstance().RegisterFunction("pplugin", PrintPlugins);
     LuaHost::GetInstance().RegisterFunction("lplugin", LoadPlugin);

@@ -2,6 +2,7 @@
 
 #include <string>
 #include <Stream.h>
+#include <Data/Basic/MultiValue.h>
 
 namespace mule
 {
@@ -9,15 +10,15 @@ namespace mule
 	{
 		namespace Api
 		{
-			int MountStream(int streamId, std::string type, std::string root);
+			int MountStream(int streamId, std::u8string type, std::u8string root);
 
-			int Unmount(std::string root);
+			int Unmount(std::u8string root);
 
-			int List(std::string root);
+			mule::Data::Basic::MultiValue List(std::u8string root);
 
-			int ListRoots();
+			mule::Data::Basic::MultiValue ListRoots();
 
-			int OpenAndMount(std::string root, std::string param);
+			int OpenAndMount(std::u8string root, std::u8string param);
 
 			void RegisterContainerOperationFunctions();
 		}

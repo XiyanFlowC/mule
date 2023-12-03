@@ -8,19 +8,19 @@ namespace mule
 	{
 		namespace Api
 		{
-			int OpenStream(std::string path, std::string openMode);
+			int OpenStream(std::u8string path, std::u8string openMode);
 
 			int CloseStream(int id);
 
-			int ExportStream(std::string path, int id);
+			int ExportStream(std::u8string path, int id);
 
-			int ExtractStream(std::string path, int offset, int length, int id);
+			int ExtractStream(std::u8string path, int offset, int length, int id);
 
-			int ImportStream(std::string path, int id);
+			int ImportStream(std::u8string path, int id);
 
-			int PatchStream(std::string path, int offset, int length, int id);
+			int PatchStream(std::u8string path, int offset, int length, int id);
 
-			int StreamOverStream(int streamId, std::string applier);
+			int StreamOverStream(int streamId, std::u8string applier);
 
 			void RegisterStreamOperationFunctions();
 		}

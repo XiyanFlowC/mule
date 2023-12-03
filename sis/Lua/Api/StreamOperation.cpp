@@ -7,7 +7,7 @@
 #include <Data/Table.h>
 #include <Data/TypeManager.h>
 
-int mule::Lua::Api::OpenStream(std::string path, std::string openMode)
+int mule::Lua::Api::OpenStream(std::u8string path, std::u8string openMode)
 {
 	xybase::FileOpenMode mode{};
 	for (char ch : openMode)
@@ -36,31 +36,31 @@ int mule::Lua::Api::CloseStream(int id)
 	return 0;
 }
 
-int mule::Lua::Api::ExportStream(std::string path, int id)
+int mule::Lua::Api::ExportStream(std::u8string path, int id)
 {
 	Mule::GetInstance().Export(xybase::string::to_utf16(path).c_str(), id);
 	return 0;
 }
 
-int mule::Lua::Api::ExtractStream(std::string path, int offset, int length, int id)
+int mule::Lua::Api::ExtractStream(std::u8string path, int offset, int length, int id)
 {
 	Mule::GetInstance().Extract(xybase::string::to_utf16(path).c_str(), offset, length, id);
 	return 0;
 }
 
-int mule::Lua::Api::ImportStream(std::string path, int id)
+int mule::Lua::Api::ImportStream(std::u8string path, int id)
 {
 	Mule::GetInstance().Import(xybase::string::to_utf16(path).c_str(), id);
 	return 0;
 }
 
-int mule::Lua::Api::PatchStream(std::string path, int offset, int length, int id)
+int mule::Lua::Api::PatchStream(std::u8string path, int offset, int length, int id)
 {
 	Mule::GetInstance().Patch(xybase::string::to_utf16(path).c_str(), offset, length, id);
 	return 0;
 }
 
-int mule::Lua::Api::StreamOverStream(int streamId, std::string applier)
+int mule::Lua::Api::StreamOverStream(int streamId, std::u8string applier)
 {
 	auto infraStream = LuaEnvironment::GetInstance().GetStream(streamId);
 	if (infraStream == nullptr) return -1;

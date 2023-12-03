@@ -5,7 +5,7 @@
 #include <xystring.h>
 #include "../LuaEnvironment.h"
 
-int mule::Lua::Api::MountStream(int streamId, std::string type, std::string root)
+int mule::Lua::Api::MountStream(int streamId, std::u8string type, std::u8string root)
 {
 	xybase::Stream *infra = LuaEnvironment::GetInstance().GetStream(streamId);
 	if (infra == nullptr) return -10;
@@ -15,34 +15,36 @@ int mule::Lua::Api::MountStream(int streamId, std::string type, std::string root
 	return 0;
 }
 
-int mule::Lua::Api::Unmount(std::string root)
+int mule::Lua::Api::Unmount(std::u8string root)
 {
 	VirtualFileSystem::GetInstance().Unmount(xybase::string::to_utf16(root).c_str());
 	return 0;
 }
 
-int mule::Lua::Api::List(std::string root)
+mule::Data::Basic::MultiValue mule::Lua::Api::List(std::u8string root)
 {
-	wprintf(L"根 %ls 的文件列表：\n", xybase::string::to_wstring(root).c_str());
+	mule::Data::Basic::MultiValue mv{ Data::Basic::MultiValue::MVT_MAP };
+	int idx = 1;
 	for (auto &&item : VirtualFileSystem::GetInstance().List(xybase::string::to_utf16(root).c_str()))
 	{
-		wprintf(L"%ls\n", xybase::string::to_wstring(item).c_str());
+		mv.value.mapValue->insert(Data::Basic::MultiValue{ idx }, Data::Basic::MultiValue{item});
 	}
 
-	return 0;
+	return mv;
 }
 
-int mule::Lua::Api::ListRoots()
+mule::Data::Basic::MultiValue mule::Lua::Api::ListRoots()
 {
-	fputws(L"已注册的根：\n", stdout);
+	mule::Data::Basic::MultiValue mv{ Data::Basic::MultiValue::MVT_MAP };
+	int idx = 1;
 	for (auto &&root : VirtualFileSystem::GetInstance().ListRoots())
 	{
-		wprintf(L"%ls\n", xybase::string::to_wstring(root).c_str());
+		mv.value.mapValue->insert(Data::Basic::MultiValue{ idx }, Data::Basic::MultiValue{ root });
 	}
-	return 0;
+	return mv;
 }
 
-int mule::Lua::Api::OpenAndMount(std::string root, std::string param)
+int mule::Lua::Api::OpenAndMount(std::u8string root, std::u8string param)
 {
 	Mule::GetInstance().OpenAndMount(xybase::string::to_utf16(root).c_str(), xybase::string::to_utf16(param).c_str());
 	return 0;

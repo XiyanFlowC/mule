@@ -201,7 +201,7 @@ namespace mule
 		template<typename AT, typename... Rest>
 		bool CheckArgsHelper<AT, Rest...>::CheckArg(lua_State *L, int index)
 		{
-			if constexpr (std::is_same_v<AT, std::string>)
+			if constexpr (std::is_same_v<AT, std::string> || std::is_same_v<AT, std::u8string>)
 			{
 				return lua_isstring(L, index);
 			}
