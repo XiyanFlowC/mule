@@ -5,7 +5,8 @@
 
 #include <string>
 
-#include <Data/Basic/Type.h>
+#include "../../mulert_api.h"
+#include "Type.h"
 #include "ContextManager.h"
 
 namespace mule
@@ -14,7 +15,7 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class BasicType : public Type
+			class MULERT_API BasicType : public Type
 			{
 
 			protected:

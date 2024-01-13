@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Basic/BasicType.h"
+#include <Data/Basic/BasicType.h>
 #include "Basic/Integer.h"
 #include "Basic/Double.h"
 #include "Basic/Float.h"

@@ -62,9 +62,10 @@ int main(int argc, char **argv)
 	crc32_init();
 
 	// Lua environment initialisation
+	auto scriptBaseDir = conf.GetString(u"mule.script.basedir");
 	LuaHost::GetInstance().LoadLuaStandardLibs();
-	LuaHost::GetInstance().SetGlobal("package.path", conf.GetString(u"mule.script.basedir") + u"?.lua;" + conf.GetString(u"mule.script.basedir") + u"?/init.lua");
-	LuaHost::GetInstance().SetGlobal("package.cpath", conf.GetString(u"mule.script.basedir") + u"?.dll;" + conf.GetString(u"mule.script.basedir") + u"dll/?.dll");
+	LuaHost::GetInstance().SetGlobal("package.path", scriptBaseDir + u"?.lua;" + scriptBaseDir + u"?/init.lua");
+	LuaHost::GetInstance().SetGlobal("package.cpath", scriptBaseDir + u"?.dll;" + scriptBaseDir + u"dll/?.dll");
 
 	// Set variable
 	LuaHost::GetInstance().SetGlobal("mule", MultiValue{MultiValue::MVT_MAP});

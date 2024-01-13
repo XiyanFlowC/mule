@@ -153,9 +153,13 @@ namespace mule
 		T LuaHost::GetArg(int index)
 		{
 			index += 1;
-			if constexpr (std::is_same<T, std::string>::value)
+			if constexpr (std::is_same_v<T, std::string>)
 			{
 				return lua_tostring(L, index);
+			}
+			else if constexpr (std::is_same_v<T, std::u8string>)
+			{
+				return (char8_t *)lua_tostring(L, index);
 			}
 			else if constexpr (std::is_integral_v<T>)
 			{

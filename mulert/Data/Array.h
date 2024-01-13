@@ -3,16 +3,17 @@
 #ifndef ARRAY_H__
 #define ARRAY_H__
 
+#include "../mulert_api.h"
 #include <xyutils.h>
-#include <Data/Basic/Type.h>
-#include <Data/TypeCreator.h>
-#include <Data/TypeManager.h>
+#include "Basic/Type.h"
+#include "TypeCreator.h"
+#include "TypeManager.h"
 
 namespace mule
 {
 	namespace Data
 	{
-		class Array : public Basic::Type
+		class MULERT_API Array : public Basic::Type
 		{
 		protected:
 			std::u16string sizeCache;
@@ -22,7 +23,7 @@ namespace mule
 			Basic::Type *innerObject;
 
 		public:
-			class ArrayCreator : public TypeCreator
+			class MULERT_API ArrayCreator : public TypeCreator
 			{
 			public:
 				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;

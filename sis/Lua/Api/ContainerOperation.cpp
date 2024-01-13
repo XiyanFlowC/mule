@@ -27,7 +27,7 @@ mule::Data::Basic::MultiValue mule::Lua::Api::List(std::u8string root)
 	int idx = 1;
 	for (auto &&item : VirtualFileSystem::GetInstance().List(xybase::string::to_utf16(root).c_str()))
 	{
-		mv.value.mapValue->insert(Data::Basic::MultiValue{ idx }, Data::Basic::MultiValue{item});
+		(*mv.value.mapValue)[Data::Basic::MultiValue{ idx }] = Data::Basic::MultiValue{ item };
 	}
 
 	return mv;
@@ -39,7 +39,7 @@ mule::Data::Basic::MultiValue mule::Lua::Api::ListRoots()
 	int idx = 1;
 	for (auto &&root : VirtualFileSystem::GetInstance().ListRoots())
 	{
-		mv.value.mapValue->insert(Data::Basic::MultiValue{ idx }, Data::Basic::MultiValue{ root });
+		(*mv.value.mapValue)[Data::Basic::MultiValue{ idx }] = Data::Basic::MultiValue{ root };
 	}
 	return mv;
 }

@@ -3,7 +3,7 @@
 #ifndef FLOAT_FIELD_H__
 #define FLOAT_FIELD_H__
 
-#include "BasicType.h"
+#include <Data/Basic/BasicType.h>
 
 namespace mule
 {

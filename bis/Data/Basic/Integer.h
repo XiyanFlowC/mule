@@ -4,7 +4,7 @@
 #define INTEGER_FIELD_H__
 
 #include <Exception/InvalidParameterException.h>
-#include "BasicType.h"
+#include <Data/Basic/BasicType.h>
 #include <Data/Basic/MultiValue.h>
 
 namespace mule

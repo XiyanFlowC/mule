@@ -1,5 +1,4 @@
 #include "BasicType.h"
-#include "BasicType.h"
 
 mule::Data::Basic::BasicType::ConstraintViolationException::ConstraintViolationException(const std::wstring &msg)
 	: xybase::RuntimeException(msg, 0xFC0E)

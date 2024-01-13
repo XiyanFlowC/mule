@@ -326,6 +326,39 @@ std::u8string xybase::string::to_utf8(const std::wstring &str) noexcept
     return to_utf8(to_utf16(str));
 }
 
+std::u8string xybase::string::to_utf8(const std::u32string &str) noexcept
+{
+    StringBuilder<char8_t> sb;
+    for (const char32_t &ch : str)
+    {
+        if (ch <= 0x7F) {
+            sb += static_cast<char>(ch);
+        }
+        else if (ch <= 0x07FF) {
+            sb += static_cast<char>((ch >> 6) | 0xC0);
+            sb += static_cast<char>((ch & 0x3F) | 0x80);
+        }
+        else if (ch <= 0xFFFF) {
+            sb += static_cast<char>((ch >> 12) | 0xE0);
+            sb += static_cast<char>(((ch >> 6) & 0x3F) | 0x80);
+            sb += static_cast<char>((ch & 0x3F) | 0x80);
+        }
+        else if (ch <= 0x10FFFF) {
+            sb += static_cast<char>((ch >> 18) | 0xF0);
+            sb += static_cast<char>(((ch >> 12) & 0x3F) | 0x80);
+            sb += static_cast<char>(((ch >> 6) & 0x3F) | 0x80);
+            sb += static_cast<char>((ch & 0x3F) | 0x80);
+        }
+        else {
+            sb += 0xEF;
+            sb += 0xBF;
+            sb += 0xBD;
+            continue;
+        }
+    }
+    return sb.ToString();
+}
+
 std::u8string xybase::string::to_utf8(const std::u16string &str) noexcept
 {
     StringBuilder<char8_t> sb;

@@ -3,7 +3,7 @@
 #ifndef STRING_OBJECT_H__
 #define STRING_OBJECT_H__
 
-#include "BasicType.h"
+#include <Data/Basic/BasicType.h>
 #include <Logger.h>
 
 namespace mule

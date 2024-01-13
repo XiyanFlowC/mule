@@ -40,6 +40,7 @@ void mule::VirtualFileSystem::Remove(const char16_t *p_path, bool recursive)
 	if (it == containers.end()) return;
 
 	it->second->Remove(path, recursive);
+	logger.Info(L"File [{}] in root [{}] removed.", xybase::string::to_wstring(path), xybase::string::to_wstring(root));
 }
 
 void mule::VirtualFileSystem::CascadeProcess(const char16_t *targetFile, std::function<void(xybase::Stream *target)> lambda, xybase::FileOpenMode openMode)

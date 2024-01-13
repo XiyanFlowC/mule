@@ -3,7 +3,8 @@
 #ifndef STRUCTURE_H__
 #define STRUCTURE_H__
 
-#include <Data/Basic/Type.h>
+#include "Basic/Type.h"
+#include "../mulert_api.h"
 #include <list>
 
 namespace mule
@@ -11,14 +12,17 @@ namespace mule
 	namespace Data
 	{
 		/**
-		 * @brief 结构体类。用于表示字段读取链的包装。
-		 * 此结构体理应被注册到ObjectManager以提供Reference可见性。
+		 * @brief 结构体类。包含多个字段的集合，按顺序依次触发字段区域的进出，并触发字段对应类型的读写。
+		 * 任何新建的结构体理应被注册到ObjectManager以提供Reference可见性。
 		*/
-		class Structure : public Basic::Type
+		class MULERT_API Structure : public Basic::Type
 		{
 		public:
-
-			class Field : public Basic::Type
+			/**
+			 * @brief 字段。结构体内部类。用于触发字段的进出事件和读写事件。
+			 * 一个结构体持有多个字段类，并有结构体负责生命周期。
+			*/
+			class MULERT_API Field : public Basic::Type
 			{
 			public:
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
@@ -30,9 +34,14 @@ namespace mule
 
 				Field(std::u16string name, Type *obj);
 			protected:
-
+				/**
+				 * @brief 字段的名字
+				*/
 				std::u16string name;
 
+				/**
+				 * @brief 字段读写事件触发时，处理事件的类型实例
+				*/
 				Type *object;
 
 				virtual std::u16string GetDataType() const override;
@@ -80,8 +89,14 @@ namespace mule
 			virtual bool IsComposite() const override;
 		protected:
 
+			/**
+			 * @brief 结构体中的字段
+			*/
 			std::list<Field *> fields;
 
+			/**
+			 * @brief 结构体自身的名字（类型名）
+			*/
 			std::u16string name;
 		};
 	}

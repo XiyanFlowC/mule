@@ -208,11 +208,11 @@ namespace xybase
                                     // 处理直接值
                                     if (seq[1] == 'x')
                                     {
-                                        codepoint = static_cast<Ch>(xybase::string::stoi(seq.substr(2), 16));
+                                        codepoint = static_cast<long>(xybase::string::stoi(seq.substr(2), 16));
                                     }
                                     else
                                     {
-                                        codepoint = static_cast<Ch>(xybase::string::stoi(seq.substr(1)));
+                                        codepoint = static_cast<long>(xybase::string::stoi(seq.substr(1)));
                                     }
                                     sb += xybase::string::to_enc<Ch, char32_t>(xybase::string::to_utf32(codepoint));
                                 }

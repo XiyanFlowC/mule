@@ -133,6 +133,13 @@ namespace xybase
 		std::u8string XY_API to_utf8(const std::wstring &str) noexcept;
 
 		/**
+		 * @brief Convert u32string to utf8
+		 * @param str 
+		 * @return 
+		*/
+		std::u8string XY_API to_utf8(const std::u32string &str) noexcept;
+
+		/**
 		 * @brief Convert utf-16 to utf-8
 		 * @param str utf-16 string
 		 * @return utf-8 string
@@ -295,48 +302,12 @@ namespace xybase
 		template <typename Ch, typename SrcCh>
 		std::basic_string<Ch> to_enc(const std::basic_string<SrcCh> &str)
 		{
-			std::basic_string<Ch> ret;
-			for (auto &&ch : str)
-			{
-				ret.push_back(ch);
-			}
-			return ret;
-		}
-
-		template <typename Ch>
-		std::basic_string<Ch> to_enc(const std::basic_string<Ch> &str)
-		{
-			return str;
-		}
-
-		template <typename SrcCh>
-		std::basic_string<char> to_enc(const std::string &str)
-		{
-			return xybase::string::to_string(str);
-		}
-
-		template <typename SrcCh>
-		std::basic_string<wchar_t> to_enc(const std::string &str)
-		{
-			return xybase::string::to_wstring(str);
-		}
-
-		template <typename SrcCh>
-		std::basic_string<char8_t> to_enc(const std::string &str)
-		{
-			return xybase::string::to_utf8(str);
-		}
-
-		template <typename SrcCh>
-		std::basic_string<char16_t> to_enc(const std::string &str)
-		{
-			return xybase::string::to_utf16(str);
-		}
-
-		template <typename SrcCh>
-		std::basic_string<char32_t> to_enc(const std::string &str)
-		{
-			return xybase::string::to_utf32(str);
+			if constexpr (std::is_same_v<Ch, wchar_t>) return xybase::string::to_wstring(str);
+			else if constexpr (std::is_same_v<Ch, char>) return xybase::string::to_string(str);
+			else if constexpr (std::is_same_v<Ch, char8_t>) return xybase::string::to_utf8(str);
+			else if constexpr (std::is_same_v<Ch, char16_t>) return xybase::string::to_utf16(str);
+			else if constexpr (std::is_same_v<Ch, char32_t>) return xybase::string::to_utf32(str);
+			else abort();
 		}
 	}
 }

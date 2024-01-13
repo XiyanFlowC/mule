@@ -60,7 +60,7 @@ long long mule::Configuration::GetSigned(const char16_t *name, long long def)
 	if (!variables.contains(name)) return def;
 	auto &&mv = variables[name];
 	if (!mv.IsType(MultiValue::MVT_INT)) throw ConfigurationTypeMismatch(xybase::string::to_wstring(name));
-	return mv.value.realValue;
+	return mv.value.signedValue;
 }
 
 unsigned long long mule::Configuration::GetUnsigned(const char16_t *name, unsigned long long def)
@@ -68,7 +68,7 @@ unsigned long long mule::Configuration::GetUnsigned(const char16_t *name, unsign
 	if (!variables.contains(name)) return def;
 	auto &&mv = variables[name];
 	if (!mv.IsType(MultiValue::MVT_UINT)) throw ConfigurationTypeMismatch(xybase::string::to_wstring(name));
-	return mv.value.realValue;
+	return mv.value.unsignedValue;
 }
 
 mule::Configuration::ConfigurationNotFoundException::ConfigurationNotFoundException(std::wstring name)

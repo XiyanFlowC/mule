@@ -3,10 +3,11 @@
 
 #pragma once
 
-#include <Data/Basic/Type.h>
-#include <Data/TypeCreator.h>
-#include <Data/TypeManager.h>
-#include <Logger.h>
+#include "../mulert_api.h"
+#include "Basic/Type.h"
+#include "TypeCreator.h"
+#include "TypeManager.h"
+#include "../Logger.h"
 
 namespace mule
 {
@@ -15,7 +16,7 @@ namespace mule
 		/**
 		 * @brief 指向其他位置的32位引用类型。
 		*/
-		class Referrence : public Basic::Type
+		class MULERT_API Referrence : public Basic::Type
 		{
 			/**
 			 * @brief 内部的类型。
@@ -24,7 +25,7 @@ namespace mule
 
 			Logger logger = Logger::GetLogger<Referrence>();
 		public:
-			class ReferrenceCreator : public TypeCreator
+			class MULERT_API ReferrenceCreator : public TypeCreator
 			{
 				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 				virtual Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo) override;

@@ -2,7 +2,7 @@
 #ifndef VAR_CHAR_H__
 #define VAR_CHAR_H__
 
-#include "Basic/BasicType.h"
+#include <Data/Basic/BasicType.h>
 #include <Data/TypeCreator.h>
 #include <xyutils.h>
 
