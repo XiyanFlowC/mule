@@ -4,7 +4,7 @@
 #include "Configuration.h"
 
 mule::LoggerConfig::LoggerConfig()
-	: logLevel(0), output(stdout), errout(stderr)
+	: logLevel(0), output(stdout), errorOutput(stderr)
 {
 }
 
@@ -14,11 +14,12 @@ mule::LoggerConfig &mule::LoggerConfig::GetInstance()
 	return _inst;
 }
 
-void mule::LoggerConfig::LoggerInit(int p_logLevel, FILE *p_out, FILE *p_errout)
+void mule::LoggerConfig::LoggerInit(int p_logLevel, FILE *p_out, FILE *p_errout, bool p_enableColour)
 {
 	logLevel = p_logLevel;
 	output = p_out;
-	errout = p_errout;
+	errorOutput = p_errout;
+	enableColour = p_enableColour;
 }
 
 int mule::LoggerConfig::GetLogLevel()
@@ -33,7 +34,12 @@ FILE *mule::LoggerConfig::GetOutput()
 
 FILE *mule::LoggerConfig::GetErrorOutput()
 {
-	return errout;
+	return errorOutput;
+}
+
+bool mule::LoggerConfig::IsColourationEnabled()
+{
+	return enableColour;
 }
 
 mule::Logger::Logger(const std::string &name, int logLevel)

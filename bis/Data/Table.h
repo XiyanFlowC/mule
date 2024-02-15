@@ -56,6 +56,10 @@ namespace mule {
 			int length;
 			size_t offset;
 			std::u16string name;
+
+			// 通过 Type 继承
+			void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv) override;
+			mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) override;
 		};
 	}
 }

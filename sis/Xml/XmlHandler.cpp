@@ -41,6 +41,15 @@ void mule::Xml::XmlHandler::OnSheetWriteEnd()
 
 void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name)
 {
+	if (status == XHS_READ_METADATA_WAITING)
+	{
+		status = XHS_READ;
+		outstream->Write(">");
+
+		outstream->Write("\n");
+		layer++;
+	}
+
 	if (status == XHS_READ)
 	{
 		for (int i = 0; i < layer; ++i)
@@ -53,10 +62,8 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		{
 			outstream->Write("<");
 			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(name).c_str()));
-			outstream->Write(">");
 
-			outstream->Write("\n");
-			layer++;
+			status = XHS_READ_METADATA_WAITING;
 		}
 		else nodeName = name;
 	}
@@ -128,6 +135,15 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 
 void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 {
+	if (status == XHS_READ_METADATA_WAITING)
+	{
+		status = XHS_READ;
+		outstream->Write(">");
+
+		outstream->Write("\n");
+		layer++;
+	}
+
 	if (status == XHS_READ)
 	{
 		if (realm->IsComposite())
@@ -180,6 +196,15 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
 
 void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 {
+	if (status == XHS_READ_METADATA_WAITING)
+	{
+		status = XHS_READ;
+		outstream->Write(">");
+
+		outstream->Write("\n");
+		layer++;
+	}
+
 	if (status == XHS_READ)
 	{
 		for (int i = 0; i < layer; ++i)
@@ -192,10 +217,8 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		{
 			outstream->Write("<");
 			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
-			outstream->Write(">");
 
-			outstream->Write("\n");
-			layer++;
+			status = XHS_READ_METADATA_WAITING;
 		}
 		else nodeName = u"item";
 	}
@@ -233,6 +256,15 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 
 void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 {
+	if (status == XHS_READ_METADATA_WAITING)
+	{
+		status = XHS_READ;
+		outstream->Write(">");
+
+		outstream->Write("\n");
+		layer++;
+	}
+
 	if (status == XHS_READ)
 	{
 		if (realm->IsComposite())
@@ -285,6 +317,15 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 
 void mule::Xml::XmlHandler::OnDataRead(const MultiValue &value)
 {
+	if (status == XHS_READ_METADATA_WAITING)
+	{
+		status = XHS_READ;
+		outstream->Write(">");
+
+		outstream->Write("\n");
+		layer++;
+	}
+
 	element = value;
 }
 
@@ -296,5 +337,13 @@ const MultiValue mule::Xml::XmlHandler::OnDataWrite()
 
 void mule::Xml::XmlHandler::AppendMetadatum(std::u16string name, const mule::Data::Basic::MultiValue &mv)
 {
+	if (status == XHS_READ_METADATA_WAITING) {
+		outstream->Write(' ');
+		outstream->Write((char *)(xybase::string::to_utf8(name).c_str()));
+		outstream->Write("='");
+		outstream->Write((char *)(xybase::string::to_utf8(mv.ToString()).c_str()));
+		outstream->Write('\'');
+	}
+
 	element.metadata[name] = mv;
 }

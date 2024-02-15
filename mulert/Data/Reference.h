@@ -16,16 +16,16 @@ namespace mule
 		/**
 		 * @brief 指向其他位置的32位引用类型。
 		*/
-		class MULERT_API Referrence : public Basic::Type
+		class MULERT_API Reference : public Basic::Type
 		{
 			/**
 			 * @brief 内部的类型。
 			*/
 			Basic::Type *referent = nullptr;
 
-			Logger logger = Logger::GetLogger<Referrence>();
+			Logger logger = Logger::GetLogger<Reference>();
 		public:
-			class MULERT_API ReferrenceCreator : public TypeCreator
+			class MULERT_API ReferenceCreator : public TypeCreator
 			{
 				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 				virtual Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo) override;
@@ -38,7 +38,11 @@ namespace mule
 			virtual bool IsComposite() const override;
 
 		private:
-			Referrence(Type *referent);
+			Reference(Type *referent);
+
+			// 通过 Type 继承
+			void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv) override;
+			mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) override;
 		};
 	}
 }

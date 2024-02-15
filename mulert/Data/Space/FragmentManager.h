@@ -19,8 +19,11 @@ namespace mule
 #ifndef cal_align
 #define cal_align(loc, align) (((loc) < 0) ? ((loc) & ~(align - 1)) : ((loc + (align - 1)) & ~(align - 1)))
 #endif
-
-			class MULERT_API FragmentManager
+			/**
+			 * @brief 用于管理片段的类
+			 * @deprecated
+			*/
+			class [[deprecated("Use xybase::Fragment::FragmentManager instead.")]] MULERT_API FragmentManager
 			{
 				std::list<Fragment *> frags;
 

@@ -62,3 +62,25 @@ mule::Data::Basic::Type *BinaryBlock::BinaryBlockCreator::DoCreateObject(const s
 	auto ret = new BinaryBlock{size};
 	return ret;
 }
+
+mule::Data::Basic::MultiValue mule::Data::Storage::BinaryBlock::ReadValue(xybase::Stream *stream)
+{
+	char *buffer = new char[size];
+	stream->ReadBytes(buffer, size);
+
+	// 生成 link
+	MultiValue mv = DataManager::GetInstance().SaveData(BinaryData{ buffer, size, false });
+	return mv;
+}
+
+void mule::Data::Storage::BinaryBlock::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue value)
+{
+	if (!value.IsType(MultiValue::MVT_UINT))
+	{
+		stream->Seek(size, xybase::Stream::SM_CURRENT);
+		return;
+	}
+
+	// 获取 link 的数据
+	stream->Write(DataManager::GetInstance().LoadData(value.value.unsignedValue).GetData(), size);
+}

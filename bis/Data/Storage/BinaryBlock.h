@@ -26,6 +26,9 @@ namespace mule
 				virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
 				virtual size_t Size() const override;
 				virtual std::u16string GetDataType() const override;
+
+				virtual mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) override;
+				virtual void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue value) override;
 			protected:
 				size_t size;
 			};

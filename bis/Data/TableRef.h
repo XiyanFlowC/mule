@@ -28,6 +28,9 @@ namespace mule
 			{
 				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 			};
+
+			virtual mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) override;
+			virtual void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue value) override;
 		};
 	}
 }

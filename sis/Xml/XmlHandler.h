@@ -50,6 +50,7 @@ namespace mule
 			enum {
 				XHS_IDLE,
 				XHS_READ,
+				XHS_READ_METADATA_WAITING,
 				XHS_WRITE,
 			} status;
 

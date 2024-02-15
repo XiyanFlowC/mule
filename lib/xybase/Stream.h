@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <string>
 
+#include "Event.h"
 #include "xyapi.h"
 
 namespace xybase
@@ -26,6 +27,7 @@ namespace xybase
 		bool isBigEndian = false;
 
 	public:
+		Event<Stream *> OnClose, OnSeek;
 
 		virtual void Flush() = 0;
 
@@ -98,7 +100,7 @@ namespace xybase
 		 * @param offset 偏移
 		 * @param mode 寻址模式
 		*/
-		virtual void Seek(long long offset, SeekMode mode) = 0;
+		virtual void Seek(long long offset, SeekMode mode = SM_BEGIN) = 0;
 
 		virtual void Close() = 0;
 	};

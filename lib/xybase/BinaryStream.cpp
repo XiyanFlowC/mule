@@ -78,10 +78,12 @@ void BinaryStream::Seek(long long offset, SeekMode mode)
 		break;
 	}
 	fseek(stream, offset, seekMode);
+	OnSeek(this);
 }
 
 void BinaryStream::Close()
 {
+	OnClose(this);
 	if (!isOpen) throw InvalidOperationException(L"Already closed.", __LINE__);
 	isOpen = false;
 	fclose(stream);

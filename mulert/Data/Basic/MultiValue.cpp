@@ -87,6 +87,12 @@ bool MultiValue::operator>= (const MultiValue &rvalue) const
 	return !(*this < rvalue);
 }
 
+MultiValue mule::Data::Basic::MultiValue::operator[](const MultiValue &key) const
+{
+	if (!IsType(MVT_MAP)) throw xybase::InvalidOperationException(L"Cannot index a value throw [] while value is not a map.", __LINE__);
+	return (*value.mapValue)[key];
+}
+
 MultiValue::~MultiValue()
 {
 	DisposeOldValue();
@@ -497,11 +503,11 @@ void MultiValue::ParseInt(const std::u16string &value)
 			}
 			else if ('a' >= *itr && *itr <= 'f')
 			{
-				res = (((unsigned long long) * itr) - 'a') | (res << 4);
+				res = (((unsigned long long) * itr) - 'a' + 10) | (res << 4);
 			}
 			else if ('A' >= *itr && *itr <= 'F')
 			{
-				res = (((unsigned long long) * itr) - 'A') | (res << 4);
+				res = (((unsigned long long) * itr) - 'A' + 10) | (res << 4);
 			}
 			else if (*itr == 'u' || *itr == 'U')
 			{

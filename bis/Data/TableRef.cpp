@@ -74,3 +74,38 @@ mule::Data::Basic::Type *mule::Data::TableRef::TableRefCreator::DoCreateObject(c
 
 	return ret;
 }
+
+mule::Data::Basic::MultiValue mule::Data::TableRef::ReadValue(xybase::Stream *stream)
+{
+	mule::Data::Basic::MultiValue ret{ mule::Data::Basic::MultiValue::MVT_MAP };
+	auto loc = stream->Tell();
+	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
+	auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
+	if ((!tloc.IsType(Basic::MultiValue::MVT_UINT) && !tloc.IsType(Basic::MultiValue::MVT_INT))
+		|| (!tsiz.IsType(Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Basic::MultiValue::MVT_INT))) return ret;
+
+	stream->Seek(tloc.value.signedValue, xybase::Stream::SM_BEGIN);
+	for (int i = 0; i < tsiz.value.signedValue; ++i)
+	{
+		ret[(uint64_t)i] = infraType->ReadValue(stream);
+	}
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
+
+	return ret;
+}
+
+void mule::Data::TableRef::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue value)
+{
+	auto loc = stream->Tell();
+	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
+	auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
+	if ((!tloc.IsType(Basic::MultiValue::MVT_UINT) && !tloc.IsType(Basic::MultiValue::MVT_INT))
+		|| (!tsiz.IsType(Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Basic::MultiValue::MVT_INT))) return;
+
+	stream->Seek(tloc.value.signedValue, xybase::Stream::SM_BEGIN);
+	for (int i = 0; i < tsiz.value.signedValue; ++i)
+	{
+		infraType->WriteValue(stream, value[(uint64_t) i]);
+	}
+	stream->Seek(loc, xybase::Stream::SM_BEGIN);
+}

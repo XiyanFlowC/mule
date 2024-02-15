@@ -7,7 +7,7 @@
 #include "../LuaHost.h"
 #include <Configuration.h>
 
-mule::Logger mule::Lua::Api::logger {"<LuaSystemApi>", 0};
+mule::Logger mule::Lua::Api::logger {"<LuaSystemApi>", LoggerConfig::GetInstance().GetLogLevel()};
 
 int mule::Lua::Api::Confirm(std::u8string word)
 {

@@ -41,7 +41,7 @@ int main(int argc, char **argv)
 		for (int i = 4; i < argc; ++i)
 		{
 			if (0 == strcmp("-l", argv[i]))
-				mule::LoggerConfig::GetInstance().LoggerInit(2, stdout, stderr);
+				mule::LoggerConfig::GetInstance().LoggerInit(2, stdout, stderr, true);
 			if (0 == memcmp("-d", argv[i], 2))
 			{
 				std::string def(argv[i] + 2);

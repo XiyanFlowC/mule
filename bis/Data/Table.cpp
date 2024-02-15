@@ -82,3 +82,39 @@ bool mule::Data::Table::IsComposite() const
 {
 	return true;
 }
+
+void mule::Data::Table::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv)
+{
+	stream->Seek(offset, xybase::Stream::SM_BEGIN);
+	if (length == 1)
+	{
+		infraType->WriteValue(stream, mv);
+	}
+	else for (int i = 0; i < length; ++i) {
+		infraType->WriteValue(stream, mv[(uint64_t)i]);
+	}
+}
+
+mule::Data::Basic::MultiValue mule::Data::Table::ReadValue(xybase::Stream *stream)
+{
+	MultiValue ret{ MultiValue::MVT_MAP };
+	stream->Seek(offset, xybase::Stream::SM_BEGIN);
+
+	if (length == 1)
+	{
+		return infraType->ReadValue(stream);
+	}
+	else for (int i = 0; i < length; ++i) {
+		try
+		{
+			ret[(uint64_t)i] = infraType->ReadValue(stream);
+		}
+		catch (xybase::Exception &ex)
+		{
+			logger.Error(L"Error when reading {} (0x{:08X}). Aborted.", i, ex.GetErrorCode());
+			logger.Note(L"Exception: {}", ex.GetMessage());
+			break;
+		}
+	}
+	return ret;
+}

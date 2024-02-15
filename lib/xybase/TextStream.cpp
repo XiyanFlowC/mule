@@ -28,6 +28,7 @@ void xybase::TextStream::Flush()
 
 void xybase::TextStream::Close()
 {
+	OnClose(this);
 	stream.close();
 }
 
@@ -195,6 +196,7 @@ size_t xybase::TextStream::Tell() const
 
 void xybase::TextStream::Seek(long long offset, SeekMode mode)
 {
+	OnSeek(this);
 	std::ios_base::seekdir sm;
 	switch (mode)
 	{

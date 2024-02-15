@@ -13,7 +13,7 @@
 #include <Data/TypeManager.h>
 #include <Data/Structure.h>
 #include <Data/Array.h>
-#include <Data/Referrence.h>
+#include <Data/Reference.h>
 #include <Data/TypeCreator.h>
 #include <Data/Table.h>
 #include <Data/VarChar.h>
