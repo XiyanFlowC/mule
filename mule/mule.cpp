@@ -1,4 +1,5 @@
 #include "mule.h"
+#include "version.h"
 
 using namespace mule::Lua;
 using namespace mule::Data;
@@ -11,6 +12,7 @@ int main(int argc, char **argv)
 	if (argc <= 3)
 	{
 		std::cerr << "Mule by xiyan" << std::endl;
+		std::cerr << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compile time: " << MULE_BUILD_TIME << ")" << std::endl;
 		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action> [options]" << std::endl;
 		std::cerr
 			<< "Options:" << std::endl 
@@ -96,6 +98,7 @@ int main(int argc, char **argv)
 			std::wcout << L"=====================================" << std::endl;
 			std::wcout << L"Multiple-purpose User-configurable Large-file Editor" << std::endl;
 			std::wcout << L"=====================================" << std::endl;
+			std::wcout << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compile time: " << MULE_BUILD_TIME << ")" << std::endl;
 			std::wcout << L"Interaction Mode[Lua based]" << std::endl;
 
 			bool exList = false;
