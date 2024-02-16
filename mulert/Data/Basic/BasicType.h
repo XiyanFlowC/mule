@@ -19,14 +19,14 @@ namespace mule
 			{
 
 			protected:
+				void DoConstraintCheck(const MultiValue &value);
+				
+			public:
 
 				virtual MultiValue DoRead(xybase::Stream *stream) = 0;
 
 				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) = 0;
 
-				void DoConstraintCheck(const MultiValue &value);
-				
-			public:
 
 				virtual ~BasicType();
 

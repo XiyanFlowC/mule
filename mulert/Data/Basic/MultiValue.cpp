@@ -89,7 +89,7 @@ bool MultiValue::operator>= (const MultiValue &rvalue) const
 
 MultiValue mule::Data::Basic::MultiValue::operator[](const MultiValue &key) const
 {
-	if (!IsType(MVT_MAP)) throw xybase::InvalidOperationException(L"Cannot index a value throw [] while value is not a map.", __LINE__);
+	if (!IsType(MVT_MAP)) throw xybase::InvalidOperationException(L"Cannot index a value through [] while value is not a map.", __LINE__);
 	return (*value.mapValue)[key];
 }
 

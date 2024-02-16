@@ -1,4 +1,4 @@
-add_executable (mule "mule.cpp" "mule.h"   "ShiftableString.cpp" "ShiftableString.h"     "crc32.h" "crc32.cpp"     "luaenv.cpp" "luaenv.h" "codepage.h" "codepage.cpp")
+add_executable (mule "mule.cpp" "mule.h"         "crc32.h" "crc32.cpp"     "luaenv.cpp" "luaenv.h" "codepage.h" "codepage.cpp")
 
 target_link_libraries (mule PRIVATE sis sislua)
 
