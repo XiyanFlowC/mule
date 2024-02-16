@@ -99,6 +99,7 @@ void ElfStream::Seek(long long offset, SeekMode mode)
 
 void ElfStream::Close()
 {
+	OnClose(this);
 	// if (stream != nullptr) stream->Close();
 	if (shs != nullptr) delete[] shs;
 	if (phs != nullptr) delete[] phs;

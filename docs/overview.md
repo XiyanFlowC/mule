@@ -15,9 +15,116 @@ System Interaction System 提供数个和其他语言的交互实现。
 ## MULE （主程序）
 MULE 本身是用于实验的，也提供了一个能够通过脚本环境完成操作的软件。
 
-MULE 要求指定目标文件和工作区。工作区中包括data, resources, sheets三个文件夹。
+MULE 要求指定目标文件和工作区。工作区中包括data, resources, sheets三个文件夹。但是可以通过config自由设定。
 
 * resources/definitions：用于存放定义，软件最终将从这里读取定义。
 * resources/scripts：用于存放脚本，软件将从这里执行脚本。
 * sheets：用于存放抽取（或需要导入的）的文本数据。
 * data：用于存放抽取（或需要导入的）二进制数据。
+
+## 基本实现思路
+
+将所有二进制文件考虑为某一特定的流（xybase::Stream的子类），并且认为每个流下有多个mule::Data::Sheet，
+每个表表达一个流中，特定位置（offset），一个类型（mule::Data::Basic::Type的子类）的数组（Array）。
+
+为了确保Stream不包括太多信息，使用mule::SheetManager来保存一个std::map<Stream*, std::list<Sheet*>>，这个映射
+记录了每个流下具有的Sheet。通过SheetManager来注册/注销表，并在需要的时候对所有表进行读写。
+
+### 读写是赋予流结构的过程
+原始的二进制流不记录自身的结构，因此人类难以阅读，所以本系统通过配置结构，并读取，将二进制流标注上结构并
+以可变的结构输出。
+
+将结构和数据的信息，以类似事件的机制触发，从而令数据处理器可以将结构转换为任何其他的标记语言/
+数据传递语言（比如XML/JSON等）。之所以转换为事件，而非保存成某一个通用结构（比如std::map）
+是因为显然二进制流可以流式地转换为XML/JSON等，他们的顺序是一致的，而且后来的数据不会也不需要
+移动到前方。因此保存全部的信息毫无必要，以事件的形式通知，可以确保绝大部分情况下完全不需要将
+整个数据保存到内存中，从而最小化内存需求。
+
+### 事件形式的通知满足结构标记的需求
+通知处理器，结构开始/结束和数据进入这三个重要的事件，即可完成为数据标记结构的过程。回想任何有结构
+的数据，无外乎开始标记、结束标记和数据本身。因此只需要这三个事件即可完成任何结构的转换/生成。
+mule::Data::Basic::Type::FileHandler和mule::Data::Basic::Type::DataHandler就是基于这个思想
+设计的。
+
+每个类型（mule::Data::Basic::Type）的子类，将输入的二进制流转换为有结构的流。也就是在向数据处理器传递
+“读取到了值123”之外，还传递“现在进入了结构体Foo”“现在进入了字段bar”等事件，以便数据处理器生成结构的描述信息，
+使人类可读。具体来说，考虑
+```c
+struct Point
+{
+  int x;
+  int y;
+} points[10] = {{1, 2}, {3, 4}, /* ... */};
+
+/* In binary, 01 00 00 00 02 00 00 00 03 00 ... */
+```
+通过mule::Data::Structure、mule::Data::Sheet、mule::Data::Basic::Integer的配合，Sheet固定points在流中的
+位置（进行Seek和for循环），同时提示mule::Data::Basic::Type::DataHandler，“进入了Sheet points”“进入了第一个
+元素Structure Point”，然后将读取流程转给Structure，Structure提示处理器“进入了字段x”，然后将处理流程转给
+Integer，Integer读取到1，然后提示处理器“读取了1”，接着返回，此时Structure提示“离开字段x”，“进入字段y”……
+
+处理器从而可以按照自己的规则，将结构转为其他人类可读的格式。如Xml处理器，在进入了x时，写入<x>，在离开了x
+时，写入</x>，在读取到1时，写入1。从而将二进制数据01 00 00 00 02 00 00 ... 转换为
+```xml
+<Sheet>
+  <Point>
+    <x>1</x>
+    <y>2</y>
+  </Point>
+  <!-- ... -->
+</Sheet>
+```
+对于Csv，则在每次进入新位置时简单地写入“,”并在Sheet的每个元素离开时，写入"\n"，于是有：
+```csv
+1,2
+3,4
+5,6
+...
+```
+
+### Type的设计
+由上所述，Type负责读取和解析数据，因此为了通知数据处理器数据的结构，Type的读/写需要两个参数，
+stream，获取流，这样需要读取的时候就可以获取数据，handler，处理器，用于通知结构的变化和数据
+的获得。
+
+一个“有结构”的Type，可能如此进行读取：
+```cpp
+handler->OnRealmEnter(type, "name"); // 通知：需要标记结构的开始
+type->(stream, handler); // 由type进一步处理读取
+handler->OnRealmExit(type, "name"); // 通知：需要标记结构的结束
+```
+传递type是为了让handler知晓，现在进入的领域（结构）是怎样的。比如，若type是Integer，则意味着
+handler 接下来会接收到一个数据，而没有其他结构了。
+
+一个纯粹的基本数据（比如Integer），其读取就十分简单：
+```cpp
+handler->OnDataRead(stream->ReadInt32()); // 通知：获得了数据XXX
+```
+如是而已。
+
+#### 特别的Type设计思路
+通过这样的设计，我们可以设计出特别的Type，比如Reference（对应C的指针/各类文件中指示数据段的结构）。
+
+该Type将自己表现成自己所指向的结构（比如询问如何处理数据时，若指向的是结构体则报告需要按结构体处理），
+但报告所占空间时回报指针的大小。
+
+它不能打乱总体的流顺序，所以要将被指向的数据表达出来时，它必须首先记录现在的流的位置处于何处，并且
+在读取被指向的对象后恢复流的位置。
+
+```cpp
+auto pointeeLocation = stream->ReadInt32();
+auto currentLocation = stream->Tell(); // 记录流位置 ↓1
+stream->Seek(pointeeLocation);
+pointeeType->Read(stream, handler); // 让被指向的类型完成其结构的读取
+stream->Seek(currentLocation); // 恢复流位置 ↑1
+```
+通过这样的设计，就可以将被指向的结构，记录到指针所在的位置了。而不需要其他更多的操作。
+
+### 系统间的数据传递通过“全局变量”进行
+
+为了在各模块间传递/配置系统的状态，设计了mule::Configuration，以字符串为键，保存配置值。可以
+将之视为一种全局变量或者Windows的注册表功能。
+
+例如，名为foo的Sheet在读取元素0时，会配置mule.data.sheet.name=foo，mule.data.sheet.index=0，
+通过这种方式，如果其他的组件（比如Reference）想要知道现在正在读写的表是哪个，
+就可以通过这两个变量来获取。SheetReference就通过这两个变量来命名被引用的表。

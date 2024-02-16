@@ -14,7 +14,7 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 	if (ptr == 0)
 	{
 		dataHandler->OnDataRead(MultiValue::MV_NULL);
-		dataHandler->AppendMetadatum(u"ptr", (uint64_t)ptr);
+		dataHandler->AppendMetadatum(u"ptr", (int64_t)ptr);
 		return;
 	}
 
@@ -30,6 +30,8 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	auto val = fileHandler->OnDataWrite();
+	if (!val.metadata[u"ptr"].IsType(MultiValue::MVT_INT))
+		throw xybase::InvalidParameterException(L"fileHandler", L"Given fileHandler doesn't provide correct information", 55525);
 	size_t ptr = val.metadata[u"ptr"].value.unsignedValue;
 
 	stream->Write((uint32_t)ptr);

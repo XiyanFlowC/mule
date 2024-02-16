@@ -59,15 +59,15 @@ void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type:
 
 void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler *fileHandler)
 {
-	auto expectedName = fileHandler->OnDataWrite();
+	auto expectedName = *fileHandler->OnDataWrite().value.stringValue;
 	auto loc = stream->Tell();
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
 	auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
 	if ((!tloc.IsType(Data::Basic::MultiValue::MVT_UINT) && !tloc.IsType(Data::Basic::MultiValue::MVT_INT))
 		|| (!tsiz.IsType(Data::Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Data::Basic::MultiValue::MVT_INT))) return;
 
-	auto name = stream->GetName();
-	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, tsiz.value.unsignedValue, GenerateName(tloc.value.unsignedValue, name));
+	auto name = GenerateName(tloc.value.unsignedValue, stream->GetName());
+	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, tsiz.value.unsignedValue, name);
 	if (name != expectedName)
 	{
 		throw xybase::InvalidParameterException(L"name", L"Sheet name mismatch.", __LINE__);

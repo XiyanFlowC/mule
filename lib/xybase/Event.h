@@ -45,6 +45,7 @@ namespace xybase
 			if (*itr == callback)
 			{
 				registeredCallbacks.erase(itr);
+				return;
 			}
 		}
 	}
@@ -57,6 +58,7 @@ namespace xybase
 			if (*itr == callback)
 			{
 				registeredCallbacks.erase(itr);
+				return;
 			}
 		}
 	}
@@ -64,18 +66,22 @@ namespace xybase
 	template<typename ...Args>
 	inline void Event<Args...>::Invoke(Args ...args) const
 	{
-		for (auto &&itr : registeredCallbacks)
+		auto itr = registeredCallbacks.begin();
+		while (itr != registeredCallbacks.end())
 		{
-			itr(args...);
+			auto cur = itr++;
+			(*cur)(args...);
 		}
 	}
 
 	template<typename ...Args>
 	inline void Event<Args...>::operator()(Args ...args) const
 	{
-		for (auto &&itr : registeredCallbacks)
+		auto itr = registeredCallbacks.begin();
+		while (itr != registeredCallbacks.end())
 		{
-			itr(args...);
+			auto cur = itr++;
+			(*cur)(args...);
 		}
 	}
 }

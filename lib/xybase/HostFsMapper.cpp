@@ -87,7 +87,7 @@ void xybase::HostFsMapper::Remove(std::u16string path, bool recursive)
 {
 	std::filesystem::path root(rootPath);
 	if (recursive)
-		std::filesystem::remove(root/path);
-	else
 		std::filesystem::remove_all(root/path);
+	else
+		std::filesystem::remove(root/path);
 }

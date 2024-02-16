@@ -19,7 +19,7 @@ endif()
 
 if (CMAKE_COMPILER_IS_GNUCXX)
   if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
-    add_compile_options("-W -Wall")
+    add_compile_options("-Wall")
   endif()
  endif()
 

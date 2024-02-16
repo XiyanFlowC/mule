@@ -126,7 +126,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawN
 						sb.Append(ch);
 						ch = instream->ReadChar();
 					}
-					element.metadata[xybase::string::to_utf16(key)] = xybase::string::to_utf16(sb.ToString());
+					element.metadata[xybase::string::to_utf16(key)] = MultiValue::Parse(xybase::string::to_utf16(sb.ToString()));
 				}
 				ch = instream->ReadChar();
 			}
@@ -318,7 +318,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 						sb.Append(ch);
 						ch = instream->ReadChar();
 					}
-					element.metadata[xybase::string::to_utf16(key)] = xybase::string::to_utf16(sb.ToString());
+					element.metadata[xybase::string::to_utf16(key)] = MultiValue::Parse(xybase::string::to_utf16(sb.ToString()));
 				}
 				ch = instream->ReadChar();
 			}

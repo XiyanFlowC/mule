@@ -51,7 +51,7 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 
 		handler->OnSheetWriteStart();
 		sheet->Write(target, handler);
-		handler->OnSheetWriteStart();
+		handler->OnSheetWriteEnd();
 
 		delete handler;
 		delete stream;

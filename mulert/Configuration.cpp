@@ -21,12 +21,12 @@ void mule::Configuration::SetVariable(const char16_t *name, mule::Data::Basic::M
 
 void mule::Configuration::SetVariable(const char16_t *name, unsigned long long uval)
 {
-	SetVariable(name, MultiValue{ uval });
+	SetVariable(name, MultiValue{ (uint64_t)uval });
 }
 
 void mule::Configuration::SetVariable(const char16_t *name, long long val)
 {
-	SetVariable(name, MultiValue{ val });
+	SetVariable(name, MultiValue{ (int64_t)val });
 }
 
 void mule::Configuration::SetVariable(const char16_t *name, double rval)
