@@ -11,6 +11,7 @@
 #include <Cpp/Mappifier.h>
 #include <SheetManager.h>
 #include <Configuration.h>
+#include <Data/SmartReference.h>
 #include "codepage.h"
 
 using mule::Lua::LuaEnvironment;
@@ -43,7 +44,7 @@ int loadDefine(std::string define)
 
 int SaveMemory()
 {
-    ShiftableString::MemoryManager::GetInstance().SaveFreeSpace();
+    SmartReference::MemoryManager::GetInstance().SaveFreeSpace();
     return 0;
 }
 
@@ -121,7 +122,7 @@ int loadMemory(int streamId, int fileId)
 {
     xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
     if (stream == nullptr) return -10;
-    auto &memory = ShiftableString::MemoryManager::GetInstance().GetMemory(stream);
+    auto &memory = SmartReference::MemoryManager::GetInstance().GetMemory(stream);
 
     FILE *file = DataManager::GetInstance().OpenRaw(fileId);
     if (file == nullptr) return -11;

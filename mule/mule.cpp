@@ -83,8 +83,6 @@ int main(int argc, char **argv)
 
 	LuaHost::GetInstance().RunScript((xybase::string::to_string(conf.GetString(u"mule.script.basedir")) + "config.lua").c_str());
 
-	TypeManager::GetInstance().RegisterObjectCreator(new ShiftableString::ShiftableStringCreator());
-
 	mule::Mule::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
 	InitialiseLuaEnvironment();

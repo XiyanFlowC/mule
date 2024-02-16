@@ -32,4 +32,3 @@
 #include <Configuration.h>
 
 #include "crc32.h"
-#include "ShiftableString.h"

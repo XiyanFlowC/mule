@@ -3,6 +3,7 @@
 #include <Container/IsoContainer.h>
 #include <Data/Array.h>
 #include <Data/Reference.h>
+#include <Data/SmartReference.h>
 #include <SheetReference.h>
 #include <Data/VarChar.h>
 #include <Data/Storage/BinaryBlock.h>
@@ -75,10 +76,11 @@ TypeCreator *BisEnvGetCreators()
 {
 	auto ret = new Array::ArrayCreator();
 	ret->nextCreator = new Reference::ReferenceCreator();
-	ret->nextCreator->nextCreator = new BasicTypeCreator();
-	ret->nextCreator->nextCreator->nextCreator = new Storage::BinaryBlock::BinaryBlockCreator();
-	ret->nextCreator->nextCreator->nextCreator->nextCreator = new VarChar::VarCharCreator();
-	ret->nextCreator->nextCreator->nextCreator->nextCreator->nextCreator = new mule::SheetReference::SheetReferenceCreator();
+	ret->nextCreator->nextCreator = new SmartReference::SmartReferenceCreator();
+	ret->nextCreator->nextCreator->nextCreator = new BasicTypeCreator();
+	ret->nextCreator->nextCreator->nextCreator->nextCreator = new Storage::BinaryBlock::BinaryBlockCreator();
+	ret->nextCreator->nextCreator->nextCreator->nextCreator->nextCreator = new VarChar::VarCharCreator();
+	ret->nextCreator->nextCreator->nextCreator->nextCreator->nextCreator->nextCreator = new mule::SheetReference::SheetReferenceCreator();
 
 	return ret;
 }

@@ -10,7 +10,7 @@ namespace mule
 {
 	namespace Data
 	{
-		class SmartReference : public Basic::BasicType
+		class MULERT_API SmartReference : public Basic::BasicType
 		{
 		protected:
 			/**
@@ -20,7 +20,7 @@ namespace mule
 
 			int GetAlign() const;
 		public:
-			class MemoryManager
+			class MULERT_API MemoryManager
 			{
 				mule::Logger logger = mule::Logger::GetLogger<MemoryManager>();
 
@@ -54,7 +54,7 @@ namespace mule
 
 			bool IsComposite() const override;
 
-			class SmartReferenceCreator : public TypeCreator
+			class MULERT_API SmartReferenceCreator : public TypeCreator
 			{
 			public:
 
