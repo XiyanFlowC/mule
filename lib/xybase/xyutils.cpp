@@ -33,3 +33,28 @@ int xybase::io::mkdir(const char *path)
     return ::mkdir(path, 0755);
 #endif
 }
+
+int xybase::io::CreateDirectoryRecursively(const std::string &path, size_t index)
+{
+	size_t endIndex = path.find_first_of('/', index);
+
+	if (endIndex == std::string::npos)
+	{
+		if (xybase::io::access(path.c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
+		{
+			return xybase::io::mkdir(path.c_str());
+		}
+	}
+
+	std::string curPath = path.substr(0, endIndex);
+	if (xybase::io::access(curPath.c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
+	{
+		xybase::io::mkdir(curPath.c_str());
+	}
+	return CreateDirectoryRecursively(path, endIndex + 1);
+}
+
+int xybase::io::CreateDirectoryRecursively(const char *path)
+{
+	return CreateDirectoryRecursively(path, 0);
+}

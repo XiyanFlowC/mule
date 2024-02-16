@@ -225,6 +225,7 @@ mule::Data::Basic::Type::FileHandler *mule::Mule::GetFileHandler(const char16_t 
 
 mule::Mule::Mule()
 {
+	
 }
 
 mule::Mule::~Mule()

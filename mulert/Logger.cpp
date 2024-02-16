@@ -4,7 +4,7 @@
 #include "Configuration.h"
 
 mule::LoggerConfig::LoggerConfig()
-	: logLevel(0), output(stdout), errorOutput(stderr)
+	: logLevel(0), output(stdout), errorOutput(stderr), enableColour(true)
 {
 }
 

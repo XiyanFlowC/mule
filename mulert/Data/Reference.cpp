@@ -75,42 +75,6 @@ mule::Data::Reference::Reference(Type *referent)
 	this->referent = referent;
 }
 
-void mule::Data::Reference::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv)
-{
-	auto ptr = mv.metadata[u"ptr"].value.unsignedValue;
-	stream->Write((uint32_t)ptr);
-	if (ptr == 0) return;
-
-	// 若已经写入过则忽略
-	if (!ReferenceManager::GetInstance().RegisterItem(stream, ptr)) return;
-	auto loc = stream->Tell();
-
-	stream->Seek(ptr);
-	try
-	{
-		referent->WriteValue(stream, mv);
-	}
-	catch (...)
-	{
-		logger.Error(L"Pointer [{}], referent write error.", ptr);
-	}
-
-	stream->Seek(loc);
-}
-
-mule::Data::Basic::MultiValue mule::Data::Reference::ReadValue(xybase::Stream *stream)
-{
-	auto ptr = stream->ReadUInt32();
-	auto loc = stream->Tell();
-
-	stream->Seek(ptr);
-	auto ret = referent->ReadValue(stream);
-	ret.metadata[u"ptr"] = ptr;
-
-	stream->Seek(loc);
-	return ret;
-}
-
 Type *mule::Data::Reference::ReferenceCreator::DoCreateObject(const std::u16string &info)
 {
 	if (!info.ends_with(u"*"))

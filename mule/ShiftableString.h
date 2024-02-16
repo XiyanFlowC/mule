@@ -57,12 +57,6 @@ public:
 
 	void StreamDispose(xybase::Stream *stream);
 
-
-	// 通过 Type 继承
-	void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv) override;
-
-	mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) override;
-
 };
 
 #endif // End of SHIFTABLE_REFERRENCE_H__

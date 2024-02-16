@@ -23,6 +23,8 @@ namespace mule
 			mule::Data::Basic::MultiValue Configuration(std::u8string name, mule::Data::Basic::MultiValue mv);
 
 			void RegisterSystemOperations();
+
+			int DefineStructure(std::u8string name, mule::Data::Basic::MultiValue def);
 		}
 	}
 }

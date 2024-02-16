@@ -3,6 +3,8 @@
 #include <clocale>
 #include <iostream>
 #include <xystring.h>
+#include <Data/Structure.h>
+#include <Data/TypeManager.h>
 #include <Mule.h>
 #include "../LuaHost.h"
 #include <Configuration.h>
@@ -41,6 +43,32 @@ mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::u8string name, 
     return 0;
 }
 
+int mule::Lua::Api::DefineStructure(std::u8string name, mule::Data::Basic::MultiValue def)
+{
+    using mule::Data::Basic::MultiValue;
+    if (!def.IsType(MultiValue::MVT_MAP)) return -10;
+
+    mule::Data::Structure *str = new mule::Data::Structure(xybase::string::to_utf16(name));
+    for (auto &pair : *def.value.mapValue)
+    {
+        if (!pair.second.IsType(MultiValue::MVT_STRING))
+        {
+            delete str;
+            return -11;
+        }
+        mule::Data::Basic::Type *fldType = mule::Data::TypeManager::GetInstance().GetOrCreateType(*pair.second.value.stringValue);
+        if (fldType == nullptr)
+        {
+            logger.Error(L"Failed to create type {}.", xybase::string::to_wstring(*pair.second.value.stringValue));
+            delete str;
+            return -12;
+        }
+        str->AppendField(*pair.first.value.stringValue, fldType);
+    }
+    mule::Data::TypeManager::GetInstance().RegisterObject(str, xybase::string::to_utf16(name));
+    return 0;
+}
+
 void mule::Lua::Api::RegisterSystemOperations()
 {
     LuaHost::GetInstance().RegisterFunction("confirm", Confirm);
@@ -48,4 +76,5 @@ void mule::Lua::Api::RegisterSystemOperations()
     LuaHost::GetInstance().RegisterFunction("lplugin", LoadPlugin);
     LuaHost::GetInstance().RegisterFunction("log", Log);
     LuaHost::GetInstance().RegisterFunction("config", Configuration);
+    LuaHost::GetInstance().RegisterFunction("define", DefineStructure);
 }

@@ -75,53 +75,6 @@ bool mule::Data::Array::IsComposite() const
 	return true;
 }
 
-void mule::Data::Array::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv)
-{
-	size_t limit = length;
-	if (limit == (size_t)-1 && sizeCache != ARRAY_SIZE_INFINITY) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
-	for (size_t i = 0; i < limit; ++i) {
-		try
-		{
-			innerObject->WriteValue(stream, (*mv.value.mapValue)[i]);
-		}
-		catch (Basic::BasicType::ConstraintViolationException &ex)
-		{
-			if (sizeCache == ARRAY_SIZE_INFINITY)
-			{
-				break;
-			}
-			else
-			{
-				throw ex;
-			}
-		}
-	}
-}
-
-mule::Data::Basic::MultiValue mule::Data::Array::ReadValue(xybase::Stream *stream)
-{
-	size_t limit = length;
-	MultiValue ret{ MultiValue::MVT_MAP };
-	if (limit == (size_t)-1 && sizeCache != ARRAY_SIZE_INFINITY) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
-	for (size_t i = 0; i < limit; ++i) {
-		try
-		{
-			(*ret.value.mapValue)[i] = innerObject->ReadValue(stream);
-		}
-		catch (Basic::BasicType::ConstraintViolationException &ex)
-		{
-			if (sizeCache == ARRAY_SIZE_INFINITY)
-			{
-				break;
-			}
-			else
-			{
-				throw Basic::BasicType::ConstraintViolationException(ex.GetMessage());
-			}
-		}
-	}
-}
-
 mule::Data::Basic::Type *mule::Data::Array::ArrayCreator::DoCreateObject(const std::u16string &info)
 {
 	if (!info.ends_with(u"]")) return nullptr;

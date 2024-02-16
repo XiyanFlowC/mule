@@ -35,6 +35,8 @@ namespace mule
 
 		static Configuration &GetInstance();
 
+		void ResetVariable(const char16_t *name);
+
 		void SetVariable(const char16_t *name, mule::Data::Basic::MultiValue value);
 
 		void SetVariable(const char16_t *name, unsigned long long uval);
@@ -54,5 +56,7 @@ namespace mule
 		long long GetSigned(const char16_t *name, long long def = 0);
 
 		unsigned long long GetUnsigned(const char16_t *name, unsigned long long def = 0);
+
+		bool IsExist(const char16_t *name);
 	};
 }

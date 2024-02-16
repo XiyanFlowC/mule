@@ -34,27 +34,6 @@ void mule::Data::Basic::BasicType::Write(xybase::Stream *stream, FileHandler * f
 	DoConstraintCheck(value);
 }
 
-void mule::Data::Basic::BasicType::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv)
-{
-	if (!cacheVariableName.empty())
-	{
-		ContextManager::GetInstance().SetVariable(cacheVariableName, mv);
-	}
-	DoWrite(stream, mv);
-	DoConstraintCheck(mv);
-}
-
-mule::Data::Basic::MultiValue mule::Data::Basic::BasicType::ReadValue(xybase::Stream *stream)
-{
-	auto ret = DoRead(stream);
-	if (!cacheVariableName.empty())
-	{
-		ContextManager::GetInstance().SetVariable(cacheVariableName, ret);
-	}
-	DoConstraintCheck(ret);
-	return ret;
-}
-
 void mule::Data::Basic::BasicType::DoConstraintCheck(const MultiValue &value)
 {
 	switch (constraintType)

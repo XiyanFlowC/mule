@@ -54,10 +54,6 @@ namespace mule
 				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 
 				virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
-
-				void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv) override;
-
-				mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) override;
 			};
 		}
 	}

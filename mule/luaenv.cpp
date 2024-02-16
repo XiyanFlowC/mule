@@ -7,8 +7,12 @@
 #include <Lua/LuaEnvironment.h>
 #include <VirtualFileSystem.h>
 #include <Xml/XmlDefinition.h>
+#include <Data/Sheet.h>
+#include <Cpp/Mappifier.h>
+#include <SheetManager.h>
 #include <Configuration.h>
 #include "codepage.h"
+
 using mule::Lua::LuaEnvironment;
 using mule::Mule;
 
@@ -67,11 +71,13 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
         xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + tableName + "." + handler, std::ios::out);
     hnd->SetOutStream(outStream);
 
-    mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), utbl, length, offset);
+    mule::Data::Sheet *target = new mule::Data::Sheet(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), offset, length, utbl);
     if (target == nullptr) return -12;
 
     luaenvLogger.Info(L"Exporting {}", xybase::string::to_wstring(tableName));
+    hnd->OnSheetReadStart();
     target->Read(stream, hnd);
+    hnd->OnSheetReadEnd();
     delete target;
     delete hnd;
     delete outStream;
@@ -98,11 +104,13 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
         xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + tableName + "." + handler, std::ios::in);
     hnd->SetInStream(inStream);
 
-    mule::Data::Table *target = new mule::Data::Table(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), utbl, length, offset);
+    mule::Data::Sheet *target = new mule::Data::Sheet(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), offset, length, utbl);
     if (target == nullptr) return -12;
 
     luaenvLogger.Info(L"Importing {}", xybase::string::to_wstring(tableName));
+    hnd->OnSheetWriteStart();
     target->Write(stream, hnd);
+    hnd->OnSheetWriteEnd();
     delete target;
     delete hnd;
     delete inStream;
@@ -170,6 +178,47 @@ int loadcodepage(int code)
     return 0;
 }
 
+MultiValue LoadSheet(int streamId, std::u8string name, std::u8string type, int offset, int length)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    stream->Seek(offset);
+    Type *t = TypeManager::GetInstance().GetOrCreateType(xybase::string::to_utf16(type));
+    Sheet *sheet = new Sheet(t, offset, length, xybase::string::to_utf16(name));
+    mule::Cpp::Mappifier *mappifier = new mule::Cpp::Mappifier();
+    mappifier->OnSheetReadStart();
+    sheet->Read(stream, mappifier);
+    mappifier->OnSheetReadEnd();
+    auto ret = mappifier->GetMap();
+    delete sheet;
+    delete mappifier;
+    return ret;
+}
+
+int RegisterSheet(int streamId, std::u8string name, std::u8string type, size_t offset, int length)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    Sheet *sheet = new Sheet(TypeManager::GetInstance().GetOrCreateType(xybase::string::to_utf16(type)), offset, length, xybase::string::to_utf16(name));
+    mule::SheetManager::GetInstance().RegisterSheet(stream, sheet);
+}
+
+int ExportSheets(int streamId, std::u8string handler)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    mule::SheetManager::GetInstance().ReadSheets(stream, xybase::string::to_utf16(handler));
+    return 0;
+}
+
+int ImportSheets(int streamId, std::u8string handler)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    mule::SheetManager::GetInstance().WriteSheets(stream, xybase::string::to_utf16(handler));
+    return 0;
+}
+
 void InitialiseLuaEnvironment()
 {
     auto &lua = mule::Lua::LuaHost::GetInstance();
@@ -180,6 +229,10 @@ void InitialiseLuaEnvironment()
 
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);
+    lua.RegisterFunction("shtload", LoadSheet);
+    lua.RegisterFunction("shtreg", RegisterSheet);
+    lua.RegisterFunction("shtex", ExportSheets);
+    lua.RegisterFunction("shtim", ImportSheets);
 
     lua.RegisterFunction("cvttxt", cvttxt);
     lua.RegisterFunction("cvtbin", cvtbin);

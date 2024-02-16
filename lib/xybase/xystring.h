@@ -238,6 +238,26 @@ namespace xybase
 		void XY_API set_string_cvt(std::wstring(*p_mbcstowcs)(const std::string &), std::string(*p_wcstombcs)(const std::wstring &)) noexcept;
 
 		/**
+		 * @brief Replace all substring in a string with given replacement. If replacement is a substring of target, then fucked.
+		 * @tparam ChT Type of char.
+		 * @param original Original string.
+		 * @param target The substring need to be replaced.
+		 * @param replacement Replacement.
+		 * @return Replaced string.
+		*/
+		template <typename ChT>
+		std::basic_string<ChT> replace(std::basic_string<ChT> original, const std::basic_string<ChT> &target, const std::basic_string<ChT> &replacement)
+		{
+			size_t offset = original.find(target);
+			while (offset != std::basic_string<ChT>::npos)
+			{
+				original.replace(offset, target.length(), replacement);
+				offset = original.find(target);
+			}
+			return original;
+		}
+
+		/**
 		 * @brief Parse string to integer (up to base 36)
 		 * @tparam T Type of the string unit.
 		 * @param str String.

@@ -39,8 +39,15 @@ void mule::Xml::XmlHandler::OnSheetWriteEnd()
 	status = XHS_IDLE;
 }
 
-void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name)
+void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawName)
 {
+	std::u16string name = rawName;
+	auto pos = name.find('/');
+	while (pos != std::u16string::npos)
+	{
+		name.replace(pos, 1, u"-");
+		pos = name.find('/');
+	}
 	if (status == XHS_READ_METADATA_WAITING)
 	{
 		status = XHS_READ;
@@ -91,7 +98,38 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& name
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
 		{
-			while (ch != '>') ch = instream->ReadChar();
+			element.SetType(mule::Data::Basic::MultiValue::MVT_NULL);
+			element.metadata.clear();
+			while (ch != '>')
+			{
+				if (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t')
+				{
+					xybase::StringBuilder sb;
+					while (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t' && ch != '=')
+					{
+						sb.Append(ch);
+						ch = instream->ReadChar();
+					}
+					std::string key = sb.ToString();
+					while (ch != '=')
+					{
+						ch = instream->ReadChar();
+					}
+					while (ch != '\'' && ch != '"')
+					{
+						ch = instream->ReadChar();
+					}
+					char endCh = ch;
+					sb.Clear();
+					ch = instream->ReadChar();
+					while (ch != endCh) {
+						sb.Append(ch);
+						ch = instream->ReadChar();
+					}
+					element.metadata[xybase::string::to_utf16(key)] = xybase::string::to_utf16(sb.ToString());
+				}
+				ch = instream->ReadChar();
+			}
 			return;
 		}
 
@@ -133,8 +171,15 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	}
 }
 
-void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& name)
+void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawName)
 {
+	std::u16string name = rawName;
+	auto pos = name.find('/');
+	while (pos != std::u16string::npos)
+	{
+		name.replace(pos, 1, u"-");
+		pos = name.find('/');
+	}
 	if (status == XHS_READ_METADATA_WAITING)
 	{
 		status = XHS_READ;
@@ -245,7 +290,38 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
 		{
-			while (ch != '>') ch = instream->ReadChar();
+			element.SetType(mule::Data::Basic::MultiValue::MVT_NULL);
+			element.metadata.clear();
+			while (ch != '>')
+			{
+				if (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t')
+				{
+					xybase::StringBuilder sb;
+					while (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t' && ch != '=')
+					{
+						sb.Append(ch);
+						ch = instream->ReadChar();
+					}
+					std::string key = sb.ToString();
+					while (ch != '=')
+					{
+						ch = instream->ReadChar();
+					}
+					while (ch != '\'' && ch != '"')
+					{
+						ch = instream->ReadChar();
+					}
+					char endCh = ch;
+					sb.Clear();
+					ch = instream->ReadChar();
+					while (ch != endCh) {
+						sb.Append(ch);
+						ch = instream->ReadChar();
+					}
+					element.metadata[xybase::string::to_utf16(key)] = xybase::string::to_utf16(sb.ToString());
+				}
+				ch = instream->ReadChar();
+			}
 			return;
 		}
 

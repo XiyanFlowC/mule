@@ -131,19 +131,6 @@ namespace mule
 				 * @param dataHandler 数据处理器（数据源）
 				*/
 				virtual void Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler * fileHandler) = 0;
-
-				/**
-				 * @brief 写入给定的信息
-				 * @param stream 数据流
-				 * @param mv 要写入的信息
-				*/
-				virtual void WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv) = 0;
-
-				/**
-				 * @brief 读取信息，并以统一值形式返回
-				 * @param stream 要读取的流
-				*/
-				virtual mule::Data::Basic::MultiValue ReadValue(xybase::Stream *stream) = 0;
 			};
 		}
 	}

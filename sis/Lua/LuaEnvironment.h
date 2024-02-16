@@ -9,7 +9,6 @@
 #include <atomic>
 #include <string>
 #include <Stream.h>
-#include <Data/Table.h>
 
 namespace mule {
 	namespace Lua {

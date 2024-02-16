@@ -88,55 +88,6 @@ void ShiftableString::StreamDispose(xybase::Stream *stream)
 	MemoryManager::GetInstance().DisposeStream(stream);
 }
 
-void ShiftableString::WriteValue(xybase::Stream *stream, mule::Data::Basic::MultiValue mv)
-{
-	// 分配空间
-	if (mv.IsType(MultiValue::MVT_STRING))
-	{
-		size_t ptr;
-		auto str = xybase::string::to_string(*mv.value.stringValue);
-		/*if (str == "")
-			ptr = 0xA79750;
-		else*/
-		ptr = MemoryManager::GetInstance().AssignFor(stream, *mv.value.stringValue, str.size() + 1);
-
-		stream->Write((int32_t)ptr);
-		size_t loc = stream->Tell();
-		stream->Seek(ptr, xybase::Stream::SM_BEGIN);
-		// 实际执行写入
-		stream->Write(str.c_str(), str.size() + 1);
-		stream->Seek(loc, xybase::Stream::SM_BEGIN);
-	}
-	else if (mv.IsType(MultiValue::MVT_NULL))
-	{
-		stream->Write((uint32_t)0);
-		return;
-	}
-	else
-		throw xybase::InvalidParameterException(L"mv", L"Not a string, unable to shift!", __LINE__);
-}
-
-mule::Data::Basic::MultiValue ShiftableString::ReadValue(xybase::Stream *stream)
-{
-	auto ptr = stream->ReadUInt32();
-	if (ptr == 0)
-	{
-		return MultiValue{};
-	}
-
-	size_t loc = stream->Tell();
-	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
-	auto raw = stream->ReadString();
-	MultiValue ret{ xybase::string::to_utf16(raw) };
-	ret.metadata[u"ptr"] = ptr;
-	ret.metadata[u"size"] = raw.size();
-	if (raw != "")
-		MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(raw.size() + 1, GetAlign(ptr, stream)));
-	stream->Seek(loc, xybase::Stream::SM_BEGIN);
-
-	return ret;
-}
-
 Type *ShiftableString::ShiftableStringCreator::DoCreateObject(const std::u16string &info)
 {
 	if (info == u"sstring")

@@ -8,6 +8,7 @@
 #define XY_MIN(a, b) ((a) > (b) ? (b) : (a))
 
 #include "xyapi.h"
+#include <string>
 
 namespace xybase
 {
@@ -28,6 +29,10 @@ namespace xybase
 		int XY_API access(const char *path, AccessMode mode);
 
 		int XY_API mkdir(const char *path);
+
+		int XY_API CreateDirectoryRecursively(const std::string &path, size_t index = 0);
+
+		int XY_API CreateDirectoryRecursively(const char *path);
 	}
 }
 

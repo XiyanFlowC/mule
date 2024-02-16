@@ -9,6 +9,11 @@ mule::Configuration &mule::Configuration::GetInstance()
 	return _inst;
 }
 
+void mule::Configuration::ResetVariable(const char16_t *name)
+{
+	variables.erase(name);
+}
+
 void mule::Configuration::SetVariable(const char16_t *name, mule::Data::Basic::MultiValue value)
 {
 	variables[name] = value;
@@ -69,6 +74,11 @@ unsigned long long mule::Configuration::GetUnsigned(const char16_t *name, unsign
 	auto &&mv = variables[name];
 	if (!mv.IsType(MultiValue::MVT_UINT)) throw ConfigurationTypeMismatch(xybase::string::to_wstring(name));
 	return mv.value.unsignedValue;
+}
+
+bool mule::Configuration::IsExist(const char16_t *name)
+{
+	return variables.contains(name);
 }
 
 mule::Configuration::ConfigurationNotFoundException::ConfigurationNotFoundException(std::wstring name)

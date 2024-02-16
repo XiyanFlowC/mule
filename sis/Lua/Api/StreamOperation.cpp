@@ -4,7 +4,6 @@
 #include <VirtualFileSystem.h>
 #include <Mule.h>
 #include "xystring.h"
-#include <Data/Table.h>
 #include <Data/TypeManager.h>
 
 int mule::Lua::Api::OpenStream(std::u8string path, std::u8string openMode)
