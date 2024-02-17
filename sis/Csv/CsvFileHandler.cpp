@@ -50,6 +50,7 @@ int mule::Csv::CsvFileHandler::ReadChar()
 				}
 			}
 		}
+		else ret = ch;
 		break;
 	case mule::Csv::CsvFileHandler::UCM_UTF16LE:
 		ret = (instream->ReadChar()) | (instream->ReadChar() << 8);
@@ -168,21 +169,24 @@ std::u16string mule::Csv::CsvFileHandler::ReadCell()
 			ch = ReadChar();
 		}
 	}
+	return sb.ToString();
 }
 
 void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, const std::u16string &name)
 {
-	 if (realm->GetDataType() == u"string")
-	 {
-		 auto str = ReadCell();
-		 if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
-		 {
-			 auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
-			 MultiValue tmp{ str };
-			 str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &tmp).value.stringValue;
-		 }
-	 }
-	 else readElement = MultiValue::Parse(ReadCell());
+	if (realm->IsComposite()) return;
+	auto str = ReadCell();
+	if (realm->GetDataType() == u"string")
+	{
+		if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
+		{
+			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
+			MultiValue tmp{ str };
+			str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &tmp).value.stringValue;
+		}
+		readElement = MultiValue{ str };
+	}
+	else readElement = MultiValue::Parse(str);
 }
 
 void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, const std::u16string &name)
@@ -191,11 +195,19 @@ void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, const std::u16string &n
 
 void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 {
+	if (realm->IsComposite()) return;
+	auto str = ReadCell();
 	if (realm->GetDataType() == u"string")
 	{
-		auto str = ReadCell();
+		if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
+		{
+			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
+			MultiValue tmp{ str };
+			str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &tmp).value.stringValue;
+		}
+		readElement = MultiValue{ str };
 	}
-	else readElement = MultiValue::Parse(ReadCell());
+	else readElement = MultiValue::Parse(str);
 }
 
 void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, int idx)
