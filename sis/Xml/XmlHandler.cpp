@@ -171,9 +171,10 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 			if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
 			{
 				auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
-				text = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &element).value.stringValue;
+				MultiValue tmp{ text };
+				element = mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &tmp);
 			}
-			element = MultiValue{ text };
+			else element = MultiValue{ text };
 		}
 		else
 			element = MultiValue::Parse(text);
