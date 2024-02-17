@@ -216,3 +216,8 @@ void xybase::TextStream::Seek(long long offset, SeekMode mode)
 	stream.seekg(offset, sm);
 	stream.seekp(offset, sm);
 }
+
+bool xybase::TextStream::IsEof() const noexcept
+{
+	return stream.eof();
+}

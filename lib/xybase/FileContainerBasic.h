@@ -68,6 +68,8 @@ namespace xybase
 			// 通过 StreamBasic 继承
 			void Close() override;
 
+			bool IsEof() const noexcept override;
+
 		};
 
 	protected:

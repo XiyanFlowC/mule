@@ -47,6 +47,11 @@ void xybase::FileContainerBasic::InnerStream::Close()
 	host->Close(fileHandle);
 }
 
+bool xybase::FileContainerBasic::InnerStream::IsEof() const noexcept
+{
+	return host->openedFiles[fileHandle].cursor == host->openedFiles[fileHandle].size;
+}
+
 xybase::FileContainerBasic::FileContainerBasic(xybase::Stream *stream)
 	: infraStream(stream), currentHandle(0), mode(-1)
 {
@@ -120,7 +125,6 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 		.readable = false,
 		.writable = false,
 	};
-	openedFiles[handle] = stub;
 
 	if (mode & FOM_WRITE)
 	{
@@ -142,6 +146,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 	{
 		fe->occupied = true;
 	}
+	openedFiles[handle] = stub;
 
 	return ret;
 }
@@ -201,6 +206,7 @@ void xybase::FileContainerBasic::Remove(std::u16string path, bool recursive)
 
 void xybase::FileContainerBasic::Write(unsigned long long handle, const char *buffer, size_t limit)
 {
+	if (!openedFiles[handle].writable) throw xybase::InvalidOperationException(L"This inner stream cannot write.", 102501);
 	/* 读写交织避免，Seek重设流状态 */
 	if (!mode)
 	{
@@ -223,6 +229,7 @@ void xybase::FileContainerBasic::Write(unsigned long long handle, const char *bu
 
 void xybase::FileContainerBasic::ReadBytes(unsigned long long handle, char *buffer, size_t length)
 {
+	if (!openedFiles[handle].readable) throw xybase::InvalidOperationException(L"This inner stream cannot read.", 102500);
 	/* 读写交织避免，Seek重设流状态 */
 	if (mode)
 	{

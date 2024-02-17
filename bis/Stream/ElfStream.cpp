@@ -177,6 +177,11 @@ void mule::Stream::ElfStream::Flush()
 	stream->Flush();
 }
 
+bool mule::Stream::ElfStream::IsEof() const noexcept
+{
+	return stream->IsEof();
+}
+
 ElfFormatErrorException::ElfFormatErrorException(std::wstring msg, int line)
 	: RuntimeException(msg, line)
 {

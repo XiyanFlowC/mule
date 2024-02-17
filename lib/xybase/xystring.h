@@ -238,7 +238,7 @@ namespace xybase
 		void XY_API set_string_cvt(std::wstring(*p_mbcstowcs)(const std::string &), std::string(*p_wcstombcs)(const std::wstring &)) noexcept;
 
 		/**
-		 * @brief Replace all substring in a string with given replacement. If replacement is a substring of target, then fucked.
+		 * @brief Replace all substring in a string with given replacement.
 		 * @tparam ChT Type of char.
 		 * @param original Original string.
 		 * @param target The substring need to be replaced.
@@ -252,7 +252,7 @@ namespace xybase
 			while (offset != std::basic_string<ChT>::npos)
 			{
 				original.replace(offset, target.length(), replacement);
-				offset = original.find(target);
+				offset = original.find(target, offset + target.length());
 			}
 			return original;
 		}

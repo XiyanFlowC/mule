@@ -1,9 +1,11 @@
 #include "XmlHandler.h"
 
 #include <xystring.h>
+#include <Configuration.h>
 #include <Exception/IOException.h>
 #include <Exception/InvalidOperationException.h>
 #include <Exception/InvalidParameterException.h>
+#include "../Lua/LuaHost.h"
 
 using namespace mule::Data::Basic;
 
@@ -164,7 +166,17 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	if (text == u"null")
 		element = MultiValue::MV_NULL;
 	else
-		element = isString ? MultiValue{text} : MultiValue::Parse(text);
+		if (isString)
+		{
+			if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
+			{
+				auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
+				text = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &element).value.stringValue;
+			}
+			element = MultiValue{ text };
+		}
+		else
+			element = MultiValue::Parse(text);
 	for (auto &&attr : root.attributes)
 	{
 		element.metadata[attr.first] = MultiValue::Parse(attr.second);
@@ -215,8 +227,15 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 			outstream->Write(">");
 			if (element.IsType(MultiValue::MVT_STRING))
 			{
+				auto str = *element.value.stringValue;
+				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
+				{
+					auto name = Configuration::GetInstance().GetString(u"mule.handler.string-read-proc");
+					str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &element).value.stringValue;
+				}
+
 				outstream->Write("<![CDATA[");
-				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(str).c_str()));
 				outstream->Write("]]>");
 			}
 			else
@@ -367,8 +386,15 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 			outstream->Write(">");
 			if (element.IsType(MultiValue::MVT_STRING))
 			{
+				auto str = *element.value.stringValue;
+				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
+				{
+					auto name = Configuration::GetInstance().GetString(u"mule.handler.string-read-proc");
+					str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &element).value.stringValue;
+				}
+
 				outstream->Write("<![CDATA[");
-				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(*element.value.stringValue).c_str()));
+				outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(str).c_str()));
 				outstream->Write("]]>");
 			}
 			else

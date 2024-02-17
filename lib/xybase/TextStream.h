@@ -56,6 +56,8 @@ namespace xybase
 		virtual void Write(const char *value);
 		virtual size_t Tell() const override;
 		virtual void Seek(long long offset, SeekMode mode) override;
+
+		virtual bool IsEof() const noexcept override;
 	private:
 		virtual std::string ReadString() override;
 

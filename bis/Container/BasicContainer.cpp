@@ -165,3 +165,8 @@ void mule::BasicContainer::InnerFile::Flush()
 {
 	host->Flush();
 }
+
+bool mule::BasicContainer::InnerFile::IsEof() const noexcept
+{
+	return host->locs[handle] == host->fdMap[handle]->size;
+}

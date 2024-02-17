@@ -100,6 +100,8 @@ namespace mule
 
 			// 通过 StreamBasic 继承
 			virtual void Flush() override;
+
+			virtual bool IsEof() const noexcept override;
 		};
 	}
 }

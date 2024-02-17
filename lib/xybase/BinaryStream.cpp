@@ -88,3 +88,8 @@ void BinaryStream::Close()
 	isOpen = false;
 	fclose(stream);
 }
+
+bool xybase::BinaryStream::IsEof() const noexcept
+{
+	return feof(stream);
+}

@@ -40,6 +40,7 @@ namespace xybase
 		virtual size_t Tell() const override;
 		virtual void Seek(long long offset, SeekMode mode = SM_BEGIN) override;
 		virtual void Close() override;
+		virtual bool IsEof() const noexcept override;
 	};
 }
 

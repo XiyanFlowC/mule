@@ -85,6 +85,8 @@ namespace xybase
 
 		virtual size_t Tell() const = 0;
 
+		virtual bool IsEof() const noexcept = 0;
+
 		/**
 		 * @brief 寻址方式（基准）
 		*/

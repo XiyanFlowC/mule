@@ -30,9 +30,18 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	auto val = fileHandler->OnDataWrite();
-	if (!val.metadata[u"ptr"].IsType(MultiValue::MVT_INT))
-		throw xybase::InvalidParameterException(L"fileHandler", L"Given fileHandler doesn't provide correct information", 55525);
 	size_t ptr = val.metadata[u"ptr"].value.unsignedValue;
+	if (!val.metadata[u"ptr"].IsType(MultiValue::MVT_INT))
+	{
+		ptr = stream->ReadUInt32();
+		stream->Seek(-4, xybase::Stream::SM_CURRENT);
+		if (Configuration::GetInstance().GetSigned(u"mule.data.reference.quiet", 0) != 1)
+		{
+			logger.Warn(L"Pointer not found. Read {} from stream. May corrupt so be careful.", ptr);
+			logger.Note(L"Metadata lost. The file may corrupt or using a data lossy data format.");
+			logger.Note(L"To mute this warning, set mule.data.reference.quiet=1");
+		}
+	}
 
 	stream->Write((uint32_t)ptr);
 	if (ptr == 0)

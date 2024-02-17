@@ -63,6 +63,8 @@ namespace mule
 			virtual void Close() override;
 			virtual std::u16string GetName() const override;
 			virtual void Flush() override;
+
+			virtual bool IsEof() const noexcept override;
 		};
 
 		struct FileDesc

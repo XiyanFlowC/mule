@@ -13,6 +13,7 @@
 #include "CStyleInitHandler.h"
 #include "../Xml/XmlHandler.h"
 #include "../Csv/CsvHandler.h"
+#include "../Csv/CsvFileHandler.h"
 
 using namespace mule::Data;
 
@@ -42,8 +43,8 @@ mule::Data::Basic::Type::FileHandler *BisEnvGetFileHandler(const char16_t *name)
 		return new mule::Cpp::CStyleInitHandler();*/
 	if (!memcmp(name, xmlHandlerName, sizeof(xmlHandlerName)))
 		return new mule::Xml::XmlHandler();
-	/*if (!memcmp(name, csvName, sizeof(csvName)))
-		return new mule::Csv::CsvOutHandler();*/
+	if (!memcmp(name, csvName, sizeof(csvName)))
+		return new mule::Csv::CsvFileHandler();
 
 	return nullptr;
 }
