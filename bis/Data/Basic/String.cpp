@@ -64,15 +64,11 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 			auto size = stream->ReadString().size();
 			if (data.size() > size)
 			{
-				throw xybase::InvalidParameterException(
-					L"value",
-					std::format(
-						L"String too large! (size {} exceeded {}), string={}",
+				logger.Warn(L"String too long! (size {} exceeded {}), string={}. Cut off!",
 						data.size(),
 						size,
-						value.ToString()),
-					19011
-				);
+						value.ToString());
+				data = data.substr(0, size);
 			}
 
 			stream->Seek(cur);
