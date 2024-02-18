@@ -28,7 +28,10 @@ mule::Lua::LuaEnvironment::~LuaEnvironment()
 
 xybase::Stream *mule::Lua::LuaEnvironment::GetStream(int idx)
 {
-	return streams[idx];
+	if (streams.contains(idx))
+		return streams[idx];
+	else
+		return nullptr;
 }
 
 int mule::Lua::LuaEnvironment::SetStream(xybase::Stream *stream)
