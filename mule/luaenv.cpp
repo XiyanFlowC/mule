@@ -202,6 +202,7 @@ int RegisterSheet(int streamId, std::u8string name, std::u8string type, size_t o
     if (stream == nullptr) return -10;
     Sheet *sheet = new Sheet(TypeManager::GetInstance().GetOrCreateType(xybase::string::to_utf16(type)), offset, length, xybase::string::to_utf16(name));
     mule::SheetManager::GetInstance().RegisterSheet(stream, sheet);
+    return 0;
 }
 
 int ExportSheets(int streamId, std::u8string handler)

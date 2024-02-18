@@ -33,6 +33,8 @@ xybase::Stream *mule::Lua::LuaEnvironment::GetStream(int idx)
 
 int mule::Lua::LuaEnvironment::SetStream(xybase::Stream *stream)
 {
+	if (stream == nullptr)
+		throw xybase::InvalidParameterException(L"stream", L"Null Pointer!!!", 95585);
 	int sd = streamd++;
 	streams[sd] = stream;
 	return sd;
