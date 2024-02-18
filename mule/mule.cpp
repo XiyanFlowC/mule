@@ -82,13 +82,23 @@ int main(int argc, char **argv)
 	mule::Lua::Api::RegisterContainerOperationFunctions();
 	mule::Lua::Api::RegisterStreamOperationFunctions();
 	mule::Lua::Api::RegisterSystemOperations();
-
-	LuaHost::GetInstance().RunScript((xybase::string::to_string(conf.GetString(u"mule.script.basedir")) + "config.lua").c_str());
+	InitialiseLuaEnvironment();
 
 	mule::Mule::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
-	InitialiseLuaEnvironment();
 	mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(conf.GetString(u"mule.target"))));
+
+	try
+	{
+		LuaHost::GetInstance().RunScript((xybase::string::to_string(conf.GetString(u"mule.script.basedir")) + "config.lua").c_str());
+	}
+	catch (LuaException &ex)
+	{
+		logger.Error(L"Failed when config system.");
+		logger.Fatal(L"Lua config execute failed!");
+		logger.Fatal(L"[{}] {}", ex.GetErrorCode(), ex.GetMessage());
+		abort();
+	}
 
 	// Execution
 	try
