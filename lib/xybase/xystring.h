@@ -252,7 +252,7 @@ namespace xybase
 			while (offset != std::basic_string<ChT>::npos)
 			{
 				original.replace(offset, target.length(), replacement);
-				offset = original.find(target, offset + target.length());
+				offset = original.find(target, offset + replacement.length());
 			}
 			return original;
 		}
