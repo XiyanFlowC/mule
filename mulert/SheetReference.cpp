@@ -48,11 +48,17 @@ void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type:
 {
 	auto loc = stream->Tell();
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
-	auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
-	if ((!tloc.IsType(Data::Basic::MultiValue::MVT_UINT) && !tloc.IsType(Data::Basic::MultiValue::MVT_INT))
-		|| (!tsiz.IsType(Data::Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Data::Basic::MultiValue::MVT_INT))) return;
+	auto size = sizeDefined;
+	if (sizeDefined == -1)
+	{
+		auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
+		if ((!tloc.IsType(Data::Basic::MultiValue::MVT_UINT) && !tloc.IsType(Data::Basic::MultiValue::MVT_INT))
+			|| (!tsiz.IsType(Data::Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Data::Basic::MultiValue::MVT_INT))) return;
+		size = tsiz.value.unsignedValue;
+	}
 
-	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, tsiz.value.unsignedValue, GenerateName(tloc.value.unsignedValue, stream->GetName()));
+	auto name = GenerateName(tloc.value.unsignedValue, stream->GetName());
+	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, size, name);
 	SheetManager::GetInstance().RegisterSheet(stream, sheet);
 	dataHandler->OnDataRead(sheet->GetName());
 }
@@ -62,12 +68,17 @@ void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type
 	auto expectedName = *fileHandler->OnDataWrite().value.stringValue;
 	auto loc = stream->Tell();
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
-	auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
-	if ((!tloc.IsType(Data::Basic::MultiValue::MVT_UINT) && !tloc.IsType(Data::Basic::MultiValue::MVT_INT))
-		|| (!tsiz.IsType(Data::Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Data::Basic::MultiValue::MVT_INT))) return;
+	auto size = sizeDefined;
+	if (sizeDefined == -1)
+	{
+		auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
+		if ((!tloc.IsType(Data::Basic::MultiValue::MVT_UINT) && !tloc.IsType(Data::Basic::MultiValue::MVT_INT))
+			|| (!tsiz.IsType(Data::Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Data::Basic::MultiValue::MVT_INT))) return;
+		size = tsiz.value.unsignedValue;
+	}
 
 	auto name = GenerateName(tloc.value.unsignedValue, stream->GetName());
-	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, tsiz.value.unsignedValue, name);
+	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, size, name);
 	if (name != expectedName)
 	{
 		throw xybase::InvalidParameterException(L"name", L"Sheet name mismatch.", __LINE__);
@@ -97,6 +108,10 @@ mule::Data::Basic::Type *mule::SheetReference::SheetReferenceCreator::DoCreateOb
 	ret->infraType = infra;
 	ret->locCacheName = info.substr(splt + 1, sizeStart - splt - 1);
 	ret->sizeCacheName = info.substr(sizeStart + 1, info.size() - sizeStart - 2);
+	if (ret->sizeCacheName[0] >= '0' && ret->sizeCacheName[0] <= '9')
+		ret->sizeDefined = xybase::string::stoi<char16_t>(ret->sizeCacheName);
+	else
+		ret->sizeDefined = -1;
 	if (metainfo.contains(u"naming"))
 	{
 		ret->namePattern = metainfo.find(u"naming")->second;

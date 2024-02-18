@@ -10,6 +10,7 @@ namespace mule
 	{
 	protected:
 		std::u16string locCacheName, sizeCacheName;
+		size_t sizeDefined;
 
 		Data::Basic::Type *infraType;
 
