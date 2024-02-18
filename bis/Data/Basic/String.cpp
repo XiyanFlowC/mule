@@ -1,6 +1,7 @@
 #include "String.h"
 
 #include <xystring.h>
+#include <Configuration.h>
 
 using namespace mule::Data::Basic;
 
@@ -54,6 +55,28 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 					itr->second.value.unsignedValue,
 					xybase::string::to_wstring(*value.value.stringValue)),
 				19010);
+	}
+	else
+	{
+		if (Configuration::GetInstance().GetSigned(u"mule.data.basic.string.read-for-size"))
+		{
+			auto cur = stream->Tell();
+			auto size = stream->ReadString().size();
+			if (data.size() > size)
+			{
+				throw xybase::InvalidParameterException(
+					L"value",
+					std::format(
+						L"String too large! (size {} exceeded {}), string={}",
+						data.size(),
+						size,
+						value.ToString()),
+					19011
+				);
+			}
+
+			stream->Seek(cur);
+		}
 	}
 
 	if (value.value.stringValue->size() && data.size() == 0)
