@@ -226,7 +226,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 				outstream->Write("'");
 			}
 			outstream->Write(">");
-			if (element.IsType(MultiValue::MVT_STRING))
+			if (realm->GetDataType() == u"string")
 			{
 				auto str = *element.value.stringValue;
 				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
@@ -385,7 +385,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 				outstream->Write("'");
 			}
 			outstream->Write(">");
-			if (element.IsType(MultiValue::MVT_STRING))
+			if (realm->GetDataType() == u"string")
 			{
 				auto str = *element.value.stringValue;
 				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
