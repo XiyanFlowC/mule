@@ -135,10 +135,10 @@ mule::Data::Basic::MultiValue mule::Lua::LuaHost::GetValue(int idx)
 		ret = MultiValue((int64_t)lua_toboolean(L, idx));
 	else if (lua_isinteger(L, idx))
 		ret = MultiValue((int64_t)lua_tointeger(L, idx));
+	else if (lua_isstring(L, idx))
+		ret = MultiValue(xybase::string::to_utf16((const char8_t *)lua_tostring(L, idx)));
 	else if (lua_isnumber(L, idx))
 		ret = MultiValue(lua_tonumber(L, idx));
-	else if (lua_isstring(L, idx))
-		ret = MultiValue(xybase::string::to_utf16(lua_tostring(L, idx)));
 	else if (lua_isnil(L, idx))
 		ret = MultiValue();
 	else if (lua_istable(L, idx))
@@ -262,7 +262,7 @@ void mule::Lua::LuaHost::PushValue(const mule::Data::Basic::MultiValue &v)
 		lua_pushnumber(L, v.value.realValue);
 		break;
 	case MultiValue::ValueType::MVT_STRING:
-		lua_pushstring(L, xybase::string::to_string(*v.value.stringValue).c_str());
+		lua_pushstring(L, (const char *)xybase::string::to_utf8(*v.value.stringValue).c_str());
 		break;
 	case MultiValue::ValueType::MVT_MAP:
 		lua_newtable(L);

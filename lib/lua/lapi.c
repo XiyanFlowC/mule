@@ -319,7 +319,7 @@ LUA_API int lua_isnumber (lua_State *L, int idx) {
 
 LUA_API int lua_isstring (lua_State *L, int idx) {
   const TValue *o = index2value(L, idx);
-  return (ttisstring(o) || cvt2str(o));
+  return ttisstring(o); /* MOD: accept string only */
 }
 
 
