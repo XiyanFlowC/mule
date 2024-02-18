@@ -28,6 +28,8 @@ void mule::Csv::CsvOutHandler::OnSheetReadEnd()
 
 void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, const std::u16string &name)
 {
+	if (realm->IsComposite())
+		layer++;
 	disarmed = realm->IsComposite();
 }
 
@@ -49,6 +51,8 @@ void mule::Csv::CsvOutHandler::OnRealmExit(Type *realm, const std::u16string &na
 
 void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, int idx)
 {
+	if (realm->IsComposite())
+		layer++;
 	disarmed = realm->IsComposite();
 }
 
