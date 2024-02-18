@@ -6,6 +6,7 @@ using namespace mule::Data::Basic;
 mule::Data::Sheet::Sheet(Basic::Type *infraType, size_t offset, size_t length, std::u16string name)
 	: infraType(infraType), offset(offset), length(length), name(name)
 {
+	structureSimplifySuppression = Configuration::GetInstance().GetSigned(u"mule.data.sheet.structure-simplify-suppression", 0);
 }
 
 const std::u16string &mule::Data::Sheet::GetName() const
@@ -34,7 +35,7 @@ void mule::Data::Sheet::Read(xybase::Stream *stream, mule::Data::Basic::Type::Da
 	Configuration::GetInstance().SetVariable(u"mule.data.sheet.name", name);
 	dataHandler->OnRealmEnter(this, name);
 	stream->Seek(offset, xybase::Stream::SeekMode::SM_BEGIN);
-	if (length == 1)
+	if (length == 1 && !structureSimplifySuppression)
 		infraType->Read(stream, dataHandler);
 	else for (int i = 0; i < length; ++i) {
 		Configuration::GetInstance().SetVariable(u"mule.data.sheet.index", (long long)i);
@@ -52,7 +53,7 @@ void mule::Data::Sheet::Write(xybase::Stream *stream, mule::Data::Basic::Type::F
 	Configuration::GetInstance().SetVariable(u"mule.data.sheet.name", name);
 	fileHandler->OnRealmEnter(this, name);
 	stream->Seek(offset, xybase::Stream::SeekMode::SM_BEGIN);
-	if (length == 1)
+	if (length == 1 && !structureSimplifySuppression)
 		infraType->Write(stream, fileHandler);
 	else for (int i = 0; i < length; ++i) {
 		Configuration::GetInstance().SetVariable(u"mule.data.sheet.index", (long long)i);

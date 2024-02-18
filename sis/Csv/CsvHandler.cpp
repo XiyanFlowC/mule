@@ -13,6 +13,8 @@ void mule::Csv::CsvOutHandler::OnSheetReadStart()
 	status = CHS_READ;
 	if (Configuration::GetInstance().IsExist(u"mule.handler.wrap-layer"))
 		wrapLayer = Configuration::GetInstance().GetSigned(u"mule.handler.wrap-layer");
+	if (Configuration::GetInstance().IsExist(u"mule.handler.wrap-suppression"))
+		wrapSuppression = Configuration::GetInstance().GetSigned(u"mule.handler.wrap-suppression");
 	outstream->Write("\xEF\xBB\xBF"); // 让Excel高兴
 }
 
@@ -39,7 +41,7 @@ void mule::Csv::CsvOutHandler::OnRealmExit(Type *realm, const std::u16string &na
 	}
 	if (layer <= wrapLayer)
 	{
-		if (status == CHS_READ_TRAILCELL)
+		if (status == CHS_READ_TRAILCELL && realm->IsComposite() ? wrapSuppression != 2 : wrapSuppression != 1)
 		{
 			status = CHS_READ;
 			outstream->Write("\n");
@@ -63,7 +65,7 @@ void mule::Csv::CsvOutHandler::OnRealmExit(Type *realm, int idx)
 	}
 	if (layer <= wrapLayer)
 	{
-		if (status == CHS_READ_TRAILCELL)
+		if (status == CHS_READ_TRAILCELL && realm->IsComposite() ? wrapSuppression != 2 : wrapSuppression != 1)
 		{
 			status = CHS_READ;
 			outstream->Write("\n");

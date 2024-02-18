@@ -41,6 +41,10 @@ namespace mule
 
 			int layer = 0;
 			int wrapLayer = 1;
+			/**
+			 * @brief 抑制换行：1-抑制基本类型，2-抑制组合类型，0-不抑制
+			*/
+			int wrapSuppression = 0;
 		};
 	}
 }

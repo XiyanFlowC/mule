@@ -43,6 +43,12 @@ mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::u8string name, 
     return 0;
 }
 
+int mule::Lua::Api::EraseConfiguration(std::u8string name)
+{
+    mule::Configuration::GetInstance().ResetVariable(xybase::string::to_utf16(name).c_str());
+    return 0;
+}
+
 int mule::Lua::Api::DefineStructure(std::u8string name, mule::Data::Basic::MultiValue def)
 {
     using mule::Data::Basic::MultiValue;
@@ -76,5 +82,6 @@ void mule::Lua::Api::RegisterSystemOperations()
     LuaHost::GetInstance().RegisterFunction("lplugin", LoadPlugin);
     LuaHost::GetInstance().RegisterFunction("log", Log);
     LuaHost::GetInstance().RegisterFunction("config", Configuration);
+    LuaHost::GetInstance().RegisterFunction("config_erase", EraseConfiguration);
     LuaHost::GetInstance().RegisterFunction("define", DefineStructure);
 }

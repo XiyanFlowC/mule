@@ -55,7 +55,9 @@ bool MultiValue::operator!=(const MultiValue& rvalue) const
 bool MultiValue::operator< (const MultiValue &rvalue) const
 {
 	if (type != rvalue.type)
-		return false;
+	{
+		return (int)type < (int)rvalue.type;
+	}
 
 	switch (type)
 	{

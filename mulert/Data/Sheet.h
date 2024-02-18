@@ -12,6 +12,7 @@ namespace mule
 			size_t length;
 			size_t offset;
 			std::u16string name;
+			int structureSimplifySuppression;
 		public:
 			Sheet(Basic::Type *infraType, size_t offset, size_t length, std::u16string name);
 
