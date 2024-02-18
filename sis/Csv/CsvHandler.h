@@ -40,6 +40,7 @@ namespace mule
 			} status = CHS_IDLE;
 
 			bool disarmed;
+			bool isString;
 			int layer = 0;
 			int wrapLayer = 1;
 			/**

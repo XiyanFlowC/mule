@@ -17,6 +17,7 @@ void mule::Csv::CsvOutHandler::OnSheetReadStart()
 		wrapSuppression = Configuration::GetInstance().GetSigned(u"mule.handler.wrap-suppression");
 	outstream->Write("\xEF\xBB\xBF"); // 让Excel高兴
 	disarmed = true;
+	isString = false;
 }
 
 void mule::Csv::CsvOutHandler::OnSheetReadEnd()
@@ -30,6 +31,8 @@ void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, const std::u16string &n
 {
 	if (realm->IsComposite())
 		layer++;
+	else
+		isString = realm->GetDataType() == u"string";
 	disarmed = realm->IsComposite();
 }
 
@@ -53,6 +56,8 @@ void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, int idx)
 {
 	if (realm->IsComposite())
 		layer++;
+	else
+		isString = realm->GetDataType() == u"string";
 	disarmed = realm->IsComposite();
 }
 
