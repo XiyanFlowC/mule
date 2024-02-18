@@ -89,9 +89,14 @@ void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-read-proc");
 			str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &value).value.stringValue;
 		}
-		outstream->Write('"');
-		outstream->Write(reinterpret_cast<const char*>(xybase::string::to_utf8(xybase::string::replace<char16_t>(str, u"\"", u"\"\"")).c_str()));
-		outstream->Write('"');
+		if (str.find('\n') == std::u16string::npos && str.find('"') == std::u16string::npos)
+			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(str).c_str()));
+		else
+		{
+			outstream->Write('"');
+			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(xybase::string::replace<char16_t>(str, u"\"", u"\"\"")).c_str()));
+			outstream->Write('"');
+		}
 	}
 	else
 		outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(value.Stringfy()).c_str()));
