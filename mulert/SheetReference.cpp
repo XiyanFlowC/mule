@@ -65,7 +65,7 @@ void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type:
 
 void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler *fileHandler)
 {
-	auto expectedName = *fileHandler->OnDataWrite().value.stringValue;
+	auto name = *fileHandler->OnDataWrite().value.stringValue;
 	auto loc = stream->Tell();
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
 	auto size = sizeDefined;
@@ -77,12 +77,7 @@ void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type
 		size = tsiz.value.unsignedValue;
 	}
 
-	auto name = GenerateName(tloc.value.unsignedValue, stream->GetName());
 	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, size, name);
-	if (name != expectedName)
-	{
-		throw xybase::InvalidParameterException(L"name", L"Sheet name mismatch.", __LINE__);
-	}
 	SheetManager::GetInstance().RegisterSheet(stream, sheet);
 }
 
