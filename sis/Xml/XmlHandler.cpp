@@ -385,7 +385,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 				outstream->Write("'");
 			}
 			outstream->Write(">");
-			if (realm->GetDataType() == u"string")
+			if (element.IsType(MultiValue::MVT_STRING) && realm->GetDataType() == u"string")
 			{
 				auto str = *element.value.stringValue;
 				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))

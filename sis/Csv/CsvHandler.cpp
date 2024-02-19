@@ -87,7 +87,7 @@ void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 	{
 		outstream->Write(",");
 	}
-	if (value.IsType(MultiValue::MVT_STRING))
+	if (isString && value.IsType(MultiValue::MVT_STRING))
 	{
 		auto str = *value.value.stringValue;
 		if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
