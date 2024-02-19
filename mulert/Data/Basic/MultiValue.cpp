@@ -503,11 +503,11 @@ void MultiValue::ParseInt(const std::u16string &value)
 			{
 				res = (((unsigned long long) * itr) - '0') | (res << 4);
 			}
-			else if ('a' >= *itr && *itr <= 'f')
+			else if ('a' <= *itr && *itr <= 'f')
 			{
 				res = (((unsigned long long) * itr) - 'a' + 10) | (res << 4);
 			}
-			else if ('A' >= *itr && *itr <= 'F')
+			else if ('A' <= *itr && *itr <= 'F')
 			{
 				res = (((unsigned long long) * itr) - 'A' + 10) | (res << 4);
 			}

@@ -14,6 +14,10 @@ xybase::TextStream::TextStream(std::string path, std::ios::openmode mode, std::s
 	{
 		stream.imbue(std::locale{localeStr});
 	}
+	if (!stream)
+	{
+		throw xybase::IOException(name, L"Failed to open.", errno);
+	}
 }
 
 xybase::TextStream::~TextStream()

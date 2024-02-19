@@ -179,6 +179,28 @@ int main(int argc, char **argv)
 		logger.Error(L"Error when execute lua script. {}", ex.GetMessage());
 		return -1;
 	}
+#ifdef NDEBUG
+	catch (xybase::RuntimeException &ex)
+	{
+		logger.Fatal(L"Top mule exception catcher: Unhandled Mule Exception.");
+		logger.Fatal(L"{}, {}", ex.GetErrorCode(), ex.GetMessage());
+		return ex.GetErrorCode();
+	}
+	catch (xybase::Exception &ex)
+	{
+		logger.Fatal(L"System Exception Caught.");
+		logger.Fatal(L"{}, {}", ex.GetErrorCode(), ex.GetMessage());
+		return ex.GetErrorCode();
+	}
+	catch (std::exception &ex)
+	{
+		xybase::string::set_string_cvt(nullptr, nullptr);
+		logger.Fatal(L"Top exception catcher: Unhandled Exception Caught.");
+		logger.Fatal(L"ex.what() = {}", xybase::string::to_wstring(ex.what()));
+		return -1;
+	}
+#endif // !DEBUG
+
 
 	return 0;
 }
