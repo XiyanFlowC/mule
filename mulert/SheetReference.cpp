@@ -57,6 +57,11 @@ void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type:
 		size = tsiz.value.unsignedValue;
 	}
 
+	if (tloc.value.unsignedValue == 0 || size == 0)
+	{
+		dataHandler->OnDataRead(Data::Basic::MultiValue::MV_NULL);
+		return;
+	}
 	auto name = GenerateName(tloc.value.unsignedValue, stream->GetName());
 	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, size, name);
 	SheetManager::GetInstance().RegisterSheet(stream, sheet);
@@ -77,6 +82,10 @@ void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type
 		size = tsiz.value.unsignedValue;
 	}
 
+	if (tloc.value.unsignedValue == 0 || size == 0)
+	{
+		return;
+	}
 	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, size, name);
 	SheetManager::GetInstance().RegisterSheet(stream, sheet);
 }
