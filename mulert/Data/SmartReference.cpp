@@ -2,7 +2,7 @@
 
 #include "TypeManager.h"
 #include "../Storage/DataManager.h"
-#include "ReferenceManager.h"
+#include "../SheetReference.h"
 #include "../Configuration.h"
 #include <xystring.h>
 #include <xyutils.h>
@@ -10,7 +10,7 @@
 using namespace mule::Data::Basic;
 using namespace mule::Data;
 
-#define SRMM_DATAFILE_ID (0x0A003939)
+#define SRMM_DATAFILE_ID (0x00003939)
 
 int mule::Data::SmartReference::GetAlign() const
 {
@@ -39,6 +39,8 @@ MultiValue mule::Data::SmartReference::DoRead(xybase::Stream *stream)
 {
 	auto ptr = stream->ReadInt32();
 	auto cur = stream->Tell();
+	if (ptr == 0)
+		return MultiValue::MV_NULL;
 	stream->Seek(ptr);
 	auto value = referent->DoRead(stream);
 	auto size = referent->GetLastSize();
@@ -49,12 +51,14 @@ MultiValue mule::Data::SmartReference::DoRead(xybase::Stream *stream)
 
 void mule::Data::SmartReference::DoWrite(xybase::Stream *stream, const MultiValue &value)
 {
+	if (value.IsType(MultiValue::MVT_NULL))
+	{
+		stream->Write((uint32_t)0);
+		return;
+	}
 	auto size = referent->EvalSize(value);
-	auto ptr = MemoryManager::GetInstance().AssignFor(stream, value, size, GetAlign());
+	auto ptr = MemoryManager::GetInstance().AssignFor(stream, value, referent, size, GetAlign());
 	stream->Write((int32_t)ptr);
-	auto cur = stream->Tell();
-	referent->DoWrite(stream, value);
-	stream->Seek(cur);
 }
 
 bool mule::Data::SmartReference::IsComposite() const
@@ -118,7 +122,7 @@ SmartReference::MemoryManager::MemoryManager()
 	fclose(cache);
 }
 
-void SmartReference::MemoryManager::DisposeStream(xybase::Stream *stream)
+void SmartReference::MemoryManager::DisposeStreamRecords(xybase::Stream *stream)
 {
 	if (memories.contains(stream->GetName()))
 		memories.erase(stream->GetName());
@@ -135,24 +139,34 @@ xybase::Fragment::FragmentManager &SmartReference::MemoryManager::GetMemory(xyba
 	return memories[stream->GetName()];
 }
 
-size_t SmartReference::MemoryManager::AssignFor(xybase::Stream *stream, const mule::Data::Basic::MultiValue &str, size_t size, int align)
+size_t SmartReference::MemoryManager::AssignFor(xybase::Stream *stream, const mule::Data::Basic::MultiValue &val, mule::Data::Basic::BasicType *type, size_t size, int align)
 {
 	auto &&name = stream->GetName();
-	auto &&cache = assign.find(name);
-	if (cache != assign.end())
+	// 不存在的项
+	if (!assignedAddresses.contains(name) 
+		|| !assignedAddresses[name].contains(type)
+		|| !assignedAddresses[name][type].contains(val))
 	{
-		auto &&loc = cache->second.find(str);
-		if (loc != cache->second.end())
-		{
-			return loc->second;
-		}
-		else
-		{
-			return cache->second[str] = GetMemory(stream).Alloc(size, align);
-		}
+		// 分配空间
+		auto loc = GetMemory(stream).Alloc(size, align);
+		// 写入
+		auto cur = stream->Tell();
+		stream->Seek(loc);
+		type->DoWrite(stream, val);
+		stream->Seek(cur);
+		// 登录并返回
+		return assignedAddresses[name][type][val] = loc;
 	}
 
-	return assign[name][str] = GetMemory(stream).Alloc(size, align);
+	// 已存在的项，返回上次分配的地址
+	return assignedAddresses[name][type][val];
+}
+
+bool mule::Data::SmartReference::MemoryManager::IsAssigned(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value, mule::Data::Basic::BasicType *type)
+{
+	if (!assignedAddresses.contains(stream->GetName())) return false;
+	if (!assignedAddresses[stream->GetName()].contains(type)) return false;
+	return assignedAddresses[stream->GetName()][type].contains(value);
 }
 
 void SmartReference::MemoryManager::SaveFreeSpace()

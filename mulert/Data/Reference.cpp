@@ -3,7 +3,6 @@
 #include <iostream>
 #include <xystring.h>
 #include "../Configuration.h"
-#include "ReferenceManager.h"
 
 using namespace mule::Data::Basic;
 
@@ -35,12 +34,6 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	{
 		ptr = stream->ReadUInt32();
 		stream->Seek(-4, xybase::Stream::SM_CURRENT);
-		if (Configuration::GetInstance().GetSigned(u"mule.data.reference.quiet", 0) != 1)
-		{
-			logger.Warn(L"Pointer not found. Read {} from stream. May corrupt so be careful.", ptr);
-			logger.Note(L"Metadata lost. The file may corrupt or using a data lossy data format.");
-			logger.Note(L"To mute this warning, set mule.data.reference.quiet=1");
-		}
 	}
 
 	stream->Write((uint32_t)ptr);
@@ -49,7 +42,8 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 		return;
 	}
 
-	if (!ReferenceManager::GetInstance().RegisterItem(stream, ptr)) return;
+	if (ReferenceRegistry::GetInstance().IsRegistered(stream, ptr)) return;
+	ReferenceRegistry::GetInstance().Register(stream, ptr);
 
 	size_t loc = stream->Tell();
 	stream->Seek((long long)ptr, xybase::Stream::SM_BEGIN);
@@ -84,6 +78,49 @@ bool mule::Data::Reference::IsComposite() const
 mule::Data::Reference::Reference(Type *referent)
 {
 	this->referent = referent;
+}
+
+mule::Data::Reference::ReferenceRegistry::ReferenceRegistry()
+{
+}
+
+void mule::Data::Reference::ReferenceRegistry::RemoveStream(xybase::Stream *sender)
+{
+	records.erase(sender->GetName());
+}
+
+mule::Data::Reference::ReferenceRegistry &mule::Data::Reference::ReferenceRegistry::GetInstance()
+{
+	static ReferenceRegistry _inst;
+	return _inst;
+}
+
+bool mule::Data::Reference::ReferenceRegistry::IsRegistered(xybase::Stream *stream, size_t loc)
+{
+	// 流未登录，返回
+	if (!records.contains(stream->GetName())) return false;
+
+	// 返回是否存在
+	return records[stream->GetName()].contains(loc);
+}
+
+void mule::Data::Reference::ReferenceRegistry::Register(xybase::Stream *stream, size_t loc)
+{
+	// 流未登录，登录流
+	if (!records.contains(stream->GetName()))
+	{
+		records.insert({ });
+		// 在流关闭时自动注销
+		stream->OnClose += [](auto sender) -> void {
+			ReferenceRegistry::GetInstance().RemoveStream(sender);
+		};
+	}
+
+	auto &target = records[stream->GetName()];
+	// 存在同地址记录，忽略
+	if (target.find(loc) != target.end()) return;
+	// 新记录，登录
+	target.insert(loc);
 }
 
 Type *mule::Data::Reference::ReferenceCreator::DoCreateObject(const std::u16string &info)

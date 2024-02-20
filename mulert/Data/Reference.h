@@ -3,6 +3,8 @@
 
 #pragma once
 
+#include <map>
+#include <set>
 #include "../mulert_api.h"
 #include "Basic/Type.h"
 #include "TypeCreator.h"
@@ -24,6 +26,24 @@ namespace mule
 			Basic::Type *referent = nullptr;
 
 			Logger logger = Logger::GetLogger<Reference>();
+
+			Reference(Type *referent);
+
+			class ReferenceRegistry
+			{
+				ReferenceRegistry();
+
+				std::map<std::u16string, std::set<size_t>> records;
+
+			public:
+				static ReferenceRegistry &GetInstance();
+
+				void RemoveStream(xybase::Stream *sender);
+
+				bool IsRegistered(xybase::Stream *stream, size_t loc);
+
+				void Register(xybase::Stream *stream, size_t loc);
+			};
 		public:
 			class MULERT_API ReferenceCreator : public TypeCreator
 			{
@@ -36,9 +56,6 @@ namespace mule
 			virtual size_t Size() const override;
 			virtual std::u16string GetDataType() const override;
 			virtual bool IsComposite() const override;
-
-		private:
-			Reference(Type *referent);
 		};
 	}
 }

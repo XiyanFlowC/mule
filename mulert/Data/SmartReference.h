@@ -20,26 +20,28 @@ namespace mule
 
 			int GetAlign() const;
 		public:
-			class MULERT_API MemoryManager
+			class MemoryManager
 			{
 				mule::Logger logger = mule::Logger::GetLogger<MemoryManager>();
 
 				std::map<std::u16string, xybase::Fragment::FragmentManager> memories;
 
-				std::map<std::u16string, std::map<Basic::MultiValue, size_t>> assign;
+				std::map<std::u16string, std::map<mule::Data::Basic::BasicType*, std::map<Basic::MultiValue, size_t>>> assignedAddresses;
 
-			public:
 				MemoryManager();
+			public:
 
-				void DisposeStream(xybase::Stream *stream);
+				MULERT_API void DisposeStreamRecords(xybase::Stream *stream);
 
-				static MemoryManager &GetInstance();
+				MULERT_API static MemoryManager &GetInstance();
 
-				xybase::Fragment::FragmentManager &GetMemory(xybase::Stream *stream);
+				MULERT_API xybase::Fragment::FragmentManager &GetMemory(xybase::Stream *stream);
 
-				size_t AssignFor(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value, size_t size, int align);
+				MULERT_API size_t AssignFor(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value, mule::Data::Basic::BasicType *type, size_t size, int align);
 
-				void SaveFreeSpace();
+				MULERT_API bool IsAssigned(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value, mule::Data::Basic::BasicType *type);
+
+				MULERT_API void SaveFreeSpace();
 			};
 
 			SmartReference(Basic::BasicType *referent);
