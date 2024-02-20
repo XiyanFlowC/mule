@@ -49,7 +49,7 @@ void mule::Storage::DataManager::Initialise(const std::u16string &datadir)
 	auto data = OpenRaw(0);
 	if (data == nullptr) return;
 
-	int ret = fscanf(data, "%u", &currentId);
+	fscanf(data, "%u", &currentId);
 	// 读取其他数据（目前不处理）
 	fclose(data);
 }

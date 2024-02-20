@@ -67,11 +67,13 @@ size_t mule::Data::Array::Size() const
 
 std::u16string mule::Data::Array::GetDataType() const
 {
-	if (length == -1)
+	if (length == static_cast<size_t>(-1))
+	{
 		if (sizeCache == ARRAY_SIZE_INFINITY)
 			return innerObject->GetDataType() + u"[]";
 		else
 			return innerObject->GetDataType() + u"[" + sizeCache + u"]";
+	}
 
 	return innerObject->GetDataType() + u"[" + xybase::string::to_utf16(std::to_string(length)) + u"]";
 }

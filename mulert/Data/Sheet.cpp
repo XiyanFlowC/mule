@@ -16,7 +16,7 @@ const std::u16string &mule::Data::Sheet::GetName() const
 
 size_t mule::Data::Sheet::Size() const
 {
-	if (infraType->Size() == -1) return -1;
+	if (infraType->Size() == (size_t)-1) return (size_t)-1;
 	return infraType->Size() * length;
 }
 
@@ -37,11 +37,11 @@ void mule::Data::Sheet::Read(xybase::Stream *stream, mule::Data::Basic::Type::Da
 	stream->Seek(offset, xybase::Stream::SeekMode::SM_BEGIN);
 	if (length == 1 && !structureSimplifySuppression)
 		infraType->Read(stream, dataHandler);
-	else for (int i = 0; i < length; ++i) {
+	else for (size_t i = 0; i < length; ++i) {
 		Configuration::GetInstance().SetVariable(u"mule.data.sheet.index", (long long)i);
-		dataHandler->OnRealmEnter(infraType, i);
+		dataHandler->OnRealmEnter(infraType, (int)i);
 		infraType->Read(stream, dataHandler);
-		dataHandler->OnRealmExit(infraType, i);
+		dataHandler->OnRealmExit(infraType, (int)i);
 	}
 	dataHandler->OnRealmExit(this, name);
 	Configuration::GetInstance().ResetVariable(u"mule.data.sheet.index");
@@ -55,11 +55,11 @@ void mule::Data::Sheet::Write(xybase::Stream *stream, mule::Data::Basic::Type::F
 	stream->Seek(offset, xybase::Stream::SeekMode::SM_BEGIN);
 	if (length == 1 && !structureSimplifySuppression)
 		infraType->Write(stream, fileHandler);
-	else for (int i = 0; i < length; ++i) {
+	else for (size_t i = 0; i < length; ++i) {
 		Configuration::GetInstance().SetVariable(u"mule.data.sheet.index", (long long)i);
-		fileHandler->OnRealmEnter(infraType, i);
+		fileHandler->OnRealmEnter(infraType, (int)i);
 		infraType->Write(stream, fileHandler);
-		fileHandler->OnRealmExit(infraType, i);
+		fileHandler->OnRealmExit(infraType, (int)i);
 	}
 	fileHandler->OnRealmExit(this, name);
 	Configuration::GetInstance().ResetVariable(u"mule.data.sheet.index");

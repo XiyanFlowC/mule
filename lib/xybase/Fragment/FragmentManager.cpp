@@ -107,7 +107,7 @@ unsigned int FragmentManager::Alloc(size_t size, int align)
 		{
 			// 计算对齐后的大小
 			auto bgn = frag->GetBeginning();
-			bgn = (bgn + (align - 1) & ~(align - 1));
+			bgn = XY_ALIGN(bgn, align);
 			int add = bgn - frag->GetBeginning();
 			if (frag->GetSize() >= size + add)
 			{
