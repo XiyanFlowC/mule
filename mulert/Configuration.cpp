@@ -9,6 +9,21 @@ mule::Configuration &mule::Configuration::GetInstance()
 	return _inst;
 }
 
+std::u16string mule::Configuration::ResolveVariable(const std::u16string &str)
+{
+	auto ret = str;
+	auto startPosition = ret.find(u"${");
+	while (startPosition != std::u16string::npos)
+	{
+		auto endPosition = ret.find(u"}", startPosition);
+		auto variableName = ret.substr(startPosition + 2, endPosition - startPosition - 2);
+		auto value = xybase::string::to_utf16(Configuration::GetInstance().GetVariable(variableName.c_str()).ToString());
+		ret.replace(startPosition, endPosition - startPosition + 1, value);
+		startPosition = ret.find(u"${", startPosition + value.length());
+	}
+	return ret;
+}
+
 void mule::Configuration::ResetVariable(const char16_t *name)
 {
 	variables.erase(name);

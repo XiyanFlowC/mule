@@ -49,10 +49,11 @@ int main(int argc, char **argv)
 				std::string def(argv[i] + 2);
 				auto defname = def.substr(0, def.find_first_of('='));
 				auto defval = def.substr(def.find_first_of('=') + 1);
+				auto val = mule::Configuration::GetInstance().ResolveVariable(xybase::string::to_utf16(defval));
 				mule::Configuration::GetInstance()
 					.SetVariable(
 						xybase::string::to_utf16(defname).c_str(),
-						MultiValue::Parse(xybase::string::to_utf16(defval)));
+						MultiValue::Parse(val));
 			}
 		}
 	}

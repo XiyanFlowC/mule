@@ -35,6 +35,8 @@ namespace mule
 
 		static Configuration &GetInstance();
 
+		std::u16string ResolveVariable(const std::u16string &str);
+
 		void ResetVariable(const char16_t *name);
 
 		void SetVariable(const char16_t *name, mule::Data::Basic::MultiValue value);
