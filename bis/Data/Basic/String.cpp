@@ -24,8 +24,8 @@ size_t mule::Data::Basic::String::EvalSize(const MultiValue &obj) const
 {
 	if (obj.type != MultiValue::MVT_STRING)
 		return 0;
-
-	return obj.value.stringValue->size() + 1;
+	auto data = xybase::string::to_string(*(obj.value.stringValue));
+	return data.size() + 1;
 }
 
 MultiValue mule::Data::Basic::String::DoRead(xybase::Stream *stream)
@@ -55,24 +55,6 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 					itr->second.value.unsignedValue,
 					xybase::string::to_wstring(*value.value.stringValue)),
 				19010);
-	}
-	else
-	{
-		if (Configuration::GetInstance().GetSigned(u"mule.data.basic.string.read-for-size"))
-		{
-			auto cur = stream->Tell();
-			auto size = stream->ReadString().size();
-			if (data.size() > size)
-			{
-				logger.Warn(L"String too long! (size {} exceeded {}), string={}. Cut off!",
-						data.size(),
-						size,
-						value.ToString());
-				data = data.substr(0, size);
-			}
-
-			stream->Seek(cur);
-		}
 	}
 
 	if (value.value.stringValue->size() && data.size() == 0)
