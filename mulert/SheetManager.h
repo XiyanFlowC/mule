@@ -34,5 +34,9 @@ namespace mule
 		 * @param sheet The sheet needs to append.
 		*/
 		void RegisterSheet(xybase::Stream *target, mule::Data::Sheet *sheet);
+
+		void RemoveSheet(xybase::Stream *target, const std::u16string &name);
+
+		void ClearSheets(xybase::Stream *target);
 	};
 }

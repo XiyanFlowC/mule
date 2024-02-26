@@ -60,7 +60,7 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 	if (libraryHandle == NULL)
 	{
 		logger.Error(L"Failed to load plugin: {}", xybase::string::to_wstring(plugin));
-		throw xybase::RuntimeException(L"Cannot load specified plugin.", errno);
+		throw xybase::RuntimeException(std::format(L"Cannot load specified plugin. {}", xybase::string::to_wstring(dlerror())), 10);
 	}
 #endif
 

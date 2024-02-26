@@ -46,6 +46,8 @@ MultiValue mule::Data::SmartReference::DoRead(xybase::Stream *stream)
 	auto size = referent->GetLastSize();
 	MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(size, GetAlign()));
 	stream->Seek(cur);
+	// HACK: 擦除大小限定信息
+	value.metadata.erase(u"size");
 	return value;
 }
 

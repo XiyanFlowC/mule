@@ -95,7 +95,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawN
 		sb += ch;
 
 		if (xybase::string::to_utf16(tag) != name)
-			throw xybase::RuntimeException(L"Format error, except " + xybase::string::to_wstring(name) + L", but got " + xybase::string::to_wstring(tag), 9002);
+			throw xybase::RuntimeException(L"Format error, expect " + xybase::string::to_wstring(name) + L", but got " + xybase::string::to_wstring(tag), 9002);
 
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())
@@ -226,7 +226,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 				outstream->Write("'");
 			}
 			outstream->Write(">");
-			if (realm->GetDataType() == u"string")
+			if (element.IsType(MultiValue::MVT_STRING) && realm->GetDataType() == u"string")
 			{
 				auto str = *element.value.stringValue;
 				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
@@ -305,7 +305,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		sb += ch;
 
 		if (xybase::string::to_utf16(tag) != u"item")
-			throw xybase::RuntimeException(L"Format error, except " L"item" L", but got " + xybase::string::to_wstring(tag), 9002);
+			throw xybase::RuntimeException(L"Format error, expect " L"item" L", but got " + xybase::string::to_wstring(tag), 9002);
 
 		// 组合类型内部仍为元素，找到结束点同步即可
 		if (realm->IsComposite())

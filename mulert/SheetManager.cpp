@@ -8,8 +8,7 @@ using namespace mule;
 
 void mule::SheetManager::StreamCloseHandler(xybase::Stream *stream)
 {
-	GetInstance().streamSheets.erase(stream);
-	stream->OnClose -= StreamCloseHandler;
+	GetInstance().ClearSheets(stream);
 }
 
 mule::SheetManager::SheetManager()
@@ -110,4 +109,37 @@ void mule::SheetManager::RegisterSheet(xybase::Stream *target, mule::Data::Sheet
 	logger.Info(L"Sheet [{}] for stream [{}] registered.",
 		xybase::string::to_wstring(sheet->GetName()),
 		xybase::string::to_wstring(target->GetName()));
+}
+
+void mule::SheetManager::RemoveSheet(xybase::Stream *target, const std::u16string &name)
+{
+	auto itr = streamSheets.find(target);
+	if (itr == streamSheets.end()) return;
+
+	auto &sheets = itr->second;
+	auto sheetItr = sheets.begin();
+	if (sheetItr == sheets.end()) return;
+
+	while (sheetItr != sheets.end())
+	{
+		if ((*sheetItr)->GetName() == name)
+		{
+			sheets.erase(sheetItr);
+			delete *sheetItr;
+		}
+	}
+}
+
+void mule::SheetManager::ClearSheets(xybase::Stream *target)
+{
+	auto itr = GetInstance().streamSheets.find(target);
+	if (itr != GetInstance().streamSheets.end())
+	{
+		for (auto &&sheet : itr->second)
+		{
+			delete sheet;
+		}
+	}
+	GetInstance().streamSheets.erase(target);
+	target->OnClose -= StreamCloseHandler;
 }
