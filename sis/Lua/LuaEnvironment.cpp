@@ -45,6 +45,7 @@ int mule::Lua::LuaEnvironment::SetStream(xybase::Stream *stream)
 
 void mule::Lua::LuaEnvironment::CloseStream(int idx)
 {
+	if (!streams.contains(idx)) throw xybase::InvalidParameterException(L"idx", L"Specified fd not found.", 95594);
 	auto &&stream = streams[idx];
 	stream->Close();
 	delete stream;
