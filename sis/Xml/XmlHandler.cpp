@@ -252,10 +252,27 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 		int c;
 		// 非组合类型已经在Enter时完成读入和解析，这里只需要找到结束点同步即可
 		if (realm->IsComposite())
+		{
 			do
 			{
 				c = instream->ReadChar();
+			} while (c != '<');
+			c = instream->ReadChar();
+			if (c != '/')
+			{
+				throw xybase::RuntimeException(std::format(L"Unexpected open tag. Try to find close tag for {}.", xybase::string::to_wstring(name)) , 95071);
+			}
+			xybase::StringBuilder<char8_t> sb;
+			do
+			{
+				c = instream->ReadChar();
+				sb += c;
 			} while (c != '>');
+			if (xybase::string::to_utf16(sb.ToString()) != name + u">")
+			{
+				throw xybase::RuntimeException(std::format(L"Unexpected close tag, expect </{}>, but got </{}.", xybase::string::to_wstring(name), xybase::string::to_wstring(sb.ToString())), 95073);
+			}
+		}
 	}
 }
 
@@ -411,10 +428,27 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 		int c;
 		// 非组合类型已经在Enter时完成读入和解析，这里只需要找到结束点同步即可
 		if (realm->IsComposite())
+		{
 			do
 			{
 				c = instream->ReadChar();
+			} while (c != '<');
+			c = instream->ReadChar();
+			if (c != '/')
+			{
+				throw xybase::RuntimeException(L"Unexpected open tag. Try to find close tag for item.", 95072);
+			}
+			xybase::StringBuilder<char8_t> sb;
+			do
+			{
+				c = instream->ReadChar();
+				sb += c;
 			} while (c != '>');
+			if (xybase::string::to_utf16(sb.ToString()) != u"item>")
+			{
+				throw xybase::RuntimeException(std::format(L"Unexpected close tag, expect </item>, but got </{}.", xybase::string::to_wstring(sb.ToString())), 95073);
+			}
+		}
 	}
 }
 

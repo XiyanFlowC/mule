@@ -42,8 +42,11 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 		return;
 	}
 
-	if (ReferenceRegistry::GetInstance().IsRegistered(stream, ptr)) return;
-	ReferenceRegistry::GetInstance().Register(stream, ptr);
+	if (!referent->IsComposite())
+	{
+		if (ReferenceRegistry::GetInstance().IsRegistered(stream, ptr)) return;
+		ReferenceRegistry::GetInstance().Register(stream, ptr);
+	}
 
 	size_t loc = stream->Tell();
 	stream->Seek((long long)ptr, xybase::Stream::SM_BEGIN);
