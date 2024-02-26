@@ -48,6 +48,7 @@ MultiValue mule::Data::SmartReference::DoRead(xybase::Stream *stream)
 	stream->Seek(cur);
 	// HACK: 擦除大小限定信息
 	value.metadata.erase(u"size");
+	value.metadata[u"ptr"] = ptr;
 	return value;
 }
 
