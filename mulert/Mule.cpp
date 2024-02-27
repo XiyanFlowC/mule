@@ -25,7 +25,7 @@ void mule::Mule::ConvertToBinary(xybase::TextStream *sourceText, const char16_t 
 
 	for (auto &&desc : descriptions)
 	{
-		if (desc->ConvertToText != nullptr)
+		if (desc->ConvertToBinary != nullptr)
 		{
 			int ret = desc->ConvertToBinary(converter, sourceText, target, param);
 			if (ret == 0) return;

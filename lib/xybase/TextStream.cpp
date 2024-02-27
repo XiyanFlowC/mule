@@ -43,8 +43,7 @@ std::u16string xybase::TextStream::GetName() const
 
 bool xybase::TextStream::ReadLine(std::string &out)
 {
-	std::string ret;
-	if (std::getline(stream, ret)) return true;
+	if (std::getline(stream, out)) return true;
 	else return false;
 }
 

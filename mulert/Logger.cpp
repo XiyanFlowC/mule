@@ -93,7 +93,7 @@ void mule::LoggerBase::Info(std::wstring message, std::wstring logger)
 {
 	if (logLevel > 0) return;
 	StandardOutput(enableColour ?
-		std::format(L"[Info] {} - {}", logger, message)
+		std::format(L"[Info] \033[94m{}\033[0m: {}", logger, message)
 		: std::format(L"[Info] {} - {}", message, logger)
 	);
 }
@@ -138,7 +138,7 @@ void mule::LoggerBase::Debug(std::wstring message, std::wstring logger)
 {
 	if (logLevel > 0) return;
 	StandardOutput(enableColour ?
-		std::format(L"[\033[96mDebug\033[0m] {} - {}", logger, message)
+		std::format(L"[\033[96mDebug\033[0m] \033[94m{}\033[0m: {}", logger, message)
 		: std::format(L"[Info] {} - {}", message, logger)
 	);
 }
