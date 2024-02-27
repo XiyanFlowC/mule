@@ -14,7 +14,7 @@ namespace mule
 {
 	namespace Storage
 	{
-		class MULERT_API DataManager
+		class DataManager
 		{
 
 			int CreateDirectoryRecursively(std::string path, size_t index = 0);
@@ -35,23 +35,23 @@ namespace mule
 			DataManager();
 		public:
 
-			bool IsExist(unsigned int id);
+			MULERT_API bool IsExist(unsigned int id);
 
-			static DataManager &GetInstance();
+			MULERT_API static DataManager &GetInstance();
 
-			virtual ~DataManager();
+			MULERT_API virtual ~DataManager();
 
-			void Initialise(const std::u16string &datadir);
+			MULERT_API void SetDataDir(const std::u16string &datadir);
 
-			mule::Storage::BinaryData LoadData(std::string name);
+			MULERT_API mule::Storage::BinaryData LoadData(std::string name);
 
-			mule::Storage::BinaryData LoadData(unsigned int id);
+			MULERT_API mule::Storage::BinaryData LoadData(unsigned int id);
 
-			FILE *OpenRaw(unsigned int id, bool create = false);
+			MULERT_API FILE *OpenRaw(unsigned int id, bool create = false);
 
-			unsigned int SaveData(const mule::Storage::BinaryData &data, unsigned int id);
+			MULERT_API unsigned int SaveData(const mule::Storage::BinaryData &data, unsigned int id);
 
-			unsigned int SaveData(const mule::Storage::BinaryData &data);
+			MULERT_API unsigned int SaveData(const mule::Storage::BinaryData &data);
 		};
 	}
 }

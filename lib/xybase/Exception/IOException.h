@@ -10,12 +10,14 @@
 
 namespace xybase
 {
-	class XY_API IOException : public RuntimeException
+	class IOException : public RuntimeException
 	{
 	public:
-		IOException(const std::wstring &filename, const std::wstring &message, int err = errno);
+		XY_API IOException(const std::wstring &filename, const std::wstring &message, int err = errno);
 
-		virtual const std::wstring &GetFileName() const;
+		XY_API virtual const std::wstring &GetFileName() const;
+
+		XY_API virtual ~IOException();
 
 	protected:
 		std::wstring filename;

@@ -6,7 +6,7 @@
 
 namespace mule
 {
-	class MULERT_API SheetReference : public Data::Basic::Type
+	class SheetReference : public Data::Basic::Type
 	{
 	protected:
 		std::u16string locCacheName, sizeCacheName;
@@ -18,10 +18,11 @@ namespace mule
 
 		std::u16string GenerateName(size_t offset, std::u16string streamName);
 	public:
-		size_t Size() const override;
-		std::u16string GetDataType() const override;
-		void Read(xybase::Stream *stream, mule::Data::Basic::Type::DataHandler *dataHandler) override;
-		void Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler *fileHandler) override;
+		MULERT_API virtual ~SheetReference();
+		MULERT_API size_t Size() const override;
+		MULERT_API std::u16string GetDataType() const override;
+		MULERT_API void Read(xybase::Stream *stream, mule::Data::Basic::Type::DataHandler *dataHandler) override;
+		MULERT_API void Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler *fileHandler) override;
 
 		class MULERT_API SheetReferenceCreator : public mule::Data::TypeCreator
 		{

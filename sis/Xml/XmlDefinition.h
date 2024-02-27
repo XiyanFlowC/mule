@@ -9,7 +9,7 @@ namespace mule
 	{
 		class XmlDefinition
 		{
-			mule::Logger logger = mule::Logger{ "<xmldef>", -1 };
+			mule::Logger logger = mule::Logger{ "<xmldef>" };
 		public:
 			void Parse(std::u16string name);
 

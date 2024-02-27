@@ -85,21 +85,21 @@ namespace mule
 	/**
 	 * @brief 骡子大杂脍。没想好放哪里的函数都先堆在这里了。主要是插件相关的处理。
 	*/
-	class MULERT_API Mule
+	class Mule
 	{
 		Logger logger = Logger::GetLogger<Mule>();
 
 	public:
-		virtual ~Mule();
+		MULERT_API virtual ~Mule();
 		
-		static Mule &GetInstance();
+		MULERT_API static Mule &GetInstance();
 
 		/**
 		 * @brief 导出指定文件到数据文件。
 		 * @param targetFile 文件全限定路径。包括根和全部转义流名。
 		 * @param id 数据文件ID。
 		*/
-		void Export(const char16_t *targetFile, uint32_t id);
+		MULERT_API void Export(const char16_t *targetFile, uint32_t id);
 
 		/**
 		 * @brief 从指定文件抽取数据段，保存到数据文件
@@ -108,14 +108,14 @@ namespace mule
 		 * @param length 长度
 		 * @param id 数据文件 ID。
 		*/
-		void Extract(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
+		MULERT_API void Extract(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
 
 		/**
 		 * @brief 从数据文件导入到指定文件。
 		 * @param targetFile 文件全限定路径。包括根和全部转义流名。
 		 * @param id 数据文件ID
 		*/
-		void Import(const char16_t *targetFile, uint32_t id);
+		MULERT_API void Import(const char16_t *targetFile, uint32_t id);
 
 		/**
 		 * @brief 从数据文件获得的数据覆盖到指定位置。
@@ -124,7 +124,7 @@ namespace mule
 		 * @param length 长度
 		 * @param id 数据文件 ID。
 		*/
-		void Patch(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
+		MULERT_API void Patch(const char16_t *targetFile, size_t offset, size_t length, uint32_t id);
 
 		/**
 		 * @brief 转换文件到给定的文本
@@ -133,7 +133,7 @@ namespace mule
 		 * @param dest 目的位置
 		 * @param param 参数字符串
 		*/
-		void ConvertToText(xybase::Stream *target, const char16_t *converter, xybase::TextStream *dest, const char16_t *param);
+		MULERT_API void ConvertToText(xybase::Stream *target, const char16_t *converter, xybase::TextStream *dest, const char16_t *param);
 
 		/**
 		 * @brief 转文本到给定的文件
@@ -142,30 +142,30 @@ namespace mule
 		 * @param target 目标二进制文件在虚拟文件系统中的路径
 		 * @param param 参数字符串
 		*/
-		void ConvertToBinary(xybase::TextStream *sourceText, const char16_t *converter, xybase::Stream *target, const char16_t *param);
+		MULERT_API void ConvertToBinary(xybase::TextStream *sourceText, const char16_t *converter, xybase::Stream *target, const char16_t *param);
 
 		/**
 		 * @brief 加载指定的插件动态库。
 		 * @param path 文件路径。
 		*/
-		void LoadPlugin(const char16_t *plugin);
+		MULERT_API void LoadPlugin(const char16_t *plugin);
 
 		/**
 		 * @brief 加载指定的描述
 		 * @param description 加载指定的描述
 		*/
-		void LoadDescription(const PluginDescription *description);
+		MULERT_API void LoadDescription(const PluginDescription *description);
 
 		/**
 		 * @brief 展示已载入的插件
 		 * @return 可显示的字符串
 		*/
-		std::wstring ShowPlugins();
+		MULERT_API std::wstring ShowPlugins();
 
 		/**
 		 * @brief 在日志中反应已经加载的插件
 		*/
-		void PrintPlugins();
+		MULERT_API void PrintPlugins();
 
 		/**
 		 * @brief 应用一个流（转译一个流，将一个流以另一种形式处理【（解）压缩/ELF记忆体地址映射等用】）
@@ -173,35 +173,35 @@ namespace mule
 		 * @param infraStream 下层流
 		 * @return 转译流对象，失败返回 nullptr
 		*/
-		xybase::Stream *ApplyStream(const char16_t *typeName, xybase::Stream *infraStream);
+		MULERT_API xybase::Stream *ApplyStream(const char16_t *typeName, xybase::Stream *infraStream);
 
 		/**
 		 * @brief 挂载一个流（转译一个流，将此流视作文件包（虚拟文件系统））
 		 * @param typeName 文件包类型
 		 * @param infraStream 下层流
 		*/
-		void MountStream(const char16_t *mountName, const char16_t *typeName, xybase::Stream *infraStream);
+		MULERT_API void MountStream(const char16_t *mountName, const char16_t *typeName, xybase::Stream *infraStream);
 
 		/**
 		 * @brief 打开并挂载。
 		 * @param root 要挂载的根。
 		 * @param params 开启参数。
 		*/
-		void OpenAndMount(const char16_t *root, const char16_t *params);
+		MULERT_API void OpenAndMount(const char16_t *root, const char16_t *params);
 
 		/**
 		 * @brief 按名称获取数据处理器
 		 * @param name 处理器名称
 		 * @return 取得的处理器，失败返回 nullptr
 		*/
-		mule::Data::Basic::Type::DataHandler *GetDataHandler(const char16_t *name);
+		MULERT_API mule::Data::Basic::Type::DataHandler *GetDataHandler(const char16_t *name);
 
 		/**
 		 * @brief 按名称获取文件处理器
 		 * @param name 处理器名称
 		 * @return 取得的处理器，失败返回 nullptr
 		*/
-		mule::Data::Basic::Type::FileHandler *GetFileHandler(const char16_t *name);
+		MULERT_API mule::Data::Basic::Type::FileHandler *GetFileHandler(const char16_t *name);
 	protected:
 		std::list<void *> pluginHandlers;
 		std::list<const PluginDescription *> descriptions;

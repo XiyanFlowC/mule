@@ -8,6 +8,11 @@ using namespace mule::Data::Basic;
 
 const std::u16string ARRAY_SIZE_INFINITY = u"<inf>";
 
+mule::Data::Array::Array()
+	: length(0), innerObject(nullptr)
+{
+}
+
 void mule::Data::Array::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	size_t limit = length;

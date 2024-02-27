@@ -8,7 +8,7 @@
 
 namespace mule
 {
-	class MULERT_API SheetManager
+	class SheetManager
 	{
 		std::map<xybase::Stream *, std::list<mule::Data::Sheet *>> streamSheets;
 
@@ -19,24 +19,24 @@ namespace mule
 
 		Logger logger = Logger::GetLogger<SheetManager>();
 
-	public:
 		SheetManager();
+	public:
 
-		static SheetManager &GetInstance();
+		MULERT_API static SheetManager &GetInstance();
 
-		void WriteSheets(xybase::Stream *target, const std::u16string &handlerName);
+		MULERT_API void WriteSheets(xybase::Stream *target, const std::u16string &handlerName);
 
-		void ReadSheets(xybase::Stream *target, const std::u16string &handlerName);
+		MULERT_API void ReadSheets(xybase::Stream *target, const std::u16string &handlerName);
 
 		/**
 		 * @brief Register a sheet to a stream. If the stream has not been registered yet, register it first.
 		 * @param target Target stream.
 		 * @param sheet The sheet needs to append.
 		*/
-		void RegisterSheet(xybase::Stream *target, mule::Data::Sheet *sheet);
+		MULERT_API void RegisterSheet(xybase::Stream *target, mule::Data::Sheet *sheet);
 
-		void RemoveSheet(xybase::Stream *target, const std::u16string &name);
+		MULERT_API void RemoveSheet(xybase::Stream *target, const std::u16string &name);
 
-		void ClearSheets(xybase::Stream *target);
+		MULERT_API void ClearSheets(xybase::Stream *target);
 	};
 }

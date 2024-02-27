@@ -101,7 +101,15 @@ mule::Configuration::ConfigurationNotFoundException::ConfigurationNotFoundExcept
 {
 }
 
+mule::Configuration::ConfigurationNotFoundException::~ConfigurationNotFoundException()
+{
+}
+
 mule::Configuration::ConfigurationTypeMismatch::ConfigurationTypeMismatch(std::wstring name)
 	: RuntimeException(name + L" do not match the type required.", 4000101)
+{
+}
+
+mule::Configuration::ConfigurationTypeMismatch::~ConfigurationTypeMismatch()
 {
 }

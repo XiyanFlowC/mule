@@ -16,6 +16,10 @@ xybase::HostFsMapper::HostFsMapper(std::u16string rootPath)
 	this->rootPath = rootPath;
 }
 
+xybase::HostFsMapper::~HostFsMapper()
+{
+}
+
 std::u16string xybase::HostFsMapper::GetName()
 {
 	return rootPath + u"{mapper}:";

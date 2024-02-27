@@ -9,10 +9,12 @@
 
 namespace xybase
 {
-	class XY_API NotImplementedException : public Exception
+	class NotImplementedException : public Exception
 	{
 	public:
-		NotImplementedException();
+		XY_API NotImplementedException();
+
+		XY_API virtual ~NotImplementedException();
 	};
 }
 

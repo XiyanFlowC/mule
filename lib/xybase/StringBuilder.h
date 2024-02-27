@@ -54,7 +54,7 @@ namespace xybase
 		length = 0;
 
 		buffer = (Tunit *)malloc(capacity * sizeof(Tunit));
-		if (buffer == nullptr) throw RuntimeException(L"Memory allocation falied.", errno);
+		if (buffer == nullptr) throw RuntimeException(L"Memory allocation failed.", errno);
 
 		if (initialContent != nullptr)
 		{

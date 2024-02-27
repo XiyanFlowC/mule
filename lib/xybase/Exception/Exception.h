@@ -10,18 +10,18 @@
 
 namespace xybase
 {
-	class XY_API Exception : public std::exception
+	class Exception : public std::exception
 	{
 	public:
-		Exception(const std::wstring &message, int err);
+		XY_API Exception(const std::wstring &message, int err);
 
-		virtual ~Exception();
+		XY_API virtual ~Exception();
 
-		virtual const char *what() const noexcept override;
+		XY_API virtual const char *what() const noexcept override;
 
-		virtual const std::wstring &GetMessage() const;
+		XY_API virtual const std::wstring &GetMessage() const;
 
-		virtual int GetErrorCode() const;
+		XY_API virtual int GetErrorCode() const;
 
 	protected:
 		std::wstring message;

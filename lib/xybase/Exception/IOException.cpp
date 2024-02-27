@@ -10,3 +10,7 @@ const std::wstring &xybase::IOException::GetFileName() const
 {
 	return filename;
 }
+
+xybase::IOException::~IOException()
+{
+}

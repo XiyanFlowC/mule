@@ -10,19 +10,21 @@ namespace xybase
 	/**
 	 * @brief A mapper to the host file system. As a file container.
 	*/
-	class XY_API HostFsMapper : public FileContainer
+	class HostFsMapper : public FileContainer
 	{
 		std::u16string rootPath;
 
 	public:
-		HostFsMapper(std::u16string rootPath);
+		XY_API HostFsMapper(std::u16string rootPath);
 
-		std::u16string GetName() override;
-		void Flush() override;
-		xybase::Stream *Open(std::u16string name, FileOpenMode mode) override;
-		std::list<std::u16string> List() override;
-		void MakeDir(std::u16string path) override;
-		void Remove(std::u16string path, bool recursive) override;
+		XY_API ~HostFsMapper();
+
+		XY_API std::u16string GetName() override;
+		XY_API void Flush() override;
+		XY_API xybase::Stream *Open(std::u16string name, FileOpenMode mode) override;
+		XY_API std::list<std::u16string> List() override;
+		XY_API void MakeDir(std::u16string path) override;
+		XY_API void Remove(std::u16string path, bool recursive) override;
 	};
 }
 

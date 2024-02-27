@@ -13,7 +13,7 @@ namespace mule
 {
 	namespace Data
 	{
-		class MULERT_API Array : public Basic::Type
+		class Array : public Basic::Type
 		{
 		protected:
 			std::u16string sizeCache;
@@ -22,6 +22,8 @@ namespace mule
 
 			Basic::Type *innerObject;
 
+			Array();
+
 		public:
 			class MULERT_API ArrayCreator : public TypeCreator
 			{
@@ -29,12 +31,12 @@ namespace mule
 				virtual Basic::Type *DoCreateObject(const std::u16string &info) override;
 			};
 
-			virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
-			virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
-			virtual size_t Size() const override;
-			virtual std::u16string GetDataType() const override;
+			MULERT_API virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
+			MULERT_API virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
+			MULERT_API virtual size_t Size() const override;
+			MULERT_API virtual std::u16string GetDataType() const override;
 
-			virtual bool IsComposite() const override;
+			MULERT_API virtual bool IsComposite() const override;
 		};
 	}
 }

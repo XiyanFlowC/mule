@@ -16,7 +16,7 @@ namespace xybase
 		*/
 		class XY_API Fragment
 		{
-			unsigned int begin, size;
+			size_t begin, size;
 
 		public:
 			/**
@@ -24,7 +24,7 @@ namespace xybase
 			 * @param begin 起始地址
 			 * @param size 长度
 			*/
-			Fragment(unsigned int begin, unsigned size);
+			Fragment(size_t begin, size_t size);
 
 			/**
 			 * @brief 创建新存储片段
@@ -36,56 +36,56 @@ namespace xybase
 			 * @brief 获取片段开始地址
 			 * @return 片段开始地址
 			*/
-			unsigned int GetBeginning() const;
+			size_t GetBeginning() const;
 
 			/**
 			 * @brief 获取片段结束地址（该地址不在片段中）
 			 * @return 片段结束地址
 			*/
-			unsigned int GetEnding() const;
+			size_t GetEnding() const;
 
 			/**
 			 * @brief 获取片段大小
 			 * @return 片段大小
 			*/
-			unsigned int GetSize() const;
+			size_t GetSize() const;
 
 			/**
 			 * @brief 设置片段区间
 			 * @param beginning 起始地址
 			 * @param size 大小
 			*/
-			void SetFragment(unsigned int beginning, unsigned int size);
+			void SetFragment(size_t beginning, size_t size);
 
 			/**
 			 * @brief 重设起始地址
 			 * @param beginning 重新设置起始地址
 			*/
-			void SetBeginning(unsigned int beginning);
+			void SetBeginning(size_t beginning);
 
 			/**
 			 * @brief 重设大小
 			 * @param size 大小
 			*/
-			void SetSize(unsigned int size);
+			void SetSize(size_t size);
 
 			/**
 			 * @brief 重设结束地址
 			 * @param ending 结束地址
 			*/
-			void SetEnding(unsigned int ending);
+			void SetEnding(size_t ending);
 
 			/**
 			 * @brief 消除头部，将头部后移指定大小
 			 * @param size 要消除的大小
 			*/
-			void EliminateBeginning(unsigned int size);
+			void EliminateBeginning(size_t size);
 
 			/**
 			 * @brief 消除尾部，将尾部前移指定大小
 			 * @param size 要消除的大小
 			*/
-			void EliminateEnding(unsigned int size);
+			void EliminateEnding(size_t size);
 
 			/**
 			 * @brief 检查是否和所给区段重叠
@@ -106,7 +106,7 @@ namespace xybase
 			 * @param position 要检查的地址
 			 * @return 真则包含，假则没有
 			*/
-			bool IsContains(unsigned int position) const;
+			bool IsContains(size_t position) const;
 
 			/**
 			 * @brief 和指定片段合并为新的片段（创建新片段）

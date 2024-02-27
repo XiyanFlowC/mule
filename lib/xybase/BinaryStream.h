@@ -16,7 +16,7 @@
 
 namespace xybase
 {
-	class XY_API BinaryStream : public xybase::StreamBasic
+	class BinaryStream : public xybase::StreamBasic
 	{
 	protected:
 		FILE *stream;
@@ -30,17 +30,17 @@ namespace xybase
 		 * @param mode 打开模式
 		 * @param isBigEndian 是否为大端序文件
 		*/
-		BinaryStream(std::wstring path, const wchar_t *mode = L"rb+", bool isBigEndian = false);
-		~BinaryStream();
+		XY_API BinaryStream(std::wstring path, const wchar_t *mode = L"rb+", bool isBigEndian = false);
+		XY_API virtual ~BinaryStream();
 
-		virtual void Flush() override;
-		virtual std::u16string GetName() const override;
-		virtual void ReadBytes(char *buffer, size_t limit) override;
-		virtual void Write(const char *buffer, size_t size) override;
-		virtual size_t Tell() const override;
-		virtual void Seek(long long offset, SeekMode mode = SM_BEGIN) override;
-		virtual void Close() override;
-		virtual bool IsEof() const noexcept override;
+		XY_API virtual void Flush() override;
+		XY_API virtual std::u16string GetName() const override;
+		XY_API virtual void ReadBytes(char *buffer, size_t limit) override;
+		XY_API virtual void Write(const char *buffer, size_t size) override;
+		XY_API virtual size_t Tell() const override;
+		XY_API virtual void Seek(long long offset, SeekMode mode = SM_BEGIN) override;
+		XY_API virtual void Close() override;
+		XY_API virtual bool IsEof() const noexcept override;
 	};
 }
 

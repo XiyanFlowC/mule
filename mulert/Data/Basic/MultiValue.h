@@ -20,10 +20,12 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class MULERT_API InvalidRValueException : public xybase::Exception
+			class InvalidRValueException : public xybase::Exception
 			{
 			public:
-				InvalidRValueException(std::wstring description, int line);
+				MULERT_API InvalidRValueException(std::wstring description, int line);
+
+				MULERT_API ~InvalidRValueException();
 			};
 
 			/**
@@ -43,8 +45,11 @@ namespace mule
 
 			public:
 				static const MultiValue MV_NULL;
-
+				//HACK: 禁用警告：尽快寻找代替方案
+#pragma warning(push)
+#pragma warning(disable: 4251)
 				std::map<std::u16string, MultiValue> metadata;
+#pragma warning(pop)
 				
 				/**
 				 * @brief 多用途值类型

@@ -12,3 +12,7 @@ const std::wstring &xybase::InvalidParameterException::GetParam() const
 {
 	return param;
 }
+
+xybase::InvalidParameterException::~InvalidParameterException()
+{
+}

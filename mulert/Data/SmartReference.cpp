@@ -15,7 +15,7 @@ using namespace mule::Data;
 int mule::Data::SmartReference::GetAlign() const
 {
 	if (mule::Configuration::GetInstance().IsExist(u"mule.data.smart-reference.align"))
-		return mule::Configuration::GetInstance().GetSigned(u"mule.data.smart-reference.align");
+		return (int)mule::Configuration::GetInstance().GetSigned(u"mule.data.smart-reference.align");
 	else
 		return 1;
 }
@@ -184,7 +184,7 @@ void SmartReference::MemoryManager::SaveFreeSpace()
 		fprintf(file, "%lld\n", static_cast<long long>(frags.size()));
 		for (auto &frag : frags)
 		{
-			fprintf(file, "%X %u\n", frag->GetBeginning(), frag->GetSize());
+			fprintf(file, "%zX %zu\n", frag->GetBeginning(), frag->GetSize());
 		}
 	}
 	fclose(file);

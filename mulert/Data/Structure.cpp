@@ -113,6 +113,10 @@ mule::Data::Structure::Field::Field(std::u16string name, Type *obj)
 {
 }
 
+mule::Data::Structure::Field::~Field()
+{
+}
+
 std::u16string mule::Data::Structure::Field::GetDataType() const
 {
 	return u"field[" + object->GetDataType() + u',' + name + u']';

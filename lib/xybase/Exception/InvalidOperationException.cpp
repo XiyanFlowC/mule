@@ -6,3 +6,5 @@ xybase::InvalidOperationException::InvalidOperationException(const std::wstring 
 	: RuntimeException(message, INVALID_OPERATION_EXCEPTION_LEAD | err)
 {
 }
+
+xybase::InvalidOperationException::~InvalidOperationException() {}

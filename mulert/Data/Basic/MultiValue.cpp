@@ -12,6 +12,10 @@ InvalidRValueException::InvalidRValueException(std::wstring description, int lin
 {
 }
 
+mule::Data::Basic::InvalidRValueException::~InvalidRValueException()
+{
+}
+
 bool MultiValue::operator==(const MultiValue& rvalue) const
 {
 	if (type != rvalue.type)

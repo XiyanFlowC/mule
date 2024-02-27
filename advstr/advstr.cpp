@@ -11,7 +11,7 @@ int b2t(const char16_t *converter, xybase::Stream *input, xybase::TextStream *ou
 		std::u16string para(param);
 		std::u16string sta = para.substr(0, para.find(':')),
 			end = para.substr(para.find(':') + 1);
-		return str_ex(input, output, xybase::string::stoi(sta, 16), xybase::string::stoi(end, 16));
+		return str_ex(input, output, (int)xybase::string::stoi(sta, 16), (int)xybase::string::stoi(end, 16));
 	}
 	return -1;
 }

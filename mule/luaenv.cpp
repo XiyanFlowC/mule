@@ -50,7 +50,7 @@ int SaveMemory()
 
 #include <Logger.h>
 
-mule::Logger luaenvLogger{"<luaenv>", 0};
+mule::Logger luaenvLogger{"<luaenv>"};
 
 int ExportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
 {

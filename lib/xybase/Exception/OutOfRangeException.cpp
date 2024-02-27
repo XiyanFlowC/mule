@@ -4,3 +4,7 @@ xybase::OutOfRangeException::OutOfRangeException(const std::wstring &message, in
 	: RuntimeException(message, OUT_OF_RANGE_EXCEPTION_LEAD | err)
 {
 }
+
+xybase::OutOfRangeException::~OutOfRangeException()
+{
+}

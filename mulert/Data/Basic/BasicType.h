@@ -15,20 +15,20 @@ namespace mule
 	{
 		namespace Basic
 		{
-			class MULERT_API BasicType : public Type
+			class BasicType : public Type
 			{
 
 			protected:
-				void DoConstraintCheck(const MultiValue &value);
+				MULERT_API void DoConstraintCheck(const MultiValue &value);
 				
 			public:
 
-				virtual MultiValue DoRead(xybase::Stream *stream) = 0;
+				MULERT_API virtual MultiValue DoRead(xybase::Stream *stream) = 0;
 
-				virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) = 0;
+				MULERT_API virtual void DoWrite(xybase::Stream *stream, const MultiValue &value) = 0;
 
 
-				virtual ~BasicType();
+				MULERT_API virtual ~BasicType();
 
 				enum ConstraintType
 				{
@@ -46,14 +46,16 @@ namespace mule
 				class ConstraintViolationException : public xybase::RuntimeException
 				{
 					public:
-						ConstraintViolationException(const std::wstring &msg);
+						MULERT_API ConstraintViolationException(const std::wstring &msg);
+
+						MULERT_API ~ConstraintViolationException();
 				};
 
 				std::u16string cacheVariableName;
 
-				virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
+				MULERT_API virtual void Read(xybase::Stream *stream, DataHandler *dataHandler) override;
 
-				virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
+				MULERT_API virtual void Write(xybase::Stream *stream, FileHandler *fileHandler) override;
 			};
 		}
 	}

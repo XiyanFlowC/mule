@@ -34,6 +34,10 @@ std::u16string mule::SheetReference::GenerateName(size_t offset, std::u16string 
 	return name;
 }
 
+mule::SheetReference::~SheetReference()
+{
+}
+
 size_t mule::SheetReference::Size() const
 {
 	return size_t(4);
@@ -46,7 +50,7 @@ std::u16string mule::SheetReference::GetDataType() const
 
 void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type::DataHandler *dataHandler)
 {
-	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
+	auto &tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
 	auto size = sizeDefined;
 	if (sizeDefined == (size_t)-1)
 	{
@@ -69,12 +73,12 @@ void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type:
 
 void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler *fileHandler)
 {
-	auto name = *fileHandler->OnDataWrite().value.stringValue;
+	auto &name = *fileHandler->OnDataWrite().value.stringValue;
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
 	auto size = sizeDefined;
 	if (sizeDefined == (size_t)-1)
 	{
-		auto tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
+		auto &tsiz = mule::Data::Basic::ContextManager::GetInstance().GetVariable(sizeCacheName);
 		if ((!tloc.IsType(Data::Basic::MultiValue::MVT_UINT) && !tloc.IsType(Data::Basic::MultiValue::MVT_INT))
 			|| (!tsiz.IsType(Data::Basic::MultiValue::MVT_UINT) && !tsiz.IsType(Data::Basic::MultiValue::MVT_INT))) return;
 		size = tsiz.value.unsignedValue;

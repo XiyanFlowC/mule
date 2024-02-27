@@ -11,10 +11,12 @@ namespace xybase
 {
 	const int OUT_OF_RANGE_EXCEPTION_LEAD = 0x3000'0000;
 
-	class XY_API OutOfRangeException : public RuntimeException
+	class OutOfRangeException : public RuntimeException
 	{
 	public:
-		OutOfRangeException(const std::wstring & message, int err);
+		XY_API OutOfRangeException(const std::wstring & message, int err);
+
+		XY_API virtual ~OutOfRangeException();
 	};
 }
 

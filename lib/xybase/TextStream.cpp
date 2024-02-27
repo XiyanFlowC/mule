@@ -41,11 +41,11 @@ std::u16string xybase::TextStream::GetName() const
 	return xybase::string::to_utf16(name);
 }
 
-std::string xybase::TextStream::ReadLine()
+bool xybase::TextStream::ReadLine(std::string &out)
 {
 	std::string ret;
-	std::getline(stream, ret);
-	return ret;
+	if (std::getline(stream, ret)) return true;
+	else return false;
 }
 
 char xybase::TextStream::ReadChar()

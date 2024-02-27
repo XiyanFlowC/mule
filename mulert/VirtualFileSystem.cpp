@@ -133,7 +133,7 @@ const std::list<std::u16string> mule::VirtualFileSystem::ListRoots() const
 	return ret;
 }
 
-void mule::VirtualFileSystem::RegisterContainerCreator(xybase::FileContainer *(*creator)(const char16_t *, xybase::Stream *))
+void mule::VirtualFileSystem::RegisterContainerCreator(xybase::FileContainer *(*creator)(const char16_t *type, xybase::Stream *infra))
 {
 	if (creator != nullptr)
 	{

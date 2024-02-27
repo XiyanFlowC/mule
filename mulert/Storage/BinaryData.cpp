@@ -7,6 +7,10 @@ BinaryData::BinaryData(char *data, size_t length, bool duplicate)
     SetData(data, length, duplicate);
 }
 
+mule::Storage::BinaryData::~BinaryData()
+{
+}
+
 const char *BinaryData::GetData() const noexcept
 {
     return data.get();

@@ -69,7 +69,7 @@ namespace mule
 
 					void SetOutStream(xybase::TextStream *stream);
 				protected:
-					xybase::TextStream *outstream;
+					xybase::TextStream *outstream = nullptr;
 				};
 
 				class MULERT_API FileHandler : virtual public Handler
@@ -86,7 +86,7 @@ namespace mule
 					void SetInStream(xybase::TextStream *stream);
 
 				protected:
-					xybase::TextStream *instream;
+					xybase::TextStream *instream = nullptr;
 				};
 
 				virtual ~Type();

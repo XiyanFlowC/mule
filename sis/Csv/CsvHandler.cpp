@@ -12,9 +12,9 @@ void mule::Csv::CsvOutHandler::OnSheetReadStart()
 		throw xybase::InvalidOperationException(L"This handler is not idle for read.", 10000);
 	status = CHS_READ;
 	if (Configuration::GetInstance().IsExist(u"mule.handler.wrap-layer"))
-		wrapLayer = Configuration::GetInstance().GetSigned(u"mule.handler.wrap-layer");
+		wrapLayer = (int)Configuration::GetInstance().GetSigned(u"mule.handler.wrap-layer");
 	if (Configuration::GetInstance().IsExist(u"mule.handler.wrap-suppression"))
-		wrapSuppression = Configuration::GetInstance().GetSigned(u"mule.handler.wrap-suppression");
+		wrapSuppression = (int)Configuration::GetInstance().GetSigned(u"mule.handler.wrap-suppression");
 	outstream->Write("\xEF\xBB\xBF"); // 让Excel高兴
 	disarmed = true;
 	isString = false;

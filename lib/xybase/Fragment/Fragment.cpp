@@ -2,7 +2,7 @@
 
 using namespace xybase::Fragment;
 
-void Fragment::EliminateBeginning(unsigned int size)
+void Fragment::EliminateBeginning(size_t size)
 {
 	if (size > this->size) throw InvalidParameterException(L"size", L"Cannot larger than this->size.", __LINE__);
 
@@ -10,7 +10,7 @@ void Fragment::EliminateBeginning(unsigned int size)
 	this->size -= size;
 }
 
-void Fragment::EliminateEnding(unsigned int size)
+void Fragment::EliminateEnding(size_t size)
 {
 	if (size > this->size) throw InvalidParameterException(L"size", L"Cannot be larger than this->size.", __LINE__);
 
@@ -27,7 +27,7 @@ bool Fragment::IsContains(const Fragment &frag) const
 	return begin <= frag.begin && GetEnding() >= frag.GetEnding();
 }
 
-bool Fragment::IsContains(unsigned int position) const
+bool Fragment::IsContains(size_t position) const
 {
 	return position >= begin && position < GetEnding();
 }
@@ -37,8 +37,8 @@ Fragment *Fragment::MergeToNew(const Fragment &target) const
 	if (IsContains(target)) return new Fragment(*this);
 	if (IsOverlapsWith(target))
 	{
-		unsigned int nb = begin < target.begin ? begin : target.begin;
-		unsigned int ne = GetEnding() < target.GetEnding() ? target.GetEnding() : GetEnding();
+		size_t nb = begin < target.begin ? begin : target.begin;
+		size_t ne = GetEnding() < target.GetEnding() ? target.GetEnding() : GetEnding();
 
 		return new Fragment(nb, ne - nb);
 	}
@@ -65,7 +65,7 @@ bool Fragment::operator!=(const Fragment &right) const
 	return !(*this == right);
 }
 
-Fragment::Fragment(unsigned int begin, unsigned size)
+Fragment::Fragment(size_t begin, size_t size)
 {
 	this->begin = begin;
 	this->size = size;
@@ -77,42 +77,42 @@ Fragment::Fragment(const Fragment &pattern)
 	begin = pattern.begin;
 }
 
-unsigned int Fragment::GetBeginning() const
+size_t Fragment::GetBeginning() const
 {
 	return begin;
 }
 
-unsigned int Fragment::GetEnding() const
+size_t Fragment::GetEnding() const
 {
 	return begin + size;
 }
 
-unsigned int Fragment::GetSize() const
+size_t Fragment::GetSize() const
 {
 	return size;
 }
 
-void Fragment::SetFragment(unsigned int beginning, unsigned int size)
+void Fragment::SetFragment(size_t beginning, size_t size)
 {
 	begin = beginning;
 	this->size = size;
 }
 
-void Fragment::SetBeginning(unsigned int beginning)
+void Fragment::SetBeginning(size_t beginning)
 {
 	if (beginning >= GetEnding()) throw InvalidParameterException(L"beginning", L"Cannot be set to the pos after the ending.", __LINE__);
-	int newSize = GetEnding() - beginning;
+	size_t newSize = GetEnding() - beginning;
 
 	begin = beginning;
 	size = newSize;
 }
 
-void Fragment::SetSize(unsigned int size)
+void Fragment::SetSize(size_t size)
 {
 	this->size = size;
 }
 
-void Fragment::SetEnding(unsigned int ending)
+void Fragment::SetEnding(size_t ending)
 {
 	if (ending < begin) throw InvalidParameterException(L"ending", L"Cannot be set to the pos before the begining.", __LINE__);
 

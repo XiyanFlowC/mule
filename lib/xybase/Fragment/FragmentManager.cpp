@@ -39,7 +39,7 @@ void FragmentManager::RegisterFragment(const Fragment &frag)
 	frags.push_back(new Fragment(frag));
 }
 
-void FragmentManager::RegisterFragment(unsigned int position, unsigned int size)
+void FragmentManager::RegisterFragment(size_t position, size_t size)
 {
 	RegisterFragment(Fragment(position, size));
 }
@@ -68,7 +68,7 @@ void FragmentManager::Defragment()
 	}
 }
 
-bool FragmentManager::IsFree(unsigned int position)
+bool FragmentManager::IsFree(size_t position)
 {
 	for (auto frag : frags)
 	{
@@ -86,7 +86,7 @@ bool FragmentManager::IsFree(Fragment *frag)
 	return true;
 }
 
-unsigned int FragmentManager::Alloc(size_t size, int align)
+size_t FragmentManager::Alloc(size_t size, int align)
 {
 	size = (size + (static_cast<unsigned long long>(align) - 1)) & ~(static_cast<unsigned long long>(align) - 1);
 	// 尝试分配已经对齐的空间
@@ -94,8 +94,8 @@ unsigned int FragmentManager::Alloc(size_t size, int align)
 	{
 		if (frag->GetSize() >= size && !(frag->GetBeginning() & (align - 1)))
 		{
-			unsigned int ret = frag->GetBeginning();
-			frag->EliminateBeginning((unsigned int)size);
+			size_t ret = frag->GetBeginning();
+			frag->EliminateBeginning((size_t)size);
 			return ret;
 		}
 	}
@@ -108,11 +108,11 @@ unsigned int FragmentManager::Alloc(size_t size, int align)
 			// 计算对齐后的大小
 			auto bgn = frag->GetBeginning();
 			bgn = XY_ALIGN(bgn, align);
-			int add = bgn - frag->GetBeginning();
+			size_t add = bgn - frag->GetBeginning();
 			if (frag->GetSize() >= size + add)
 			{
 				// 返回对齐的空间
-				frag->EliminateBeginning((unsigned int)size + add);
+				frag->EliminateBeginning((size_t)size + add);
 				return bgn;
 			}
 		}
@@ -122,7 +122,7 @@ unsigned int FragmentManager::Alloc(size_t size, int align)
 
 Fragment xybase::Fragment::FragmentManager::AllocMaximumFragment()
 {
-	unsigned int max = 0;
+	size_t max = 0;
 	for (auto &&frag : frags)
 	{
 		if (frag->GetSize() > max)

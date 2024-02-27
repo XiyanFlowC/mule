@@ -10,7 +10,7 @@ namespace mule
 {
 	namespace Data
 	{
-		class MULERT_API SmartReference : public Basic::BasicType
+		class SmartReference : public Basic::BasicType
 		{
 		protected:
 			/**
@@ -44,17 +44,17 @@ namespace mule
 				MULERT_API void SaveFreeSpace();
 			};
 
-			SmartReference(Basic::BasicType *referent);
+			MULERT_API SmartReference(Basic::BasicType *referent);
 
-			size_t Size() const override;
+			MULERT_API size_t Size() const override;
 
-			std::u16string GetDataType() const override;
+			MULERT_API std::u16string GetDataType() const override;
 
-			Basic::MultiValue DoRead(xybase::Stream *stream) override;
+			MULERT_API Basic::MultiValue DoRead(xybase::Stream *stream) override;
 
-			void DoWrite(xybase::Stream *stream, const Basic::MultiValue &value) override;
+			MULERT_API void DoWrite(xybase::Stream *stream, const Basic::MultiValue &value) override;
 
-			bool IsComposite() const override;
+			MULERT_API bool IsComposite() const override;
 
 			class MULERT_API SmartReferenceCreator : public TypeCreator
 			{

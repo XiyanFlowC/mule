@@ -10,7 +10,7 @@ namespace mule
 	/**
 	 * @brief 配置提供类
 	*/
-	class MULERT_API Configuration
+	class Configuration
 	{
 		std::map<std::u16string, Data::Basic::MultiValue> variables;
 	public:
@@ -21,7 +21,9 @@ namespace mule
 		class ConfigurationNotFoundException : public xybase::RuntimeException
 		{
 		public:
-			ConfigurationNotFoundException(std::wstring name);
+			MULERT_API ConfigurationNotFoundException(std::wstring name);
+
+			MULERT_API ~ConfigurationNotFoundException();
 		};
 
 		/**
@@ -30,35 +32,37 @@ namespace mule
 		class ConfigurationTypeMismatch : public xybase::RuntimeException
 		{
 		public:
-			ConfigurationTypeMismatch(std::wstring name);
+			MULERT_API ConfigurationTypeMismatch(std::wstring name);
+
+			MULERT_API ~ConfigurationTypeMismatch();
 		};
 
-		static Configuration &GetInstance();
+		MULERT_API static Configuration &GetInstance();
 
-		std::u16string ResolveVariable(const std::u16string &str);
+		MULERT_API std::u16string ResolveVariable(const std::u16string &str);
 
-		void ResetVariable(const char16_t *name);
+		MULERT_API void ResetVariable(const char16_t *name);
 
-		void SetVariable(const char16_t *name, mule::Data::Basic::MultiValue value);
+		MULERT_API void SetVariable(const char16_t *name, mule::Data::Basic::MultiValue value);
 
-		void SetVariable(const char16_t *name, unsigned long long uval);
+		MULERT_API void SetVariable(const char16_t *name, unsigned long long uval);
 
-		void SetVariable(const char16_t *name, long long val);
+		MULERT_API void SetVariable(const char16_t *name, long long val);
 
-		void SetVariable(const char16_t *name, double rval);
+		MULERT_API void SetVariable(const char16_t *name, double rval);
 
-		void SetVariable(const char16_t *name, const char16_t *sval);
+		MULERT_API void SetVariable(const char16_t *name, const char16_t *sval);
 
-		Data::Basic::MultiValue GetVariable(const char16_t *name);
+		MULERT_API Data::Basic::MultiValue GetVariable(const char16_t *name);
 
-		const std::u16string GetString(const char16_t *name);
+		MULERT_API const std::u16string GetString(const char16_t *name);
 
-		double GetReal(const char16_t *name, double def = 0.0);
+		MULERT_API double GetReal(const char16_t *name, double def = 0.0);
 
-		long long GetSigned(const char16_t *name, long long def = 0);
+		MULERT_API long long GetSigned(const char16_t *name, long long def = 0);
 
-		unsigned long long GetUnsigned(const char16_t *name, unsigned long long def = 0);
+		MULERT_API unsigned long long GetUnsigned(const char16_t *name, unsigned long long def = 0);
 
-		bool IsExist(const char16_t *name);
+		MULERT_API bool IsExist(const char16_t *name);
 	};
 }

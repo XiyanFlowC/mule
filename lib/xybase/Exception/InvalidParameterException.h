@@ -12,12 +12,14 @@ namespace xybase
 {
 	const int INVALID_PARAMETER_EXCPETION_LEAD = 0x2000'0000;
 
-	class XY_API InvalidParameterException : public Exception
+	class InvalidParameterException : public Exception
 	{
 	public:
-		InvalidParameterException(const std::wstring & param, const std::wstring &message, int err);
+		XY_API InvalidParameterException(const std::wstring & param, const std::wstring &message, int err);
 
-		virtual const std::wstring &GetParam() const;
+		XY_API virtual const std::wstring &GetParam() const;
+
+		XY_API virtual ~InvalidParameterException();
 
 	protected:
 		std::wstring param;

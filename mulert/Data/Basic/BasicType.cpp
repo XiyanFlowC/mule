@@ -4,6 +4,10 @@ mule::Data::Basic::BasicType::ConstraintViolationException::ConstraintViolationE
 	: xybase::RuntimeException(msg, 0xFC0E)
 {}
 
+mule::Data::Basic::BasicType::ConstraintViolationException::~ConstraintViolationException()
+{
+}
+
 void mule::Data::Basic::BasicType::Read(xybase::Stream *stream, DataHandler *dataHandler)
 {
 	auto val = DoRead(stream);

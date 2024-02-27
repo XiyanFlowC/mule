@@ -40,7 +40,7 @@ mule::Storage::DataManager::~DataManager()
 	fclose(f);
 }
 
-void mule::Storage::DataManager::Initialise(const std::u16string &datadir)
+void mule::Storage::DataManager::SetDataDir(const std::u16string &datadir)
 {
 	if (xybase::io::access(xybase::string::to_string(datadir).c_str(), xybase::io::PM_READ | xybase::io::PM_WRITE))
 		throw xybase::InvalidParameterException(L"datadir", L"Inaccessible path.", 100);
@@ -97,7 +97,7 @@ FILE *mule::Storage::DataManager::OpenRaw(unsigned int id, bool create)
 
 mule::Storage::DataManager::DataManager()
 {
-	Initialise(Configuration::GetInstance().GetString(u"mule.data.basedir"));
+	SetDataDir(Configuration::GetInstance().GetString(u"mule.data.basedir"));
 }
 
 bool DataManager::IsExist(unsigned int id)

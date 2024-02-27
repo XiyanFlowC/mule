@@ -12,10 +12,12 @@ namespace xybase
 {
 	const int INVALID_OPERATION_EXCEPTION_LEAD = 0x1000'0000;
 
-	class XY_API InvalidOperationException : public RuntimeException
+	class InvalidOperationException : public RuntimeException
 	{
 	public:
-		InvalidOperationException(const std::wstring &message, int err);
+		XY_API InvalidOperationException(const std::wstring &message, int err);
+
+		XY_API virtual ~InvalidOperationException();
 	};
 }
 

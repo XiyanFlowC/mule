@@ -18,7 +18,7 @@ namespace mule
 		/**
 		 * @brief 指向其他位置的32位引用类型。
 		*/
-		class MULERT_API Reference : public Basic::Type
+		class Reference : public Basic::Type
 		{
 			/**
 			 * @brief 内部的类型。
@@ -51,11 +51,11 @@ namespace mule
 				virtual Basic::Type *DoCreateObject(const std::u16string &info, const std::map<std::u16string, std::u16string> &metainfo) override;
 			};
 
-			virtual void Read(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
-			virtual void Write(xybase::Stream *stream, Basic::Type::FileHandler *fileHandler) override;
-			virtual size_t Size() const override;
-			virtual std::u16string GetDataType() const override;
-			virtual bool IsComposite() const override;
+			MULERT_API virtual void Read(xybase::Stream *stream, Basic::Type::DataHandler *dataHandler) override;
+			MULERT_API virtual void Write(xybase::Stream *stream, Basic::Type::FileHandler *fileHandler) override;
+			MULERT_API virtual size_t Size() const override;
+			MULERT_API virtual std::u16string GetDataType() const override;
+			MULERT_API virtual bool IsComposite() const override;
 		};
 	}
 }

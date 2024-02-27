@@ -8,8 +8,8 @@
 
 int str_ex(xybase::Stream *input, xybase::TextStream *output, int begin, int end)
 {
-	int step = mule::Configuration::GetInstance().GetSigned(u"addrtext.step", 8),
-		threshold = mule::Configuration::GetInstance().GetSigned(u"addrtext.threshold", 4);
+	int step = (int)mule::Configuration::GetInstance().GetSigned(u"addrtext.step", 8),
+		threshold = (int)mule::Configuration::GetInstance().GetSigned(u"addrtext.threshold", 4);
 	input->Seek(begin, xybase::Stream::SM_BEGIN);
 	while (input->Tell() < end)
 	{
@@ -36,18 +36,16 @@ int str_ex(xybase::Stream *input, xybase::TextStream *output, int begin, int end
 
 int str_im(xybase::TextStream *input, xybase::Stream *output)
 {
-	mule::Logger logger{ "<fn_str_im>", mule::LoggerConfig::GetInstance().GetLogLevel() };
+	mule::Logger logger{ "<fn_str_im>" };
 	std::string line;
-	auto &&stream = input->stream;
-	stream.imbue(std::locale{});
-	while (std::getline(stream, line))
+	while (input->ReadLine(line))
 	{
 		if (line.empty()) continue;
 		line = line.substr(line.find_first_not_of(" \t"));
 		if (line[0] == '#') continue;
 		size_t firstComma = line.find(',');
-		int addr = xybase::string::stoi(line.substr(0, firstComma), 16);
-		int size = xybase::string::stoi(line.substr(firstComma + 1, line.find(',', firstComma + 1) - firstComma - 1));
+		int addr = (int)xybase::string::stoi(line.substr(0, firstComma), 16);
+		int size = (int)xybase::string::stoi(line.substr(firstComma + 1, line.find(',', firstComma + 1) - firstComma - 1));
 		// Beware the str is in utf-8!!!
 		std::string str = line.substr(line.find(',', firstComma + 1) + 1);
 		// HACK: The utf-8 string stored in the std::string can be operate as this to 'convert' to the std::u8string (with constructor

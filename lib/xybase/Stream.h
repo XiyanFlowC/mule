@@ -27,8 +27,11 @@ namespace xybase
 		bool isBigEndian = false;
 
 	public:
+#pragma warning(push)
+// 正常编译总会相同，别叫了
+#pragma warning(disable : 4251)
 		Event<Stream *> OnClose, OnSeek;
-
+#pragma warning(pop)
 		virtual void Flush() = 0;
 
 		virtual std::u16string GetName() const = 0;

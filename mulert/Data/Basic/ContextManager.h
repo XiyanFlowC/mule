@@ -19,17 +19,16 @@ namespace mule
 			 * @brief 为各个类型提供上下文保存能力：各类型自行决定是否保存该信息，或是否能够保存该信息。
 			 * Provides context for types. Each type decides if context information should be saved.
 			*/
-			class MULERT_API ContextManager
+			class ContextManager
 			{
 			protected:
 				std::map<std::u16string, mule::Data::Basic::MultiValue> variables;
 			public:
+				MULERT_API static ContextManager &GetInstance();
 
-				static ContextManager &GetInstance();
+				MULERT_API void SetVariable(const std::u16string &name, const mule::Data::Basic::MultiValue &value);
 
-				void SetVariable(const std::u16string &name, const mule::Data::Basic::MultiValue &value);
-
-				const mule::Data::Basic::MultiValue &GetVariable(const std::u16string &name);
+				MULERT_API const mule::Data::Basic::MultiValue &GetVariable(const std::u16string &name);
 			};
 		}
 	}

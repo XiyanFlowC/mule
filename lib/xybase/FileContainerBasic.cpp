@@ -257,7 +257,7 @@ void xybase::FileContainerBasic::Seek(unsigned long long handle, long long offse
 	{
 	case xybase::Stream::SM_BEGIN:
 		if (offset < 0) throw InvalidParameterException(L"offset", L"Cannot seek to the negative position.", 102035);
-		if (offset > target.capacity) throw InvalidOperationException(L"Target offset out of range.", 102030);
+		if ((size_t)offset > target.capacity) throw InvalidOperationException(L"Target offset out of range.", 102030);
 		target.cursor = offset;
 		break;
 	case xybase::Stream::SM_CURRENT:
@@ -300,7 +300,7 @@ void xybase::FileContainerBasic::Close(unsigned long long handle)
 	info->occupied = false;
 	info->size = XY_ALIGN(target.size, align);
 	// 计算并注册未使用完的剩余空间
-	int release = target.capacity - info->size;
+	size_t release = target.capacity - info->size;
 	freeSpaces.RegisterFragment(info->offset + info->size, release);
 }
 

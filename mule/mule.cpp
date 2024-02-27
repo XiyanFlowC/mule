@@ -12,7 +12,7 @@ int main(int argc, char **argv)
 	if (argc <= 3)
 	{
 		std::cerr << "Mule by xiyan" << std::endl;
-		std::cerr << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compile time: " << MULE_BUILD_TIME << ")" << std::endl;
+		std::cerr << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compiled at: " << MULE_BUILD_TIME << ")" << std::endl;
 		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action> [options]" << std::endl;
 		std::cerr
 			<< "Options:" << std::endl 
@@ -43,7 +43,12 @@ int main(int argc, char **argv)
 		for (int i = 4; i < argc; ++i)
 		{
 			if (0 == strcmp("-l", argv[i]))
-				mule::LoggerConfig::GetInstance().LoggerInit(2, stdout, stderr, true);
+				mule::LoggerBase::GetInstance().LoggerInit(2, true);
+			if (0 == memcmp("--log-file=", argv[i], 11))
+			{
+				std::string filename = std::string{ argv[i] }.substr(11);
+				mule::LoggerBase::GetInstance().SetBothOutput(filename);
+			}
 			if (0 == memcmp("-d", argv[i], 2))
 			{
 				std::string def(argv[i] + 2);
@@ -59,7 +64,7 @@ int main(int argc, char **argv)
 	}
 
 	// main 用 logger
-	mule::Logger logger{ "<mule>", -1 };
+	mule::Logger logger{ "<mule>" };
 
 	// Initialisation
 	crc32_init();

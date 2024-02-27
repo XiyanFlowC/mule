@@ -11,7 +11,7 @@ namespace mule
 {
 	namespace Storage
 	{
-		class MULERT_API ResourceManager
+		class ResourceManager
 		{
 			xybase::xml::XmlParser<xybase::xml::XmlNode> xmlParser;
 
@@ -19,9 +19,9 @@ namespace mule
 
 		public:
 
-			static ResourceManager &GetInstance();
+			MULERT_API static ResourceManager &GetInstance();
 
-			mule::Storage::BinaryData LoadResource(std::string path);
+			MULERT_API mule::Storage::BinaryData LoadResource(std::string path);
 		};
 	}
 }
