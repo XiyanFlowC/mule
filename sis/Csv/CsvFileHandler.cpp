@@ -197,7 +197,9 @@ void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 {
 	if (realm->IsComposite()) return;
 	auto str = ReadCell();
-	if (realm->GetDataType() == u"string")
+	if (str == u"null")
+		readElement = MultiValue::MVT_NULL;
+	else if (realm->GetDataType() == u"string")
 	{
 		if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
 		{
