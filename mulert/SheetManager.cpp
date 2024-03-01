@@ -16,6 +16,22 @@ mule::SheetManager::SheetManager()
 {
 }
 
+mule::SheetManager::~SheetManager()
+{
+	Shutdown();
+}
+
+void mule::SheetManager::Shutdown()
+{
+	for (auto &&sheets : streamSheets)
+	{
+		for (auto &&sheet : sheets.second)
+		{
+			delete sheet;
+		}
+	}
+}
+
 SheetManager &mule::SheetManager::GetInstance()
 {
 	static SheetManager _inst;

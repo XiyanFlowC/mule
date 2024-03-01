@@ -161,11 +161,18 @@ namespace xybase
 		std::u8string XY_API to_utf8(const std::string &str) noexcept;
 
 		/**
-		 * @brief 
-		 * @param str 
-		 * @return 
+		 * @brief Convert local string to wide string.
+		 * @param str String that to be converted.
+		 * @return Converted string.
 		*/
 		std::wstring XY_API to_wstring(const std::string &str) noexcept;
+
+		/**
+		 * @brief System provided feature call: multibyte string to wide char string.
+		 * @param str Multibyte string that is needed to be converted.
+		 * @return Converted string.
+		*/
+		std::wstring XY_API sys_mbs_to_wcs(const std::string &str) noexcept;
 
 		/**
 		 * @brief Convert to wstring (platform specified)
@@ -229,6 +236,13 @@ namespace xybase
 		 * @return 
 		*/
 		std::string XY_API to_string(const std::wstring &str) noexcept;
+
+		/**
+		 * @brief System provided feature: Convert wide char string to multibyte string.
+		 * @param str The string that is needed to be converted.
+		 * @return Converted string.
+		*/
+		std::string XY_API sys_wcs_to_mbs(const std::wstring &str) noexcept;
 
 		/**
 		 * @brief Set costum string converter (of multibyte string and wide string

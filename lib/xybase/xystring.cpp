@@ -499,6 +499,11 @@ std::wstring xybase::string::to_wstring(const std::string &str) noexcept
         return fcn_mbcstowcs(str);
     }
 
+    return sys_mbs_to_wcs(str);
+}
+
+std::wstring xybase::string::sys_mbs_to_wcs(const std::string &str) noexcept
+{
     mbstate_t state{};
     const char *pstr = str.c_str();
     size_t size = mbsrtowcs(NULL, &pstr, 0, &state);
@@ -517,7 +522,12 @@ std::string xybase::string::to_string(const std::wstring &str) noexcept
     if (fcn_wcstombcs != nullptr)
         return fcn_wcstombcs(str);
 
-    mbstate_t state {};
+    return sys_wcs_to_mbs(str);
+}
+
+std::string xybase::string::sys_wcs_to_mbs(const std::wstring &str) noexcept
+{
+    mbstate_t state{};
     const wchar_t *pstr = str.c_str();
     size_t size = wcsrtombs(NULL, &pstr, 0, &state);
     if (size == (size_t)-1) return "";
@@ -525,7 +535,7 @@ std::string xybase::string::to_string(const std::wstring &str) noexcept
     char *buf = new char[size + 1];
     wcsrtombs(buf, &pstr, size + 1, &state);
     buf[size] = 0;
-    std::string ret {buf};
+    std::string ret{ buf };
     delete[] buf;
     return ret;
 }

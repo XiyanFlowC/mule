@@ -9,6 +9,7 @@
 #include <atomic>
 #include <string>
 #include <Stream.h>
+#include <Logger.h>
 
 namespace mule {
 	namespace Lua {
@@ -22,6 +23,8 @@ namespace mule {
 
 			std::map<int, xybase::Stream *> streams;
 			std::atomic_int streamd;
+
+			mule::Logger logger = Logger::GetLogger<LuaEnvironment>();
 
 		public:
 			~LuaEnvironment();

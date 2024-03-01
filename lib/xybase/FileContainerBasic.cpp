@@ -1,3 +1,5 @@
+#include <format>
+
 #include "FileContainerBasic.h"
 #include "xystring.h"
 #include "xyutils.h"
@@ -59,6 +61,10 @@ xybase::FileContainerBasic::FileContainerBasic(xybase::Stream *stream)
 
 xybase::FileContainerBasic::~FileContainerBasic()
 {
+	for (auto &&item : files)
+	{
+		delete item.second;
+	}
 }
 
 std::u16string xybase::FileContainerBasic::GetName()
@@ -78,7 +84,18 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 		if (!(mode & FOM_WRITE))
 			throw InvalidOperationException(L"Specified file " + xybase::string::to_wstring(name) + L" does not exist, cannot open.", 102001);
 
-		Fragment::Fragment frag = freeSpaces.AllocMaximumFragment();
+		Fragment::Fragment frag{0, 0};
+		try
+		{
+			 frag = freeSpaces.AllocMaximumFragment();
+		}
+		catch (xybase::InvalidOperationException &ex)
+		{
+			if (ex.GetErrorCode() == 32751)
+				throw InvalidOperationException(std::format(L"Cannot create specified file [{}], fragments allocation failed.", xybase::string::to_wstring(name)), 102098);
+			throw ex;
+		}
+
 		if (frag.GetSize() == 0)
 			throw InvalidOperationException(L"Cannot create specified file since the free space was ran out.", 102099);
 
@@ -176,6 +193,7 @@ void xybase::FileContainerBasic::Remove(const std::u16string &path)
 	// TODO: 检查是否有文件访问正在进行中
 
 	freeSpaces.RegisterFragment(itr->second->offset, itr->second->size);
+	delete itr->second;
 	files.erase(itr);
 }
 
@@ -194,7 +212,6 @@ void xybase::FileContainerBasic::Remove(std::u16string path, bool recursive)
 			{
 				auto ptr = pair.second;
 				Remove(pair.second->path);
-				delete ptr;
 			}
 		}
 	}
@@ -302,6 +319,8 @@ void xybase::FileContainerBasic::Close(unsigned long long handle)
 	// 计算并注册未使用完的剩余空间
 	size_t release = target.capacity - info->size;
 	freeSpaces.RegisterFragment(info->offset + info->size, release);
+
+	openedFiles.erase(handle);
 }
 
 bool xybase::FileContainerBasic::Exists(std::u16string path)

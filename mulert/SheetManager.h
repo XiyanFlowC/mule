@@ -20,7 +20,9 @@ namespace mule
 		Logger logger = Logger::GetLogger<SheetManager>();
 
 		SheetManager();
+		MULERT_API virtual ~SheetManager();
 	public:
+		MULERT_API void Shutdown();
 
 		MULERT_API static SheetManager &GetInstance();
 

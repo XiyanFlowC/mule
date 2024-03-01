@@ -5,6 +5,7 @@
 #include <functional>
 #include <map>
 #include <list>
+#include <Event.h>
 
 #include "mulert_api.h"
 #include "Logger.h"
@@ -21,7 +22,11 @@ namespace mule
 		std::map <std::u16string, xybase::FileContainer *> containers;
 
 		std::list <xybase::FileContainer *(*)(const char16_t *, xybase::Stream *)> containerApplyers;
+
+		VirtualFileSystem();
+		MULERT_API virtual ~VirtualFileSystem();
 	public:
+		MULERT_API void Shutdown();
 
 		MULERT_API static VirtualFileSystem &GetInstance();
 
@@ -51,7 +56,7 @@ namespace mule
 		MULERT_API void CascadeProcess(const char16_t *targetFile, std::function<void(xybase::Stream *target)> lambda, xybase::FileOpenMode openMode);
 
 		/**
-		 * @brief 挂载一个容器到指定根【此后此容器生命期需由本类管理】
+		 * @brief 挂载一个容器到指定根【此后此容器生命期需由本类管理，丢弃本来指针】
 		 * @param rootName 挂载的根名
 		 * @param container 要挂载的容器
 		*/

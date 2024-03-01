@@ -6,6 +6,23 @@
 
 using namespace mule;
 
+mule::VirtualFileSystem::VirtualFileSystem()
+{
+}
+
+mule::VirtualFileSystem::~VirtualFileSystem()
+{
+	Shutdown();
+}
+
+void mule::VirtualFileSystem::Shutdown()
+{
+	/*for (auto &&container : containers)
+	{
+		delete container.second;
+	}*/
+}
+
 VirtualFileSystem &mule::VirtualFileSystem::GetInstance()
 {
 	static VirtualFileSystem _inst;
