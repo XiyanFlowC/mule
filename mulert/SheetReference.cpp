@@ -45,7 +45,7 @@ size_t mule::SheetReference::Size() const
 
 std::u16string mule::SheetReference::GetDataType() const
 {
-	return u"string";
+	return u"string/tag";
 }
 
 void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type::DataHandler *dataHandler)
