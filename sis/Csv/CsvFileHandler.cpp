@@ -176,9 +176,11 @@ void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, const std::u16string &
 {
 	if (realm->IsComposite()) return;
 	auto str = ReadCell();
-	if (realm->GetDataType() == u"string")
+	if (str == u"null")
+		readElement = MultiValue::MVT_NULL;
+	else if (realm->GetDataType().starts_with(u"string/"))
 	{
-		if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
+		if (realm->GetDataType() == u"string/text" && Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
 		{
 			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
 			MultiValue tmp{ str };
@@ -199,9 +201,9 @@ void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 	auto str = ReadCell();
 	if (str == u"null")
 		readElement = MultiValue::MVT_NULL;
-	else if (realm->GetDataType() == u"string")
+	else if (realm->GetDataType().starts_with(u"string/"))
 	{
-		if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
+		if (realm->GetDataType() == u"string/text" && Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
 		{
 			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
 			MultiValue tmp{ str };

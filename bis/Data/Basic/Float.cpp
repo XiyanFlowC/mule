@@ -7,7 +7,7 @@ mule::Data::Basic::Float::Float() { }
 
 std::u16string mule::Data::Basic::Float::GetDataType() const
 {
-	return std::u16string(u"float");
+	return std::u16string(u"real-number/float");
 }
 
 size_t mule::Data::Basic::Float::Size() const

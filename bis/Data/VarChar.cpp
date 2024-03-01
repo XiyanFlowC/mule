@@ -22,7 +22,7 @@ size_t mule::Data::VarChar::Size() const
 
 std::u16string mule::Data::VarChar::GetDataType() const
 {
-	return u"varchar(" + xybase::string::to_utf16(std::to_string(length)) + u')';
+	return u"string/text";
 }
 
 MultiValue mule::Data::VarChar::DoRead(xybase::Stream *stream)

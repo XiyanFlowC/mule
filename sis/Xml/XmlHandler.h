@@ -46,7 +46,7 @@ namespace mule
 			xybase::xml::XmlParser<xybase::xml::XmlNode, char8_t> xmlParser;
 
 		private:
-			void ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString);
+			void ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString, bool isText);
 			enum {
 				XHS_IDLE,
 				XHS_READ,

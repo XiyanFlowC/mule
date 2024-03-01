@@ -11,7 +11,7 @@ size_t mule::Data::Basic::Double::Size() const
 
 std::u16string mule::Data::Basic::Double::GetDataType() const
 {
-	return std::u16string(u"double");
+	return std::u16string(u"real-number/double");
 }
 
 MultiValue mule::Data::Basic::Double::DoRead(xybase::Stream *stream)

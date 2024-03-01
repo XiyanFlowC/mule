@@ -3,11 +3,13 @@
 #include "mulert_api.h"
 #include "SheetManager.h"
 #include "Data/TypeCreator.h"
+#include "Logger.h"
 
 namespace mule
 {
 	class SheetReference : public Data::Basic::Type
 	{
+		Logger logger = Logger::GetLogger<SheetReference>();
 	protected:
 		std::u16string locCacheName, sizeCacheName;
 		size_t sizeDefined;

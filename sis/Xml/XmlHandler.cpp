@@ -136,11 +136,11 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawN
 		}
 
 		// 非组合类型须解析内部元素
-		ReadTagAndParse(tag, sb, realm->GetDataType() == u"string");
+		ReadTagAndParse(tag, sb, realm->GetDataType().starts_with(u"string/"), realm->GetDataType() == u"string/text");
 	}
 }
 
-void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString)
+void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString, bool isText)
 {
 	std::u8string endTag = u8"</" + tagName + u8">";
 
@@ -168,7 +168,7 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	else
 		if (isString)
 		{
-			if (Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
+			if (isText && Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
 			{
 				auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
 				MultiValue tmp{ text };
@@ -226,10 +226,10 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 				outstream->Write("'");
 			}
 			outstream->Write(">");
-			if (element.IsType(MultiValue::MVT_STRING) && realm->GetDataType() == u"string")
+			if (element.IsType(MultiValue::MVT_STRING) && realm->GetDataType().starts_with(u"string/"))
 			{
 				auto str = *element.value.stringValue;
-				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
+				if (realm->GetDataType() == u"string/text" && Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
 				{
 					auto name = Configuration::GetInstance().GetString(u"mule.handler.string-read-proc");
 					str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &element).value.stringValue;
@@ -363,7 +363,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		}
 
 		// 非组合类型须解析内部元素
-		ReadTagAndParse(tag, sb, realm->GetDataType() == u"string");
+		ReadTagAndParse(tag, sb, realm->GetDataType().starts_with(u"string/"), realm->GetDataType() == u"string/text");
 	}
 }
 
@@ -402,10 +402,10 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 				outstream->Write("'");
 			}
 			outstream->Write(">");
-			if (element.IsType(MultiValue::MVT_STRING) && realm->GetDataType() == u"string")
+			if (element.IsType(MultiValue::MVT_STRING) && realm->GetDataType().starts_with(u"string/"))
 			{
 				auto str = *element.value.stringValue;
-				if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
+				if (realm->GetDataType() == u"string/text" && Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
 				{
 					auto name = Configuration::GetInstance().GetString(u"mule.handler.string-read-proc");
 					str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &element).value.stringValue;

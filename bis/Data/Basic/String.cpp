@@ -12,7 +12,7 @@ size_t String::Size() const
 
 std::u16string mule::Data::Basic::String::GetDataType() const
 {
-	return u"string";
+	return u"string/text";
 }
 
 size_t mule::Data::Basic::String::GetLastSize() const

@@ -81,12 +81,14 @@ void mule::LoggerBase::StandardOutput(std::wstring message)
 {
 	fputws(message.c_str(), output);
 	fputwc(L'\n', output);
+	fflush(output);
 }
 
 void mule::LoggerBase::ErrorOutput(std::wstring message)
 {
 	fputws(message.c_str(), errorOutput);
 	fputwc(L'\n', errorOutput);
+	fflush(errorOutput);
 }
 
 void mule::LoggerBase::Info(std::wstring message, std::wstring logger)

@@ -73,7 +73,7 @@ void mule::SheetReference::Read(xybase::Stream *stream, mule::Data::Basic::Type:
 
 void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type::FileHandler *fileHandler)
 {
-	auto &name = *fileHandler->OnDataWrite().value.stringValue;
+	auto &nameValue = fileHandler->OnDataWrite();
 	auto tloc = mule::Data::Basic::ContextManager::GetInstance().GetVariable(locCacheName);
 	auto size = sizeDefined;
 	if (sizeDefined == (size_t)-1)
@@ -88,6 +88,24 @@ void mule::SheetReference::Write(xybase::Stream *stream, mule::Data::Basic::Type
 	{
 		return;
 	}
+
+	if (nameValue.IsType(Data::Basic::MultiValue::MVT_NULL))
+	{
+		if (size != 0)
+		{
+			logger.Warn(L"Null reference against non-zero size! ptr={}, size={}", tloc.value.unsignedValue, size);
+			logger.Warn(L"Ill formed item is ignored! (When process {}[{}])",
+				xybase::string::to_wstring(Configuration::GetInstance().GetString(u"mule.data.sheet.name")),
+				Configuration::GetInstance().GetSigned(u"mule.data.sheet.index"));
+		}
+		return;
+	}
+	if (!nameValue.IsType(Data::Basic::MultiValue::MVT_STRING))
+	{
+		throw xybase::RuntimeException(L"Multivalue type does not correct.", 100);
+	}
+	auto &name = *nameValue.value.stringValue;
+
 	Data::Sheet *sheet = new Data::Sheet(infraType, tloc.value.unsignedValue, size, name);
 	SheetManager::GetInstance().RegisterSheet(stream, sheet);
 }

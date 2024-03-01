@@ -16,7 +16,7 @@ size_t Integer::Size() const
 
 std::u16string mule::Data::Basic::Integer::GetDataType() const
 {
-	return std::u16string(u"int") + xybase::string::to_utf16(std::to_string(size));
+	return std::u16string(u"integer/") + (isUnsigned ? u"uint" : u"int") + xybase::string::to_utf16(std::to_string(size));
 }
 
 MultiValue mule::Data::Basic::Integer::DoRead(xybase::Stream *stream)

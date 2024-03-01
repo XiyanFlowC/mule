@@ -32,7 +32,7 @@ void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, const std::u16string &n
 	if (realm->IsComposite())
 		layer++;
 	else
-		isString = realm->GetDataType() == u"string";
+		isString = realm->GetDataType().starts_with(u"string/"), isText = realm->GetDataType() == u"string/text";
 	disarmed = realm->IsComposite();
 }
 
@@ -57,7 +57,7 @@ void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, int idx)
 	if (realm->IsComposite())
 		layer++;
 	else
-		isString = realm->GetDataType() == u"string";
+		isString = realm->GetDataType().starts_with(u"string"), isText = realm->GetDataType() == u"string/text";
 	disarmed = realm->IsComposite();
 }
 
