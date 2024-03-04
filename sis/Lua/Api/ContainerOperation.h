@@ -20,6 +20,8 @@ namespace mule
 
 			int OpenAndMount(std::u8string root, std::u8string param);
 
+			int Remove(std::u8string name);
+
 			void RegisterContainerOperationFunctions();
 		}
 	}

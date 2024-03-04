@@ -50,10 +50,17 @@ int mule::Lua::Api::OpenAndMount(std::u8string root, std::u8string param)
 	return 0;
 }
 
+int mule::Lua::Api::Remove(std::u8string file)
+{
+	VirtualFileSystem::GetInstance().Remove(xybase::string::to_utf16(file).c_str());
+	return 0;
+}
+
 void mule::Lua::Api::RegisterContainerOperationFunctions()
 {
 	LuaHost::GetInstance().RegisterFunction("mount", MountStream);
 	LuaHost::GetInstance().RegisterFunction("unmount", Unmount);
+	LuaHost::GetInstance().RegisterFunction("remove", Remove);
 	LuaHost::GetInstance().RegisterFunction("list", List);
 	LuaHost::GetInstance().RegisterFunction("openpack", OpenAndMount);
 	LuaHost::GetInstance().RegisterFunction("listroots", ListRoots);
