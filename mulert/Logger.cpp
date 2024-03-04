@@ -34,6 +34,7 @@ mule::Logger::~Logger()
 
 void mule::LoggerBase::LoggerInit(int logLevel, bool enableColor)
 {
+	this->logLevel = logLevel;
 	output = stdout;
 	errorOutput = stderr;
 	enableColour = enableColor;

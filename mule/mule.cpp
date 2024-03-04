@@ -15,8 +15,9 @@ int main(int argc, char **argv)
 		std::cerr << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compiled at: " << MULE_BUILD_TIME << ")" << std::endl;
 		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action> [options]" << std::endl;
 		std::cerr
-			<< "Options:" << std::endl 
+			<< "Options:" << std::endl
 			<< "-l                  less log." << std::endl
+			<< "  --log-file=<file> log to specified file." << std::endl
 			<< "-d<name>=<value>    define a variable." << std::endl;
 		exit(-1);
 	}
