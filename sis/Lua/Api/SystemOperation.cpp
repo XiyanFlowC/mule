@@ -38,8 +38,19 @@ int mule::Lua::Api::LoadPlugin(std::u8string path)
 
 mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::u8string name, mule::Data::Basic::MultiValue mv)
 {
-    if (mv.IsType(mule::Data::Basic::MultiValue::MVT_NULL)) return mule::Configuration::GetInstance().GetVariable(xybase::string::to_utf16(name).c_str());
+    if (mv.IsType(mule::Data::Basic::MultiValue::MVT_NULL))
+    {
+        try
+        {
+            return mule::Configuration::GetInstance().GetVariable(xybase::string::to_utf16(name).c_str());
+        }
+        catch (Configuration::ConfigurationNotFoundException &ex)
+        {
+            return mule::Data::Basic::MultiValue::MV_NULL;
+        }
+    }
     mule::Configuration::GetInstance().SetVariable(xybase::string::to_utf16(name).c_str(), mv);
+
     return 0;
 }
 

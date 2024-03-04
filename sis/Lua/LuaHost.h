@@ -273,7 +273,7 @@ namespace mule
 				}
 				catch (xybase::RuntimeException &ex)
 				{
-					host.logger.Error(L"An exception catched while executing mule-side functions.\n[{:X}] {}", (unsigned)ex.GetErrorCode(), ex.GetMessage());
+					host.logger.Error(L"An exception caught while executing mule-side functions.\n[{}] {}", (unsigned)ex.GetErrorCode(), ex.GetMessage());
 					host.PushValue(mule::Data::Basic::MultiValue(xybase::string::to_utf16(ex.GetMessage())));
 					host.PushValue(mule::Data::Basic::MultiValue(ex.GetErrorCode()));
 					return 2;

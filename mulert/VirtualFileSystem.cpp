@@ -73,7 +73,7 @@ void mule::VirtualFileSystem::CascadeProcess(const char16_t *targetFile, std::fu
 	xybase::Stream *baseStream = VirtualFileSystem::GetInstance().Open(path.c_str(), openMode);
 	std::stack<xybase::Stream *> streamStack;
 
-	if (baseStream == nullptr) throw xybase::InvalidOperationException(L"Faile to open " + xybase::string::to_wstring(path), 7885);
+	if (baseStream == nullptr) throw xybase::InvalidOperationException(L"Failed to open " + xybase::string::to_wstring(path), 7885);
 
 	streamStack.push(baseStream);
 	if (pathEnd != std::u16string::npos)

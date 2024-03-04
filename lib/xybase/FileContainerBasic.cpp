@@ -87,6 +87,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 		Fragment::Fragment frag{0, 0};
 		try
 		{
+			freeSpaces.Defragment();
 			 frag = freeSpaces.AllocMaximumFragment();
 		}
 		catch (xybase::InvalidOperationException &ex)
@@ -192,7 +193,7 @@ void xybase::FileContainerBasic::Remove(const std::u16string &path)
 
 	// TODO: 检查是否有文件访问正在进行中
 
-	freeSpaces.RegisterFragment(itr->second->offset, itr->second->size);
+	freeSpaces.RegisterFragment(itr->second->offset, XY_ALIGN(itr->second->size, align));
 	delete itr->second;
 	files.erase(itr);
 }
@@ -315,9 +316,9 @@ void xybase::FileContainerBasic::Close(unsigned long long handle)
 	auto &target = openedFiles[handle];
 	auto info = target.baseEntry;
 	info->occupied = false;
-	info->size = XY_ALIGN(target.size, align);
+	info->size = target.size;
 	// 计算并注册未使用完的剩余空间
-	size_t release = target.capacity - info->size;
+	size_t release = target.capacity - XY_ALIGN(info->size, align);
 	freeSpaces.RegisterFragment(info->offset + info->size, release);
 
 	openedFiles.erase(handle);
