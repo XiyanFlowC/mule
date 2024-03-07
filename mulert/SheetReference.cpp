@@ -121,21 +121,35 @@ mule::Data::Basic::Type *mule::SheetReference::SheetReferenceCreator::DoCreateOb
 	if (splt == std::u16string::npos)
 		return nullptr;
 
-	size_t sizeStart = info.find_first_of('(', splt);
-	if (sizeStart == std::u16string::npos || !info.ends_with(')')) return nullptr;
-
 	auto infra = Data::TypeManager::GetInstance().GetOrCreateType(info.substr(0, splt));
 	if (infra == nullptr) return nullptr;
 
 	SheetReference *ret = new SheetReference();
 
 	ret->infraType = infra;
-	ret->locCacheName = info.substr(splt + 1, sizeStart - splt - 1);
-	ret->sizeCacheName = info.substr(sizeStart + 1, info.size() - sizeStart - 2);
-	if (ret->sizeCacheName[0] >= '0' && ret->sizeCacheName[0] <= '9')
-		ret->sizeDefined = xybase::string::stoi<char16_t>(ret->sizeCacheName);
+
+	// size cache:
+	size_t sizeStart = info.find_first_of('(', splt);
+	if (sizeStart == std::u16string::npos || !info.ends_with(')'))
+	{
+		// no size information, all str behind @ is loc cache name
+		ret->locCacheName = info.substr(splt + 1);
+		// if no size information specified, set it to 1 by default
+		ret->sizeDefined = 1;
+	}
 	else
-		ret->sizeDefined = -1;
+	{
+		// size information found, loc cache name between @ and (
+		ret->locCacheName = info.substr(splt + 1, sizeStart - splt - 1);
+		// size information in ( and )
+		ret->sizeCacheName = info.substr(sizeStart + 1, info.size() - sizeStart - 2);
+		// start with digital, not a valid name. assume it is a constant number
+		if (ret->sizeCacheName[0] >= '0' && ret->sizeCacheName[0] <= '9')
+			ret->sizeDefined = xybase::string::stoi<char16_t>(ret->sizeCacheName);
+		else
+			ret->sizeDefined = -1;
+	}
+
 	if (metainfo.contains(u"naming"))
 	{
 		ret->namePattern = metainfo.find(u"naming")->second;
