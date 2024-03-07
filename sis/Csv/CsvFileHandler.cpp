@@ -53,7 +53,8 @@ int mule::Csv::CsvFileHandler::ReadChar()
 		else ret = ch;
 		break;
 	case mule::Csv::CsvFileHandler::UCM_UTF16LE:
-		ret = (instream->ReadChar()) | (instream->ReadChar() << 8);
+		ret = instream->ReadChar();
+		ret |= instream->ReadChar() << 8;
 		if (ret >= 0xD800 && ret <= 0xDBFF) {
 			if (instream->IsEof())
 			{
@@ -63,28 +64,41 @@ int mule::Csv::CsvFileHandler::ReadChar()
 
 			// Surrogate pair for characters U+10000 to U+10FFFF
 			char16_t leadSurrogate = ret;
-			char16_t trailSurrogate = (instream->ReadChar()) | (instream->ReadChar() << 8);
+			char16_t trailSurrogate = instream->ReadChar();
+			trailSurrogate |= instream->ReadChar() << 8;
 
 			// Singular lead surrogate
 			if ((trailSurrogate & 0xFC00) != 0xDC00)
 			{
 				ret = u'�';
-				instream->Seek(-4, xybase::Stream::SM_CURRENT);
+				instream->Seek(-2, xybase::Stream::SM_CURRENT);
 				break;
 			}
 
 			ret = static_cast<char32_t>(0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF));
 		}
 		else {
-			// Singular trailsurrogate
+			// Singular trail surrogate
 			if ((ret & 0xFC00) == 0xDC00)
 			{
 				ret = u'�';
 			}
+		}
+
+		// CRLF handle
+		if (ret == '\r')
+		{
+			char16_t linefeedTest = instream->ReadChar();
+			linefeedTest |= instream->ReadChar() << 8;
+			if (linefeedTest == '\n')
+				ret = '\r';
+			else
+				instream->Seek(-2, xybase::Stream::SM_CURRENT);
 		}
 		break;
 	case mule::Csv::CsvFileHandler::UCM_UTF16BE:
-		ret = (instream->ReadChar() << 8) | (instream->ReadChar());
+		ret = instream->ReadChar() << 8;
+		ret |= instream->ReadChar();
 		if (ret >= 0xD800 && ret <= 0xDBFF) {
 			if (instream->IsEof())
 			{
@@ -93,24 +107,36 @@ int mule::Csv::CsvFileHandler::ReadChar()
 			}
 			// Surrogate pair for characters U+10000 to U+10FFFF
 			char16_t leadSurrogate = ret;
-			char16_t trailSurrogate = (instream->ReadChar() << 8) | (instream->ReadChar());
+			char16_t trailSurrogate = instream->ReadChar() << 8;
+			trailSurrogate |= instream->ReadChar();
 
 			// Singular lead surrogate
 			if ((trailSurrogate & 0xFC00) != 0xDC00)
 			{
 				ret = u'�';
-				instream->Seek(-4, xybase::Stream::SM_CURRENT);
+				instream->Seek(-2, xybase::Stream::SM_CURRENT);
 				break;
 			}
 
 			ret = static_cast<char32_t>(0x10000 + ((leadSurrogate & 0x3FF) << 10) + (trailSurrogate & 0x3FF));
 		}
 		else {
-			// Singular trailsurrogate
+			// Singular trail surrogate
 			if ((ret & 0xFC00) == 0xDC00)
 			{
 				ret = u'�';
 			}
+		}
+
+		// CRLF handle
+		if (ret == '\r')
+		{
+			char16_t linefeedTest = instream->ReadChar() << 8;
+			linefeedTest |= instream->ReadChar();
+			if (linefeedTest == '\n')
+				ret = '\r';
+			else
+				instream->Seek(-2, xybase::Stream::SM_CURRENT);
 		}
 		break;
 	case mule::Csv::CsvFileHandler::UCM_UTF32LE:
@@ -143,6 +169,7 @@ std::u16string mule::Csv::CsvFileHandler::ReadCell()
 					{
 						ch = ReadChar();
 					}
+					flg_eol = ch == '\n';
 					return sb.ToString();
 				}
 			}
@@ -168,13 +195,18 @@ std::u16string mule::Csv::CsvFileHandler::ReadCell()
 			sb += ch;
 			ch = ReadChar();
 		}
+		flg_eol = ch == '\n';
 	}
 	return sb.ToString();
 }
 
 void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, const std::u16string &name)
 {
-	if (realm->IsComposite()) return;
+	if (realm->IsComposite())
+	{
+		++layer;
+		return;
+	}
 	auto str = ReadCell();
 	if (str == u"null")
 		readElement = MultiValue::MVT_NULL;
@@ -193,11 +225,38 @@ void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, const std::u16string &
 
 void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, const std::u16string &name)
 {
+	if (realm->IsComposite())
+	{
+		--layer;
+	}
+	if (layer <= wrapLayer)
+	{
+		if (!flg_eol && (realm->IsComposite() ? wrapSuppression != 2 : wrapSuppression != 1))
+		{
+			logger.Debug(L"Weird file structure. Sync to End-Of-Line.");
+			flg_eol = true;
+			int ch = ReadChar();
+			while (ch != '\n')
+			{
+				ch = ReadChar();
+#ifndef NDEBUG
+				if (ch != ',')
+				{
+					logger.Debug(L"File suspecious. Corrupted?");
+				}
+#endif // !NDEBUG
+			}
+		}
+	}
 }
 
 void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 {
-	if (realm->IsComposite()) return;
+	if (realm->IsComposite())
+	{
+		++layer;
+		return;
+	}
 	auto str = ReadCell();
 	if (str == u"null")
 		readElement = MultiValue::MVT_NULL;
@@ -216,6 +275,31 @@ void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 
 void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, int idx)
 {
+	if (realm->IsComposite())
+	{
+		--layer;
+	}
+	if (layer <= wrapLayer)
+	{
+		// 根据设置此时应有新行，同步（如果已经在新行则直接忽略
+		if (!flg_eol && (realm->IsComposite() ? wrapSuppression != 2 : wrapSuppression != 1))
+		{
+			logger.Debug(L"Weird file structure. Sync to End-Of-Line.");
+			// 已同步，已经处于新行
+			flg_eol = true;
+			int ch = ReadChar();
+			while (ch != '\n')
+			{
+				ch = ReadChar();
+#ifndef NDEBUG
+				if (ch != ',')
+				{
+					logger.Debug(L"File suspecious. Corrupted?");
+				}
+#endif // !NDEBUG
+			}
+		}
+	}
 }
 
 void mule::Csv::CsvFileHandler::OnSheetWriteStart()
@@ -243,6 +327,14 @@ void mule::Csv::CsvFileHandler::OnSheetWriteStart()
 		// rewind, assume it is utf-8
 		instream->Seek(0, xybase::Stream::SM_BEGIN);
 	}
+
+	// 初始化换行检查系统
+	flg_eol = false;
+	layer = 0;
+	if (Configuration::GetInstance().IsExist(u"mule.handler.wrap-layer"))
+		wrapLayer = (int)Configuration::GetInstance().GetSigned(u"mule.handler.wrap-layer");
+	if (Configuration::GetInstance().IsExist(u"mule.handler.wrap-suppression"))
+		wrapSuppression = (int)Configuration::GetInstance().GetSigned(u"mule.handler.wrap-suppression");
 }
 
 void mule::Csv::CsvFileHandler::OnSheetWriteEnd()

@@ -2,6 +2,7 @@
 
 #include <Data/Basic/Type.h>
 #include <string>
+#include <Logger.h>
 
 namespace mule
 {
@@ -18,6 +19,20 @@ namespace mule
 				UCM_UTF32LE, /* reserved, not implemented */
 				UCM_UTF32BE, /* reserved, not implemented */
 			} charMode = UCM_UTF8;
+
+			/**
+			 * @brief Flag: End of line read.
+			 */
+			bool flg_eol;
+			// 换行检查
+			int wrapLayer = 1;
+			/**
+			 * @brief 抑制换行：1-抑制基本类型，2-抑制组合类型，0-不抑制
+			*/
+			int wrapSuppression = 0;
+			int layer = 0;
+
+			Logger logger = Logger::GetLogger<CsvFileHandler>();
 		protected:
 			int ReadChar();
 

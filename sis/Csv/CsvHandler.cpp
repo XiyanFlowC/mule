@@ -57,7 +57,7 @@ void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, int idx)
 	if (realm->IsComposite())
 		layer++;
 	else
-		isString = realm->GetDataType().starts_with(u"string"), isText = realm->GetDataType() == u"string/text";
+		isString = realm->GetDataType().starts_with(u"string/"), isText = realm->GetDataType() == u"string/text";
 	disarmed = realm->IsComposite();
 }
 
