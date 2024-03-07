@@ -272,6 +272,24 @@ namespace xybase
 		}
 
 		/**
+		 * @brief Replace all substring in a string with given replacement in place
+		 * @tparam ChT Type of char.
+		 * @param original Original string.
+		 * @param target The substring need to be replaced.
+		 * @param replacement Replacement.
+		*/
+		template <typename ChT>
+		void replace_in_place(std::basic_string<ChT> &original, const std::basic_string<ChT> &target, const std::basic_string<ChT> &replacement)
+		{
+			size_t offset = original.find(target);
+			while (offset != std::basic_string<ChT>::npos)
+			{
+				original.replace(offset, target.length(), replacement);
+				offset = original.find(target, offset + replacement.length());
+			}
+		}
+
+		/**
 		 * @brief Parse string to integer (up to base 36)
 		 * @tparam T Type of the string unit.
 		 * @param str String.

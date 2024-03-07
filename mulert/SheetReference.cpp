@@ -11,12 +11,15 @@ std::u16string mule::SheetReference::GenerateName(size_t offset, std::u16string 
 	{
 		name = Configuration::GetInstance().GetString(u"mule.sheet-reference.name-pattern");
 	}
-	streamName = xybase::string::replace<char16_t>(streamName, u"/", u"_");
-	streamName = xybase::string::replace<char16_t>(streamName, u"\\", u"_");
-	streamName = xybase::string::replace<char16_t>(streamName, u":", u"_");
-	streamName = xybase::string::replace<char16_t>(streamName, u"?", u"_");
-	streamName = xybase::string::replace<char16_t>(streamName, u"|", u"_");
-	streamName = xybase::string::replace<char16_t>(streamName, u"*", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"/", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"\\", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u":", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"?", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"|", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"*", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"\"", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u"<", u"_");
+	xybase::string::replace_in_place<char16_t>(streamName, u">", u"_");
 	name = xybase::string::replace<char16_t>(name, u"${offset}", xybase::string::itos<char16_t>(offset, 16));
 	name = xybase::string::replace<char16_t>(name, u"${stream}", streamName);
 
