@@ -40,7 +40,9 @@ namespace mule
 		public:
 			void OnRealmEnter(mule::Data::Basic::Type *realm, const std::u16string &name) override;
 			void OnRealmExit(mule::Data::Basic::Type *realm, const std::u16string &name) override;
+			void HandleReamExit(mule::Data::Basic::Type *realm);
 			void OnRealmEnter(mule::Data::Basic::Type *realm, int idx) override;
+			void HandleRealmEnter(mule::Data::Basic::Type *realm);
 			void OnRealmExit(mule::Data::Basic::Type *realm, int idx) override;
 			void OnSheetWriteStart() override;
 			void OnSheetWriteEnd() override;

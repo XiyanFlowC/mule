@@ -380,7 +380,7 @@ std::wstring MultiValue::Stringfy() const
 		return std::to_wstring(value.unsignedValue) + L"u";
 		break;
 	case MultiValue::MVT_REAL:
-		return L"$" + std::to_wstring(value.realValue);
+		return std::to_wstring(value.realValue);
 		break;
 	case MultiValue::MVT_STRING:
 		return L"\"" + Stringfy(xybase::string::to_wstring(*value.stringValue)) + L"\"";
@@ -730,13 +730,16 @@ MultiValue mule::Data::Basic::MultiValue::Parse(const std::u16string &value)
 	{
 		ret.ParseString(value);
 	}
-	else if (value[0] == '$')
+	else if (value[0] == '$') // 保持兼容性
 	{
 		ret.ParseReal(value.substr(1));
 	}
 	else if ((value[0] >= '0' && value[0] <= '9') || value[0] == '-')
 	{
-		ret.ParseInt(value);
+		if (value.find(u'.') != std::u16string::npos)
+			ret.ParseReal(value);
+		else
+			ret.ParseInt(value);
 	}
 	else
 	{

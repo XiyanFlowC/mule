@@ -32,7 +32,9 @@ void mule::Csv::CsvOutHandler::OnRealmEnter(Type *realm, const std::u16string &n
 	if (realm->IsComposite())
 		layer++;
 	else
-		isString = realm->GetDataType().starts_with(u"string/"), isText = realm->GetDataType() == u"string/text";
+		isString = realm->GetDataType().starts_with(u"string/"),
+		isText = realm->GetDataType() == u"string/text",
+		isNumber = realm->GetDataType().starts_with(u"real-number/");
 	disarmed = realm->IsComposite();
 }
 
@@ -87,6 +89,7 @@ void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 	{
 		outstream->Write(",");
 	}
+
 	if (isString && value.IsType(MultiValue::MVT_STRING))
 	{
 		auto str = *value.value.stringValue;
@@ -103,6 +106,11 @@ void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(xybase::string::replace<char16_t>(str, u"\"", u"\"\"")).c_str()));
 			outstream->Write('"');
 		//}
+	}
+	else if (isNumber)
+	{
+		auto number = value.value.realValue;
+		outstream->Write(number);
 	}
 	else
 		outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(value.Stringfy()).c_str()));

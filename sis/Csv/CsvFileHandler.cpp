@@ -202,28 +202,15 @@ std::u16string mule::Csv::CsvFileHandler::ReadCell()
 
 void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, const std::u16string &name)
 {
-	if (realm->IsComposite())
-	{
-		++layer;
-		return;
-	}
-	auto str = ReadCell();
-	if (str == u"null")
-		readElement = MultiValue::MVT_NULL;
-	else if (realm->GetDataType().starts_with(u"string/"))
-	{
-		if (realm->GetDataType() == u"string/text" && Configuration::GetInstance().IsExist(u"mule.handler.string-write-proc"))
-		{
-			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-write-proc");
-			MultiValue tmp{ str };
-			str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &tmp).value.stringValue;
-		}
-		readElement = MultiValue{ str };
-	}
-	else readElement = MultiValue::Parse(str);
+	HandleRealmEnter(realm);
 }
 
 void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, const std::u16string &name)
+{
+	HandleReamExit(realm);
+}
+
+void mule::Csv::CsvFileHandler::HandleReamExit(mule::Data::Basic::Type *realm)
 {
 	if (realm->IsComposite())
 	{
@@ -242,7 +229,7 @@ void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, const std::u16string &n
 #ifndef NDEBUG
 				if (ch != ',')
 				{
-					logger.Debug(L"File suspecious. Corrupted?");
+					logger.Debug(L"File suspicious. Corrupted?");
 				}
 #endif // !NDEBUG
 			}
@@ -252,6 +239,11 @@ void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, const std::u16string &n
 
 void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 {
+	HandleRealmEnter(realm);
+}
+
+void mule::Csv::CsvFileHandler::HandleRealmEnter(mule::Data::Basic::Type *realm)
+{
 	if (realm->IsComposite())
 	{
 		++layer;
@@ -270,36 +262,16 @@ void mule::Csv::CsvFileHandler::OnRealmEnter(Type *realm, int idx)
 		}
 		readElement = MultiValue{ str };
 	}
+	else if (realm->GetDataType().starts_with(u"real-number/"))
+	{
+		readElement = std::stod(xybase::string::to_wstring(str));
+	}
 	else readElement = MultiValue::Parse(str);
 }
 
 void mule::Csv::CsvFileHandler::OnRealmExit(Type *realm, int idx)
 {
-	if (realm->IsComposite())
-	{
-		--layer;
-	}
-	if (layer <= wrapLayer)
-	{
-		// 根据设置此时应有新行，同步（如果已经在新行则直接忽略
-		if (!flg_eol && (realm->IsComposite() ? wrapSuppression != 2 : wrapSuppression != 1))
-		{
-			logger.Debug(L"Weird file structure. Sync to End-Of-Line.");
-			// 已同步，已经处于新行
-			flg_eol = true;
-			int ch = ReadChar();
-			while (ch != '\n')
-			{
-				ch = ReadChar();
-#ifndef NDEBUG
-				if (ch != ',')
-				{
-					logger.Debug(L"File suspecious. Corrupted?");
-				}
-#endif // !NDEBUG
-			}
-		}
-	}
+	HandleReamExit(realm);
 }
 
 void mule::Csv::CsvFileHandler::OnSheetWriteStart()
