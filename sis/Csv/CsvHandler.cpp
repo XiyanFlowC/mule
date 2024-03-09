@@ -107,11 +107,6 @@ void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 			outstream->Write('"');
 		//}
 	}
-	else if (isNumber)
-	{
-		auto number = value.value.realValue;
-		outstream->Write(number);
-	}
 	else
 		outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(value.Stringfy()).c_str()));
 }

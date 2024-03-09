@@ -262,10 +262,6 @@ void mule::Csv::CsvFileHandler::HandleRealmEnter(mule::Data::Basic::Type *realm)
 		}
 		readElement = MultiValue{ str };
 	}
-	else if (realm->GetDataType().starts_with(u"real-number/"))
-	{
-		readElement = std::stod(xybase::string::to_wstring(str));
-	}
 	else readElement = MultiValue::Parse(str);
 }
 
