@@ -22,14 +22,6 @@ void mule::Data::Basic::BasicType::Read(xybase::Stream *stream, DataHandler *dat
 void mule::Data::Basic::BasicType::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	MultiValue value = fileHandler->OnDataWrite();
-	if (MultiValue::MV_NULL == value)
-	{
-		size_t size = Size();
-		if (size == static_cast<size_t>(-1)) return;
-		stream->Seek(size, xybase::Stream::SM_CURRENT);
-		return;
-	}
-
 	if (!cacheVariableName.empty())
 	{
 		ContextManager::GetInstance().SetVariable(cacheVariableName, value);
