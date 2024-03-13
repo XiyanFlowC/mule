@@ -217,7 +217,18 @@ int ImportSheets(int streamId, std::u8string handler)
 {
     auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
     if (stream == nullptr) return -10;
-    mule::SheetManager::GetInstance().WriteSheets(stream, xybase::string::to_utf16(handler));
+    try
+    {
+        mule::SheetManager::GetInstance().WriteSheets(stream, xybase::string::to_utf16(handler));
+    }
+    catch (xybase::RuntimeException &ex)
+    {
+        auto &config = mule::Configuration::GetInstance();
+        luaenvLogger.Error(L"Import incomplete due to an exception occurred. Stop at {}:{}.",
+            xybase::string::to_wstring(config.GetString(u"mule.data.sheet.name")),
+            config.GetSigned(u"mule.data.sheet.index"));
+        luaenvLogger.Error(L"[{}] {}", ex.GetErrorCode(), ex.GetMessage());
+    }
     return 0;
 }
 

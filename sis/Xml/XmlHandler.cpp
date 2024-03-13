@@ -258,11 +258,21 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 				c = instream->ReadChar();
 			} while (c != '<');
 			c = instream->ReadChar();
+			xybase::StringBuilder<char8_t> sb;
 			if (c != '/')
 			{
-				throw xybase::RuntimeException(std::format(L"Unexpected open tag. Try to find close tag for {}.", xybase::string::to_wstring(name)) , 95071);
+				while (c != '>')
+				{
+					sb += c;
+					c = instream->ReadChar();
+				}
+				throw xybase::RuntimeException(
+					std::format(
+						L"Unexpected open tag. expected </{}>, but got <{}>.",
+						xybase::string::to_wstring(name),
+						xybase::string::to_wstring(sb.ToString())),
+					95071);
 			}
-			xybase::StringBuilder<char8_t> sb;
 			do
 			{
 				c = instream->ReadChar();
@@ -270,7 +280,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawNa
 			} while (c != '>');
 			if (xybase::string::to_utf16(sb.ToString()) != name + u">")
 			{
-				throw xybase::RuntimeException(std::format(L"Unexpected close tag, expect </{}>, but got </{}.", xybase::string::to_wstring(name), xybase::string::to_wstring(sb.ToString())), 95073);
+				throw xybase::RuntimeException(std::format(L"Unexpected close tag, expected </{}>, but got </{}.", xybase::string::to_wstring(name), xybase::string::to_wstring(sb.ToString())), 95073);
 			}
 		}
 	}

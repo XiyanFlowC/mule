@@ -29,7 +29,7 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHandler)
 {
 	auto val = fileHandler->OnDataWrite();
-	if (val.IsType(MultiValue::MVT_NULL))
+	if (!referent->IsComposite() && val.IsType(MultiValue::MVT_NULL))
 	{
 		stream->Write((int32_t)0);
 		return;
