@@ -308,7 +308,9 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 		if (realm->IsComposite())
 		{
 			outstream->Write("<");
-			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(u"item").c_str()));
+			outstream->Write(reinterpret_cast<const char *>("item i='"));
+			outstream->Write((int64_t)idx);
+			outstream->Write("'");
 
 			status = XHS_READ_METADATA_WAITING;
 		}
@@ -403,6 +405,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 		{
 			outstream->Write("<");
 			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
+			element.metadata[u"i"] = idx;
 			for (auto &&datum : element.metadata)
 			{
 				outstream->Write(" ");
