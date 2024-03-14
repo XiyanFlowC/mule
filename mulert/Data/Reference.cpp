@@ -12,6 +12,8 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 
 	if (ptr == 0)
 	{
+		if (referent->IsComposite())
+			dataHandler->AppendMetadatum(u"ptr", (int64_t)0);
 		dataHandler->OnDataRead(MultiValue::MV_NULL);
 		dataHandler->AppendMetadatum(u"ptr", (int64_t)ptr);
 		return;

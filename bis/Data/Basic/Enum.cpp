@@ -45,5 +45,5 @@ void mule::Data::Basic::Enum::DoWrite(xybase::Stream *stream, const MultiValue &
 
 		baseType->DoWrite(stream, mapS2V[*value.value.stringValue]);
 	}
-	baseType->DoWrite(stream, value);
+	else baseType->DoWrite(stream, value);
 }
