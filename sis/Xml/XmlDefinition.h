@@ -13,7 +13,7 @@ namespace mule
 		public:
 			void Parse(std::u16string name);
 
-			void ParseVersion1(const xybase::xml::XmlNode &node);
+			void ParseVersion1(const xybase::xml::XmlNode &node, int subversion = 0);
 		};
 	}
 }
