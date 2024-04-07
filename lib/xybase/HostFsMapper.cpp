@@ -32,6 +32,7 @@ void xybase::HostFsMapper::Flush()
 
 xybase::Stream *xybase::HostFsMapper::Open(std::u16string name, FileOpenMode mode)
 {
+	if (name.find(u"..") != std::u16string::npos) throw InvalidParameterException(L"name", L"Invalid path: no .. permitted.", 95964);
 	wchar_t modebuf[8];
 	memset(modebuf, 0, sizeof(modebuf));
 	wchar_t *ptr = modebuf;
@@ -83,12 +84,14 @@ std::list<std::u16string> xybase::HostFsMapper::List()
 
 void xybase::HostFsMapper::MakeDir(std::u16string path)
 {
+	if (path.find(u"..") != std::u16string::npos) throw InvalidParameterException(L"path", L"Invalid path: no .. permitted.", 95964);
 	std::filesystem::path root(rootPath);
 	std::filesystem::create_directory(root/path);
 }
 
 void xybase::HostFsMapper::Remove(std::u16string path, bool recursive)
 {
+	if (path.find(u"..") != std::u16string::npos) throw InvalidParameterException(L"path", L"Invalid path: no .. permitted.", 95964);
 	std::filesystem::path root(rootPath);
 	if (recursive)
 		std::filesystem::remove_all(root/path);

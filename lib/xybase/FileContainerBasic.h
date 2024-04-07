@@ -43,6 +43,7 @@ namespace xybase
 		{
 			unsigned long long fileHandle;
 			FileContainerBasic *host;
+			bool isOpen;
 		public:
 			XY_API InnerStream(FileContainerBasic *host, unsigned long long fileHandle);
 

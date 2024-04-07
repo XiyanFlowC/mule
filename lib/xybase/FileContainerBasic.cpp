@@ -8,10 +8,12 @@ xybase::FileContainerBasic::InnerStream::InnerStream(FileContainerBasic *host, u
 {
 	this->host = host;
 	this->fileHandle = fileHandle;
+	isOpen = true;
 }
 
 xybase::FileContainerBasic::InnerStream::~InnerStream()
 {
+	Close();
 }
 
 void xybase::FileContainerBasic::InnerStream::Flush()
@@ -46,7 +48,10 @@ void xybase::FileContainerBasic::InnerStream::Write(const char *buffer, size_t l
 
 void xybase::FileContainerBasic::InnerStream::Close()
 {
-	host->Close(fileHandle);
+	if (isOpen)
+		host->Close(fileHandle);
+
+	isOpen = false;
 }
 
 bool xybase::FileContainerBasic::InnerStream::IsEof() const noexcept
@@ -88,7 +93,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 		try
 		{
 			freeSpaces.Defragment();
-			 frag = freeSpaces.AllocMaximumFragment();
+			frag = freeSpaces.AllocMaximumFragment();
 		}
 		catch (xybase::InvalidOperationException &ex)
 		{
@@ -98,7 +103,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 		}
 
 		if (frag.GetSize() == 0)
-			throw InvalidOperationException(L"Cannot create specified file since the free space was ran out.", 102099);
+			throw InvalidOperationException(L"Cannot create specified file since the free space has run out.", 102099);
 
 		unsigned long long handle = currentHandle++;
 
@@ -116,7 +121,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 		{
 			.cursor = 0,
 			.size = 0,
-			.capacity = fe->size,
+			.capacity = frag.GetSize(),
 			.stream = ret,
 			.baseEntry = fe,
 			.readable = false,
@@ -319,7 +324,7 @@ void xybase::FileContainerBasic::Close(unsigned long long handle)
 	info->size = target.size;
 	// 计算并注册未使用完的剩余空间
 	size_t release = target.capacity - XY_ALIGN(info->size, align);
-	freeSpaces.RegisterFragment(info->offset + info->size, release);
+	freeSpaces.RegisterFragment(info->offset + XY_ALIGN(info->size, align), release);
 
 	openedFiles.erase(handle);
 }
