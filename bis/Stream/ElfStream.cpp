@@ -4,7 +4,7 @@ using namespace xybase;
 using namespace mule::Stream;
 
 ElfStream::ElfStream(xybase::Stream *stream)
-	: stream(stream)
+	: stream(stream), shs(nullptr), phs(nullptr), shs64(nullptr), phs64(nullptr), header(nullptr), header64(nullptr)
 {
 	// 读取魔术头
 	byte_t magicHeader[16];
@@ -14,20 +14,29 @@ ElfStream::ElfStream(xybase::Stream *stream)
 	{
 		throw ElfFormatErrorException(L"Not a valid ELF.", __LINE__);
 	}
-	if (magicHeader[4] != '\x01')
+	if (magicHeader[4] != '\x01' && magicHeader[4] != '\x02')
 	{
-		throw ElfFormatErrorException(L"Only support 32-bit ELF.", __LINE__);
+		throw ElfFormatErrorException(L"Invalid ELF bit or a new version of ELF.", __LINE__);
 	}
+	is64 = magicHeader[4] == '\x02';
 	if (magicHeader[5] != '\x01' && magicHeader[5] != '\x02')
 	{
 		throw ElfFormatErrorException(L"Invalid data marshal.", __LINE__);
 	}
-	isBigEndian = magicHeader[5] == '\x02' ? true : false;
+	isBigEndian = magicHeader[5] == '\x02';
 	if (magicHeader[6] != '\x01')
 	{
 		throw ElfFormatErrorException(L"Unsupported ELF version.", __LINE__);
 	}
 	stream->Seek(0, SM_BEGIN);
+	if (is64) Init64(stream);
+	else Init32(stream);
+
+	//Seek(header->entry);
+}
+
+void mule::Stream::ElfStream::Init32(xybase::Stream *stream)
+{
 	header = new elf_header;
 	if (isBigEndian ^ bigEndianSystem)
 	{
@@ -66,8 +75,71 @@ ElfStream::ElfStream(xybase::Stream *stream)
 		throw xybase::NotImplementedException();
 	}
 	stream->ReadBytes((char *)shs, sizeof(section_header) * header->shnum);
+}
 
-	//Seek(header->entry);
+void mule::Stream::ElfStream::Init64(xybase::Stream *stream)
+{
+	header64 = new elf64_header;
+	if (isBigEndian ^ bigEndianSystem)
+	{
+		ReadBytes((char *)header->ident, 16);
+		header->type = ReadUInt16();
+		header->machine = ReadUInt16();
+		header->version = ReadUInt32();
+		header->entry = ReadUInt64();
+		header->phoff = ReadUInt64();
+		header->shoff = ReadUInt64();
+		header->flags = ReadUInt32();
+		header->ehsize = ReadUInt16();
+		header->phentsize = ReadUInt16();
+		header->phnum = ReadUInt16();
+		header->shentsize = ReadUInt16();
+		header->shnum = ReadUInt16();
+		header->shstrndx = ReadUInt16();
+	}
+	else
+	{
+		ReadBytes((char *)header64, sizeof(elf64_header));
+	}
+
+	phs64 = new program_header64[header64->phnum];
+	stream->Seek(header->phoff, SM_BEGIN);
+	if (isBigEndian ^ bigEndianSystem)
+	{
+		auto *pp = phs64;
+		for (int i = 0; i < header64->phnum; ++i, ++pp)
+		{
+			pp->type = ReadUInt32();
+			pp->flags = ReadUInt32();
+			pp->offset = ReadUInt64();
+			pp->vaddr = ReadUInt64();
+			pp->paddr = ReadUInt64();
+			pp->filesz = ReadUInt64();
+			pp->memsz = ReadUInt64();
+			pp->align = ReadUInt64();
+		}
+	}
+	else stream->ReadBytes((char *)phs64, sizeof(program_header64) * header->phnum);
+
+	shs64 = new section_header64[header64->shnum];
+	stream->Seek(header->shoff, SM_BEGIN);
+	if (isBigEndian ^ bigEndianSystem)
+	{
+		for (int i = 0; i < header64->shnum; ++i)
+		{
+			shs64[i].name = ReadUInt32();
+			shs64[i].type = ReadUInt32();
+			shs64[i].flags = ReadUInt64();
+			shs64[i].addr = ReadUInt64();
+			shs64[i].offset = ReadUInt64();
+			shs64[i].size = ReadUInt64();
+			shs64[i].link = ReadUInt32();
+			shs64[i].info = ReadUInt32();
+			shs64[i].align = ReadUInt64();
+			shs64[i].entsize = ReadUInt64();
+		}
+	}
+	else stream->ReadBytes((char *)shs64, sizeof(section_header64) * header->shnum);
 }
 
 ElfStream::~ElfStream()
@@ -104,9 +176,15 @@ void ElfStream::Close()
 	if (shs != nullptr) delete[] shs;
 	if (phs != nullptr) delete[] phs;
 	if (header != nullptr) delete header;
+	if (shs64 != nullptr) delete[] shs64;
+	if (phs64 != nullptr) delete[] phs64;
+	if (header64 != nullptr) delete[] header64;
 	shs = nullptr;
 	phs = nullptr;
 	header = nullptr;
+	shs64 = nullptr;
+	phs64 = nullptr;
+	header64 = nullptr;
 }
 
 void ElfStream::SeekOffset(size_t offset, SeekMode mode)
