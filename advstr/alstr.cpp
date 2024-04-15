@@ -48,9 +48,43 @@ int str_im(xybase::TextStream *input, xybase::Stream *output)
 		int size = (int)xybase::string::stoi(line.substr(firstComma + 1, line.find(',', firstComma + 1) - firstComma - 1));
 		// Beware the str is in utf-8!!!
 		std::string str = line.substr(line.find(',', firstComma + 1) + 1);
+		xybase::StringBuilder<char8_t> sb;
+		int escaped = 0, xch = 0;
+		for (const char &ch : str)
+		{
+			if (escaped)
+			{
+				if (escaped == 2)
+				{
+					++escaped;
+					xch = xybase::string::stoi<char>({ ch }, 16) << 8;
+				}
+				else if (escaped == 3)
+				{
+					escaped = 0;
+					xch |= xybase::string::stoi<char>({ ch }, 16) << 8;
+					sb += xch;
+				}
+				else
+				{
+					escaped = 0;
+					if (ch == 'n') sb += '\n';
+					else if (ch == 'r') sb += '\r';
+					else if (ch == 'x') ++escaped, xch = 0;
+					else if (ch == '0') sb.Append((char8_t)'\0');
+					else if (ch == '\\') sb += '\\';
+					else sb += ch;
+				}
+			}
+			else
+			{
+				if (ch == '\\') ++escaped;
+				else sb += ch;
+			}
+		}
 		// HACK: The utf-8 string stored in the std::string can be operate as this to 'convert' to the std::u8string (with constructor
 		// note that might violate the type ? I have no idea how to convert the type from the ifstream anyway
-		std::string rawStr = xybase::string::to_string((char8_t *)(str.c_str()));
+		std::string rawStr = xybase::string::to_string(sb.ToString());
 		if (rawStr.size() > size)
 		{
 			logger.Error(L"String size ({}) exceeded the limitation ({})!", rawStr.size(), size);
