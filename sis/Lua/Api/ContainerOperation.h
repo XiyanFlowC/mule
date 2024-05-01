@@ -18,6 +18,8 @@ namespace mule
 
 			mule::Data::Basic::MultiValue ListRoots();
 
+			mule::Data::Basic::MultiValue Metadata(std::u8string path, mule::Data::Basic::MultiValue data);
+
 			int OpenAndMount(std::u8string root, std::u8string param);
 
 			int Remove(std::u8string name);

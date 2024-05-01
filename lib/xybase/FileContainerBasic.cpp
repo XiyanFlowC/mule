@@ -227,6 +227,26 @@ void xybase::FileContainerBasic::Remove(std::u16string path, bool recursive)
 	}
 }
 
+void xybase::FileContainerBasic::SetMetadata(const std::u16string &name, const FileEntry &data)
+{
+	if (!files.contains(name))
+	{
+		throw xybase::InvalidParameterException(L"name", L"Specified file not found.", 106563);
+	}
+
+	*files[name] = data;
+}
+
+xybase::FileContainerBasic::FileEntry xybase::FileContainerBasic::GetMetadata(const std::u16string &name)
+{
+	if (!files.contains(name))
+	{
+		throw xybase::InvalidParameterException(L"name", L"Specified file not found.", 106564);
+	}
+
+	return *files[name];
+}
+
 void xybase::FileContainerBasic::Write(unsigned long long handle, const char *buffer, size_t limit)
 {
 	if (!openedFiles[handle].writable) throw xybase::InvalidOperationException(L"This inner stream cannot write.", 102501);

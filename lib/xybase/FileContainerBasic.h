@@ -21,6 +21,29 @@ namespace xybase
 		// 读写状态，0 为读，1 为写
 		int mode;
 	public:
+		/**
+		 * @brief 用于记录文件包内部文件的描述信息。
+		 */
+		struct FileEntry
+		{
+			/**
+			 * @brief 在文件包中的偏移量（字节）。
+			 */
+			size_t offset;
+			/**
+			 * @brief 所占大小（字节）。
+			 */
+			size_t size;
+			/**
+			 * @brief 到文件的原始路径表示。
+			 */
+			std::u16string path;
+			/**
+			 * @brief 该文件是否正被独占访问。
+			 */
+			bool occupied;
+		};
+
 		XY_API FileContainerBasic(xybase::Stream* stream);
 
 		XY_API virtual ~FileContainerBasic();
@@ -39,6 +62,13 @@ namespace xybase
 
 		XY_API void Remove(std::u16string path, bool recursive) override;
 
+		XY_API void SetMetadata(const std::u16string &name, const FileEntry &data);
+
+		XY_API FileEntry GetMetadata(const std::u16string &name);
+
+		/**
+		 * @brief 内部文件类。用于承载文件包内的文件读写。
+		 */
 		class InnerStream : public StreamBasic
 		{
 			unsigned long long fileHandle;
@@ -65,7 +95,6 @@ namespace xybase
 
 			XY_API void Write(const char *buffer, size_t limit) override;
 
-
 			// 通过 StreamBasic 继承
 			XY_API void Close() override;
 
@@ -76,14 +105,6 @@ namespace xybase
 	protected:
 		xybase::Stream *infraStream;
 		int align = 1;
-
-		struct FileEntry
-		{
-			size_t offset;
-			size_t size;
-			std::u16string path;
-			bool occupied;
-		};
 
 		struct OpenedFileInformation
 		{

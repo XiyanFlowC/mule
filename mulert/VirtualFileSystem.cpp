@@ -157,3 +157,10 @@ void mule::VirtualFileSystem::RegisterContainerCreator(xybase::FileContainer *(*
 		containerApplyers.push_back(creator);
 	}
 }
+
+MULERT_API xybase::FileContainer *mule::VirtualFileSystem::GetRoot(const char16_t *rootName)
+{
+	if (!containers.contains(rootName)) return nullptr;
+
+	return containers[rootName];
+}

@@ -87,5 +87,12 @@ namespace mule
 		 * @param creator 指向创建函数的指针
 		*/
 		MULERT_API void RegisterContainerCreator(xybase::FileContainer *(*creator)(const char16_t *type, xybase::Stream *infra));
+
+		/**
+		 * @brief 根据根名字获取对应的根文件系统。
+		 * @param rootName 根名字
+		 * @return 由名字确定的根，若失败则为 nullptr
+		 */
+		MULERT_API xybase::FileContainer *GetRoot(const char16_t* rootName);
 	};
 }
