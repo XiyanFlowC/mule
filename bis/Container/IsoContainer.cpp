@@ -96,11 +96,19 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
             // It's a file
             std::string fileName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
             int newFileSize = files[xybase::string::to_utf16(path + '/' + fileName)]->size;
-            entry->dataLengthLe = newFileSize;
-            entry->dataLengthBe = (newFileSize >> 24) | ((newFileSize >> 8) & 0xFF00) | ((newFileSize & 0xFF) << 8) | (newFileSize << 24);
-            isoFile->Seek(offset);
-            // write new size information.
-            isoFile->Write((char *)entry, entry->length);
+            int newLocation = files[xybase::string::to_utf16(path + '/' + fileName)]->offset / ISO_BLOCK_SIZE;
+            
+            // if the location information has been updated.
+            if (entry->dataLengthLe != newFileSize || entry->locationOfExtentLe != newLocation)
+            {
+                entry->dataLengthLe = newFileSize;
+                entry->dataLengthBe = (newFileSize >> 24) | ((newFileSize >> 8) & 0xFF00) | ((newFileSize & 0xFF) << 8) | (newFileSize << 24);
+                entry->locationOfExtentLe = newLocation;
+                entry->locationOfExtentBe = (newLocation >> 24) | ((newLocation >> 8) & 0xFF00) | ((newLocation & 0xFF) << 8) | (newLocation << 24);
+                isoFile->Seek(offset);
+                // write new size information.
+                isoFile->Write((char *)entry, entry->length);
+            }
         }
 
         // Move to the next entry
