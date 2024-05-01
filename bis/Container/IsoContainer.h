@@ -81,8 +81,11 @@ namespace mule
         private:
             void ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std::string path);
 
+            void OverwriteDirector(xybase::Stream *isoFile, uint32_t offset, std::string path);
+
         public:
             IsoContainer(xybase::Stream *stream);
+            virtual ~IsoContainer();
         };
     }
 }
