@@ -62,11 +62,20 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 			sheetPath,
 			std::ios::in
 		);
-		handler->SetInStream(stream);
 
-		handler->OnSheetWriteStart();
-		sheet->Write(target, handler);
-		handler->OnSheetWriteEnd();
+		try
+		{
+			handler->SetInStream(stream);
+
+			handler->OnSheetWriteStart();
+			sheet->Write(target, handler);
+			handler->OnSheetWriteEnd();
+		}
+		catch (xybase::Exception &ex)
+		{
+			logger.Error(L"An error occurred when writing to {}.", xybase::string::to_wstring(sheet->GetName()));
+			logger.Note(L"Exception: {}", ex.GetMessage());
+		}
 
 		delete handler;
 		delete stream;
@@ -101,11 +110,19 @@ void mule::SheetManager::ReadSheets(xybase::Stream *target, const std::u16string
 			std::ios::out
 		);
 
-		handler->SetOutStream(stream);
+		try
+		{
+			handler->SetOutStream(stream);
 
-		handler->OnSheetReadStart();
-		sheet->Read(target, handler);
-		handler->OnSheetReadEnd();
+			handler->OnSheetReadStart();
+			sheet->Read(target, handler);
+			handler->OnSheetReadEnd();
+		}
+		catch (xybase::Exception &ex)
+		{
+			logger.Error(L"An error occurred when reading from {}.", xybase::string::to_wstring(sheet->GetName()));
+			logger.Note(L"Exception: {}", ex.GetMessage());
+		}
 
 		delete handler;
 		delete stream;

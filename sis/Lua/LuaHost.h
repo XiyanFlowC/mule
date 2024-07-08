@@ -17,7 +17,7 @@ namespace mule
 	namespace Lua
 	{
 		/**
-		 * @brief Errors occured during executing LUA script.
+		 * @brief Errors occurred during executing LUA script.
 		*/
 		class LuaException : public xybase::Exception
 		{
@@ -49,7 +49,7 @@ namespace mule
 			LuaHost(lua_State *L);
 
 			/**
-			 * @brief Load lua standared libraries to the current Lua VM.
+			 * @brief Load lua standard libraries to the current Lua VM.
 			*/
 			void LoadLuaStandardLibs();
 
