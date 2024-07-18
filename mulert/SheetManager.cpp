@@ -58,10 +58,18 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 		auto sheetPath = xybase::string::to_string(baseDir + sheet->GetName() + u'.' + handlerName);
 		auto sheetDir = sheetPath.substr(0, sheetPath.find_last_of('/'));
 
-		xybase::TextStream *stream = new xybase::TextStream(
-			sheetPath,
-			std::ios::in
-		);
+		xybase::TextStream *stream = nullptr;
+		try {
+			stream = new xybase::TextStream(
+				sheetPath,
+				std::ios::in
+			);
+		}
+		catch (xybase::Exception &ex)
+		{
+			delete handler;
+			continue;
+		}
 
 		try
 		{

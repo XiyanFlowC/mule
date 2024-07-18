@@ -22,7 +22,7 @@ size_t mule::Data::Sheet::Size() const
 
 std::u16string mule::Data::Sheet::GetDataType() const
 {
-	return std::u16string(u"Sheet");
+	return std::u16string(u"sheet/" + name);
 }
 
 bool mule::Data::Sheet::IsComposite() const

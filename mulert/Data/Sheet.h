@@ -6,6 +6,9 @@ namespace mule
 {
 	namespace Data
 	{
+		/**
+		 * @brief 表示一个数据表。
+		 */
 		class Sheet : public Basic::Type
 		{
 			Basic::Type *infraType;

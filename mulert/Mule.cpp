@@ -9,6 +9,7 @@
 #include <xystring.h>
 #include <StringBuilder.h>
 #include "Data/TypeManager.h"
+#include "MuleRtVersion.h"
 
 #ifdef _WIN32
 #include <Windows.h>
@@ -92,6 +93,15 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 
 void mule::Mule::LoadDescription(const PluginDescription *description)
 {
+	if (description->muleRtMajorVersion != MULERT_MAJOR_VERSION || description->muleRtMinorVersion != MULERT_MINOR_VERSION)
+	{
+		throw xybase::RuntimeException(
+			std::format(L"Plugin is compiled for mule runtime #{}.#{}, but current mule runtime is #{}.#{}",
+				description->muleRtMajorVersion, description->muleRtMinorVersion,
+				MULERT_MAJOR_VERSION, MULERT_MINOR_VERSION),
+			2334);
+	}
+
 	descriptions.push_back(description);
 
 	// 注册类型创建器
@@ -199,9 +209,9 @@ mule::Data::Basic::Type::DataHandler *mule::Mule::GetDataHandler(const char16_t 
 {
 	for (auto &&desc : descriptions)
 	{
-		if (desc->GetDataHandler != nullptr)
+		if (desc->CreateDataHandler != nullptr)
 		{
-			auto ret = desc->GetDataHandler(name);
+			auto ret = desc->CreateDataHandler(name);
 			if (ret != nullptr) return ret;
 		}
 	}
@@ -213,9 +223,9 @@ mule::Data::Basic::Type::FileHandler *mule::Mule::GetFileHandler(const char16_t 
 {
 	for (auto &&desc : descriptions)
 	{
-		if (desc->GetFileHandler != nullptr)
+		if (desc->CreateFileHandler != nullptr)
 		{
-			auto ret = desc->GetFileHandler(name);
+			auto ret = desc->CreateFileHandler(name);
 			if (ret != nullptr) return ret;
 		}
 	}

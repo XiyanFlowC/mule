@@ -24,10 +24,10 @@ MULE 要求指定目标文件和工作区。工作区中包括data, resources, s
 
 ## 基本实现思路
 
-将所有二进制文件考虑为某一特定的流（xybase::Stream的子类），并且认为每个流下有多个mule::Data::Sheet，
-每个表表达一个流中，特定位置（offset），一个类型（mule::Data::Basic::Type的子类）的数组（Array）。
+将所有二进制文件考虑为某一特定的流（`xybase::Stream`的子类），并且认为每个流下有多个`mule::Data::Sheet`，
+每个表表达一个流中，特定位置（offset），一个类型（`mule::Data::Basic::Type`的子类）的数组（Array）。
 
-为了确保Stream不包括太多信息，使用mule::SheetManager来保存一个std::map<Stream*, std::list<Sheet*>>，这个映射
+为了确保Stream不包括太多信息，使用`mule::SheetManager`来保存一个`std::map<Stream*, std::list<Sheet*>>`，这个映射
 记录了每个流下具有的Sheet。通过SheetManager来注册/注销表，并在需要的时候对所有表进行读写。
 
 ### 读写是赋予流结构的过程
@@ -35,7 +35,7 @@ MULE 要求指定目标文件和工作区。工作区中包括data, resources, s
 以可变的结构输出。
 
 将结构和数据的信息，以类似事件的机制触发，从而令数据处理器可以将结构转换为任何其他的标记语言/
-数据传递语言（比如XML/JSON等）。之所以转换为事件，而非保存成某一个通用结构（比如std::map）
+数据传递语言（比如XML/JSON等）。之所以转换为事件，而非保存成某一个通用结构（比如`std::map`）
 是因为显然二进制流可以流式地转换为XML/JSON等，他们的顺序是一致的，而且后来的数据不会也不需要
 移动到前方。因此保存全部的信息毫无必要，以事件的形式通知，可以确保绝大部分情况下完全不需要将
 整个数据保存到内存中，从而最小化内存需求。
@@ -43,10 +43,10 @@ MULE 要求指定目标文件和工作区。工作区中包括data, resources, s
 ### 事件形式的通知满足结构标记的需求
 通知处理器，结构开始/结束和数据进入这三个重要的事件，即可完成为数据标记结构的过程。回想任何有结构
 的数据，无外乎开始标记、结束标记和数据本身。因此只需要这三个事件即可完成任何结构的转换/生成。
-mule::Data::Basic::Type::FileHandler和mule::Data::Basic::Type::DataHandler就是基于这个思想
+`mule::Data::Basic::Type::FileHandler`和`mule::Data::Basic::Type::DataHandler`就是基于这个思想
 设计的。
 
-每个类型（mule::Data::Basic::Type）的子类，将输入的二进制流转换为有结构的流。也就是在向数据处理器传递
+每个类型（`mule::Data::Basic::Type`）的子类，将输入的二进制流转换为有结构的流。也就是在向数据处理器传递
 “读取到了值123”之外，还传递“现在进入了结构体Foo”“现在进入了字段bar”等事件，以便数据处理器生成结构的描述信息，
 使人类可读。具体来说，考虑
 ```c
@@ -58,8 +58,8 @@ struct Point
 
 /* In binary, 01 00 00 00 02 00 00 00 03 00 ... */
 ```
-通过mule::Data::Structure、mule::Data::Sheet、mule::Data::Basic::Integer的配合，Sheet固定points在流中的
-位置（进行Seek和for循环），同时提示mule::Data::Basic::Type::DataHandler，“进入了Sheet points”“进入了第一个
+通过`mule::Data::Structure`、`mule::Data::Sheet`、`mule::Data::Basic::Integer`的配合，Sheet固定points在流中的
+位置（进行Seek和for循环），同时提示`mule::Data::Basic::Type::DataHandler`，“进入了Sheet points”“进入了第一个
 元素Structure Point”，然后将读取流程转给Structure，Structure提示处理器“进入了字段x”，然后将处理流程转给
 Integer，Integer读取到1，然后提示处理器“读取了1”，接着返回，此时Structure提示“离开字段x”，“进入字段y”……
 
@@ -102,6 +102,21 @@ handler->OnDataRead(stream->ReadInt32()); // 通知：获得了数据XXX
 ```
 如是而已。
 
+#### Type 类型的自我声明
+为了避免麻烦，Type类提供函数 GetDataType() 来辅助数据处理器确定如何处理此类型的数据。其格式为：
+“基本类型/细分类型”。基本类型必须是以下之一：
+* sheet：复合容器类型，表示此类为数据表，是正常数据读写流程的顶级，由数个以数字编号的其他同一类型数据构成，具名。
+* array：复合容器类型，表示此类型由数个以数字编号的其他同一类型数据构成，具名。
+* struct：复合容器类型，表此此类型由数个 field 构成，具名。
+* field：单纯容器类型，表示此类由一个被包含的类型构成。具名。
+* int：单纯类型，表示该类型会处理一个 int。
+* uint：单纯类型，表示此类型会处理一个 uint。
+* string：单纯类型，表示此类型会处理一个字符串。
+
+细分类型定义不规定。一些自行设计的处理器会处理此字段。
+
+* string/text：规定的单纯文本类型。
+
 #### 特别的Type设计思路
 通过这样的设计，我们可以设计出特别的Type，比如Reference（对应C的指针/各类文件中指示数据段的结构）。
 
@@ -128,3 +143,17 @@ stream->Seek(currentLocation); // 恢复流位置 ↑1
 例如，名为foo的Sheet在读取元素0时，会配置mule.data.sheet.name=foo，mule.data.sheet.index=0，
 通过这种方式，如果其他的组件（比如Reference）想要知道现在正在读写的表是哪个，
 就可以通过这两个变量来获取。SheetReference就通过这两个变量来命名被引用的表。
+
+## 文件容器、二进制文件格式的处理
+
+为了简单地处理文件容器，实现了接口允许将一个流解释为文件容器。这个解释器需要一个流作为输入，并
+需要提供文件系统的各种基本操作（开关读写文件）。文件容器在开启文件时需要返回文件流。
+
+二进制文件格式的处理在于，部分文件可能是加密或者压缩的。通过普通的读写无法处理这些文件。所以提供
+流转译（解释）功能。解释器接受一个文件流输入，并再输出一个文件流。
+
+```
+|原始流|←→|文件解释器|←→|解密流|
+            加解密
+```
+

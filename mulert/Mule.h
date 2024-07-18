@@ -40,21 +40,29 @@ namespace mule
 		 * @brief 插件自述
 		*/
 		const wchar_t *description;
+		/**
+		 * @brief 适应的 MuleRt 版本
+		 */
+		const int muleRtMajorVersion;
+		/**
+		 * @brief 适应的 MuleRt 次要版本
+		 */
+		const int muleRtMinorVersion;
 
 		// 插件的功能函数暴露注册，nullptr指定没有相应接口
 		// 结构解析/文本化反文本化操作
 		/**
-		 * @brief 获取插件中包括的全部创建器的链
+		 * @brief 获取插件中包括的全部创建器的实例的链
 		*/
 		mule::Data::TypeCreator *(*GetCreators)();
 		/**
-		 * @brief 获取指定名称的数据处理器的实例（须自行管理生命周期）
+		 * @brief 创建指定名称的数据处理器的实例
 		*/
-		mule::Data::Basic::Type::DataHandler *(*GetDataHandler)(const char16_t *name);
+		mule::Data::Basic::Type::DataHandler *(*CreateDataHandler)(const char16_t *name);
 		/**
-		 * @brief 获取指定名称的文件处理器的实例（须自行管理生命周期）
+		 * @brief 创建指定名称的文件处理器的实例
 		*/
-		mule::Data::Basic::Type::FileHandler *(*GetFileHandler)(const char16_t *name);
+		mule::Data::Basic::Type::FileHandler *(*CreateFileHandler)(const char16_t *name);
 		// 流解析/文件操作
 		/**
 		 * @brief 将一个下层流解释为另一个流
@@ -159,11 +167,13 @@ namespace mule
 		/**
 		 * @brief 展示已载入的插件
 		 * @return 可显示的字符串
+		 * @deprecated
 		*/
 		MULERT_API std::wstring ShowPlugins();
 
 		/**
 		 * @brief 在日志中反应已经加载的插件
+		 * @deprecated
 		*/
 		MULERT_API void PrintPlugins();
 

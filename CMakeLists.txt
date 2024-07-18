@@ -3,7 +3,7 @@
 #
 cmake_minimum_required (VERSION 3.8)
 
-project ("mule" VERSION 0.0.0)
+project ("mule" VERSION 1.6.0)
 
 set (USING_LUA ON)
 

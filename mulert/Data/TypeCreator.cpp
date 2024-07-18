@@ -24,6 +24,12 @@ TypeCreator::TypeCreator(TypeCreator& pattern)
 	this->nextCreator = pattern.nextCreator;
 }
 
+void mule::Data::TypeCreator::AppendCreator(mule::Data::TypeCreator *nextCreator)
+{
+	if (this->nextCreator != nullptr) this->nextCreator->AppendCreator(nextCreator);
+	else this->nextCreator = nextCreator;
+}
+
 Type* TypeCreator::CreateType(const std::u16string & info)
 {
 	Type* result = DoCreateObject(info);

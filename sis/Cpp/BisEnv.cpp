@@ -9,6 +9,7 @@
 #include <Data/Storage/BinaryBlock.h>
 #include <Data/BasicTypeCreator.h>
 #include <Stream/ElfStream.h>
+#include <MuleRtVersion.h>
 
 #include "CStyleInitHandler.h"
 #include "../Xml/XmlHandler.h"
@@ -92,6 +93,7 @@ mule::PluginDescription mule::Cpp::bisDesc = {
 	L"MIT",
 	1, 0,
 	L"Elemental features.",
+	MULERT_MAJOR_VERSION, MULERT_MINOR_VERSION,
 	BisEnvGetCreators,
 	BisEnvGetDataHandler,
 	BisEnvGetFileHandler,

@@ -1,5 +1,6 @@
 #include "mule.h"
 #include "version.h"
+#include "MuleRtVersion.h"
 
 using namespace mule::Lua;
 using namespace mule::Data;
@@ -12,7 +13,8 @@ int main(int argc, char **argv)
 	if (argc <= 3)
 	{
 		std::cerr << "Mule by xiyan" << std::endl;
-		std::cerr << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compiled at: " << MULE_BUILD_TIME << ")" << std::endl;
+		std::cerr << "Ver." << MULE_MAJOR_VERSION << "." << MULE_MINOR_VERSION << " (Compiled at: " << MULE_BUILD_TIME << ")" << " ";
+		std::cerr << "Mule Runtime Ver." << MULERT_MAJOR_VERSION << "." << MULERT_MINOR_VERSION << std::endl;
 		std::cerr << "Usage: " << argv[0] << " <path_to_execute_folder> <path_to_target_file> <action> [options]" << std::endl;
 		std::cerr
 			<< "Options:" << std::endl

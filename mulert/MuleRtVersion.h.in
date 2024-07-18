@@ -1,0 +1,5 @@
+#pragma once
+
+#define MULERT_BUILD_TIME "@BUILD_TIME@"
+#define MULERT_MAJOR_VERSION (@mulert_VERSION_MAJOR@)
+#define MULERT_MINOR_VERSION (@mulert_VERSION_MINOR@)

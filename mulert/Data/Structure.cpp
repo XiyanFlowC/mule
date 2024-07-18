@@ -119,5 +119,5 @@ mule::Data::Structure::Field::~Field()
 
 std::u16string mule::Data::Structure::Field::GetDataType() const
 {
-	return u"field[" + object->GetDataType() + u',' + name + u']';
+	return u"field/" + object->GetDataType();
 }

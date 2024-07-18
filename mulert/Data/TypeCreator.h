@@ -31,6 +31,12 @@ namespace mule
 			mule::Data::TypeCreator *nextCreator;
 
 			/**
+			 * @brief Append a creator to the end of the chain.
+			 * @param nextCreator The creator needs to be appended.
+			 */
+			void AppendCreator(mule::Data::TypeCreator *nextCreator);
+
+			/**
 			 * @brief Try to create a field handler by given information.
 			 * @param info
 			 * @return The created Type, nullptr if failed to create.
