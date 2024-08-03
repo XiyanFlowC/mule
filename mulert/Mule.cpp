@@ -142,11 +142,6 @@ std::wstring mule::Mule::ShowPlugins()
 	return sb.ToString();
 }
 
-void mule::Mule::PrintPlugins()
-{
-	logger.Info(L"Loaded Plugin\n============\n{}", ShowPlugins());
-}
-
 xybase::Stream *mule::Mule::ApplyStream(const char16_t *typeName, xybase::Stream *infraStream)
 {
 	return TranscripterManager::GetInstance().Transcript(typeName, infraStream);
@@ -305,6 +300,22 @@ void mule::Mule::Import(const char16_t *targetFile, uint32_t id)
 	logger.Debug(L"插入完毕。");
 }
 
+MULERT_API void mule::Mule::TryImport(const char16_t *targetFile, uint32_t id)
+{
+	try
+	{
+		Import(targetFile, id);
+	}
+	catch (xybase::Exception &ex)
+	{
+		logger.Warn(L"尝试导入{}时发生了错误。", xybase::string::to_wstring(targetFile));
+#ifdef GetMessage
+#undef GetMessage
+#endif
+		logger.Info(ex.GetMessage());
+	}
+}
+
 void mule::Mule::Patch(const char16_t *targetFile, size_t offset, size_t length, uint32_t id)
 {
 	logger.Debug(L"修补数据{}({}, size={})从{}。", xybase::string::to_wstring(targetFile), offset, length, id);
@@ -330,5 +341,5 @@ void mule::Mule::ConvertToText(xybase::Stream *target, const char16_t *converter
 		}
 	}
 
-	logger.Error(L"Failed to convert to text, none of the plugins responded to the specified converter {}。", xybase::string::to_wstring(converter));
+	logger.Error(L"无法完成转换，所有插件都没有响应指定的转换器{}。", xybase::string::to_wstring(converter));
 }

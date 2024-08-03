@@ -20,7 +20,7 @@ int mule::Lua::Api::Confirm(std::u8string word)
 
 int mule::Lua::Api::PrintPlugins()
 {
-    mule::Mule::GetInstance().PrintPlugins();
+    logger.Info(mule::Mule::GetInstance().ShowPlugins());
     return 0;
 }
 

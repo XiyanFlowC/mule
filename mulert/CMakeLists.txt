@@ -1,5 +1,7 @@
-project (mulert VERSION 1.7)
+project (mulert VERSION 1.8)
 
+string (TIMESTAMP COMPILE_TIME %Y/%m/%d-%H:%M:%S)
+set (BUILD_TIME ${COMPILE_TIME})
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/MuleRtVersion.h.in ${CMAKE_CURRENT_SOURCE_DIR}/MuleRtVersion.h)
 
 set (MULERT_SOURCES "Data/Basic/Type.cpp" "Data/Basic/MultiValue.cpp" "Storage/BinaryData.cpp" "Storage/DataManager.cpp"  "Data/TypeCreator.cpp" "Data/TypeManager.cpp" "VirtualFileSystem.cpp" "Mule.cpp" "TranscripterManager.cpp" "Logger.cpp"   "Configuration.cpp" "Storage/ResourceManager.cpp" "Data/Array.cpp" "Data/Reference.cpp" "Data/Structure.cpp" "Data/Basic/BasicType.cpp" "Data/Basic/ContextManager.cpp"   "Data/Sheet.cpp" "SheetManager.cpp" "SheetReference.cpp" "Data/SmartReference.cpp")
