@@ -1,4 +1,5 @@
 #include "ElfStream.h"
+#include <format>
 
 using namespace xybase;
 using namespace mule::Stream;
@@ -12,21 +13,21 @@ ElfStream::ElfStream(xybase::Stream *stream)
 	// fread(magicHeader, sizeof(magicHeader), 1, stream);
 	if (0 != memcmp(magicSeq, magicHeader, 4))
 	{
-		throw ElfFormatErrorException(L"Not a valid ELF.", __LINE__);
+		throw ElfFormatErrorException(L"Not a valid ELF.", 410130);
 	}
 	if (magicHeader[4] != '\x01' && magicHeader[4] != '\x02')
 	{
-		throw ElfFormatErrorException(L"Invalid ELF bit or a new version of ELF.", __LINE__);
+		throw ElfFormatErrorException(L"Invalid ELF bit or a new version of ELF.", 410120);
 	}
 	is64 = magicHeader[4] == '\x02';
 	if (magicHeader[5] != '\x01' && magicHeader[5] != '\x02')
 	{
-		throw ElfFormatErrorException(L"Invalid data marshal.", __LINE__);
+		throw ElfFormatErrorException(L"Invalid data marshal.", 410110);
 	}
 	isBigEndian = magicHeader[5] == '\x02';
 	if (magicHeader[6] != '\x01')
 	{
-		throw ElfFormatErrorException(L"Unsupported ELF version.", __LINE__);
+		throw ElfFormatErrorException(L"Unsupported ELF version.", 410100);
 	}
 	stream->Seek(0, SM_BEGIN);
 	if (is64) Init64(stream);
@@ -156,7 +157,7 @@ void ElfStream::Seek(long long offset, SeekMode mode)
 {
 	if (mode == SM_END)
 	{
-		throw xybase::InvalidOperationException(L"Cannot seek from end on address mode.", __LINE__);
+		throw xybase::InvalidOperationException(L"Cannot seek from end on address mode.", 400200);
 	}
 
 	else if (mode == SM_CURRENT)
@@ -206,7 +207,7 @@ size_t ElfStream::GetAlign(size_t address)
 			return shs[i].align;
 		}
 	}
-	throw xybase::InvalidParameterException(L"offset", L"Address out of range.", __LINE__);
+	throw xybase::InvalidParameterException(L"address", std::format(L"Address {} out of range.", address), 400100);
 }
 
 size_t ElfStream::AddressToOffset(size_t address) const
@@ -219,7 +220,7 @@ size_t ElfStream::AddressToOffset(size_t address) const
 			return address - diff;
 		}
 	}
-	throw xybase::InvalidParameterException(L"offset", L"Address out of range.", __LINE__);
+	throw xybase::InvalidParameterException(L"address", std::format(L"Address {} out of range.", address), 400101);
 }
 
 size_t ElfStream::OffsetToAddress(size_t offset) const
@@ -232,7 +233,7 @@ size_t ElfStream::OffsetToAddress(size_t offset) const
 			return offset - diff;
 		}
 	}
-	throw xybase::InvalidParameterException(L"offset", L"Address out of range.", __LINE__);
+	throw xybase::InvalidParameterException(L"offset", std::format(L"Offset {} out of range.", offset), 400102);
 }
 
 void ElfStream::ReadBytes(char *buffer, size_t limit)

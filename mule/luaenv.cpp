@@ -205,6 +205,14 @@ int RegisterSheet(int streamId, std::u8string name, std::u8string type, size_t o
     return 0;
 }
 
+int ClearSheet(int streamId)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    mule::SheetManager::GetInstance().ClearSheets(stream);
+    return 0;
+}
+
 int ExportSheets(int streamId, std::u8string handler)
 {
     auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
@@ -244,6 +252,7 @@ void InitialiseLuaEnvironment()
     lua.RegisterFunction("importsht", ImportSheet);
     lua.RegisterFunction("shtload", LoadSheet);
     lua.RegisterFunction("shtreg", RegisterSheet);
+    lua.RegisterFunction("shtclr", ClearSheet);
     lua.RegisterFunction("shtex", ExportSheets);
     lua.RegisterFunction("shtim", ImportSheets);
 

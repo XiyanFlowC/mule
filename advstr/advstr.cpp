@@ -2,6 +2,7 @@
 
 #include <xystring.h>
 #include <cstring>
+#include <MuleRtVersion.h>
 #include "alstr.h"
 
 int b2t(const char16_t *converter, xybase::Stream *input, xybase::TextStream *output, const char16_t *param)
@@ -32,6 +33,8 @@ mule::PluginDescription desc{
 	.majorVer = 1,
 	.minorVer = 4,
 	.description = L"Provides advanced string operation feature",
+	.muleRtMajorVersion = MULERT_MAJOR_VERSION,
+	.muleRtMinorVersion = MULERT_MINOR_VERSION,
 	.ConvertToText = b2t,
 	.ConvertToBinary = t2b
 };

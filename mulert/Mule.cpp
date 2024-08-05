@@ -323,7 +323,7 @@ void mule::Mule::Patch(const char16_t *targetFile, size_t offset, size_t length,
 	VirtualFileSystem::GetInstance().CascadeProcess(targetFile, [=](xybase::Stream *target) -> void {
 		Storage::BinaryData bd = Storage::DataManager::GetInstance().LoadData(id);
 
-		target->Seek(0, xybase::Stream::SM_BEGIN);
+		target->Seek(offset, xybase::Stream::SM_BEGIN);
 		target->Write(bd.GetData(), bd.GetLength());
 	}, xybase::FOM_WRITE);
 

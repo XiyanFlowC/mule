@@ -17,7 +17,6 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 			dataHandler->AppendMetadatum(u"ptr", (int64_t)0);
 		dataHandler->OnDataRead(MultiValue::MV_NULL);
 		dataHandler->AppendMetadatum(u"ptr", (int64_t)ptr);
-
 		if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 
 		return;
@@ -39,6 +38,7 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	if (!referent->IsComposite() && val.IsType(MultiValue::MVT_NULL))
 	{
 		stream->Write((int32_t)0);
+		if (ptrReject && ptrRejectValue == 0) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 		return;
 	}
 
@@ -57,9 +57,11 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	}
 	if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 
+	// 不是复杂对象，检查是否早已写入过
 	if (!referent->IsComposite())
 	{
 		if (ReferenceRegistry::GetInstance().IsRegistered(stream, ptr)) return;
+		// 未写入过，登录
 		ReferenceRegistry::GetInstance().Register(stream, ptr);
 	}
 
