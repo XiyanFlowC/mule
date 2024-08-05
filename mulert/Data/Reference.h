@@ -29,6 +29,9 @@ namespace mule
 
 			Reference(Type *referent);
 
+			long long ptrRejectValue = -1;
+			bool ptrReject = false;
+
 			class ReferenceRegistry
 			{
 				ReferenceRegistry();

@@ -3,6 +3,7 @@
 #include <iostream>
 #include <xystring.h>
 #include "../Configuration.h"
+#include "Basic/BasicType.h"
 
 using namespace mule::Data::Basic;
 
@@ -16,8 +17,12 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 			dataHandler->AppendMetadatum(u"ptr", (int64_t)0);
 		dataHandler->OnDataRead(MultiValue::MV_NULL);
 		dataHandler->AppendMetadatum(u"ptr", (int64_t)ptr);
+
+		if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
+
 		return;
 	}
+	if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
@@ -47,8 +52,10 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	stream->Write((uint32_t)ptr);
 	if (ptr == 0)
 	{
+		if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 		return;
 	}
+	if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 
 	if (!referent->IsComposite())
 	{
@@ -159,5 +166,10 @@ Type *mule::Data::Reference::ReferenceCreator::DoCreateObject(const std::u16stri
 	if (innerType == nullptr) return nullptr;
 
 	Reference *referrer = new Reference(innerType);
+	if (metainfo.contains(u"ptr-reject"))
+	{
+		referrer->ptrReject = true;
+		referrer->ptrRejectValue = xybase::string::stoi(metainfo.find(u"ptr-reject")->second);
+	}
 	return referrer;
 }
