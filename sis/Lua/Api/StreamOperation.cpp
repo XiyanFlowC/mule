@@ -49,7 +49,7 @@ int mule::Lua::Api::ExtractStream(std::u8string path, int offset, int length, in
 
 int mule::Lua::Api::ImportStream(std::u8string path, int id)
 {
-	Mule::GetInstance().Import(xybase::string::to_utf16(path).c_str(), id);
+	Mule::GetInstance().TryImport(xybase::string::to_utf16(path).c_str(), id);
 	return 0;
 }
 
