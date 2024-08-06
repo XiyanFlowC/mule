@@ -5,6 +5,7 @@
 #include <Mule.h>
 #include "xystring.h"
 #include <Data/TypeManager.h>
+#include <Storage/ResourceManager.h>
 
 int mule::Lua::Api::OpenStream(std::u8string path, std::u8string openMode)
 {
@@ -41,6 +42,28 @@ int mule::Lua::Api::ExportStream(std::u8string path, int id)
 	return 0;
 }
 
+int mule::Lua::Api::ExportStreamToResource(std::u8string src, std::u8string out)
+{
+	try
+	{
+		VirtualFileSystem::GetInstance().CascadeProcess(xybase::string::to_utf16(src).c_str(), [&](xybase::Stream *target) -> void {
+			target->Seek(0, xybase::Stream::SM_END);
+			size_t size = target->Tell();
+			target->Seek(0, xybase::Stream::SM_BEGIN);
+			char *buffer = new char[size];
+			target->ReadBytes(buffer, size);
+
+			Storage::BinaryData bd(buffer, size, false);
+			Storage::ResourceManager::GetInstance().SaveResource(xybase::string::to_utf16(out), bd);
+			}, xybase::FOM_READ);
+		return 0;
+	}
+	catch (xybase::Exception &ex)
+	{
+		return ex.GetErrorCode();
+	}
+}
+
 int mule::Lua::Api::ExtractStream(std::u8string path, int offset, int length, int id)
 {
 	Mule::GetInstance().Extract(xybase::string::to_utf16(path).c_str(), offset, length, id);
@@ -51,6 +74,23 @@ int mule::Lua::Api::ImportStream(std::u8string path, int id)
 {
 	Mule::GetInstance().TryImport(xybase::string::to_utf16(path).c_str(), id);
 	return 0;
+}
+
+int mule::Lua::Api::ImportStreamFromResource(std::u8string dst, std::u8string in)
+{
+	try
+	{
+		VirtualFileSystem::GetInstance().CascadeProcess(xybase::string::to_utf16(dst).c_str(), [&](xybase::Stream *target) -> void {
+			Storage::BinaryData bd = Storage::ResourceManager::GetInstance().LoadResource(xybase::string::to_string(in).c_str());
+
+			target->Write(bd.GetData(), bd.GetLength());
+			}, xybase::FOM_WRITE);
+		return 0;
+	}
+	catch (xybase::Exception &ex)
+	{
+		return ex.GetErrorCode();
+	}
 }
 
 int mule::Lua::Api::PatchStream(std::u8string path, int offset, int length, int id)
@@ -72,8 +112,10 @@ void mule::Lua::Api::RegisterStreamOperationFunctions()
 	LuaHost::GetInstance().RegisterFunction("open", OpenStream);
 	LuaHost::GetInstance().RegisterFunction("close", CloseStream);
 	LuaHost::GetInstance().RegisterFunction("export", ExportStream);
+	LuaHost::GetInstance().RegisterFunction("resexport", ExportStreamToResource);
 	LuaHost::GetInstance().RegisterFunction("extract", ExtractStream);
 	LuaHost::GetInstance().RegisterFunction("import", ImportStream);
+	LuaHost::GetInstance().RegisterFunction("resimport", ImportStreamFromResource);
 	LuaHost::GetInstance().RegisterFunction("patch", PatchStream);
 	LuaHost::GetInstance().RegisterFunction("sos", StreamOverStream);
 	LuaHost::GetInstance().RegisterFunction("applyfile", StreamOverStream);

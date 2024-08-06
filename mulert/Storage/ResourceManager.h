@@ -22,6 +22,8 @@ namespace mule
 			MULERT_API static ResourceManager &GetInstance();
 
 			MULERT_API mule::Storage::BinaryData LoadResource(std::string path);
+
+			MULERT_API void SaveResource(std::u16string path, const mule::Storage::BinaryData &data);
 		};
 	}
 }

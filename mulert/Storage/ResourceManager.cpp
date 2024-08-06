@@ -33,3 +33,18 @@ BinaryData ResourceManager::LoadResource(std::string path)
 
     return BinaryData(buffer, length, false);
 }
+
+MULERT_API void mule::Storage::ResourceManager::SaveResource(std::u16string path, const mule::Storage::BinaryData &data)
+{
+    FILE *f = fopen((xybase::string::to_string(Configuration::GetInstance().GetString(u"mule.resource.basedir") + path)).c_str(), "wb");
+    if (f == NULL)
+    {
+        if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open resource file.");
+    }
+
+    logger.Info(L"Opened resource file {}", xybase::string::to_wstring(path));
+
+    fwrite(data.GetData(), data.GetLength(), 1, f);
+
+    fclose(f);
+}
