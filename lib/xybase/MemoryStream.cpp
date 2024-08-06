@@ -1,6 +1,10 @@
 #include "MemoryStream.h"
 #include <cstring>
 
+xybase::MemoryStream::~MemoryStream()
+{
+}
+
 xybase::MemoryStream::MemoryStream(void *memoryBasePointer, size_t size, const std::u16string &name)
 {
 	memoryPivot = memoryBasePointer;
