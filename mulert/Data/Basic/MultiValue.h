@@ -198,7 +198,7 @@ namespace mule
 
 				bool operator>= (const MultiValue &rvalue) const;
 
-				MultiValue operator[] (const MultiValue &key) const;
+				MultiValue &operator[] (const MultiValue &key) const;
 			private:
 				void ParseInt(const std::u16string &value);
 
