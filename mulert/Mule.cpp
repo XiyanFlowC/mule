@@ -295,7 +295,7 @@ void mule::Mule::Import(const char16_t *targetFile, uint32_t id)
 		Storage::BinaryData bd = Storage::DataManager::GetInstance().LoadData(id);
 
 		target->Write(bd.GetData(), bd.GetLength());
-	}, xybase::FOM_WRITE);
+	}, xybase::FOM_WRITE | xybase::FOM_TRUNCATE);
 
 	logger.Debug(L"插入完毕。");
 }
