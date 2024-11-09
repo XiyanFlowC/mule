@@ -131,8 +131,36 @@ namespace xybase
                     std::basic_string<Ch> attrName = xml.substr(index, attrEndIndex - index);
                     size_t attrValueStart = xml.find_first_of(QOUTES, attrEndIndex) + 1;
                     size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
-                    std::basic_string<Ch> attrValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
-                    node.AddAttribute(xybase::string::to_utf16(attrName), xybase::string::to_utf16(attrValue));
+                    std::basic_string<Ch> attrRawValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
+                    StringBuilder<Ch> attrSb;
+                    for (int ai = 0; ai < attrRawValue.size(); ++ai)
+                    {
+                        if (attrRawValue[ai] == '&')
+                        {
+                            // 处理转义序列
+                            size_t escapeStart = ai + 1;
+                            ai = attrRawValue.find(';', ai);
+                            std::basic_string<Ch> seq = xml.substr(escapeStart, ai - escapeStart);
+                            if (seq[0] == '#')
+                            {
+                                long codepoint;
+                                // 处理直接值
+                                if (seq[1] == 'x')
+                                {
+                                    codepoint = static_cast<long>(xybase::string::stoi(seq.substr(2), 16));
+                                }
+                                else
+                                {
+                                    codepoint = static_cast<long>(xybase::string::stoi(seq.substr(1)));
+                                }
+                                attrSb += xybase::string::to_enc<Ch, char32_t>(xybase::string::to_utf32(codepoint));
+                            }
+                            else attrSb += entities[seq];
+                        }
+                        else
+                            attrSb += attrRawValue[ai];
+                    }
+                    node.AddAttribute(xybase::string::to_utf16(attrName), xybase::string::to_utf16(attrSb.ToString()));
                     endIndex = xml.find_first_of(TAGSTR_END, attrValueEnd + 1);
                 }
 
