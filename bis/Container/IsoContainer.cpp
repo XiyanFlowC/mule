@@ -11,7 +11,7 @@ IsoContainer::IsoContainer(xybase::Stream *stream)
     stream->Seek(0x8000, xybase::Stream::SM_BEGIN);
     PrimaryVolume volume{};
     stream->ReadBytes(reinterpret_cast<char *>(&volume), sizeof(PrimaryVolume));
-    ParseDirectory(stream, volume.rootDirectoryRecord.locationOfExtentLe * ISO_BLOCK_SIZE, "");
+    ParseDirectory(stream, (xybase::bigEndianSystem ? volume.rootDirectoryRecord.locationOfExtentBe : volume.rootDirectoryRecord.locationOfExtentLe) * ISO_BLOCK_SIZE, "");
 }
 
 mule::Container::IsoContainer::~IsoContainer()
@@ -19,7 +19,7 @@ mule::Container::IsoContainer::~IsoContainer()
     infraStream->Seek(0x8000, xybase::Stream::SM_BEGIN);
     PrimaryVolume volume{};
     infraStream->ReadBytes(reinterpret_cast<char *>(&volume), sizeof(PrimaryVolume));
-    OverwriteDirector(infraStream, volume.rootDirectoryRecord.locationOfExtentLe * ISO_BLOCK_SIZE, "");
+    OverwriteDirector(infraStream, (xybase::bigEndianSystem ? volume.rootDirectoryRecord.locationOfExtentBe : volume.rootDirectoryRecord.locationOfExtentLe) * ISO_BLOCK_SIZE, "");
 }
 
 void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std::string path) {
@@ -47,13 +47,13 @@ void IsoContainer::ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std:
             // std::cout << "Directory: " << directoryName << std::endl;
 
             // Recursively parse subdirectories
-            ParseDirectory(isoFile, entry->locationOfExtentLe * ISO_BLOCK_SIZE, path + "/" + directoryName);
+            ParseDirectory(isoFile, (xybase::bigEndianSystem ? entry->locationOfExtentBe : entry->locationOfExtentLe) * ISO_BLOCK_SIZE, path + "/" + directoryName);
         }
         else {
             // It's a file
             std::string fileName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
-            uint32_t fileSize = entry->dataLengthLe;
-            uint32_t fileOffset = entry->locationOfExtentLe * ISO_BLOCK_SIZE;
+            uint32_t fileSize = (xybase::bigEndianSystem ? entry->dataLengthBe : entry->dataLengthLe);
+            uint32_t fileOffset = (xybase::bigEndianSystem ? entry->locationOfExtentBe : entry->locationOfExtentLe) * ISO_BLOCK_SIZE;
             files[xybase::string::to_utf16(path + '/' + fileName)] = new FileEntry{ fileOffset, fileSize, xybase::string::to_utf16(path + '/' + fileName), false };
         }
 
@@ -90,13 +90,19 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
             // std::cout << "Directory: " << directoryName << std::endl;
 
             // Recursively parse subdirectories
-            OverwriteDirector(isoFile, entry->locationOfExtentLe * ISO_BLOCK_SIZE, path + "/" + directoryName);
+            OverwriteDirector(isoFile, (xybase::bigEndianSystem ? entry->locationOfExtentBe : entry->locationOfExtentLe) * ISO_BLOCK_SIZE, path + "/" + directoryName);
         }
         else {
             // It's a file
             std::string fileName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
             int newFileSize = files[xybase::string::to_utf16(path + '/' + fileName)]->size;
             int newLocation = files[xybase::string::to_utf16(path + '/' + fileName)]->offset / ISO_BLOCK_SIZE;
+
+            if (xybase::bigEndianSystem)
+            {
+                newFileSize = (newFileSize >> 24) | ((newFileSize >> 8) & 0xFF00) | ((newFileSize & 0xFF) << 8) | (newFileSize << 24);
+                newLocation = (newLocation >> 24) | ((newLocation >> 8) & 0xFF00) | ((newLocation & 0xFF) << 8) | (newLocation << 24);
+            }
             
             // if the location information has been updated.
             if (entry->dataLengthLe != newFileSize || entry->locationOfExtentLe != newLocation)
