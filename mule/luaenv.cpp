@@ -196,6 +196,11 @@ MultiValue LoadSheet(int streamId, std::u8string name, std::u8string type, int o
     return ret;
 }
 
+int SaveSheet(std::u8string name, MultiValue value)
+{
+    return 0;
+}
+
 int RegisterSheet(int streamId, std::u8string name, std::u8string type, size_t offset, int length)
 {
     auto stream = LuaEnvironment::GetInstance().GetStream(streamId);

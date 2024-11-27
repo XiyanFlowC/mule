@@ -45,6 +45,7 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	size_t ptr = val.metadata[u"ptr"].value.unsignedValue;
 	if (!val.metadata[u"ptr"].IsType(MultiValue::MVT_INT))
 	{
+		stream->Seek(0, xybase::Stream::SM_CURRENT);
 		ptr = stream->ReadUInt32();
 		stream->Seek(-4, xybase::Stream::SM_CURRENT);
 	}

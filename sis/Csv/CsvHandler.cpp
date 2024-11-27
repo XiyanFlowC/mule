@@ -93,7 +93,7 @@ void mule::Csv::CsvOutHandler::OnDataRead(const MultiValue &value)
 	if (isString && value.IsType(MultiValue::MVT_STRING))
 	{
 		auto str = *value.value.stringValue;
-		if (Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
+		if (isText && Configuration::GetInstance().IsExist(u"mule.handler.string-read-proc"))
 		{
 			auto name = Configuration::GetInstance().GetString(u"mule.handler.string-read-proc");
 			str = *mule::Lua::LuaHost::GetInstance().Call(xybase::string::to_string(name), 1, &value).value.stringValue;

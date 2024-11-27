@@ -1,4 +1,5 @@
 #include "Sheet.h"
+#include "Basic/BasicType.h"
 #include "../Configuration.h"
 
 using namespace mule::Data::Basic;
@@ -40,7 +41,15 @@ void mule::Data::Sheet::Read(xybase::Stream *stream, mule::Data::Basic::Type::Da
 	else for (size_t i = 0; i < length; ++i) {
 		Configuration::GetInstance().SetVariable(u"mule.data.sheet.index", (long long)i);
 		dataHandler->OnRealmEnter(infraType, (int)i);
-		infraType->Read(stream, dataHandler);
+		try
+		{
+			infraType->Read(stream, dataHandler);
+		}
+		catch (mule::Data::Basic::BasicType::ConstraintViolationException &ex)
+		{
+			dataHandler->OnRealmExit(infraType, (int)i);
+			break;
+		}
 		dataHandler->OnRealmExit(infraType, (int)i);
 	}
 	dataHandler->OnRealmExit(this, name);
@@ -58,7 +67,15 @@ void mule::Data::Sheet::Write(xybase::Stream *stream, mule::Data::Basic::Type::F
 	else for (size_t i = 0; i < length; ++i) {
 		Configuration::GetInstance().SetVariable(u"mule.data.sheet.index", (long long)i);
 		fileHandler->OnRealmEnter(infraType, (int)i);
-		infraType->Write(stream, fileHandler);
+		try
+		{
+			infraType->Write(stream, fileHandler);
+		}
+		catch (mule::Data::Basic::BasicType::ConstraintViolationException &ex)
+		{
+			fileHandler->OnRealmExit(infraType, (int)i);
+			break;
+		}
 		fileHandler->OnRealmExit(infraType, (int)i);
 	}
 	fileHandler->OnRealmExit(this, name);

@@ -63,7 +63,9 @@
       "binaryDir": "${sourceDir}/out/build/${presetName}",
       "installDir": "${sourceDir}/out/install/${presetName}",
       "cacheVariables": {
-        "CMAKE_BUILD_TYPE": "Debug"
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "/usr/bin/g++-13",
+        "CMAKE_C_COMPILER": "/usr/bin/gcc-13"
       },
       "condition": {
         "type": "equals",
