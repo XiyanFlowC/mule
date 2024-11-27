@@ -1,4 +1,9 @@
 #include "BasicTypeCreator.h"
+#include "Basic/Integer.h"
+#include "Basic/Dummy.h"
+#include "Basic/Double.h"
+#include "Basic/Float.h"
+#include "Basic/String.h"
 
 #include <xystring.h>
 
@@ -21,6 +26,16 @@ Type *mule::Data::BasicTypeCreator::DoCreateObject(const std::u16string &info, c
 		}
 
 		ret = new Integer(size, false);
+	}
+	else if (info.starts_with(u"dum"))
+	{
+		int size = (int)xybase::string::stoi(info.substr(3));
+		if (size != 8 && size != 16 && size != 32 && size != 64)
+		{
+			return nullptr;
+		}
+
+		ret = new Dummy(size);
 	}
 	else if (info.starts_with(u"uint"))
 	{
