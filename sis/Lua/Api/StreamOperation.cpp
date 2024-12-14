@@ -107,16 +107,45 @@ int mule::Lua::Api::StreamOverStream(int streamId, std::u8string applier)
 	return LuaEnvironment::GetInstance().SetStream(stream);
 }
 
+std::string mule::Lua::Api::ReadStream(int streamId, int size)
+{
+	std::unique_ptr<char[]> buffer(new char[size]);
+	LuaEnvironment::GetInstance().GetStream(streamId)->ReadBytes(buffer.get(), size);
+	return buffer.get();
+}
+
+int mule::Lua::Api::WriteStream(int streamId, std::string data)
+{
+	LuaEnvironment::GetInstance().GetStream(streamId)->Write(data.c_str(), data.size() - 1);
+	return 0;
+}
+
+int mule::Lua::Api::TellStream(int streamId)
+{
+	return LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
+}
+
+int mule::Lua::Api::SeekStream(int streamId, int offset, int seekType)
+{
+	LuaEnvironment::GetInstance().GetStream(streamId)->Seek(offset, (xybase::Stream::SeekMode)seekType);
+	return LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
+}
+
 void mule::Lua::Api::RegisterStreamOperationFunctions()
 {
-	LuaHost::GetInstance().RegisterFunction("open", OpenStream);
-	LuaHost::GetInstance().RegisterFunction("close", CloseStream);
-	LuaHost::GetInstance().RegisterFunction("export", ExportStream);
-	LuaHost::GetInstance().RegisterFunction("resexport", ExportStreamToResource);
-	LuaHost::GetInstance().RegisterFunction("extract", ExtractStream);
-	LuaHost::GetInstance().RegisterFunction("import", ImportStream);
-	LuaHost::GetInstance().RegisterFunction("resimport", ImportStreamFromResource);
-	LuaHost::GetInstance().RegisterFunction("patch", PatchStream);
-	LuaHost::GetInstance().RegisterFunction("sos", StreamOverStream);
-	LuaHost::GetInstance().RegisterFunction("applyfile", StreamOverStream);
+	auto &host = LuaHost::GetInstance();
+	host.RegisterFunction("open", OpenStream);
+	host.RegisterFunction("close", CloseStream);
+	host.RegisterFunction("read", ReadStream);
+	host.RegisterFunction("write", WriteStream);
+	host.RegisterFunction("tell", TellStream);
+	host.RegisterFunction("seek", SeekStream);
+	host.RegisterFunction("export", ExportStream);
+	host.RegisterFunction("resexport", ExportStreamToResource);
+	host.RegisterFunction("extract", ExtractStream);
+	host.RegisterFunction("import", ImportStream);
+	host.RegisterFunction("resimport", ImportStreamFromResource);
+	host.RegisterFunction("patch", PatchStream);
+	host.RegisterFunction("sos", StreamOverStream);
+	host.RegisterFunction("applyfile", StreamOverStream);
 }

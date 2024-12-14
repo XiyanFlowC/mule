@@ -168,6 +168,7 @@ std::u16string mule::Csv::CsvFileHandler::ReadCell()
 					while (ch != ',' && ch != '\n')
 					{
 						ch = ReadChar();
+						if (ch == -1) throw xybase::RuntimeException(L"Unexpected EOF.", 5270100);
 					}
 					flg_eol = ch == '\n';
 					return sb.ToString();

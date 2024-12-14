@@ -5,6 +5,7 @@
 
 #include "Api/ContainerOperation.h"
 #include "Api/StreamOperation.h"
+#include "Api/SystemOperation.h"
 
 using namespace mule::Lua;
 
@@ -79,5 +80,6 @@ void mule::Lua::LuaEnvironment::Init()
 {
 	Api::RegisterContainerOperationFunctions();
 	Api::RegisterStreamOperationFunctions();
+	Api::RegisterSystemOperations();
 }
 

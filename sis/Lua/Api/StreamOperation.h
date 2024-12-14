@@ -26,6 +26,14 @@ namespace mule
 
 			int StreamOverStream(int streamId, std::u8string applier);
 
+			std::string ReadStream(int streamId, int size);
+
+			int WriteStream(int streamId, std::string data);
+
+			int TellStream(int streamId);
+
+			int SeekStream(int streamId, int offset, int seekType);
+
 			void RegisterStreamOperationFunctions();
 		}
 	}

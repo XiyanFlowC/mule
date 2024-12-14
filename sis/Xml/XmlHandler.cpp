@@ -80,11 +80,23 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawN
 	{
 		xybase::StringBuilder<char8_t> sb;
 		
-		char ch = instream->ReadChar();
-		while (ch != '<') ch = instream->ReadChar();
+		char ch;
+		bool againFlag;
+		do
+		{
+			againFlag = false;
+			ch = instream->ReadChar();
+			while (ch != '<') ch = instream->ReadChar();
 
-		// 获取标签名
-		ch = instream->ReadChar();
+			// 获取标签名
+			ch = instream->ReadChar();
+			if (ch == '!' || ch == '?')
+			{
+				while (ch != '>') ch = instream->ReadChar();
+				againFlag = true;
+			}
+		} while (againFlag);
+
 		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
 		{
 			sb += ch;
@@ -320,10 +332,24 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 	{
 		xybase::StringBuilder<char8_t> sb;
 
-		char ch = instream->ReadChar();
-		while (ch != '<') ch = instream->ReadChar();
+		char ch;
+		bool againFlag;
+		do
+		{
+			againFlag = false;
+			ch = instream->ReadChar();
+			while (ch != '<') ch = instream->ReadChar();
 
-		ch = instream->ReadChar();
+			// 检查是否是注释或者签名
+			ch = instream->ReadChar();
+			if (ch == '!' || ch == '?')
+			{
+				while (ch != '>') ch = instream->ReadChar();
+				againFlag = true;
+			}
+		} while (againFlag);
+
+		// 读取，构建标签名
 		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
 		{
 			sb += ch;
