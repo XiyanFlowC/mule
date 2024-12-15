@@ -1,3 +1,4 @@
+// TODO: 逐步将此文件中内容整合，置于sis中。
 #include "luaenv.h"
 
 #include <Storage/DataManager.h>
@@ -11,6 +12,7 @@
 #include <Cpp/Mappifier.h>
 #include <SheetManager.h>
 #include <Configuration.h>
+#include <filesystem>
 #include <Data/SmartReference.h>
 #include "codepage.h"
 
@@ -68,8 +70,14 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
 
     mule::Data::Basic::Type::DataHandler *hnd = Mule::GetInstance().GetDataHandler(xybase::string::to_utf16(handler).c_str());
     if (hnd == nullptr) return -11;
+
+    // 若指定的亲路径不存在则首先创建
+    auto tablePath = xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + tableName + "." + handler;
+    std::filesystem::path pathStd(tablePath);
+    if (!std::filesystem::exists(pathStd.parent_path())) std::filesystem::create_directories(pathStd.parent_path());
+
     auto outStream = new xybase::TextStream(
-        xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + tableName + "." + handler, std::ios::out);
+        tablePath, std::ios::out);
     hnd->SetOutStream(outStream);
 
     mule::Data::Sheet *target = new mule::Data::Sheet(mule::Data::TypeManager::GetInstance().GetOrCreateType(utype), offset, length, utbl);
@@ -185,6 +193,7 @@ MultiValue LoadSheet(int streamId, std::u8string name, std::u8string type, int o
     if (stream == nullptr) return -10;
     stream->Seek(offset);
     Type *t = TypeManager::GetInstance().GetOrCreateType(xybase::string::to_utf16(type));
+    if (t == nullptr) return -11;
     Sheet *sheet = new Sheet(t, offset, length, xybase::string::to_utf16(name));
     mule::Cpp::Mappifier *mappifier = new mule::Cpp::Mappifier();
     mappifier->OnSheetReadStart();
@@ -196,8 +205,37 @@ MultiValue LoadSheet(int streamId, std::u8string name, std::u8string type, int o
     return ret;
 }
 
-int SaveSheet(std::u8string name, MultiValue value)
+MultiValue LoadSheetFromFile(std::string name, std::string type, std::string handler)
 {
+    xybase::xml::XmlParser<mule::Xml::MvXmlNode> parser;
+
+    auto inStream = std::ifstream(
+        xybase::string::to_string(mule::Configuration::GetInstance().GetString(u"mule.sheet.basedir")) + name + "." + handler, std::ios::in);
+
+    std::stringstream buf;
+    buf << inStream.rdbuf();
+    std::string xml(buf.str());
+    inStream.close();
+    parser.Parse(xml);
+}
+
+int SaveSheet(int streamId, MultiValue value, std::u8string type, int offset, int length)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (value.IsType(MultiValue::MVT_MAP)) return -12;
+    if (stream == nullptr) return -10;
+    stream->Seek(offset);
+    Type *t = TypeManager::GetInstance().GetOrCreateType(xybase::string::to_utf16(type));
+    if (t == nullptr) return -11;
+
+    Sheet *sheet = new Sheet(t, offset, length, xybase::string::to_utf16(value.value.mapValue->begin()->first.ToString()));
+    mule::Cpp::Mappifier *mappifier = new mule::Cpp::Mappifier();
+    mappifier->OnSheetWriteStart();
+    sheet->Write(stream, mappifier);
+    mappifier->OnSheetWriteEnd();
+
+    delete sheet;
+    delete mappifier;
     return 0;
 }
 
@@ -255,7 +293,10 @@ void InitialiseLuaEnvironment()
 
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);
+
     lua.RegisterFunction("shtload", LoadSheet);
+    lua.RegisterFunction("shtsave", SaveSheet);
+    lua.RegisterFunction("shtloadfile", LoadSheetFromFile);
     lua.RegisterFunction("shtreg", RegisterSheet);
     lua.RegisterFunction("shtclr", ClearSheet);
     lua.RegisterFunction("shtex", ExportSheets);

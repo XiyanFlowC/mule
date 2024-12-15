@@ -7,6 +7,7 @@ using namespace mule::Data::Basic;
 mule::Data::Sheet::Sheet(Basic::Type *infraType, size_t offset, size_t length, std::u16string name)
 	: infraType(infraType), offset(offset), length(length), name(name)
 {
+	if (infraType == nullptr) throw xybase::InvalidParameterException(L"sheet", L"Given type is nullptr", 35002);
 	structureSimplifySuppression = Configuration::GetInstance().GetSigned(u"mule.data.sheet.structure-simplify-suppression", 0);
 }
 
