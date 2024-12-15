@@ -25,6 +25,7 @@ namespace xybase
 		XY_API std::list<std::u16string> List() override;
 		XY_API void MakeDir(std::u16string path) override;
 		XY_API void Remove(std::u16string path, bool recursive) override;
+		XY_API bool Exists(std::u16string path) override;
 	};
 }
 

@@ -1,6 +1,9 @@
 #include "mule.h"
 #include "version.h"
 #include "MuleRtVersion.h"
+#include <filesystem>
+#include <VirtualFileSystem.h>
+#include <HostFsMapper.h>
 
 using namespace mule::Lua;
 using namespace mule::Data;
@@ -32,7 +35,17 @@ int main(int argc, char **argv)
 
 	// Configurate
 	auto &&conf = mule::Configuration::GetInstance();
-	conf.SetVariable(u"mule.target", xybase::string::to_utf16(argv[2]));
+	auto target = xybase::string::to_utf16(argv[2]);
+	conf.SetVariable(u"mule.target", target);
+	std::filesystem::path targetPath(target);
+	if (std::filesystem::is_directory(targetPath))
+	{
+		conf.SetVariable(u"mule.target.type", u"directory");
+	}
+	else
+	{
+		conf.SetVariable(u"mule.target.type", u"file");
+	}
 	auto basedir = xybase::string::to_utf16(argv[1]);
 	if (!basedir.ends_with('/') || !basedir.ends_with('\\')) basedir += '/';
 	conf.SetVariable(u"mule.basedir", basedir);
@@ -79,7 +92,7 @@ int main(int argc, char **argv)
 	LuaHost::GetInstance().SetGlobal("package.cpath", scriptBaseDir + u"?.dll;" + scriptBaseDir + u"dll/?.dll");
 
 	// Set variable
-	LuaHost::GetInstance().SetGlobal("mule", MultiValue{MultiValue::MVT_MAP});
+	LuaHost::GetInstance().SetGlobal("mule", MultiValue{ MultiValue::MVT_MAP });
 	LuaHost::GetInstance().SetGlobal("mule.os", MultiValue{
 #ifdef WIN32
 		u"windows"
@@ -87,6 +100,9 @@ int main(int argc, char **argv)
 		u"linux"
 #endif // WIN32
 		});
+	LuaHost::GetInstance().SetGlobal("mule.target", MultiValue{ MultiValue::MVT_MAP });
+	LuaHost::GetInstance().SetGlobal("mule.target.name", conf.GetVariable(u"mule.target"));
+	LuaHost::GetInstance().SetGlobal("mule.target.type", conf.GetVariable(u"mule.target.type"));
 
 	mule::Lua::Api::RegisterContainerOperationFunctions();
 	mule::Lua::Api::RegisterStreamOperationFunctions();
@@ -95,7 +111,12 @@ int main(int argc, char **argv)
 
 	mule::Mule::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
-	mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(conf.GetString(u"mule.target"))));
+	if (conf.GetString(u"mule.target.type") == u"directory")
+	{
+		mule::VirtualFileSystem::GetInstance().Mount(u"target", new xybase::HostFsMapper(conf.GetString(u"mule.target")));
+	}
+	else
+		mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(conf.GetString(u"mule.target"))));
 
 	try
 	{
@@ -126,6 +147,7 @@ int main(int argc, char **argv)
 			{
 				std::wcout << L"Lua> ";
 				static char buffer[4096] {'r', 'e', 't', 'u', 'r', 'n', ' '};
+				memcpy(buffer, "return ", 7);
 				std::cin.getline(buffer + 7, 4096 - 8);
 				if (strcmp(buffer + off, "quit") == 0) break;
 				if (strcmp(buffer + off, "exlist") == 0)
@@ -136,6 +158,11 @@ int main(int argc, char **argv)
 				}
 				try
 				{
+					if (strchr(buffer + 7, '=')) 
+					{
+						LuaHost::GetInstance().RunString(buffer + 7);
+						continue;
+					}
 					auto && ret = LuaHost::GetInstance().RunString(buffer);
 					if (ret.GetType() == MultiValue::MVT_ARRAY)
 					{

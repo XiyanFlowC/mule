@@ -98,3 +98,8 @@ void xybase::HostFsMapper::Remove(std::u16string path, bool recursive)
 	else
 		std::filesystem::remove(root/path);
 }
+
+bool xybase::HostFsMapper::Exists(std::u16string path)
+{
+	return std::filesystem::exists(std::filesystem::path(rootPath) / path);
+}
