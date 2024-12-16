@@ -4,6 +4,7 @@
 #include "Basic/Double.h"
 #include "Basic/Float.h"
 #include "Basic/String.h"
+#include "Basic/UString.h"
 
 #include <xystring.h>
 
@@ -58,6 +59,18 @@ Type *mule::Data::BasicTypeCreator::DoCreateObject(const std::u16string &info, c
 	else if (info == u"string")
 	{
 		ret = new String();
+	}
+	else if (info == u"u8string")
+	{
+		ret = new UString<char8_t>();
+	}
+	else if (info == u"u16string")
+	{
+		ret = new UString<char16_t>();
+	}
+	else if (info == u"u32string")
+	{
+		ret = new UString<char32_t>();
 	}
 	else
 		return ret;

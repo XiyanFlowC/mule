@@ -1,5 +1,0 @@
-#pragma once
-
-#define MULERT_BUILD_TIME "2024/12/17-03:11:31"
-#define MULERT_MAJOR_VERSION (1)
-#define MULERT_MINOR_VERSION (10)
