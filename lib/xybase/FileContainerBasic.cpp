@@ -4,11 +4,12 @@
 #include "xystring.h"
 #include "xyutils.h"
 
-xybase::FileContainerBasic::InnerStream::InnerStream(FileContainerBasic *host, unsigned long long fileHandle)
+xybase::FileContainerBasic::InnerStream::InnerStream(FileContainerBasic *host, unsigned long long fileHandle, bool p_isBigEndian)
 {
 	this->host = host;
 	this->fileHandle = fileHandle;
 	isOpen = true;
+	isBigEndian = p_isBigEndian;
 }
 
 xybase::FileContainerBasic::InnerStream::~InnerStream()
@@ -137,7 +138,7 @@ xybase::Stream *xybase::FileContainerBasic::Open(std::u16string name, FileOpenMo
 	if (fe->occupied) throw InvalidOperationException(L"File occupied.", 102299);
 
 	unsigned long long handle = currentHandle++;
-	auto ret = new InnerStream(this, handle);
+	auto ret = new InnerStream(this, handle, mode & FOM_BIG_ENDIAN);
 	OpenedFileInformation stub
 	{
 		.cursor = 0,

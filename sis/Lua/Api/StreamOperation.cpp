@@ -17,6 +17,7 @@ int mule::Lua::Api::OpenStream(std::u8string path, std::u8string openMode)
 		if (ch == 't') mode |= xybase::FOM_TRUNCATE;
 		if (ch == 'a') mode |= xybase::FOM_APPEND;
 		if (ch == 'x') mode |= xybase::FOM_EXCLUSIVE;
+		if (ch == 'b') mode |= xybase::FOM_BIG_ENDIAN;
 	}
 	xybase::Stream *stream = VirtualFileSystem::GetInstance().Open(xybase::string::to_utf16(path).c_str(), mode);
 	if (stream == nullptr) return -10;

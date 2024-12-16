@@ -64,7 +64,7 @@ xybase::Stream *xybase::HostFsMapper::Open(std::u16string name, FileOpenMode mod
 
 	if (mode & FOM_EXCLUSIVE);
 
-	return new BinaryStream(xybase::string::to_wstring(rootPath + name), modebuf, false);
+	return new BinaryStream(xybase::string::to_wstring(rootPath + name), modebuf, mode & FOM_BIG_ENDIAN);
 }
 
 std::list<std::u16string> xybase::HostFsMapper::List()

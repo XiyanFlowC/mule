@@ -16,7 +16,8 @@ namespace xybase
 		FOM_WRITE = 0x2,
 		FOM_TRUNCATE = 0x10,
 		FOM_APPEND = 0x20,
-		FOM_EXCLUSIVE = 0x40;
+		FOM_EXCLUSIVE = 0x40,
+		FOM_BIG_ENDIAN = 0x80;
 
 	/**
 	 * @brief 文件容器。抽象类，用于表示虚拟文件系统/文件包。

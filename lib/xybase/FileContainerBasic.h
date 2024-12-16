@@ -75,7 +75,7 @@ namespace xybase
 			FileContainerBasic *host;
 			bool isOpen;
 		public:
-			XY_API InnerStream(FileContainerBasic *host, unsigned long long fileHandle);
+			XY_API InnerStream(FileContainerBasic *host, unsigned long long fileHandle, bool isBigEndian = false);
 
 			XY_API InnerStream(const InnerStream &) = delete;
 			XY_API InnerStream(InnerStream &&) = delete;
