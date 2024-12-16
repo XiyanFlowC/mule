@@ -216,7 +216,9 @@ MultiValue LoadSheetFromFile(std::string name, std::string type, std::string han
     buf << inStream.rdbuf();
     std::string xml(buf.str());
     inStream.close();
-    parser.Parse(xml);
+    auto res = parser.Parse(xml);
+
+    return res.mv;
 }
 
 int SaveSheet(int streamId, MultiValue value, std::u8string type, int offset, int length)
