@@ -29,6 +29,7 @@ std::u16string mule::Data::Sheet::GetDataType() const
 
 bool mule::Data::Sheet::IsComposite() const
 {
+	if (length == 1) return infraType->IsComposite();
 	return true;
 }
 

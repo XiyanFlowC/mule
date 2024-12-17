@@ -225,7 +225,7 @@ int main(int argc, char **argv)
 	catch (xybase::Exception &ex)
 	{
 		logger.Fatal(L"System Exception Caught.");
-		logger.Fatal(L"{}, {}", ex.GetErrorCode(), ex.GetMessage());
+		logger.Fatal(L"{}({}), {}", ex.GetErrorCode(), ex.GetErrorCode() & 0xFFFFFF, ex.GetMessage());
 		return ex.GetErrorCode();
 	}
 	catch (std::exception &ex)
