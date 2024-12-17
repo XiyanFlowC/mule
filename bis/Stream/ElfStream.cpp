@@ -83,20 +83,20 @@ void mule::Stream::ElfStream::Init64(xybase::Stream *stream)
 	header64 = new elf64_header;
 	if (isBigEndian ^ bigEndianSystem)
 	{
-		ReadBytes((char *)header->ident, 16);
-		header->type = ReadUInt16();
-		header->machine = ReadUInt16();
-		header->version = ReadUInt32();
-		header->entry = ReadUInt64();
-		header->phoff = ReadUInt64();
-		header->shoff = ReadUInt64();
-		header->flags = ReadUInt32();
-		header->ehsize = ReadUInt16();
-		header->phentsize = ReadUInt16();
-		header->phnum = ReadUInt16();
-		header->shentsize = ReadUInt16();
-		header->shnum = ReadUInt16();
-		header->shstrndx = ReadUInt16();
+		ReadBytes((char *)header64->ident, 16);
+		header64->type = ReadUInt16();
+		header64->machine = ReadUInt16();
+		header64->version = ReadUInt32();
+		header64->entry = ReadUInt64();
+		header64->phoff = ReadUInt64();
+		header64->shoff = ReadUInt64();
+		header64->flags = ReadUInt32();
+		header64->ehsize = ReadUInt16();
+		header64->phentsize = ReadUInt16();
+		header64->phnum = ReadUInt16();
+		header64->shentsize = ReadUInt16();
+		header64->shnum = ReadUInt16();
+		header64->shstrndx = ReadUInt16();
 	}
 	else
 	{
@@ -104,7 +104,7 @@ void mule::Stream::ElfStream::Init64(xybase::Stream *stream)
 	}
 
 	phs64 = new program_header64[header64->phnum];
-	stream->Seek(header->phoff, SM_BEGIN);
+	stream->Seek(header64->phoff, SM_BEGIN);
 	if (isBigEndian ^ bigEndianSystem)
 	{
 		auto *pp = phs64;
@@ -120,10 +120,10 @@ void mule::Stream::ElfStream::Init64(xybase::Stream *stream)
 			pp->align = ReadUInt64();
 		}
 	}
-	else stream->ReadBytes((char *)phs64, sizeof(program_header64) * header->phnum);
+	else stream->ReadBytes((char *)phs64, sizeof(program_header64) * header64->phnum);
 
 	shs64 = new section_header64[header64->shnum];
-	stream->Seek(header->shoff, SM_BEGIN);
+	stream->Seek(header64->shoff, SM_BEGIN);
 	if (isBigEndian ^ bigEndianSystem)
 	{
 		for (int i = 0; i < header64->shnum; ++i)
@@ -140,7 +140,7 @@ void mule::Stream::ElfStream::Init64(xybase::Stream *stream)
 			shs64[i].entsize = ReadUInt64();
 		}
 	}
-	else stream->ReadBytes((char *)shs64, sizeof(section_header64) * header->shnum);
+	else stream->ReadBytes((char *)shs64, sizeof(section_header64) * header64->shnum);
 }
 
 ElfStream::~ElfStream()
@@ -200,39 +200,69 @@ size_t ElfStream::TellOffset()
 
 size_t ElfStream::GetAlign(size_t address)
 {
-	for (int i = 0; i < header->shnum; ++i)
-	{
-		if (shs[i].addr <= address && static_cast<unsigned long long>(shs[i].addr) + shs[i].size > address)
+	if (is64)
+		for (int i = 0; i < header64->shnum; ++i)
 		{
-			return shs[i].align;
+			if (shs64[i].addr <= address && static_cast<unsigned long long>(shs64[i].addr) + shs64[i].size > address)
+			{
+				return shs64[i].align;
+			}
 		}
-	}
+	else
+		for (int i = 0; i < header->shnum; ++i)
+		{
+			if (shs[i].addr <= address && static_cast<unsigned long long>(shs[i].addr) + shs[i].size > address)
+			{
+				return shs[i].align;
+			}
+		}
+	
 	throw xybase::InvalidParameterException(L"address", std::format(L"Address {} out of range.", address), 400100);
 }
 
 size_t ElfStream::AddressToOffset(size_t address) const
 {
-	for (int i = 0; i < header->phnum; ++i)
-	{
-		if (phs[i].vaddr <= address && static_cast<unsigned long long>(phs[i].vaddr) + phs[i].filesz > address)
+	if (is64)
+		for (int i = 0; i < header64->phnum; ++i)
 		{
-			long long diff = static_cast<long long>(phs[i].vaddr) - phs[i].offset;
-			return address - diff;
+			if (phs64[i].vaddr <= address && static_cast<unsigned long long>(phs64[i].vaddr) + phs64[i].filesz > address)
+			{
+				long long diff = static_cast<long long>(phs64[i].vaddr) - phs64[i].offset;
+				return address - diff;
+			}
 		}
-	}
+	else
+		for (int i = 0; i < header->phnum; ++i)
+		{
+			if (phs[i].vaddr <= address && static_cast<unsigned long long>(phs[i].vaddr) + phs[i].filesz > address)
+			{
+				long long diff = static_cast<long long>(phs[i].vaddr) - phs[i].offset;
+				return address - diff;
+			}
+		}
 	throw xybase::InvalidParameterException(L"address", std::format(L"Address {} out of range.", address), 400101);
 }
 
 size_t ElfStream::OffsetToAddress(size_t offset) const
 {
-	for (int i = 0; i < header->phnum; ++i)
-	{
-		if (phs[i].offset <= offset && static_cast<unsigned long long>(phs[i].offset) + phs[i].filesz > offset)
+	if (is64)
+		for (int i = 0; i < header64->phnum; ++i)
 		{
-			long long diff = static_cast<long long>(phs[i].offset) - phs[i].vaddr;
-			return offset - diff;
+			if (phs64[i].offset <= offset && static_cast<unsigned long long>(phs64[i].offset) + phs64[i].filesz > offset)
+			{
+				long long diff = static_cast<long long>(phs64[i].offset) - phs64[i].vaddr;
+				return offset - diff;
+			}
 		}
-	}
+	else
+		for (int i = 0; i < header->phnum; ++i)
+		{
+			if (phs[i].offset <= offset && static_cast<unsigned long long>(phs[i].offset) + phs[i].filesz > offset)
+			{
+				long long diff = static_cast<long long>(phs[i].offset) - phs[i].vaddr;
+				return offset - diff;
+			}
+		}
 	throw xybase::InvalidParameterException(L"offset", std::format(L"Offset {} out of range.", offset), 400102);
 }
 
