@@ -73,14 +73,17 @@ int mule::Lua::Api::DefineStructure(std::u8string name, mule::Data::Basic::Multi
             delete str;
             return -11;
         }
-        mule::Data::Basic::Type *fldType = mule::Data::TypeManager::GetInstance().GetOrCreateType(*pair.second.value.stringValue);
+        int split = pair.second.value.stringValue->find_first_of(':');
+        std::u16string fldName = pair.second.value.stringValue->substr(0, split);
+        std::u16string type = pair.second.value.stringValue->substr(split + 1);
+        mule::Data::Basic::Type *fldType = mule::Data::TypeManager::GetInstance().GetOrCreateType(type);
         if (fldType == nullptr)
         {
-            logger.Error(L"Failed to create type {}.", xybase::string::to_wstring(*pair.second.value.stringValue));
+            logger.Error(L"Failed to create type {}.", xybase::string::to_wstring(type));
             delete str;
             return -12;
         }
-        str->AppendField(*pair.first.value.stringValue, fldType);
+        str->AppendField(fldName, fldType);
     }
     mule::Data::TypeManager::GetInstance().RegisterObject(str, xybase::string::to_utf16(name));
     return 0;
