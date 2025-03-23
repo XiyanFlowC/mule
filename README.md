@@ -60,12 +60,6 @@ mule.cpp中，默认设定mule.resource.basedir为${mule.basedir}resources/。
     <field name="字段1" type="string*" />
     <field name="字段2" type="string*" />
   </struct>
-  <!-- 其他结构（未实现） -->
-  <script>
-    function foo()
-      print('foo() called');
-    end
-  </script>
 </def>
 ```
 
