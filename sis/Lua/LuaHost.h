@@ -247,14 +247,16 @@ namespace mule
 
 				if (!lua_islightuserdata(Ls, lua_upvalueindex(1)))
 				{
-					host.PushValue((uint64_t) - 1);
-					return 1;
+					host.PushValue(mule::Data::Basic::MultiValue::MV_NULL);
+					host.PushValue((uint64_t) -1);
+					return 2;
 				}
 
 				if (!host.CheckArgs<Args...>(1))
 				{
-					host.PushValue((uint64_t) - 1ll);
-					return 1;
+					host.PushValue(mule::Data::Basic::MultiValue::MV_NULL);
+					host.PushValue((uint64_t) -2);
+					return 2;
 				}
 
 				RetT(*f)(Args...) = reinterpret_cast<RetT(*)(Args...)>(lua_touserdata(Ls, lua_upvalueindex(1)));
@@ -274,9 +276,10 @@ namespace mule
 				catch (xybase::RuntimeException &ex)
 				{
 					host.logger.Error(L"An exception caught while executing mule-side functions.\n[{}] {}", (unsigned)ex.GetErrorCode(), ex.GetMessage());
-					host.PushValue(mule::Data::Basic::MultiValue(xybase::string::to_utf16(ex.GetMessage())));
+					host.PushValue(mule::Data::Basic::MultiValue::MV_NULL);
 					host.PushValue(mule::Data::Basic::MultiValue(ex.GetErrorCode()));
-					return 2;
+					host.PushValue(mule::Data::Basic::MultiValue(xybase::string::to_utf16(ex.GetMessage())));
+					return 3;
 				}
 			};
 			lua_pushlightuserdata(L, (void *)func);
