@@ -4,6 +4,7 @@
 #define ISO_CONTAINER_H__
 
 #include <FileContainerBasic.h>
+#include <set>
 
 namespace mule
 {
@@ -79,9 +80,13 @@ namespace mule
         class IsoContainer : public xybase::FileContainerBasic
         {
         private:
+            xybase::Stream *Open(std::u16string name, xybase::FileOpenMode mode) override;
+
             void ParseDirectory(xybase::Stream *isoFile, uint32_t offset, std::string path);
 
             void OverwriteDirector(xybase::Stream *isoFile, uint32_t offset, std::string path);
+
+            std::set<std::u16string> m_modifiedFiles;
 
         public:
             IsoContainer(xybase::Stream *stream);
