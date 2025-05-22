@@ -44,7 +44,7 @@ mule::Data::Basic::MultiValue mule::Lua::Api::Configuration(std::u8string name, 
         {
             return mule::Configuration::GetInstance().GetVariable(xybase::string::to_utf16(name).c_str());
         }
-        catch (Configuration::ConfigurationNotFoundException &ex)
+        catch (Configuration::ConfigurationNotFoundException)
         {
             return mule::Data::Basic::MultiValue::MV_NULL;
         }
@@ -73,7 +73,7 @@ int mule::Lua::Api::DefineStructure(std::u8string name, mule::Data::Basic::Multi
             delete str;
             return -11;
         }
-        int split = pair.second.value.stringValue->find_first_of(':');
+        size_t split = pair.second.value.stringValue->find_first_of(':');
         std::u16string fldName = pair.second.value.stringValue->substr(0, split);
         std::u16string type = pair.second.value.stringValue->substr(split + 1);
         mule::Data::Basic::Type *fldType = mule::Data::TypeManager::GetInstance().GetOrCreateType(type);

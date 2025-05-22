@@ -27,6 +27,7 @@ namespace xybase
 		virtual int64_t ReadInt64() override;
 		virtual float ReadFloat() override;
 		virtual double ReadDouble() override;
+		[[deprecated]]
 		virtual std::string ReadString() override;
 		virtual void Write(uint8_t value) override;
 		virtual void Write(int8_t value) override;
@@ -38,6 +39,7 @@ namespace xybase
 		virtual void Write(int64_t value) override;
 		virtual void Write(float value) override;
 		virtual void Write(double value) override;
+		[[deprecated]]
 		virtual void Write(const std::string &value) override;
 		virtual void Write(const char *buffer, size_t limit) override = 0;
 	};

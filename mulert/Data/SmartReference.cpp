@@ -98,25 +98,40 @@ SmartReference::MemoryManager::MemoryManager()
 
 	logger.Info(L"Memory specification file(id:{}) found, loading...", SRMM_DATAFILE_ID);
 	size_t size;
-	fscanf(cache, "%zu\n", &size);
+	if (!fscanf(cache, "%zu\n", &size))
+	{
+		fclose(cache);
+		logger.Error(L"Failed to load cache, unable to read, errno={}.", errno);
+		return;
+	}
 	logger.Info(L"Found {} cache(s) in total.", size);
 	for (size_t i = 0; i < size; ++i)
 	{
-		char buffer[1024];
-		if (!fscanf(cache, "%[^\n]", buffer))
+		char buffer[1024] = { 0 };
+		if (!fscanf(cache, "%1023[^\n]", buffer))
 		{
 			fclose(cache);
 			logger.Error(L"Failed to load cache, unable to read, errno={}.", errno);
 			return;
 		}
 		size_t count;
-		fscanf(cache, "%zu", &count);
+		if (!fscanf(cache, "%zu", &count))
+		{
+			fclose(cache);
+			logger.Error(L"Failed to load cache, unable to read, errno={}.", errno);
+			return;
+		}
 		logger.Info(L"Loading cache for {}({} fragments contained)...", xybase::string::to_wstring(buffer), count);
 		auto &fm = memories[xybase::string::to_utf16(buffer)];
 		for (size_t j = 0; j < count; ++j)
 		{
 			unsigned int pos, len;
-			fscanf(cache, "%X %u\n", &pos, &len);
+			if (!fscanf(cache, "%X %u\n", &pos, &len))
+			{
+				fclose(cache);
+				logger.Error(L"Failed to load cache, unable to read, errno={}.", errno);
+				return;
+			}
 			fm.RegisterFragment(pos, len);
 		}
 		fm.Defragment();

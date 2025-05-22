@@ -46,7 +46,7 @@ void xybase::MemoryStream::Seek(long long offset, SeekMode mode)
 	switch (mode)
 	{
 	case xybase::Stream::SM_BEGIN:
-		if (offset > size) throw xybase::InvalidParameterException(L"offset", L"Exceeds stream size.", 440110);
+		if ((unsigned long long)offset > size) throw xybase::InvalidParameterException(L"offset", L"Exceeds stream size.", 440110);
 		cursor = offset;
 		break;
 	case xybase::Stream::SM_CURRENT:
@@ -54,11 +54,11 @@ void xybase::MemoryStream::Seek(long long offset, SeekMode mode)
 		cursor += offset;
 		break;
 	case xybase::Stream::SM_END:
-		if (offset > size) throw xybase::InvalidParameterException(L"offset", L"Exceeds stream size.", 440112);
+		if ((unsigned long long)offset > size) throw xybase::InvalidParameterException(L"offset", L"Exceeds stream size.", 440112);
 		cursor = size + offset;
 		break;
 	default:
-		if (offset > size) throw xybase::InvalidParameterException(L"mode", L"Invalid seek mode.", 440199);
+		throw xybase::InvalidParameterException(L"mode", L"Invalid seek mode.", 440199);
 		break;
 	}
 }

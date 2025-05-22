@@ -32,7 +32,7 @@ void BinaryBlock::Write(xybase::Stream *stream, FileHandler * fileHandler)
 	}
 	
 	// 获取 link 的数据
-	stream->Write(DataManager::GetInstance().LoadData(mv.value.unsignedValue).GetData(), size);
+	stream->Write(DataManager::GetInstance().LoadData((unsigned int)mv.value.unsignedValue).GetData(), size);
 }
 
 size_t BinaryBlock::Size() const

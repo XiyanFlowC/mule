@@ -123,13 +123,13 @@ int mule::Lua::Api::WriteStream(int streamId, std::string data)
 
 int mule::Lua::Api::TellStream(int streamId)
 {
-	return LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
+	return (int)LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
 }
 
 int mule::Lua::Api::SeekStream(int streamId, int offset, int seekType)
 {
 	LuaEnvironment::GetInstance().GetStream(streamId)->Seek(offset, (xybase::Stream::SeekMode)seekType);
-	return LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
+	return (int)LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
 }
 
 void mule::Lua::Api::RegisterStreamOperationFunctions()

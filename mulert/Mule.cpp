@@ -188,7 +188,7 @@ void mule::Mule::OpenAndMount(const char16_t *root, const char16_t *params)
 				para[i] = pl[i];
 			}
 
-			auto ret = desc->OpenContainer(pl.size(), (const char16_t **)para);
+			auto ret = desc->OpenContainer((int)pl.size(), (const char16_t **)para);
 			delete[] buffer;
 			delete[] para;
 

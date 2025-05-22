@@ -20,7 +20,7 @@ namespace mule
 			{
 				Logger logger = Logger::GetLogger<String>();
 			protected:
-				size_t lastSize;
+				size_t lastSize = -1;
 			public:
 				virtual size_t Size() const override;
 				virtual std::u16string GetDataType() const override;

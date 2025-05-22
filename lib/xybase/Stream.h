@@ -58,6 +58,7 @@ namespace xybase
 
 		virtual double ReadDouble() = 0;
 
+		[[deprecated]]
 		virtual std::string ReadString() = 0;
 
 		virtual void ReadBytes(char* buffer, size_t limit) = 0;
@@ -82,6 +83,7 @@ namespace xybase
 
 		virtual void Write(double value) = 0;
 
+		[[deprecated]]
 		virtual void Write(const std::string& value) = 0;
 
 		virtual void Write(const char* buffer, size_t size) = 0;

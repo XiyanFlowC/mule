@@ -49,7 +49,11 @@ void mule::Storage::DataManager::SetDataDir(const std::u16string &datadir)
 	auto data = OpenRaw(0);
 	if (data == nullptr) return;
 
-	fscanf(data, "%u", &currentId);
+	if (!fscanf(data, "%u", &currentId))
+	{
+		fclose(data);
+		currentId = 0x0100'0000;
+	}
 	// 读取其他数据（目前不处理）
 	fclose(data);
 }
@@ -64,7 +68,7 @@ BinaryData DataManager::LoadData(std::string name)
 	return LoadData(it->second.id);
 }
 
-BinaryData DataManager::LoadData(unsigned int id)
+BinaryData DataManager::LoadData(unsigned int id) const
 {
 	char path[32];
 	sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);
@@ -100,7 +104,7 @@ mule::Storage::DataManager::DataManager()
 	SetDataDir(Configuration::GetInstance().GetString(u"mule.data.basedir"));
 }
 
-bool DataManager::IsExist(unsigned int id)
+bool DataManager::IsExist(unsigned int id) const
 {
 	char path[32];
 	sprintf(path, "%02X/%02X/%02X/%02X.dat", id >> 24, (id >> 16) & 0xFF, (id >> 8) & 0xFF, id & 0xFF);

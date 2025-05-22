@@ -17,6 +17,8 @@ namespace xybase
         */
         class XY_API XmlNode
         {
+#pragma warning(push)
+#pragma warning(disable: 4251)
         public:
             bool IsTextNode() const;
 
@@ -51,6 +53,7 @@ namespace xybase
             bool operator== (const XmlNode &rvalue) const;
 
             XmlNode &operator[] (std::u16string name);
+#pragma warning(pop)
         };
     }
 }

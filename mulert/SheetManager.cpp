@@ -65,7 +65,7 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 				std::ios::in
 			);
 		}
-		catch (xybase::Exception &ex)
+		catch (std::exception)
 		{
 			delete handler;
 			continue;

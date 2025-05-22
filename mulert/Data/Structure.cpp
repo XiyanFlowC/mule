@@ -43,6 +43,8 @@ size_t Structure::Size() const
 	size_t size = 0;
 	for (Type *obj : fields)
 	{
+		if (obj->Size() == -1)
+			return -1;
 		size += obj->Size();
 	}
 	return size;

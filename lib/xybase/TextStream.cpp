@@ -49,8 +49,9 @@ bool xybase::TextStream::ReadLine(std::string &out)
 
 char xybase::TextStream::ReadChar()
 {
-	if (stream.eof()) throw IOException(name, L"End of file.", 0x500010);
-	return stream.get();
+	int ch = stream.get();
+	if (ch == EOF) throw IOException(name, L"End of file.", 0x500010);
+	return ch;
 }
 
 uint8_t xybase::TextStream::ReadUInt8()

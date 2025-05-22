@@ -107,8 +107,8 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
         else {
             // It's a file
             std::string fileName(entry->fileIdentifier, entry->lengthOfFileIdentifier);
-            int newFileSize = files[xybase::string::to_utf16(path + '/' + fileName)]->size;
-            int newLocation = files[xybase::string::to_utf16(path + '/' + fileName)]->offset / ISO_BLOCK_SIZE;
+            uint32_t newFileSize = (uint32_t)files[xybase::string::to_utf16(path + '/' + fileName)]->size;
+            uint32_t newLocation = (uint32_t)files[xybase::string::to_utf16(path + '/' + fileName)]->offset / ISO_BLOCK_SIZE;
 
             if (xybase::bigEndianSystem)
             {

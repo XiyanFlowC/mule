@@ -12,9 +12,9 @@ namespace mule
 		Logger logger = Logger::GetLogger<SheetReference>();
 	protected:
 		std::u16string locCacheName, sizeCacheName;
-		size_t sizeDefined;
+		size_t sizeDefined = -1;
 
-		Data::Basic::Type *infraType;
+		Data::Basic::Type *infraType = nullptr;
 
 		std::u16string namePattern;
 

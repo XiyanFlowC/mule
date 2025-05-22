@@ -39,8 +39,8 @@ namespace mule
 				CHS_WRITE_TRAILCELL,
 			} status = CHS_IDLE;
 
-			bool disarmed;
-			bool isString, isText, isNumber;
+			bool disarmed = false;
+			bool isString = false, isText = false, isNumber = false;
 			int layer = 0;
 			int wrapLayer = 1;
 			/**

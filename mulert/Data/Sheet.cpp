@@ -8,7 +8,7 @@ mule::Data::Sheet::Sheet(Basic::Type *infraType, size_t offset, size_t length, s
 	: infraType(infraType), offset(offset), length(length), name(name)
 {
 	if (infraType == nullptr) throw xybase::InvalidParameterException(L"sheet", L"Given type is nullptr", 35002);
-	structureSimplifySuppression = Configuration::GetInstance().GetSigned(u"mule.data.sheet.structure-simplify-suppression", 0);
+	structureSimplifySuppression = (int)Configuration::GetInstance().GetSigned(u"mule.data.sheet.structure-simplify-suppression", 0);
 }
 
 const std::u16string &mule::Data::Sheet::GetName() const
@@ -47,7 +47,7 @@ void mule::Data::Sheet::Read(xybase::Stream *stream, mule::Data::Basic::Type::Da
 		{
 			infraType->Read(stream, dataHandler);
 		}
-		catch (mule::Data::Basic::BasicType::ConstraintViolationException &ex)
+		catch (mule::Data::Basic::BasicType::ConstraintViolationException)
 		{
 			dataHandler->OnRealmExit(infraType, (int)i);
 			break;
@@ -73,7 +73,7 @@ void mule::Data::Sheet::Write(xybase::Stream *stream, mule::Data::Basic::Type::F
 		{
 			infraType->Write(stream, fileHandler);
 		}
-		catch (mule::Data::Basic::BasicType::ConstraintViolationException &ex)
+		catch (mule::Data::Basic::BasicType::ConstraintViolationException)
 		{
 			fileHandler->OnRealmExit(infraType, (int)i);
 			break;

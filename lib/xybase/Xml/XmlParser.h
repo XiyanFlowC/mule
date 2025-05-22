@@ -133,7 +133,7 @@ namespace xybase
                     size_t attrValueEnd = xml.find(xml[attrValueStart - 1], attrValueStart);
                     std::basic_string<Ch> attrRawValue = xml.substr(attrValueStart, attrValueEnd - attrValueStart);
                     StringBuilder<Ch> attrSb;
-                    for (int ai = 0; ai < attrRawValue.size(); ++ai)
+                    for (size_t ai = 0; ai < attrRawValue.size(); ++ai)
                     {
                         if (attrRawValue[ai] == '&')
                         {

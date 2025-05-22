@@ -43,7 +43,7 @@ namespace mule
 			 * @param id Specified id
 			 * @return true if exist, otherwise false.
 			 */
-			MULERT_API bool IsExist(unsigned int id);
+			MULERT_API bool IsExist(unsigned int id) const;
 
 			/**
 			 * @brief Get the instance.
@@ -72,7 +72,7 @@ namespace mule
 			 * @param id File id.
 			 * @return Loaded data.
 			 */
-			MULERT_API mule::Storage::BinaryData LoadData(unsigned int id);
+			MULERT_API mule::Storage::BinaryData LoadData(unsigned int id) const;
 
 			/**
 			 * @brief Open a C-style I/O stream.

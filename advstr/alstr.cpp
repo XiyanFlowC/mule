@@ -57,12 +57,12 @@ int str_im(xybase::TextStream *input, xybase::Stream *output)
 				if (escaped == 2)
 				{
 					++escaped;
-					xch = xybase::string::stoi<char>({ ch }, 16) << 8;
+					xch = (int)xybase::string::stoi<char>({ ch }, 16) << 8;
 				}
 				else if (escaped == 3)
 				{
 					escaped = 0;
-					xch |= xybase::string::stoi<char>({ ch }, 16) << 8;
+					xch |= (int)xybase::string::stoi<char>({ ch }, 16) << 8;
 					sb += xch;
 				}
 				else
@@ -82,7 +82,7 @@ int str_im(xybase::TextStream *input, xybase::Stream *output)
 				else sb += ch;
 			}
 		}
-		// HACK: The utf-8 string stored in the std::string can be operate as this to 'convert' to the std::u8string (with constructor
+		// FIXME: The utf-8 string stored in the std::string can be operate as this to 'convert' to the std::u8string (with constructor
 		// note that might violate the type ? I have no idea how to convert the type from the ifstream anyway
 		std::string rawStr = xybase::string::to_string(sb.ToString());
 		if (rawStr.size() > size)
