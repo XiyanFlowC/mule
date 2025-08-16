@@ -40,8 +40,8 @@ int str_im(xybase::TextStream *input, xybase::Stream *output)
 	std::string line;
 	while (input->ReadLine(line))
 	{
-		if (line.empty()) continue;
 		line = line.substr(line.find_first_not_of(" \t"));
+		if (line.empty()) continue;
 		if (line[0] == '#') continue;
 		size_t firstComma = line.find(',');
 		int addr = (int)xybase::string::stoi(line.substr(0, firstComma), 16);
