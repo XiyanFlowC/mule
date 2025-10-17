@@ -123,7 +123,7 @@ int main(int argc, char **argv)
 	}
 	catch (std::exception &ex)
 	{
-		logger.Fatal(L"Failed to open target {}.", conf.GetString(u"mule.target"));
+		logger.Fatal(L"Failed to open target {}.", xybase::string::to_wstring(conf.GetString(u"mule.target")));
 		logger.Fatal(L"Exception: {}", xybase::string::sys_mbs_to_wcs(ex.what()));
 		return -1;
 	}
