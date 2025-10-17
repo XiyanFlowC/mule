@@ -80,6 +80,8 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
 {
     isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
 
+	bool modified = false;
+
     while (true) {
         uint8_t size = isoFile->ReadUInt8();
         isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
@@ -136,18 +138,18 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
                 // Convert GMT offset to 15-minute units
                 int gmtOffset = gmtOffsetMinutes / 15;
                 
-                entry->recordingDateTime[0] = static_cast<uint8_t>(localTime.tm_year - 80);// Year since 1980
+                entry->recordingDateTime[0] = static_cast<uint8_t>(localTime.tm_year);// Year since 1900
                 entry->recordingDateTime[1] = static_cast<uint8_t>(localTime.tm_mon + 1);  // Month (1-12)
                 entry->recordingDateTime[2] = static_cast<uint8_t>(localTime.tm_mday);     // Day (1-31)
                 entry->recordingDateTime[3] = static_cast<uint8_t>(localTime.tm_hour);     // Hour (0-23)
                 entry->recordingDateTime[4] = static_cast<uint8_t>(localTime.tm_min);      // Minute (0-59)
                 entry->recordingDateTime[5] = static_cast<uint8_t>(localTime.tm_sec);      // Second (0-59)
                 entry->recordingDateTime[6] = static_cast<uint8_t>(gmtOffset);             // GMT offset 
-            }
-            
-            // if the location information has been updated.
-            if (entry->dataLengthLe != newFileSize || entry->locationOfExtentLe != newLocation)
-            {
+            //}
+            //
+            //// if the location information has been updated.
+            //if (entry->dataLengthLe != newFileSize || entry->locationOfExtentLe != newLocation)
+            //{
                 entry->dataLengthLe = newFileSize;
                 entry->dataLengthBe = (newFileSize >> 24) | ((newFileSize >> 8) & 0xFF00) | ((newFileSize & 0xFF) << 8) | (newFileSize << 24);
                 entry->locationOfExtentLe = newLocation;
@@ -155,6 +157,8 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
                 isoFile->Seek(offset);
                 // write new size information.
                 isoFile->Write((char *)entry, entry->length);
+
+				modified = true;
             }
         }
 
@@ -162,5 +166,44 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
         offset += entry->length;
         isoFile->Seek(offset, xybase::Stream::SM_BEGIN);
         delete[] entry;
+    }
+
+    if (modified)
+    {
+		// Update volume modification time
+		auto now = std::chrono::system_clock::now();
+		std::time_t now_c = std::chrono::system_clock::to_time_t(now);
+		std::tm localTime = *std::localtime(&now_c);
+		isoFile->Seek(0x8000, xybase::Stream::SM_BEGIN);
+		PrimaryVolume volume{};
+		isoFile->ReadBytes(reinterpret_cast<char *>(&volume), sizeof(PrimaryVolume));
+        snprintf(volume.volumeModificationDateAndTime, sizeof(volume.volumeModificationDateAndTime),
+            "%04d%02d%02d%02d%02d%02d00",
+            localTime.tm_year + 1900,
+            localTime.tm_mon + 1,
+            localTime.tm_mday,
+            localTime.tm_hour,
+            localTime.tm_min,
+			localTime.tm_sec);
+		std::tm utcTime = *std::gmtime(&now_c);
+
+        // Calculate GMT offset in minutes
+        int gmtOffsetMinutes = (localTime.tm_hour - utcTime.tm_hour) * 60 + (localTime.tm_min - utcTime.tm_min);
+
+        // Handle day boundary cases
+        if (localTime.tm_yday != utcTime.tm_yday)
+        {
+            gmtOffsetMinutes += (localTime.tm_yday > utcTime.tm_yday) ? 24 * 60 : -24 * 60;
+        }
+
+        // Convert GMT offset to 15-minute units
+        int gmtOffset = gmtOffsetMinutes / 15;
+
+        // Time zone offset from GMT in 15 minute intervals, starting at interval -48 (west) and running up to interval 52 (east). So value 0 indicates interval -48 which equals GMT-12 hours, and value 100 indicates interval 52 which equals GMT+13 hours. 
+
+		volume.volumeModificationDateAndTime[16] = static_cast<char>(gmtOffset);
+
+		isoFile->Seek(0x8000, xybase::Stream::SM_BEGIN);
+		isoFile->Write(reinterpret_cast<char *>(&volume), sizeof(PrimaryVolume));
     }
 }

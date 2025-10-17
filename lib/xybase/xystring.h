@@ -47,6 +47,15 @@ namespace xybase
 		long XY_API to_codepoint(const std::u8string &str);
 
 		/**
+		 * @brief 将给定字符串中指定偏移处的字符转换为 Unicode 码点。
+		 * @param str 要解析的 UTF-8 编码字符串。
+		 * @param offset 要解析的字符在字符串中的字节偏移量。
+		 * @param leng 引用参数，返回当前字符的字节长度。
+		 * @return 指定偏移处字符的 Unicode 码点。如果偏移无效，返回值未定义。
+		 */
+		long XY_API to_codepoint(const std::u8string &str, int offset, int &leng);
+
+		/**
 		 * @brief Get the codepoint for utf-16 (only process the first character).
 		 * @param str The character need to be processed.
 		 * @return The codepoint of given character.

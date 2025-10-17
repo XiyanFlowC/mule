@@ -3,7 +3,7 @@
 #include "../xystring.h"
 
 xybase::InvalidParameterException::InvalidParameterException(const std::wstring &param, const std::wstring &message, int err)
-	: param(param), Exception(L"Parameter: [" + param + L"] is invalid: " + message, INVALID_PARAMETER_EXCPETION_LEAD | err)
+	: param(param), RuntimeException(L"Parameter: [" + param + L"] is invalid: " + message, INVALID_PARAMETER_EXCPETION_LEAD | err)
 {
 }
 

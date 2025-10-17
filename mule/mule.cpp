@@ -111,12 +111,22 @@ int main(int argc, char **argv)
 
 	mule::Mule::GetInstance().LoadDescription(&mule::Cpp::bisDesc);
 
-	if (conf.GetString(u"mule.target.type") == u"directory")
+
+	try
 	{
-		mule::VirtualFileSystem::GetInstance().Mount(u"target", new xybase::HostFsMapper(conf.GetString(u"mule.target")));
+		if (conf.GetString(u"mule.target.type") == u"directory")
+		{
+			mule::VirtualFileSystem::GetInstance().Mount(u"target", new xybase::HostFsMapper(conf.GetString(u"mule.target")));
+		}
+		else
+			mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(conf.GetString(u"mule.target"))));
 	}
-	else
-		mule::Lua::LuaEnvironment::GetInstance().SetStream(new xybase::BinaryStream(xybase::string::to_wstring(conf.GetString(u"mule.target"))));
+	catch (std::exception &ex)
+	{
+		logger.Fatal(L"Failed to open target {}.", conf.GetString(u"mule.target"));
+		logger.Fatal(L"Exception: {}", xybase::string::sys_mbs_to_wcs(ex.what()));
+		return -1;
+	}
 
 	try
 	{

@@ -22,7 +22,7 @@ namespace mule
             uint32_t locationOfExtentBe;
             uint32_t dataLengthLe;
             uint32_t dataLengthBe;
-            char recordingDateTime[7];
+            uint8_t recordingDateTime[7];
             uint8_t fileFlags;
             uint8_t fileUnitSize;
             uint8_t interleaveGapSize;

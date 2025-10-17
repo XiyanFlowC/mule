@@ -62,21 +62,27 @@ std::u32string xybase::string::to_utf32(long codepoint)
 
 long xybase::string::to_codepoint(const std::u8string &str)
 {
-    uint32_t ret = 0;
-    int leng = 0;
+    int leng;
+    return to_codepoint(str, 0, leng);
+}
 
-    if (str[0] & 0x80) {
-        if ((str[0] & 0xE0) == 0xC0) {
+long xybase::string::to_codepoint(const std::u8string &str, int offset, int &leng)
+{
+    uint32_t ret = 0;
+    leng = 0;
+
+    if (str[offset + 0] & 0x80) {
+        if ((str[offset + 0] & 0xE0) == 0xC0) {
             leng = 2;
-            ret = str[0] & 0x1F;
+            ret = str[offset + 0] & 0x1F;
         }
-        else if ((str[0] & 0xF0) == 0xE0) {
+        else if ((str[offset + 0] & 0xF0) == 0xE0) {
             leng = 3;
-            ret = str[0] & 0x0F;
+            ret = str[offset + 0] & 0x0F;
         }
-        else if ((str[0] & 0xF8) == 0xF0) {
+        else if ((str[offset + 0] & 0xF8) == 0xF0) {
             leng = 4;
-            ret = str[0] & 0x07;
+            ret = str[offset + 0] & 0x07;
         }
         else {
             // Invalid UTF-8 encoding
@@ -84,8 +90,8 @@ long xybase::string::to_codepoint(const std::u8string &str)
         }
 
         for (int i = 1; i < leng; ++i) {
-            if ((str[i] & 0xC0) == 0x80) {
-                ret = (ret << 6) | (str[i] & 0x3F);
+            if ((str[offset + i] & 0xC0) == 0x80) {
+                ret = (ret << 6) | (str[offset + i] & 0x3F);
             }
             else {
                 // Invalid UTF-8 encoding
@@ -94,8 +100,9 @@ long xybase::string::to_codepoint(const std::u8string &str)
         }
     }
     else {
+        leng = 1;
         // ASCII character
-        ret = str[0];
+        ret = str[offset + 0];
     }
 
     return ret;
@@ -193,7 +200,7 @@ std::u32string xybase::string::to_utf32(const std::u16string &str) noexcept
     {
         if (str[i] >= 0xD800 && str[i] <= 0xDBFF) {
             // Singular lead surrogate
-            if (i + 1 < str.length())
+            if (i + 1 >= str.length())
             {
                 sb += u'�';
                 break;
@@ -236,9 +243,9 @@ std::u32string xybase::string::to_utf32(const std::u32string &str) noexcept
 std::u32string xybase::string::to_utf32(const std::wstring &str) noexcept
 {
 #ifdef _WIN32
-    return to_utf32((const char16_t*)str.c_str());
+    return to_utf32((const char16_t *)str.c_str());
 #else
-    return std::u32string((const char32_t*)str.c_str());
+    return std::u32string((const char32_t *)str.c_str());
 #endif
 }
 
@@ -375,7 +382,7 @@ std::u8string xybase::string::to_utf8(const std::u16string &str) noexcept
         }
         else if (c >= 0xD800 && c <= 0xDBFF) {
             // Singular lead surrogate
-            if (i + 1 < str.length())
+            if (i + 1 >= str.length())
             {
                 sb += 0xEF;
                 sb += 0xBF;

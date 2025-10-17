@@ -3,7 +3,7 @@
 #ifndef XY_INVALID_PARAMETER_EXCEPTION_H__
 #define XY_INVALID_PARAMETER_EXCEPTION_H__
 
-#include "Exception.h"
+#include "RuntimeException.h"
 #include <string>
 
 #include "../xyapi.h"
@@ -12,7 +12,7 @@ namespace xybase
 {
 	const int INVALID_PARAMETER_EXCPETION_LEAD = 0x2000'0000;
 
-	class InvalidParameterException : public Exception
+	class InvalidParameterException : public RuntimeException
 	{
 	public:
 		XY_API InvalidParameterException(const std::wstring & param, const std::wstring &message, int err);
