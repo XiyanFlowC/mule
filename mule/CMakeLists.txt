@@ -6,6 +6,10 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/version.h.in" "${CMAKE_CURRENT_SOURC
 
 target_link_libraries (mule PRIVATE sis sislua)
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET mule PROPERTY CXX_STANDARD 20)
-endif()
+# Ensure C++ standard
+set_property(TARGET mule PROPERTY CXX_STANDARD 20)
+set_property(TARGET mule PROPERTY CXX_STANDARD_REQUIRED ON)
+
+# Installation
+include(GNUInstallDirs)
+install(TARGETS mule DESTINATION ${CMAKE_INSTALL_BINDIR})

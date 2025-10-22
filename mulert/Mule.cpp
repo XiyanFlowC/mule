@@ -5,6 +5,7 @@
 #include "Storage/DataManager.h"
 #include <string>
 #include <stack>
+#include <format>
 #include <Exception/InvalidParameterException.h>
 #include <xystring.h>
 #include <StringBuilder.h>
@@ -51,17 +52,36 @@ void mule::Mule::LoadPlugin(const char16_t *plugin)
 	}
 #else
 	std::string pluginFile = xybase::string::to_string(plugin);
+	
+	// Improve path handling for Linux
 	size_t pathEnd = pluginFile.find_last_of('/');
-	pluginFile = 
-		(pathEnd == std::string::npos
-		? ("lib" + pluginFile)
-		: (pluginFile.replace(pathEnd, 1, "/lib"))) + ".so";
+	if (pathEnd == std::string::npos)
+	{
+		// No path separator, add lib prefix
+		pluginFile = "lib" + pluginFile + ".so";
+	}
+	else
+	{
+		// Has path, insert lib after the last separator
+		std::string path = pluginFile.substr(0, pathEnd + 1);
+		std::string name = pluginFile.substr(pathEnd + 1);
+		pluginFile = path + "lib" + name + ".so";
+	}
+	
 	void *libraryHandle = dlopen(pluginFile.c_str(), RTLD_LAZY);
 
 	if (libraryHandle == NULL)
 	{
-		logger.Error(L"Failed to load plugin: {}", xybase::string::to_wstring(plugin));
-		throw xybase::RuntimeException(std::format(L"Cannot load specified plugin. {}", xybase::string::sys_mbs_to_wcs(dlerror())), 10);
+		// Try without lib prefix as fallback
+		std::string fallbackFile = xybase::string::to_string(plugin) + ".so";
+		libraryHandle = dlopen(fallbackFile.c_str(), RTLD_LAZY);
+		
+		if (libraryHandle == NULL)
+		{
+			logger.Error(L"Failed to load plugin: {}", xybase::string::to_wstring(plugin));
+			logger.Note(L"Tried paths: {} and {}", xybase::string::to_wstring(pluginFile), xybase::string::to_wstring(fallbackFile));
+			throw xybase::RuntimeException(std::format(L"Cannot load specified plugin. {}", xybase::string::sys_mbs_to_wcs(dlerror())), 10);
+		}
 	}
 #endif
 
@@ -165,39 +185,65 @@ void mule::Mule::OpenAndMount(const char16_t *root, const char16_t *params)
 	{
 		if (desc->OpenContainer != nullptr)
 		{
-			// 处理参数
-			char16_t *buffer = new char16_t[wstrlen(params) + 1];
-			memcpy(buffer, params, wstrlen(params) * 2 + 2);
-			std::vector<char16_t *> pl;
-			char16_t *ptr = buffer;
-			pl.push_back(ptr);
-			while (*ptr)
+			// 优化参数解析 - 使用更安全的方法
+			if (params == nullptr || wstrlen(params) == 0)
 			{
-				if (*ptr == u' ')
-				{
-					*ptr++ = '\0';
-					while (*ptr == u' ') ++ptr;
-					pl.push_back(ptr);
-					continue;
-				}
-				++ptr;
-			}
-			char16_t **para = new char16_t *[pl.size()];
-			for (int i = 0; i < pl.size(); ++i)
-			{
-				para[i] = pl[i];
+				logger.Warn(L"Empty parameters provided for OpenAndMount");
+				continue;
 			}
 
-			auto ret = desc->OpenContainer((int)pl.size(), (const char16_t **)para);
-			delete[] buffer;
-			delete[] para;
+			std::u16string paramStr(params);
+			std::vector<std::u16string> paramList;
+			std::vector<const char16_t*> paramPtrs;
+			
+			// 使用stringstream方式分割参数，更安全
+			std::u16string current;
+			bool inQuotes = false;
+			
+			for (size_t i = 0; i < paramStr.length(); ++i)
+			{
+				char16_t ch = paramStr[i];
+				if (ch == u'"')
+				{
+					inQuotes = !inQuotes;
+				}
+				else if (ch == u' ' && !inQuotes)
+				{
+					if (!current.empty())
+					{
+						paramList.push_back(current);
+						current.clear();
+					}
+				}
+				else
+				{
+					current += ch;
+				}
+			}
+			
+			if (!current.empty())
+			{
+				paramList.push_back(current);
+			}
+			
+			// 构建指针数组
+			paramPtrs.reserve(paramList.size());
+			for (const auto& param : paramList)
+			{
+				paramPtrs.push_back(param.c_str());
+			}
+
+			auto ret = desc->OpenContainer(static_cast<int>(paramPtrs.size()), paramPtrs.data());
 
 			if (ret != nullptr)
 			{
 				VirtualFileSystem::GetInstance().Mount(root, ret);
+				return; // 成功挂载后退出
 			}
 		}
 	}
+	
+	logger.Warn(L"Failed to mount container to root: {}", xybase::string::to_wstring(root));
 }
 
 mule::Data::Basic::Type::DataHandler *mule::Mule::GetDataHandler(const char16_t *name)
@@ -235,14 +281,16 @@ mule::Mule::Mule()
 
 mule::Mule::~Mule()
 {
-	/*for (auto &&handler : pluginHandlers)
+	// 修复：正确清理插件资源
+	for (auto &&handler : pluginHandlers)
 	{
 #ifdef _WIN32
 		FreeLibrary((HMODULE)handler);
 #else
 		dlclose(handler);
 #endif
-	}*/
+	}
+	pluginHandlers.clear();
 }
 
 Mule &mule::Mule::GetInstance()

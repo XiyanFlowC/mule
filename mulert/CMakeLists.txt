@@ -20,18 +20,23 @@ target_link_libraries (mulert PUBLIC xybase_dyn ${CMAKE_DL_LIBS})
 target_link_libraries (mulert_sta PUBLIC xybase ${CMAKE_DL_LIBS})
 
 include (GNUInstallDirs)
-install (TARGETS mulert DESTINATION ${CMAKE_INSTALL_LIBDIR}/mule)
-install (TARGETS mulert_sta DESTINATION ${CMAKE_INSTALL_LIBDIR}/mule)
-install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mule FILES_MATCHING PATTERN "*.h")
+install (TARGETS mulert DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install (TARGETS mulert_sta DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install (DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/ 
+         DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/mule 
+         FILES_MATCHING PATTERN "*.h"
+         PATTERN "CMakeFiles" EXCLUDE)
 
+# Platform-specific compiler options
 if (MSVC)
   target_compile_options(mulert PRIVATE "/utf-8")
   target_compile_options(mulert_sta PRIVATE "/utf-8")
+elseif(UNIX)
+  target_compile_options(mulert PRIVATE "-fPIC")
 endif()
 
-if (CMAKE_VERSION VERSION_GREATER 3.12)
-  set_property(TARGET mulert PROPERTY CXX_STANDARD 20)
-  set_property(TARGET mulert_sta PROPERTY CXX_STANDARD 20)
-else()
-  message (FATAL "CMake 3.12 is required!")
-endif()
+# Ensure C++ standard
+set_property(TARGET mulert PROPERTY CXX_STANDARD 20)
+set_property(TARGET mulert_sta PROPERTY CXX_STANDARD 20)
+set_property(TARGET mulert PROPERTY CXX_STANDARD_REQUIRED ON)
+set_property(TARGET mulert_sta PROPERTY CXX_STANDARD_REQUIRED ON)

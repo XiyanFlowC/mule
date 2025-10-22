@@ -48,7 +48,10 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 	for (auto *sheet : sheets)
 	{
 		logger.Info(L"Start to write sheet {}", xybase::string::to_wstring(sheet->GetName()));
-		mule::Data::Basic::Type::FileHandler *handler = Mule::GetInstance().GetFileHandler(handlerName.c_str());
+		
+		std::unique_ptr<mule::Data::Basic::Type::FileHandler> handler(
+			Mule::GetInstance().GetFileHandler(handlerName.c_str())
+		);
 		if (handler == nullptr)
 		{
 			logger.Error(L"Get handler failed: [{}]", xybase::string::to_wstring(handlerName));
@@ -58,35 +61,37 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 		auto sheetPath = xybase::string::to_string(baseDir + sheet->GetName() + u'.' + handlerName);
 		auto sheetDir = sheetPath.substr(0, sheetPath.find_last_of('/'));
 
-		xybase::TextStream *stream = nullptr;
+		std::unique_ptr<xybase::TextStream> stream;
 		try {
-			stream = new xybase::TextStream(
+			stream = std::make_unique<xybase::TextStream>(
 				sheetPath,
 				std::ios::in
 			);
 		}
-		catch (std::exception)
+		catch (const std::exception&)
 		{
-			delete handler;
+			logger.Warn(L"Failed to open sheet file: {}", xybase::string::to_wstring(sheetPath));
 			continue;
 		}
 
 		try
 		{
-			handler->SetInStream(stream);
+			handler->SetInStream(stream.get());
 
 			handler->OnSheetWriteStart();
-			sheet->Write(target, handler);
+			sheet->Write(target, handler.get());
 			handler->OnSheetWriteEnd();
 		}
-		catch (xybase::Exception &ex)
+		catch (const xybase::Exception &ex)
 		{
 			logger.Error(L"An error occurred when writing to {}.", xybase::string::to_wstring(sheet->GetName()));
 			logger.Note(L"Exception: {}", ex.GetMessage());
 		}
-
-		delete handler;
-		delete stream;
+		catch (const std::exception &ex)
+		{
+			logger.Error(L"Unexpected error when writing to {}.", xybase::string::to_wstring(sheet->GetName()));
+			logger.Note(L"Exception: {}", xybase::string::sys_mbs_to_wcs(ex.what()));
+		}
 	}
 }
 
@@ -100,12 +105,16 @@ void mule::SheetManager::ReadSheets(xybase::Stream *target, const std::u16string
 	for (auto *sheet : sheets)
 	{
 		logger.Info(L"Start to read sheet {}", xybase::string::to_wstring(sheet->GetName()));
-		mule::Data::Basic::Type::DataHandler *handler = Mule::GetInstance().GetDataHandler(handlerName.c_str());
+		
+		std::unique_ptr<mule::Data::Basic::Type::DataHandler> handler(
+			Mule::GetInstance().GetDataHandler(handlerName.c_str())
+		);
 		if (handler == nullptr)
 		{
 			logger.Error(L"Get handler failed: [{}]", xybase::string::to_wstring(handlerName));
 			throw xybase::InvalidParameterException(L"handlerName", L"Not a valid handler name", 64051);
 		}
+		
 		auto sheetPath = xybase::string::to_string(baseDir + sheet->GetName() + u'.' + handlerName);
 		auto sheetDir = sheetPath.substr(0, sheetPath.find_last_of('/'));
 		if (!std::filesystem::exists(sheetDir))
@@ -113,27 +122,30 @@ void mule::SheetManager::ReadSheets(xybase::Stream *target, const std::u16string
 			std::filesystem::create_directories(sheetDir);
 		}
 
-		xybase::TextStream *stream = new xybase::TextStream(
-			sheetPath,
-			std::ios::out
-		);
-
+		std::unique_ptr<xybase::TextStream> stream;
 		try
 		{
-			handler->SetOutStream(stream);
+			stream = std::make_unique<xybase::TextStream>(
+				sheetPath,
+				std::ios::out
+			);
+			
+			handler->SetOutStream(stream.get());
 
 			handler->OnSheetReadStart();
-			sheet->Read(target, handler);
+			sheet->Read(target, handler.get());
 			handler->OnSheetReadEnd();
 		}
-		catch (xybase::Exception &ex)
+		catch (const xybase::Exception &ex)
 		{
 			logger.Error(L"An error occurred when reading from {}.", xybase::string::to_wstring(sheet->GetName()));
 			logger.Note(L"Exception: {}", ex.GetMessage());
 		}
-
-		delete handler;
-		delete stream;
+		catch (const std::exception &ex)
+		{
+			logger.Error(L"Unexpected error when reading from {}.", xybase::string::to_wstring(sheet->GetName()));
+			logger.Note(L"Exception: {}", xybase::string::sys_mbs_to_wcs(ex.what()));
+		}
 	}
 }
 
@@ -158,15 +170,16 @@ void mule::SheetManager::RemoveSheet(xybase::Stream *target, const std::u16strin
 	if (itr == streamSheets.end()) return;
 
 	auto &sheets = itr->second;
-	auto sheetItr = sheets.begin();
-	if (sheetItr == sheets.end()) return;
-
-	while (sheetItr != sheets.end())
+	for (auto sheetItr = sheets.begin(); sheetItr != sheets.end();)
 	{
 		if ((*sheetItr)->GetName() == name)
 		{
-			sheets.erase(sheetItr);
 			delete *sheetItr;
+			sheetItr = sheets.erase(sheetItr); // erase返回下一个有效迭代器
+		}
+		else
+		{
+			++sheetItr;
 		}
 	}
 }
