@@ -281,8 +281,9 @@ mule::Mule::Mule()
 
 mule::Mule::~Mule()
 {
-	// 修复：正确清理插件资源
-	for (auto &&handler : pluginHandlers)
+	// API 修订前无法通知插件卸载事件，暂不卸载插件动态库
+	// 否则插件的清理代码执行时可能会访问已被卸载的资源
+	/*for (auto &&handler : pluginHandlers)
 	{
 #ifdef _WIN32
 		FreeLibrary((HMODULE)handler);
@@ -290,7 +291,7 @@ mule::Mule::~Mule()
 		dlclose(handler);
 #endif
 	}
-	pluginHandlers.clear();
+	pluginHandlers.clear();*/
 }
 
 Mule &mule::Mule::GetInstance()
