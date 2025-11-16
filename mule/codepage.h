@@ -4,10 +4,14 @@
 #include <map>
 #include <cstdint>
 
+#include <Logger.h>
+
 class CodeCvt
 {
 	std::map<uint32_t, uint32_t> uc2cp;
 	std::map<uint32_t, uint32_t> cp2uc;
+
+	mule::Logger logger = mule::Logger::GetLogger<CodeCvt>();
 public:
 	~CodeCvt();
 

@@ -36,7 +36,7 @@ std::string CodeCvt::CvtToString(const std::wstring &str)
 	auto codes = xybase::string::to_utf32(str);
 
 	xybase::StringBuilder<char> sb;
-	for (char32_t code : str)
+	for (char32_t code : codes)
 	{
 		auto dbc = uc2cp[code];
 		if (dbc == 0)
@@ -46,6 +46,8 @@ std::string CodeCvt::CvtToString(const std::wstring &str)
 			{
 				dbc = uc2cp[U'?'];
 			}
+
+			logger.Error(L"Failed to convert character U+{:04X} to codepage encoding.", (int)code);
 		}
 		if (dbc > 0xFF)
 		{
@@ -73,6 +75,8 @@ std::wstring CodeCvt::CvtToWString(const std::string &str)
 			if (wc == 0)
 			{
 				wc = U'�';
+
+				logger.Error(L"Failed to convert codepage encoding {:04X} to character.", (current | (ch & 0xFF)) & 0xFFFF);
 			}
 
 			sb.Append(wc);

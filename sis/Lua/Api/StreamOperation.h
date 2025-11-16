@@ -30,6 +30,10 @@ namespace mule
 
 			int WriteStream(int streamId, std::string data);
 
+			int WriteStreamByte(int streamId, int byteValue);
+
+			int ReadStreamByte(int streamId);
+
 			int TellStream(int streamId);
 
 			int SeekStream(int streamId, int offset, int seekType);

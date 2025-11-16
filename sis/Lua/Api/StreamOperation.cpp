@@ -117,8 +117,23 @@ std::string mule::Lua::Api::ReadStream(int streamId, int size)
 
 int mule::Lua::Api::WriteStream(int streamId, std::string data)
 {
-	LuaEnvironment::GetInstance().GetStream(streamId)->Write(data.c_str(), data.size() - 1);
+	LuaEnvironment::GetInstance().GetStream(streamId)->Write(data.c_str(), data.size());
 	return 0;
+}
+
+
+
+int mule::Lua::Api::WriteStreamByte(int streamId, int byteValue)
+{
+	LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<char>(byteValue & 0xFF));
+	return 0;
+}
+
+int mule::Lua::Api::ReadStreamByte(int streamId)
+{
+	char ret;
+	LuaEnvironment::GetInstance().GetStream(streamId)->ReadBytes(&ret, 1);
+	return (int)(ret & 0xFF);
 }
 
 int mule::Lua::Api::TellStream(int streamId)
@@ -139,6 +154,8 @@ void mule::Lua::Api::RegisterStreamOperationFunctions()
 	host.RegisterFunction("close", CloseStream);
 	host.RegisterFunction("read", ReadStream);
 	host.RegisterFunction("write", WriteStream);
+	host.RegisterFunction("writebyte", WriteStreamByte);
+	host.RegisterFunction("readbyte", ReadStreamByte);
 	host.RegisterFunction("tell", TellStream);
 	host.RegisterFunction("seek", SeekStream);
 	host.RegisterFunction("export", ExportStream);
