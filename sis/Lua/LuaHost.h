@@ -155,7 +155,9 @@ namespace mule
 			index += 1;
 			if constexpr (std::is_same_v<T, std::string>)
 			{
-				return lua_tostring(L, index);
+				size_t len = 0;
+				const char *str = lua_tolstring(L, index, &len);
+				return std::string(str, len);
 			}
 			else if constexpr (std::is_same_v<T, std::u8string>)
 			{

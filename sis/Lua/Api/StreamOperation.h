@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include <Data/Basic/MultiValue.h>
+
 namespace mule
 {
 	namespace Lua
@@ -26,9 +28,9 @@ namespace mule
 
 			int StreamOverStream(int streamId, std::u8string applier);
 
-			std::string ReadStream(int streamId, int size);
+			mule::Data::Basic::MultiValue ReadStream(int streamId, int size);
 
-			int WriteStream(int streamId, std::string data);
+			int WriteStream(int streamId, mule::Data::Basic::MultiValue data);
 
 			int WriteStreamByte(int streamId, int byteValue);
 

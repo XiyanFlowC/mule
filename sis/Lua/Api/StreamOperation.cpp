@@ -108,16 +108,29 @@ int mule::Lua::Api::StreamOverStream(int streamId, std::u8string applier)
 	return LuaEnvironment::GetInstance().SetStream(stream);
 }
 
-std::string mule::Lua::Api::ReadStream(int streamId, int size)
+mule::Data::Basic::MultiValue mule::Lua::Api::ReadStream(int streamId, int size)
 {
 	std::unique_ptr<char[]> buffer(new char[size]);
 	LuaEnvironment::GetInstance().GetStream(streamId)->ReadBytes(buffer.get(), size);
-	return buffer.get();
+	mule::Data::Basic::MultiValue ret{ mule::Data::Basic::MultiValue::MVT_ARRAY, size };
+	for (int i = 0; i < size; ++i)
+	{
+		ret.value.arrayValue[i] = mule::Data::Basic::MultiValue((int64_t)(buffer[i] & 0xFF));
+	}
+	return ret;
 }
 
-int mule::Lua::Api::WriteStream(int streamId, std::string data)
+int mule::Lua::Api::WriteStream(int streamId, mule::Data::Basic::MultiValue data)
 {
-	LuaEnvironment::GetInstance().GetStream(streamId)->Write(data.c_str(), data.size());
+	xybase::StringBuilder<char> sb;
+	for (size_t i = 1; data.IsType(mule::Data::Basic::MultiValue::MVT_MAP) && data.value.mapValue->find(mule::Data::Basic::MultiValue((uint64_t)i)) != data.value.mapValue->end(); ++i)
+	{
+		auto &byteVal = data.value.mapValue->at(mule::Data::Basic::MultiValue((uint64_t)i));
+		if (!byteVal.IsType(mule::Data::Basic::MultiValue::MVT_INT) && !byteVal.IsType(mule::Data::Basic::MultiValue::MVT_UINT))
+			continue;
+		sb.Append(static_cast<char>(byteVal.IsType(mule::Data::Basic::MultiValue::MVT_INT) ? (byteVal.value.signedValue & 0xFF) : (byteVal.value.unsignedValue & 0xFF)));
+	}
+	LuaEnvironment::GetInstance().GetStream(streamId)->Write(sb.ToString(), sb.Length());
 	return 0;
 }
 
@@ -125,7 +138,7 @@ int mule::Lua::Api::WriteStream(int streamId, std::string data)
 
 int mule::Lua::Api::WriteStreamByte(int streamId, int byteValue)
 {
-	LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<char>(byteValue & 0xFF));
+	LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<uint8_t>(byteValue & 0xFF));
 	return 0;
 }
 
