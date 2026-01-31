@@ -8,6 +8,7 @@
 #include <Mule.h>
 #include "../LuaHost.h"
 #include <Configuration.h>
+#include <Logger.h>
 
 mule::Logger mule::Lua::Api::logger {"<LuaSystemApi>"};
 
@@ -24,9 +25,51 @@ int mule::Lua::Api::PrintPlugins()
     return 0;
 }
 
-int mule::Lua::Api::Log(std::u8string msg)
+int mule::Lua::Api::LogInit(int level, bool enableColour)
 {
-    logger.Info(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+    LoggerBase::GetInstance().LoggerInit(level, enableColour);
+	return 0;
+}
+
+int mule::Lua::Api::LogSetOutput(std::u8string filename)
+{
+    LoggerBase::GetInstance().SetStandardOutput(xybase::string::sys_wcs_to_mbs(xybase::string::to_wstring(filename)));
+    return 0;
+}
+
+int mule::Lua::Api::LogSetErrorOutput(std::u8string filename)
+{
+	LoggerBase::GetInstance().SetErrorOutput(xybase::string::sys_wcs_to_mbs(xybase::string::to_wstring(filename)));
+    return 0;
+}
+
+
+int mule::Lua::Api::Log(std::u8string msg, mule::Data::Basic::MultiValue logLevel)
+{
+    if (logLevel.IsType(mule::Data::Basic::MultiValue::MVT_NULL))
+    {
+        logger.Info(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+    }
+    else {
+        if (logLevel == 0) {
+			logger.Info(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+		}
+        else if (logLevel == 1) {
+            logger.Note(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+        }
+        else if (logLevel == 2) {
+            logger.Warn(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+        }
+        else if (logLevel == 3) {
+            logger.Error(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+        }
+        else if (logLevel == 4) {
+            logger.Fatal(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+		}
+        else if (logLevel == -1) {
+            logger.Debug(xybase::string::to_wstring(((char8_t *)msg.c_str())));
+        }
+    }
     return 0;
 }
 
@@ -95,6 +138,9 @@ void mule::Lua::Api::RegisterSystemOperations()
     LuaHost::GetInstance().RegisterFunction("pplugin", PrintPlugins);
     LuaHost::GetInstance().RegisterFunction("lplugin", LoadPlugin);
     LuaHost::GetInstance().RegisterFunction("log", Log);
+	LuaHost::GetInstance().RegisterFunction("loginit", LogInit);
+	LuaHost::GetInstance().RegisterFunction("logsetout", LogSetOutput);
+	LuaHost::GetInstance().RegisterFunction("logseterr", LogSetErrorOutput);
     LuaHost::GetInstance().RegisterFunction("config", Configuration);
     LuaHost::GetInstance().RegisterFunction("config_erase", EraseConfiguration);
     LuaHost::GetInstance().RegisterFunction("define", DefineStructure);

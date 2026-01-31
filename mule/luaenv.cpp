@@ -126,6 +126,25 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
     return 0;
 }
 
+
+int SmartReferenceMemorySaveOne(int streamId, int fileId)
+{
+	xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
+	if (stream == nullptr) return -10;
+	auto &memory = SmartReference::MemoryManager::GetInstance().GetMemory(stream);
+
+	FILE *file = DataManager::GetInstance().OpenRaw(fileId, "w");
+	if (file == nullptr) return -11;
+	auto fragments = memory.GetFragments();
+	fprintf(file, "%zu\n", fragments.size());
+    for (auto &&frag : fragments)
+    {
+        fprintf(file, "%llX %llu\n", frag->GetBeginning(), frag->GetSize());
+	}
+    fclose(file);
+    return 0;
+}
+
 int loadMemory(int streamId, int fileId)
 {
     xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
@@ -250,6 +269,14 @@ int RegisterSheet(int streamId, std::u8string name, std::u8string type, size_t o
     return 0;
 }
 
+int RemoveSheet(int streamId, std::u8string name)
+{
+    auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return -10;
+    mule::SheetManager::GetInstance().RemoveSheet(stream, xybase::string::to_utf16(name));
+    return 0;
+}
+
 int ClearSheet(int streamId)
 {
     auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
@@ -285,6 +312,20 @@ int ImportSheets(int streamId, std::u8string handler)
     return 0;
 }
 
+#include "crc32.h"
+
+unsigned int Crc32(std::u8string path)
+{
+	auto stream = mule::VirtualFileSystem::GetInstance().Open(xybase::string::to_utf16(path).c_str(), xybase::FOM_READ);
+	stream->Seek(0, xybase::Stream::SM_END);
+	size_t size = stream->Tell();
+	stream->Seek(0, xybase::Stream::SM_BEGIN);
+	std::vector<uint8_t> buffer(size);
+	stream->ReadBytes((char *)buffer.data(), size);
+    stream->Close();
+	return crc32_eval(buffer.data(), size);
+}
+
 void InitialiseLuaEnvironment()
 {
     auto &lua = mule::Lua::LuaHost::GetInstance();
@@ -293,13 +334,18 @@ void InitialiseLuaEnvironment()
     lua.RegisterFunction("savemem", SaveMemory);
     lua.RegisterFunction("ldmem", loadMemory);
 
+	lua.RegisterFunction("srmload", loadMemory);
+	lua.RegisterFunction("srmsave", SmartReferenceMemorySaveOne);
+
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);
 
     lua.RegisterFunction("shtload", LoadSheet);
     lua.RegisterFunction("shtsave", SaveSheet);
     lua.RegisterFunction("shtloadfile", LoadSheetFromFile);
+    lua.RegisterFunction("shtldf", LoadSheetFromFile);
     lua.RegisterFunction("shtreg", RegisterSheet);
+	lua.RegisterFunction("shtrm", RemoveSheet);
     lua.RegisterFunction("shtclr", ClearSheet);
     lua.RegisterFunction("shtex", ExportSheets);
     lua.RegisterFunction("shtim", ImportSheets);
@@ -308,4 +354,6 @@ void InitialiseLuaEnvironment()
     lua.RegisterFunction("cvtbin", cvtbin);
 
     lua.RegisterFunction("codemap", loadcodepage);
+
+	lua.RegisterFunction("crc32", Crc32);
 }

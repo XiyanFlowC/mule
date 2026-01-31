@@ -16,7 +16,13 @@ namespace mule
 
 			int PrintPlugins();
 
-			int Log(std::u8string msg);
+			int Log(std::u8string msg, mule::Data::Basic::MultiValue mv);
+
+			int LogInit(int level, bool enableColour);
+
+			int LogSetOutput(std::u8string filename);
+
+			int LogSetErrorOutput(std::u8string filename);
 
 			int LoadPlugin(std::u8string path);
 
