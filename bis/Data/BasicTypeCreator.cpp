@@ -5,6 +5,7 @@
 #include "Basic/Float.h"
 #include "Basic/String.h"
 #include "Basic/UString.h"
+#include "Basic/Align.h"
 
 #include <xystring.h>
 
@@ -47,6 +48,16 @@ Type *mule::Data::BasicTypeCreator::DoCreateObject(const std::u16string &info, c
 		}
 
 		ret = new Integer(size, true);
+	}
+	else if (info == u"align")
+	{
+		int size = (int)xybase::string::stoi(info.substr(5));
+		if (size & (size - 1))
+		{
+			return nullptr;
+		}
+			
+		ret = new Align(size);
 	}
 	else if (info == u"float")
 	{

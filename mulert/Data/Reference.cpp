@@ -83,7 +83,7 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 			{
 				ptr = SmartReference::MemoryManager::GetInstance().GetMemory(stream).Alloc(sizeAttr.value.unsignedValue, align);
 			}
-			else throw xybase::RuntimeException(L"Non-constant size referent requiring reallocation.", 72500);
+			else throw xybase::RuntimeException(L"Non-constant size referent is requiring reallocation.", 72500);
 		}
 		else
 		{

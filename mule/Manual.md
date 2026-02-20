@@ -1225,6 +1225,19 @@ local stream = open("target:/file.dat", "rb")  -- 'b' 表示大端序
 </struct>
 ```
 
+对于非结构（变长）的结构（常见于数据文件），若有对齐要求，可以使用align字段来实现：
+```xml
+<struct name="ItemData">
+  <field name="id" type="uint32" />
+  <field name="name" type="string" />
+  <field name="namepad" type="align4" />  <!-- 对齐到 4 字节边界 -->
+  <field name="desc" type="string" />
+  <field name="descpad" type="align4" />  <!-- 对齐到 4 字节边界 -->
+  <field name="dataPad" type="align128" />  <!-- 对齐到 128 字节边界 -->
+</struct>
+```
+如上所示，align类型会根据当前字段位置自动计算需要跳过的字节数，以达到指定的对齐要求。
+
 #### 错误处理
 
 **常见错误**：

@@ -588,7 +588,7 @@ local tbl = shtload(0, "ToC", "FileEntry", 0x100, 100)
 ```lua
 -- 加载空闲片段信息并申请空间
 srmload(0, 1)
-local pos = srmalloc(0, 0x100, 0x10)
+local pos = srmalloc(0, 0x100, 0x10) -- 申请 0x100 字节空间，16 字节对齐
 if pos ~= 0 then
 -- 成功申请到空间，注册该片段并保存回数据文件
   srmreg(0, pos, 0x100)
