@@ -4,6 +4,7 @@
 #include <xystring.h>
 #include "../Configuration.h"
 #include "Basic/BasicType.h"
+#include "SmartReference.h"
 
 using namespace mule::Data::Basic;
 
@@ -48,6 +49,46 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 		stream->Seek(0, xybase::Stream::SM_CURRENT);
 		ptr = stream->ReadUInt32();
 		stream->Seek(-4, xybase::Stream::SM_CURRENT);
+	}
+
+	bool realloc = false;
+	auto reallocAttr = val.metadata[u"realloc"];
+	if (reallocAttr.IsType(MultiValue::MVT_INT) && reallocAttr.value.signedValue != 0)
+	{
+		realloc = true;
+	}
+	if (reallocAttr.IsType(MultiValue::MVT_STRING) && reallocAttr.value.stringValue->compare(u"true") == 0)
+	{
+		realloc = true;
+	}
+
+	if (realloc)
+	{
+		// 获取 align 要求
+		auto alignAttr = val.metadata[u"align"];
+		size_t align = 1;
+		if (alignAttr.IsType(mule::Data::Basic::MultiValue::MVT_INT) || alignAttr.IsType(mule::Data::Basic::MultiValue::MVT_UINT))
+		{
+			align = alignAttr.value.unsignedValue;
+			// 检查 align 是否是 2 的幂
+			if (align & (align - 1))
+				throw xybase::RuntimeException(L"Invalid alignment requirement.", 72501);
+		}
+
+		// 尝试分配新地址
+		if (referent->Size() == (size_t)-1)
+		{
+			auto sizeAttr = val.metadata[u"size"];
+			if (sizeAttr.IsType(mule::Data::Basic::MultiValue::MVT_INT) || sizeAttr.IsType(mule::Data::Basic::MultiValue::MVT_UINT))
+			{
+				ptr = SmartReference::MemoryManager::GetInstance().GetMemory(stream).Alloc(sizeAttr.value.unsignedValue, align);
+			}
+			else throw xybase::RuntimeException(L"Non-constant size referent requiring reallocation.", 72500);
+		}
+		else
+		{
+			ptr = SmartReference::MemoryManager::GetInstance().GetMemory(stream).Alloc(referent->Size(), align);
+		}
 	}
 
 	stream->Write((uint32_t)ptr);
