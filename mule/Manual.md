@@ -546,97 +546,6 @@ end
 log("批量导入完成")
 ```
 
-**使用模块化组织的示例**（`resources/scripts/lib/file_processor.lua`）：
-
-```lua
--- 文件处理器模块
-local M = {}
-
--- 处理单个文件的通用函数
-function M.processFile(filePath, tableName, typeName, offset, count, mode)
-    local stream = open("target:/" .. filePath, mode or "r")
-    if not stream then
-        log("错误：无法打开文件 " .. filePath)
-        return false
-    end
-    
-    shtreg(stream, tableName, typeName, offset, count)
-    
-    if mode == "r" or not mode then
-        shtex(stream, "xml")
-    elseif mode == "rw" then
-        shtim(stream, "xml")
-    end
-    
-    close(stream)
-    return true
-end
-
--- 批量处理文件
-function M.processBatch(fileConfigs, mode)
-    local successCount = 0
-    local failCount = 0
-    
-    for i = 1, #fileConfigs do
-        local config = fileConfigs[i]
-        log("处理 [" .. i .. "/" .. #fileConfigs .. "]: " .. config.path)
-        
-        if M.processFile(config.path, config.tableName, config.typeName, 
-                         config.offset, config.count, mode) then
-            successCount = successCount + 1
-        else
-            failCount = failCount + 1
-        end
-    end
-    
-    log(string.format("完成：成功 %d，失败 %d", successCount, failCount))
-end
-
-return M
-```
-
-**使用模块的主脚本**（`resources/scripts/export_all.lua`）：
-
-```lua
--- 使用模块化处理
-local processor = require("lib.file_processor")
-
-if mule.target.type ~= "directory" then
-    log("错误：此脚本仅支持目录目标")
-    return
-end
-
-loaddef("gamedata")
-
--- 定义文件配置
-local fileConfigs = {
-    {
-        path = "data/items.dat",
-        tableName = "items_data",
-        typeName = "ItemData",
-        offset = 0x0,
-        count = 100
-    },
-    {
-        path = "data/skills.dat",
-        tableName = "skills_data",
-        typeName = "SkillData",
-        offset = 0x0,
-        count = 50
-    },
-    {
-        path = "data/characters.dat",
-        tableName = "characters_data",
-        typeName = "CharacterData",
-        offset = 0x0,
-        count = 20
-    },
-}
-
--- 批量导出
-processor.processBatch(fileConfigs, "r")
-```
-
 **命令行执行**：
 
 批量导出：
@@ -647,11 +556,6 @@ mule ./workspace /path/to/game_data/ batch_export
 批量导入：
 ```bash
 mule ./workspace /path/to/game_data/ batch_import
-```
-
-使用模块化脚本：
-```bash
-mule ./workspace /path/to/game_data/ export_all
 ```
 
 **注意事项**：
@@ -810,44 +714,6 @@ for i = 1, #fileList do
 end
 
 log(string.format("导出完成，共 %d 个文件", #fileList))
-```
-
-**使用映射文件管理导出**：
-
-```lua
--- 导出时生成映射文件
-mount(0, "iso", "iso")
-
-local files = {}
-local startId = 0x01000000
-
--- 遍历需要导出的文件
-local paths = list("iso")
-for i = 1, #paths do
-    local path = paths[i]
-    local id = startId + i
-    
-    -- 导出文件
-    export("iso:/" .. path, id)
-    
-    -- 记录映射关系
-    files[i] = {path = path, id = id}
-    log(string.format("导出: %s -> 0x%08X", path, id))
-end
-
--- 保存映射文件到资源目录（使用 JSON 或简单文本格式）
-local mapFile = open("target:/file_map.txt", "w")
-if mapFile then
-    for i = 1, #files do
-        -- 写入映射信息（简单的文本格式）
-        -- TODO: 实际使用时需要实现文本写入功能或使用其他方式
-        log(string.format("映射: %s = 0x%08X", files[i].path, files[i].id))
-    end
-    close(mapFile)
-end
-
-unmount("iso")
-close(0)
 ```
 
 **数据文件存储位置**：
