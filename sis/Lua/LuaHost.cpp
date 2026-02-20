@@ -280,7 +280,7 @@ void mule::Lua::LuaHost::PushValue(const mule::Data::Basic::MultiValue &v)
 
 		for (size_t i = 0; i < v.GetLength(); ++i)
 		{
-			lua_pushinteger(L, i);
+			lua_pushinteger(L, i + 1);
 			PushValue(v.value.arrayValue[i]);
 
 			lua_settable(L, -3);

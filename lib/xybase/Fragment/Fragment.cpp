@@ -51,8 +51,12 @@ void Fragment::Merge(const Fragment &target)
 	if (IsContains(target)) return;
 	if (!IsOverlapsWith(target)) throw InvalidParameterException(L"target", L"Have no insertion with this fragment.", __LINE__);
 
-	begin = begin < target.begin ? begin : target.begin;
-	SetEnding(GetEnding() < target.GetEnding() ? target.GetEnding() : GetEnding());
+	size_t origEnd = GetEnding();
+	size_t newBegin = begin < target.begin ? begin : target.begin;
+	size_t newEnd = origEnd < target.GetEnding() ? target.GetEnding() : origEnd;
+
+	begin = newBegin;
+	SetEnding(newEnd);
 }
 
 bool Fragment::operator==(const Fragment &right) const

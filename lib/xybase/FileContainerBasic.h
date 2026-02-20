@@ -66,6 +66,10 @@ namespace xybase
 
 		XY_API FileEntry GetMetadata(const std::u16string &name);
 
+		XY_API xybase::Stream *GetInfraStream() const;
+
+		XY_API int GetAlign() const;
+
 		/**
 		 * @brief 内部文件类。用于承载文件包内的文件读写。
 		 */

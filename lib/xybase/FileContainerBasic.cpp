@@ -200,6 +200,7 @@ void xybase::FileContainerBasic::Remove(const std::u16string &path)
 	// TODO: 检查是否有文件访问正在进行中
 
 	freeSpaces.RegisterFragment(itr->second->offset, XY_ALIGN(itr->second->size, align));
+	freeSpaces.Defragment();
 	delete itr->second;
 	files.erase(itr);
 }
@@ -246,6 +247,16 @@ xybase::FileContainerBasic::FileEntry xybase::FileContainerBasic::GetMetadata(co
 	}
 
 	return *files[name];
+}
+
+xybase::Stream *xybase::FileContainerBasic::GetInfraStream() const
+{
+	return infraStream;
+}
+
+int xybase::FileContainerBasic::GetAlign() const
+{
+	return align;
 }
 
 void xybase::FileContainerBasic::Write(unsigned long long handle, const char *buffer, size_t limit)

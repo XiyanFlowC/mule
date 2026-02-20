@@ -149,6 +149,94 @@ int mule::Lua::Api::ReadStreamByte(int streamId)
 	return (int)(ret & 0xFF);
 }
 
+int mule::Lua::Api::WriteStreamInt16(int streamId, int halfValue)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<int16_t>(halfValue & 0xFFFF));
+    return 0;
+}
+
+int mule::Lua::Api::ReadStreamInt16(int streamId)
+{
+    return (int)LuaEnvironment::GetInstance().GetStream(streamId)->ReadInt16();
+}
+
+int mule::Lua::Api::WriteStreamInt32(int streamId, int value)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<int32_t>(value));
+    return 0;
+}
+
+int mule::Lua::Api::ReadStreamInt32(int streamId)
+{
+    return (int)LuaEnvironment::GetInstance().GetStream(streamId)->ReadInt32();
+}
+
+int mule::Lua::Api::WriteStreamInt64(int streamId, long long value)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<int64_t>(value));
+    return 0;
+}
+
+long long mule::Lua::Api::ReadStreamInt64(int streamId)
+{
+    return (long long)LuaEnvironment::GetInstance().GetStream(streamId)->ReadInt64();
+}
+
+int mule::Lua::Api::WriteStreamFloat(int streamId, float value)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(value);
+    return 0;
+}
+
+double mule::Lua::Api::ReadStreamFloat(int streamId)
+{
+    return (double)LuaEnvironment::GetInstance().GetStream(streamId)->ReadFloat();
+}
+
+int mule::Lua::Api::WriteStreamDouble(int streamId, double value)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(value);
+    return 0;
+}
+
+double mule::Lua::Api::ReadStreamDouble(int streamId)
+{
+    return LuaEnvironment::GetInstance().GetStream(streamId)->ReadDouble();
+}
+
+int mule::Lua::Api::WriteStreamUInt16(int streamId, unsigned int halfValue)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<uint16_t>(halfValue & 0xFFFF));
+    return 0;
+}
+
+unsigned int mule::Lua::Api::ReadStreamUInt16(int streamId)
+{
+    return (unsigned int)LuaEnvironment::GetInstance().GetStream(streamId)->ReadUInt16();
+}
+
+int mule::Lua::Api::WriteStreamUInt32(int streamId, unsigned int value)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<uint32_t>(value));
+    return 0;
+}
+
+unsigned int mule::Lua::Api::ReadStreamUInt32(int streamId)
+{
+    return (unsigned int)LuaEnvironment::GetInstance().GetStream(streamId)->ReadUInt32();
+}
+
+int mule::Lua::Api::WriteStreamUInt64(int streamId, unsigned long long value)
+{
+    LuaEnvironment::GetInstance().GetStream(streamId)->Write(static_cast<uint64_t>(value));
+    return 0;
+}
+
+unsigned long long mule::Lua::Api::ReadStreamUInt64(int streamId)
+{
+    return (unsigned long long)LuaEnvironment::GetInstance().GetStream(streamId)->ReadUInt64();
+}
+
 int mule::Lua::Api::TellStream(int streamId)
 {
 	return (int)LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
@@ -169,6 +257,22 @@ void mule::Lua::Api::RegisterStreamOperationFunctions()
 	host.RegisterFunction("write", WriteStream);
 	host.RegisterFunction("writebyte", WriteStreamByte);
 	host.RegisterFunction("readbyte", ReadStreamByte);
+	host.RegisterFunction("writeu16", WriteStreamUInt16);
+	host.RegisterFunction("readu16", ReadStreamUInt16);
+	host.RegisterFunction("writeu32", WriteStreamUInt32);
+	host.RegisterFunction("readu32", ReadStreamUInt32);
+	host.RegisterFunction("writeu64", WriteStreamUInt64);
+	host.RegisterFunction("readu64", ReadStreamUInt64);
+	host.RegisterFunction("writei16", WriteStreamInt16);
+	host.RegisterFunction("readi16", ReadStreamInt16);
+	host.RegisterFunction("writei32", WriteStreamInt32);
+	host.RegisterFunction("readi32", ReadStreamInt32);
+	host.RegisterFunction("writei64", WriteStreamInt64);
+	host.RegisterFunction("readi64", ReadStreamInt64);
+	host.RegisterFunction("writefloat", WriteStreamFloat);
+	host.RegisterFunction("readfloat", ReadStreamFloat);
+	host.RegisterFunction("writedouble", WriteStreamDouble);
+	host.RegisterFunction("readdouble", ReadStreamDouble);
 	host.RegisterFunction("tell", TellStream);
 	host.RegisterFunction("seek", SeekStream);
 	host.RegisterFunction("export", ExportStream);
