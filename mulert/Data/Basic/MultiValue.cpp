@@ -258,6 +258,7 @@ mule::Data::Basic::MultiValue::MultiValue(const int8_t value)
 	SetValue((int64_t)value);
 }
 
+#ifndef _WIN32
 mule::Data::Basic::MultiValue::MultiValue(const long long value)
 {
 	type = MVT_NULL;
@@ -269,6 +270,7 @@ mule::Data::Basic::MultiValue::MultiValue(const unsigned long long value)
 	type = MVT_NULL;
 	SetValue((uint64_t)value);
 }
+#endif
 
 mule::Data::Basic::MultiValue::MultiValue(const int size, const MultiValue *array)
 {

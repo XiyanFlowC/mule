@@ -127,12 +127,13 @@ namespace mule
 				MultiValue(const int16_t value);
 
 				MultiValue(const int8_t value);
-
+#ifndef _WIN32
 				/* Make Linux happy */
 				MultiValue(const long long value);
 
 				/* Make Linux happy */
 				MultiValue(const unsigned long long value);
+#endif
 
 				MultiValue(const int size, const MultiValue *array);
 
