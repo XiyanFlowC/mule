@@ -87,7 +87,7 @@ namespace mule
 		MULERT_API virtual ~Logger();
 
 		template<typename T>
-		static Logger GetLogger(int logLevel = -1)
+		static Logger GetLogger()
 		{
 			return Logger(typeid(T).name());
 		}

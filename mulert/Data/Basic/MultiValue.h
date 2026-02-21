@@ -128,6 +128,12 @@ namespace mule
 
 				MultiValue(const int8_t value);
 
+				/* Make Linux happy */
+				MultiValue(const long long value);
+
+				/* Make Linux happy */
+				MultiValue(const unsigned long long value);
+
 				MultiValue(const int size, const MultiValue *array);
 
 				MultiValue(const std::map<MultiValue, MultiValue> map);

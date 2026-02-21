@@ -1,4 +1,5 @@
 #include "MultiValue.h"
+#include "MultiValue.h"
 #include <StringBuilder.h>
 #include <xystring.h>
 
@@ -255,6 +256,18 @@ mule::Data::Basic::MultiValue::MultiValue(const int8_t value)
 {
 	type = MVT_NULL;
 	SetValue((int64_t)value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const long long value)
+{
+	type = MVT_NULL;
+	SetValue((int64_t)value);
+}
+
+mule::Data::Basic::MultiValue::MultiValue(const unsigned long long value)
+{
+	type = MVT_NULL;
+	SetValue((uint64_t)value);
 }
 
 mule::Data::Basic::MultiValue::MultiValue(const int size, const MultiValue *array)

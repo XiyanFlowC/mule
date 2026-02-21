@@ -37,7 +37,7 @@ namespace mule
 
 			~LuaHost();
 
-			Logger logger = Logger::GetLogger<LuaHost>(-1);
+			Logger logger = Logger::GetLogger<LuaHost>();
 
 		public:
 			/**
