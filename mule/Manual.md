@@ -1055,6 +1055,75 @@ close(0)
 - 只能在支持的内存管理器中使用
 - 导入时不能超过原始分配的空间大小
 
+#### 智能引用与普通引用的关系（C++ 实现说明）
+
+在实现层面，Mule 针对“指针/引用类字段”有两套机制：
+
+- 普通引用 `mule::Data::Reference`（XML 类型名形如 `string*`）
+- 智能引用 `mule::Data::SmartReference`（XML 类型名形如 `string^`）
+
+它们的行为和用途有明显差异：
+
+1. **普通引用 `类型*` → C++ `mule::Data::Reference`**
+   - 读 (`Reference::Read`)：
+     - 先读出 32 位指针值；
+     - 若为 `0`，产出 `null`，并通过元数据 `ptr` 记录原始指针值；
+     - 若非 `0`，临时 `seek` 到该位置，调用被引用类型的 `Read`，再返回原位置；
+     - 若被引用类型是复合类型，还会在读前后写入/更新元数据 `ptr`。
+   - 写 (`Reference::Write`)：
+     - 从 `FileHandler` 返回的 `MultiValue` 元数据中读取 `ptr`，决定要写入的指针值；
+     - 如果 `ptr` 元数据不存在或类型不是整数，会先读出原指针值再写回（即“只改数据、不改指针”）；
+     - 支持元数据 `realloc` / `align` / `size`：
+       - `realloc` 为非 0 或字符串 `"true"` 时表示需要重新分配空间；
+       - `align` 为 2 的幂时表示新的对齐要求；
+       - `size` 在被引用对象大小不固定（`Size() == (size_t)-1`）时指定要分配的字节数；
+       - 重新分配时会通过 `SmartReference::MemoryManager::GetInstance().GetMemory(stream).Alloc(...)` 从智能引用的内存池中分配空间，得到新的指针值。
+     - 为避免在同一流上多次写入同一地址，`ReferenceRegistry` 会记录每个 `Stream` + `loc` 是否已写入：
+       - 非复合类型：如果该地址已经登记，则本次写操作只更新指针值本身，不重复写引用目标。
+   - 约束控制：
+     - `ReferenceCreator` 支持元信息 `ptr-reject`：
+       - 在定义中指定 `<field ... type="string*">` 并附加 `metainfo` 时，可设置不允许出现的指针值；
+       - 读/写时若指针值等于该值，则抛出 `ConstraintViolationException("ptr rejected.")`。
+
+2. **智能引用 `类型^` → C++ `mule::Data::SmartReference`**
+   - 读 (`SmartReference::DoRead`)：
+     - 读出 32 位指针值 `ptr`；若为 `0`，返回 `MultiValue::MV_NULL`；
+     - 否则临时跳转到 `ptr`，调用内部 `referent->DoRead` 读取实际数据；
+     - 通过 `referent->GetLastSize()` 获取刚刚读取的数据大小，并将这段区域注册到 `MemoryManager::GetMemory(stream)`（记录哪些区间已经被智能引用占用）；
+     - 将 `ptr` 记录到返回值的 `metadata["ptr"]` 中，便于导入时复用。
+   - 写 (`SmartReference::DoWrite`)：
+     - 若值为 `null`，直接写入 `0` 作为指针；
+     - 否则调用 `referent->EvalSize(value)` 计算写入所需空间大小，并将该大小写入 `metadata["size"]`；
+     - 通过 `MemoryManager::AssignFor(stream, resizedValue, referent, size, GetAlign())` 申请或复用一段空闲空间：
+       - 若某个流上、同一类型、同一内容的值之前已经分配过地址，则直接复用，保证相同内容只有一份拷贝；
+       - 否则在当前流的 `FragmentManager` 中按对齐要求分配新空间，写入引用对象内容，并记录到 `assignedAddresses`；
+     - 最终在指针字段位置写入新地址。
+   - 对齐控制：
+     - `SmartReference::GetAlign()` 会读取全局配置 `mule.data.smart-reference.align`，默认为 1；
+     - 在导出时，智能引用会将长度按该值向上对齐，并要求分配的起始地址也满足该对齐；
+     - 使用 `config("mule.data.smart-reference.align", 4)` 可以全局切换为 4 字节对齐等。
+   - 内存管理与“记忆”文件：
+     - `SmartReference::MemoryManager` 为每个 `Stream` 维护一个 `FragmentManager`，记录可用和已占用的空间；
+     - `srmload` / `srmsave` / `srmreg` / `srmalloc` 等 Lua API 实际操作的就是这套 `MemoryManager`；
+     - 运行时会从一个内部数据文件（固定 ID）中加载 / 保存“空闲空间描述”，以在多次导出/导入之间共享对同一文件中空洞的认识。
+
+综上：
+
+- 使用 `类型*` 时，更适合“按原有指针读取/写回”，如：
+  - 只想根据偏移读出数据；
+  - 指针位置不应改变，或者你在插件中手动管理重定位；
+  - 需要利用 `ptr-reject` 对特定指针值做约束；
+  - 需要精细控制是否重写目标区域（通过 `realloc` / `align` / `size` 元数据显式触发 `SmartReference::MemoryManager` 的空间分配逻辑）。
+- 使用 `类型^` 时，更适合“让 Mule 自动管理引用对象的存储”：
+  - 需要根据新内容自动选择空闲空间并回填指针；
+  - 希望相同内容自动共用同一份内存；
+  - 希望以统一的方式控制对齐和空洞利用，并通过 `srmload`/`srmsave` 在导出/导入间重用空闲空间信息。
+
+二者可以配合使用：
+
+- 智能引用主要负责“如何在文件中分配和复用内容”；
+- 普通引用在需要时可以通过 `realloc` 元数据显式调用同一套 `MemoryManager`，在已有结构上进行按需重定位。
+
 #### 表引用类型
 
 表引用类型用于引用另一个表：

@@ -56,6 +56,8 @@ namespace mule
 
 			mule::Data::Basic::MultiValue element;
 
+			void SkipComment();
+
 			std::u16string nodeName;
 
 			int layer = 0;

@@ -92,7 +92,7 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawN
 			ch = instream->ReadChar();
 			if (ch == '!' || ch == '?')
 			{
-				while (ch != '>') ch = instream->ReadChar();
+				SkipComment();
 				againFlag = true;
 			}
 		} while (againFlag);
@@ -194,6 +194,39 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	{
 		element.metadata[attr.first] = MultiValue::Parse(attr.second);
 	}
+}
+
+void mule::Xml::XmlHandler::SkipComment()
+{
+	auto ch = instream->ReadChar();
+	if (ch == '-')
+	{
+		ch = instream->ReadChar();
+		if (ch == '-') // comment
+		{
+			while (true)
+			{
+				ch = instream->ReadChar();
+				if (ch == '-')
+				{
+					ch = instream->ReadChar();
+					if (ch == '-')
+					{
+						ch = instream->ReadChar();
+						if (ch == '>')
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			while (ch != '>') ch = instream->ReadChar();
+		}
+	}
+	while (ch != '>') ch = instream->ReadChar();
 }
 
 void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawName)
