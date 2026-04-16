@@ -6,6 +6,7 @@
 #include "xystring.h"
 #include <Data/TypeManager.h>
 #include <Storage/ResourceManager.h>
+#include "../../Cpp/Mappifier.h"
 
 int mule::Lua::Api::OpenStream(std::u8string path, std::u8string openMode)
 {
@@ -248,6 +249,41 @@ int mule::Lua::Api::SeekStream(int streamId, int offset, int seekType)
 	return (int)LuaEnvironment::GetInstance().GetStream(streamId)->Tell();
 }
 
+int mule::Lua::Api::WriteType(int streamId, std::u8string typeName, mule::Data::Basic::MultiValue mv)
+{
+	auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+	if (stream == nullptr) return -1;
+	auto type = mule::Data::TypeManager::GetInstance().GetType(xybase::string::to_utf16(typeName));
+	if (type == nullptr) return -1;
+	// using mappifier
+	mule::Cpp::Mappifier mappifier;
+	mule::Data::Basic::MultiValue wrapper(mule::Data::Basic::MultiValue::MVT_MAP);
+	wrapper[(uint64_t)0] = mv;
+	mappifier.SetMap(wrapper);
+	mappifier.OnSheetWriteStart();
+	mappifier.OnRealmEnter(type, 0);
+	type->Write(stream, &mappifier);
+	mappifier.OnRealmExit(type, 0);
+	mappifier.OnSheetWriteEnd();
+	return type->GetLastSize();
+}
+
+mule::Data::Basic::MultiValue mule::Lua::Api::ReadType(int streamId, std::u8string typeName)
+{
+	auto stream = LuaEnvironment::GetInstance().GetStream(streamId);
+	if (stream == nullptr) return mule::Data::Basic::MultiValue::MV_NULL;
+	auto type = mule::Data::TypeManager::GetInstance().GetType(xybase::string::to_utf16(typeName));
+	if (type == nullptr) return mule::Data::Basic::MultiValue::MV_NULL;
+	// using mappifier
+	mule::Cpp::Mappifier mappifier;
+	mappifier.OnSheetReadStart();
+	mappifier.OnRealmEnter(type, 0);
+	type->Read(stream, &mappifier);
+	mappifier.OnRealmExit(type, 0);
+	mappifier.OnSheetReadEnd();
+	return mappifier.GetMap()[(uint64_t)0];
+}
+
 void mule::Lua::Api::RegisterStreamOperationFunctions()
 {
 	auto &host = LuaHost::GetInstance();
@@ -273,6 +309,8 @@ void mule::Lua::Api::RegisterStreamOperationFunctions()
 	host.RegisterFunction("readfloat", ReadStreamFloat);
 	host.RegisterFunction("writedouble", WriteStreamDouble);
 	host.RegisterFunction("readdouble", ReadStreamDouble);
+	host.RegisterFunction("writetype", WriteType);
+	host.RegisterFunction("readtype", ReadType);
 	host.RegisterFunction("tell", TellStream);
 	host.RegisterFunction("seek", SeekStream);
 	host.RegisterFunction("export", ExportStream);

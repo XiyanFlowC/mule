@@ -204,3 +204,11 @@ void SmartReference::MemoryManager::SaveFreeSpace()
 	}
 	fclose(file);
 }
+
+size_t mule::Data::SmartReference::MemoryManager::AssignNear(xybase::Stream *stream, size_t size, int align, size_t pos, size_t maxDistance)
+{
+	auto &&name = stream->GetName();
+	auto &fm = GetMemory(stream);
+	auto loc = fm.AllocNear(size, align, pos, maxDistance);
+	return loc;
+}

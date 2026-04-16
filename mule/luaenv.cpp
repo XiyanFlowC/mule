@@ -162,6 +162,14 @@ int SmartReferenceMemoryAllocate(int streamId, unsigned long long size, unsigned
     return memory.Alloc(size, align);
 }
 
+int SmartReferenceMemoryAllocateNear(int streamId, unsigned long long size, unsigned long long align, unsigned long long pos, unsigned long long maxDistance)
+{
+    xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
+    if (stream == nullptr) return 0;
+    auto &memory = SmartReference::MemoryManager::GetInstance().GetMemory(stream);
+    return memory.AllocNear(size, align, pos, maxDistance);
+}
+
 int loadMemory(int streamId, int fileId)
 {
     xybase::Stream *stream = LuaEnvironment::GetInstance().GetStream(streamId);
@@ -355,6 +363,7 @@ void InitialiseLuaEnvironment()
 	lua.RegisterFunction("srmsave", SmartReferenceMemorySaveOne);
     lua.RegisterFunction("srmreg", SmartReferenceMemoryRegister);
     lua.RegisterFunction("srmalloc", SmartReferenceMemoryAllocate);
+    lua.RegisterFunction("srmalloc_n", SmartReferenceMemoryAllocateNear);
 
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);

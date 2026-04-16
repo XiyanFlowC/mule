@@ -132,6 +132,20 @@ int mule::Lua::Api::DefineStructure(std::u8string name, mule::Data::Basic::Multi
     return 0;
 }
 
+int mule::Lua::Api::QuerySize(std::u8string typeName, mule::Data::Basic::MultiValue value)
+{
+	auto type = mule::Data::TypeManager::GetInstance().GetType(xybase::string::to_utf16(typeName));
+    if (type == nullptr) return -10;
+	return (int)type->EvalSize(value);
+}
+
+int mule::Lua::Api::QuerySizeOf(std::u8string typeName)
+{
+	auto type = mule::Data::TypeManager::GetInstance().GetType(xybase::string::to_utf16(typeName));
+	if (type == nullptr) return -1;
+	return (int)type->Size();
+}
+
 void mule::Lua::Api::RegisterSystemOperations()
 {
     LuaHost::GetInstance().RegisterFunction("confirm", Confirm);
@@ -144,4 +158,5 @@ void mule::Lua::Api::RegisterSystemOperations()
     LuaHost::GetInstance().RegisterFunction("config", Configuration);
     LuaHost::GetInstance().RegisterFunction("config_erase", EraseConfiguration);
     LuaHost::GetInstance().RegisterFunction("define", DefineStructure);
+	LuaHost::GetInstance().RegisterFunction("querysize", QuerySize);
 }

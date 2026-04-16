@@ -73,6 +73,16 @@ namespace xybase
 			XY_API size_t Alloc(size_t size, int align);
 
 			/**
+			 * @brief 尝试在指定位置附近分配一段空间。
+			 * @param size 要分配的大小。
+			 * @param align 要求的对齐参数。
+			 * @param pos 要求的附近位置中心点。
+			 * @param maxDistance 距离附近位置的最大距离。
+			 * @return 
+			 */
+			XY_API size_t AllocNear(size_t size, int align, size_t pos, size_t maxDistance);
+
+			/**
 			 * @brief 将最大的碎片分配掉。（不定大小分配用）
 			 * @return 最大的碎片。
 			*/

@@ -76,6 +76,10 @@ namespace mule
 
 			int SeekStream(int streamId, int offset, int seekType);
 
+			int WriteType(int streamId,std::u8string typeName, mule::Data::Basic::MultiValue mv);
+
+			mule::Data::Basic::MultiValue ReadType(int streamId, std::u8string typeName);
+
 			void RegisterStreamOperationFunctions();
 		}
 	}

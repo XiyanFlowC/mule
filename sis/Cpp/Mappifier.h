@@ -38,6 +38,7 @@ namespace mule
 			std::stack<mule::Data::Basic::MultiValue *> values;
 			mule::Data::Basic::MultiValue result;
 			mule::Data::Basic::MultiValue key;
+			bool textRealm = false;
 
 			enum {
 				DHMS_IDLE,

@@ -33,6 +33,10 @@ namespace mule
 			void RegisterSystemOperations();
 
 			int DefineStructure(std::u8string name, mule::Data::Basic::MultiValue def);
+
+			int QuerySize(std::u8string typeName, mule::Data::Basic::MultiValue value);
+
+			int QuerySizeOf(std::u8string typeName);
 		}
 	}
 }

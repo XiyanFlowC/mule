@@ -42,6 +42,8 @@ namespace mule
 				MULERT_API bool IsAssigned(xybase::Stream *stream, const mule::Data::Basic::MultiValue &value, mule::Data::Basic::BasicType *type);
 
 				MULERT_API void SaveFreeSpace();
+
+				MULERT_API size_t AssignNear(xybase::Stream *stream, size_t size, int align, size_t pos, size_t maxDistance);
 			};
 
 			MULERT_API SmartReference(Basic::BasicType *referent);

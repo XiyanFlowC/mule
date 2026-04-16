@@ -1,4 +1,4 @@
-project (mulert VERSION 1.11)
+project (mulert VERSION 1.12)
 
 string (TIMESTAMP COMPILE_TIME %Y/%m/%d-%H:%M:%S)
 set (BUILD_TIME ${COMPILE_TIME})
