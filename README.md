@@ -7,7 +7,7 @@
 mkdir out
 cd out
 cmake ..
-make all
+cmake --build .
 ```
 
 请注意：你的编译器应支持C++20标准，CMake版本不应低于3.12。
