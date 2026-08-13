@@ -91,6 +91,9 @@ namespace mule
         public:
             IsoContainer(xybase::Stream *stream);
             virtual ~IsoContainer();
+
+            void SaveFreeSpace(uint32_t dataId);
+            void LoadFreeSpace(uint32_t dataId);
         };
     }
 }

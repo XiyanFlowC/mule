@@ -207,3 +207,130 @@ void mule::Container::IsoContainer::OverwriteDirector(xybase::Stream *isoFile, u
 		isoFile->Write(reinterpret_cast<char *>(&volume), sizeof(PrimaryVolume));
     }
 }
+
+#include <Storage/DataManager.h>
+
+using FilePtr = std::unique_ptr<FILE, decltype(&fclose)>;
+inline void hash_combine(size_t &seed, size_t value) {
+    seed ^= value + 0x9e3779b9 + (seed << 6) + (seed >> 2);
+}
+
+void mule::Container::IsoContainer::SaveFreeSpace(uint32_t dataId)
+{
+    // 1. 检查是否有内部文件活动
+    if (!openedFiles.empty())
+        throw InvalidOperationException((L"Cannot save free space while inner file(s) active. One of the opened file(s): " + xybase::string::to_wstring(openedFiles.begin()->second.baseEntry->path)).c_str(), 754100);
+
+    // 2. 打开文件，检查是否成功
+    FILE *raw = mule::Storage::DataManager::GetInstance().OpenRaw(dataId, true);
+    if (!raw)
+        throw RuntimeException(L"Failed to open raw data file for writing free space.",754101);
+    FilePtr out(raw, &fclose);  // RAII 自动关闭
+
+    // 3. 计算校验和（基于当前文件映射）
+    size_t checksum1 = 0, checksum2 = 0;
+    for (const auto &item : files) {
+        // 1. 处理字符串 Key（获取其哈希值）
+        size_t key_hash = std::hash<std::u16string>{}(item.first);
+
+        // 2. 混合 Key 的哈希（彻底杜绝“相同布局不同名”的碰撞）
+        hash_combine(checksum1, key_hash);
+        hash_combine(checksum2, key_hash);
+
+        // 3. 混合 offset 和 size（此处顺序敏感，消除了 XOR/加法的交换律问题）
+        hash_combine(checksum1, item.second->offset);
+        hash_combine(checksum2, item.second->size);
+
+        // 4. 额外将 offset 和 size 交叉混合进另一个校验和，增加区分度
+        hash_combine(checksum1, item.second->size);
+        hash_combine(checksum2, item.second->offset);
+    }
+
+    // 4. 写入校验和
+    if (fwrite(&checksum1, sizeof(checksum1), 1, out.get()) != 1 ||
+        fwrite(&checksum2, sizeof(checksum2), 1, out.get()) != 1) {
+        throw RuntimeException(L"Failed to write checksums to free space file.",754102);
+    }
+
+    // 5. 获取空闲块列表
+    auto fragments = freeSpaces.GetFragments();
+    size_t count = fragments.size();
+
+    // 6. 写入块数量
+    if (fwrite(&count, sizeof(count), 1, out.get()) != 1) {
+        throw RuntimeException(L"Failed to write fragment count.",754103);
+    }
+
+    // 7. 写入每个空闲块的偏移和长度
+    for (const auto &space : fragments) {
+        size_t offset = space->GetBeginning();
+        size_t length = space->GetSize();
+        if (fwrite(&offset, sizeof(offset), 1, out.get()) != 1 ||
+            fwrite(&length, sizeof(length), 1, out.get()) != 1) {
+            throw RuntimeException(L"Failed to write free space fragment.",754104);
+        }
+    }
+
+    // out 析构时自动 fclose，无需手动调用
+}
+
+void mule::Container::IsoContainer::LoadFreeSpace(uint32_t dataId)
+{
+    if (!m_modifiedFiles.empty())
+        throw InvalidOperationException(L"Cannot load free space when file is modified.", 754110);
+
+    // 1. 打开文件，检查是否成功
+    FILE *raw = mule::Storage::DataManager::GetInstance().OpenRaw(dataId, false);
+    if (!raw)
+        throw RuntimeException(L"Failed to open raw data file for reading free space.",754105);
+    FilePtr in(raw, &fclose);  // RAII 自动关闭
+
+    // 2. 读取保存的校验和
+    size_t saved_cs1 = 0, saved_cs2 = 0;
+    if (fread(&saved_cs1, sizeof(saved_cs1), 1, in.get()) != 1 ||
+        fread(&saved_cs2, sizeof(saved_cs2), 1, in.get()) != 1) {
+        throw RuntimeException(L"Failed to read checksums from free space file.",754106);
+    }
+
+    // 3. 重新计算当前文件映射的校验和（用于验证）
+    size_t computed_cs1 = 0, computed_cs2 = 0;
+    for (const auto &item : files) {
+        // 1. 处理字符串 Key（获取其哈希值）
+        size_t key_hash = std::hash<std::u16string>{}(item.first);
+
+        // 2. 混合 Key 的哈希（彻底杜绝“相同布局不同名”的碰撞）
+        hash_combine(computed_cs1, key_hash);
+        hash_combine(computed_cs2, key_hash);
+
+        // 3. 混合 offset 和 size（此处顺序敏感，消除了 XOR/加法的交换律问题）
+        hash_combine(computed_cs1, item.second->offset);
+        hash_combine(computed_cs2, item.second->size);
+
+        // 4. 额外将 offset 和 size 交叉混合进另一个校验和，增加区分度
+        hash_combine(computed_cs1, item.second->size);
+        hash_combine(computed_cs2, item.second->offset);
+    }
+
+    // 4. 验证校验和
+    if (saved_cs1 != computed_cs1 || saved_cs2 != computed_cs2) {
+        throw RuntimeException(L"Checksum mismatch in free space file – data may be corrupted.",754107);
+    }
+
+    // 5. 读取空闲块数量
+    size_t count = 0;
+    if (fread(&count, sizeof(count), 1, in.get()) != 1) {
+        throw RuntimeException(L"Failed to read fragment count.",754108);
+    }
+
+    // 7. 循环读取每个空闲块并添加到 freeSpaces
+    for (size_t i = 0; i < count; ++i) {
+        size_t offset = 0, length = 0;
+        if (fread(&offset, sizeof(offset), 1, in.get()) != 1 ||
+            fread(&length, sizeof(length), 1, in.get()) != 1) {
+            throw RuntimeException(L"Failed to read free space fragment data.", 754109);
+        }
+        // 假设 freeSpaces 有 AddFragment 方法
+        freeSpaces.RegisterFragment({ offset, length });
+    }
+    // 文件由 RAII 自动关闭
+}

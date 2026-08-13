@@ -44,15 +44,42 @@ int loadDefine(std::string define)
     return 0;
 }
 
+#include <Logger.h>
+
+mule::Logger luaenvLogger{"<luaenv>"};
+
 int SaveMemory()
 {
+    luaenvLogger.Warn(L"SaveMemory() is deprecated.");
     SmartReference::MemoryManager::GetInstance().SaveFreeSpace();
     return 0;
 }
 
-#include <Logger.h>
 
-mule::Logger luaenvLogger{"<luaenv>"};
+#include <Container/IsoContainer.h>
+int LoadIsoFreeSpace(std::u8string root, int dataId)
+{
+    mule::Container::IsoContainer *isoCon = dynamic_cast<mule::Container::IsoContainer *>(mule::VirtualFileSystem::GetInstance().GetRoot(xybase::string::to_utf16(root).c_str()));
+    if (isoCon == nullptr) return -10;
+    try
+    {
+        isoCon->LoadFreeSpace(dataId);
+    }
+    catch (xybase::RuntimeException &ex)
+    {
+        return ex.GetErrorCode();
+    }
+    return 0;
+}
+
+int SaveIsoFreeSpace(std::u8string root, int dataId)
+{
+
+    mule::Container::IsoContainer *isoCon = dynamic_cast<mule::Container::IsoContainer *>(mule::VirtualFileSystem::GetInstance().GetRoot(xybase::string::to_utf16(root).c_str()));
+    if (isoCon == nullptr) throw xybase::InvalidParameterException(L"dataId", L"Unknown root.", 912010);
+    isoCon->SaveFreeSpace(dataId);
+    return  0;
+}
 
 int ExportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
 {
@@ -93,6 +120,11 @@ int ExportSheet(int streamId, std::string handler, std::string type, std::string
     return 0;
 }
 
+int ExportSheet2(int streamId, std::string handler, std::string tableName, std::string type, size_t offset, int length)
+{
+    return ExportSheet(streamId, handler, type, tableName, offset, length);
+}
+
 int ImportSheet(int streamId, std::string handler, std::string type, std::string tableName, size_t offset, int length)
 {
     std::u16string utype = xybase::string::to_utf16(type), utbl = xybase::string::to_utf16(tableName);
@@ -124,6 +156,12 @@ int ImportSheet(int streamId, std::string handler, std::string type, std::string
     delete hnd;
     delete inStream;
     return 0;
+}
+
+
+int ImportSheet2(int streamId, std::string handler, std::string tableName, std::string type, size_t offset, int length)
+{
+    return ImportSheet(streamId, handler, type, tableName, offset, length);
 }
 
 
@@ -367,6 +405,8 @@ void InitialiseLuaEnvironment()
 
     lua.RegisterFunction("exportsht", ExportSheet);
     lua.RegisterFunction("importsht", ImportSheet);
+    lua.RegisterFunction("shtexd", ExportSheet2);
+    lua.RegisterFunction("shtimd", ImportSheet2);
 
     lua.RegisterFunction("shtload", LoadSheet);
     lua.RegisterFunction("shtsave", SaveSheet);
@@ -377,6 +417,9 @@ void InitialiseLuaEnvironment()
     lua.RegisterFunction("shtclr", ClearSheet);
     lua.RegisterFunction("shtex", ExportSheets);
     lua.RegisterFunction("shtim", ImportSheets);
+
+    lua.RegisterFunction("isofsload", LoadIsoFreeSpace);
+    lua.RegisterFunction("isofssave", SaveIsoFreeSpace);
 
     lua.RegisterFunction("cvttxt", cvttxt);
     lua.RegisterFunction("cvtbin", cvtbin);
