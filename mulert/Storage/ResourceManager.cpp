@@ -1,6 +1,8 @@
 #include "ResourceManager.h"
 
 #include "../Configuration.h"
+#include <memory>
+#include <cstdio>
 #include <xyutils.h>
 #include <Exception/IOException.h>
 
@@ -23,15 +25,16 @@ BinaryData ResourceManager::LoadResource(std::string path)
 
     logger.Info(L"Opened resource file {}", xybase::string::to_wstring(path));
 
-    fseek(f, 0, SEEK_END);
-    size_t length = ftell(f);
-    fseek(f, 0, SEEK_SET);
+    std::unique_ptr<FILE, decltype(&fclose)> file(f, &fclose);
 
-    char *buffer = new char[length];
-    fread(buffer, length, 1, f);
-    fclose(f);
+    fseek(file.get(), 0, SEEK_END);
+    size_t length = ftell(file.get());
+    fseek(file.get(), 0, SEEK_SET);
 
-    return BinaryData(buffer, length, false);
+    auto buffer = std::make_unique<char[]>(length);
+    fread(buffer.get(), length, 1, file.get());
+
+    return BinaryData(buffer.release(), length, false);
 }
 
 MULERT_API void mule::Storage::ResourceManager::SaveResource(std::u16string path, const mule::Storage::BinaryData &data)

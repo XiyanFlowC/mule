@@ -2,6 +2,8 @@
 
 #include <xystring.h>
 #include <xyutils.h>
+#include <memory>
+#include <cstdio>
 #include <Exception/IOException.h>
 #include "../Configuration.h"
 
@@ -76,15 +78,16 @@ BinaryData DataManager::LoadData(unsigned int id) const
 	FILE *f = fopen((xybase::string::to_string(dataPath) + path).c_str(), "rb");
 	if (f == NULL) throw xybase::IOException(xybase::string::to_wstring(path), L"Unable to open data file.");
 
-	fseek(f, 0, SEEK_END);
-	size_t length = ftell(f);
-	fseek(f, 0, SEEK_SET);
+	std::unique_ptr<FILE, decltype(&fclose)> file(f, &fclose);
 
-	char *buffer = new char[length];
-	fread(buffer, length, 1, f);
-	fclose(f);
+	fseek(file.get(), 0, SEEK_END);
+	size_t length = ftell(file.get());
+	fseek(file.get(), 0, SEEK_SET);
 
-	return BinaryData(buffer, length, false);
+	auto buffer = std::make_unique<char[]>(length);
+	fread(buffer.get(), length, 1, file.get());
+
+	return BinaryData(buffer.release(), length, false);
 }
 
 FILE *mule::Storage::DataManager::OpenRaw(unsigned int id, bool create)

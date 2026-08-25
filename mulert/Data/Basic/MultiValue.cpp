@@ -156,7 +156,7 @@ MultiValue::MultiValue(const MultiValue& pattern)
 		*useCounter += 1;
 	}
 
-	length = 0;
+	length = pattern.length;
 	
 	if (type == MVT_STRING)
 	{
@@ -704,23 +704,39 @@ void MultiValue::DisposeOldValue()
 	if (type == MVT_STRING && value.stringValue != nullptr) delete this->value.stringValue;
 	if (type == MVT_MAP && value.mapValue != nullptr) 
 	{
-		*useCounter -= 1;
-		if (*useCounter == 0)
+		if (useCounter != nullptr)
 		{
-			delete useCounter;
-			delete this->value.mapValue;
-			useCounter = nullptr;
+			*useCounter -= 1;
+			if (*useCounter == 0)
+			{
+				delete useCounter;
+				delete this->value.mapValue;
+				useCounter = nullptr;
+			}
 		}
+		else
+		{
+			delete this->value.mapValue;
+		}
+		value.mapValue = nullptr;
 	}
 	if (type == MVT_ARRAY && value.arrayValue != nullptr)
 	{
-		*useCounter -= 1;
-		if (*useCounter == 0)
+		if (useCounter != nullptr)
 		{
-			delete useCounter;
-			delete[] this->value.arrayValue;
-			useCounter = nullptr;
+			*useCounter -= 1;
+			if (*useCounter == 0)
+			{
+				delete useCounter;
+				delete[] this->value.arrayValue;
+				useCounter = nullptr;
+			}
 		}
+		else
+		{
+			delete[] this->value.arrayValue;
+		}
+		value.arrayValue = nullptr;
 	}
 }
 

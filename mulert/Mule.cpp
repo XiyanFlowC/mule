@@ -5,6 +5,7 @@
 #include "Storage/DataManager.h"
 #include <string>
 #include <stack>
+#include <memory>
 #include <format>
 #include <Exception/InvalidParameterException.h>
 #include <xystring.h>
@@ -308,10 +309,10 @@ void mule::Mule::Export(const char16_t *targetFile, uint32_t id)
 		target->Seek(0, xybase::Stream::SM_END);
 		size_t size = target->Tell();
 		target->Seek(0, xybase::Stream::SM_BEGIN);
-		char *buffer = new char[size];
-		target->ReadBytes(buffer, size);
+		auto buffer = std::make_unique<char[]>(size);
+		target->ReadBytes(buffer.get(), size);
 
-		Storage::BinaryData bd(buffer, size, false);
+		Storage::BinaryData bd(buffer.release(), size, false);
 		Storage::DataManager::GetInstance().SaveData(bd, id);
 	}, xybase::FOM_READ);
 
@@ -325,10 +326,10 @@ void mule::Mule::Extract(const char16_t *targetFile, size_t offset, size_t lengt
 
 	VirtualFileSystem::GetInstance().CascadeProcess(targetFile, [=](xybase::Stream *target) -> void {
 		target->Seek(offset, xybase::Stream::SM_BEGIN);
-		char *buffer = new char[length];
-		target->ReadBytes(buffer, length);
+		auto buffer = std::make_unique<char[]>(length);
+		target->ReadBytes(buffer.get(), length);
 
-		Storage::BinaryData bd(buffer, length, false);
+		Storage::BinaryData bd(buffer.release(), length, false);
 		Storage::DataManager::GetInstance().SaveData(bd, id);
 	}, xybase::FOM_READ);
 
