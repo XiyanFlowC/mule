@@ -46,7 +46,7 @@ namespace mule
 			xybase::xml::XmlParser<xybase::xml::XmlNode, char8_t> xmlParser;
 
 		private:
-			void ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString, bool isText);
+			void ReadTagAndParse(const std::u8string &tagName, std::u8string &frag, bool isString, bool isText);
 			enum {
 				XHS_IDLE,
 				XHS_READ,
@@ -56,7 +56,13 @@ namespace mule
 
 			mule::Data::Basic::MultiValue element;
 
-			void SkipComment();
+			void SkipComment(char chAfterLt);
+
+			/// 在标签名读取完成后，消费开标签剩余部分（空白、属性、'>' 或 '/>'）。
+			/// ch 是标签名后的第一个字符；openTag 初始为（不含 '<' 的）标签名。
+			/// 把属性写入 element.metadata；把一个完整开标签（终止于 '>' 或 '/>'）累加到 openTag。
+			/// 返回该标签是否自闭合（以 '/>' 结束）。
+			bool ConsumeOpenTagTail(char &ch, std::u8string &openTag);
 
 			std::u16string nodeName;
 

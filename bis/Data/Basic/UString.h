@@ -6,6 +6,7 @@
 #include <Data/Basic/BasicType.h>
 #include <Logger.h>
 #include <xystring.h>
+#include <Data/MetadataKey.h>
 
 namespace mule
 {
@@ -90,7 +91,7 @@ namespace mule
 						ch = stream->ReadUInt32();
 				}
 				MultiValue tmp{ xybase::string::to_enc<char16_t, UType>(sb.ToString()) };
-				tmp.metadata[u"size"] = lastSize;
+				tmp.metadata[mule::Data::MetadataKey::Size] = lastSize;
 				return tmp;
 			}
 			template<class UType>
@@ -100,7 +101,7 @@ namespace mule
 
 				auto data = xybase::string::to_enc<UType, char16_t>(*(value.value.stringValue));
 
-				auto &&itr = value.metadata.find(u"size");
+				auto &&itr = value.metadata.find(mule::Data::MetadataKey::Size);
 				if (itr != value.metadata.end())
 				{
 					if (data.size() > itr->second.value.unsignedValue)

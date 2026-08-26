@@ -6,6 +6,7 @@
 #include "../Configuration.h"
 #include <xystring.h>
 #include <xyutils.h>
+#include "MetadataKey.h"
 
 using namespace mule::Data::Basic;
 using namespace mule::Data;
@@ -46,7 +47,7 @@ MultiValue mule::Data::SmartReference::DoRead(xybase::Stream *stream)
 	auto size = referent->GetLastSize();
 	MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(size, GetAlign()));
 	stream->Seek(cur);
-	value.metadata[u"ptr"] = ptr;
+	value.metadata[MetadataKey::Ptr] = ptr;
 	return value;
 }
 
@@ -59,7 +60,7 @@ void mule::Data::SmartReference::DoWrite(xybase::Stream *stream, const MultiValu
 	}
 	auto size = referent->EvalSize(value);
 	MultiValue resizedValue = value;
-	resizedValue.metadata[u"size"] = size;
+	resizedValue.metadata[MetadataKey::Size] = size;
 	auto ptr = MemoryManager::GetInstance().AssignFor(stream, resizedValue, referent, size, GetAlign());
 	stream->Write((int32_t)ptr);
 }

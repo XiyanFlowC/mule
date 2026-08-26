@@ -31,15 +31,24 @@ bool MultiValue::operator==(const MultiValue& rvalue) const
 		return value.unsignedValue == rvalue.value.unsignedValue;
 		break;
 	case MVT_STRING:
+		if (value.stringValue == nullptr || rvalue.value.stringValue == nullptr)
+			return value.stringValue == rvalue.value.stringValue;
 		return *value.stringValue == *rvalue.value.stringValue;
 		break;
 	case MVT_ARRAY:
+		if (value.arrayValue == nullptr || rvalue.value.arrayValue == nullptr)
+			return value.arrayValue == rvalue.value.arrayValue;
 		if (length != rvalue.length) return false;
 
 		for (size_t i = 0; i < length; ++i) {
 			if (value.arrayValue[i] != rvalue.value.arrayValue[i]) return false;
 		}
 		return true;
+		break;
+	case MVT_MAP:
+		if (value.mapValue == nullptr || rvalue.value.mapValue == nullptr)
+			return value.mapValue == rvalue.value.mapValue;
+		return *value.mapValue == *rvalue.value.mapValue;
 		break;
 	case MVT_NULL:
 		return true;
@@ -96,7 +105,7 @@ bool MultiValue::operator>= (const MultiValue &rvalue) const
 
 MultiValue &mule::Data::Basic::MultiValue::operator[](const MultiValue &key) const
 {
-	if (!IsType(MVT_MAP)) throw xybase::InvalidOperationException(L"Cannot index a value through [] while value is not a map.", __LINE__);
+	if (!IsType(MVT_MAP) || value.mapValue == nullptr) throw xybase::InvalidOperationException(L"Cannot index a value through [] while value is not a map.", __LINE__);
 	return (*value.mapValue)[key];
 }
 
@@ -158,7 +167,7 @@ MultiValue::MultiValue(const MultiValue& pattern)
 
 	length = pattern.length;
 	
-	if (type == MVT_STRING)
+	if (type == MVT_STRING && value.stringValue != nullptr)
 	{
 		value.stringValue = new std::u16string(*(pattern.value.stringValue));
 	}
@@ -333,6 +342,20 @@ size_t mule::Data::Basic::MultiValue::GetLength() const
 	return length;
 }
 
+std::span<const MultiValue> mule::Data::Basic::MultiValue::GetArray() const
+{
+	if (type != MVT_ARRAY || value.arrayValue == nullptr)
+		throw xybase::InvalidOperationException(L"MultiValue is not an array.", __LINE__);
+	return std::span<const MultiValue>(value.arrayValue, length);
+}
+
+const std::map<MultiValue, MultiValue> &mule::Data::Basic::MultiValue::GetMap() const
+{
+	if (type != MVT_MAP || value.mapValue == nullptr)
+		throw xybase::InvalidOperationException(L"MultiValue is not a map.", __LINE__);
+	return *value.mapValue;
+}
+
 std::wstring MultiValue::ToString() const
 {
 	switch (type)
@@ -354,6 +377,7 @@ std::wstring MultiValue::ToString() const
 		break;
 	case MVT_ARRAY:
 	{
+		if (value.arrayValue == nullptr) return L"[<null>]";
 		std::wstring aret(L"[");
 		for (size_t i = 0; i < length; ++i)
 		{
@@ -365,6 +389,7 @@ std::wstring MultiValue::ToString() const
 	}
 	case MVT_MAP:
 	{
+		if (value.mapValue == nullptr) return L"{<null>}";
 		std::wstring mret(L"{");
 		for (const std::pair<const MultiValue, MultiValue> &pair : *value.mapValue)
 		{
@@ -402,6 +427,7 @@ std::wstring MultiValue::Stringfy() const
 		break;
 	case MVT_ARRAY:
 	{
+		if (value.arrayValue == nullptr) return L"[<null>]";
 		std::wstring aret(L"[");
 		for (size_t i = 0; i < length; ++i)
 		{
@@ -413,6 +439,7 @@ std::wstring MultiValue::Stringfy() const
 	}
 	case MVT_MAP:
 	{
+		if (value.mapValue == nullptr) return L"{<null>}";
 		std::wstring mret(L"{");
 		for (const std::pair<const MultiValue, MultiValue> &pair : *value.mapValue)
 		{
@@ -563,6 +590,8 @@ void MultiValue::ParseInt(const std::u16string &value)
 
 void MultiValue::ParseString(const std::u16string &value, bool isBareString)
 {
+	DisposeOldValue(); // 释放旧值，避免在已持值的对象上解析时泄漏
+
 	type = MVT_STRING;
 	enum
 	{
@@ -701,7 +730,11 @@ void MultiValue::ParseReal(const std::u16string &value)
 
 void MultiValue::DisposeOldValue()
 {
-	if (type == MVT_STRING && value.stringValue != nullptr) delete this->value.stringValue;
+	if (type == MVT_STRING && value.stringValue != nullptr)
+	{
+		delete this->value.stringValue;
+		value.stringValue = nullptr;
+	}
 	if (type == MVT_MAP && value.mapValue != nullptr) 
 	{
 		if (useCounter != nullptr)
@@ -940,6 +973,8 @@ MultiValue MultiValue::operator/(const MultiValue& rvalue) const
 
 const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 {
+	if (this == &rvalue) return *this;
+
 	DisposeOldValue();
 
 	metadata = rvalue.metadata;
@@ -969,6 +1004,8 @@ const MultiValue& MultiValue::operator=(const MultiValue& rvalue)
 
 const MultiValue &mule::Data::Basic::MultiValue::operator=(MultiValue &&movee) noexcept
 {
+	if (this == &movee) return *this;
+
 	DisposeOldValue();
 
 	type = movee.type;

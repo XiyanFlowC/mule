@@ -6,6 +6,7 @@
 #include <Exception/InvalidOperationException.h>
 #include <Exception/InvalidParameterException.h>
 #include "../Lua/LuaHost.h"
+#include <Data/MetadataKey.h>
 
 using namespace mule::Data::Basic;
 
@@ -92,67 +93,50 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, const std::u16string& rawN
 			ch = instream->ReadChar();
 			if (ch == '!' || ch == '?')
 			{
-				SkipComment();
+				SkipComment(ch);
 				againFlag = true;
 			}
 		} while (againFlag);
 
-		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
+		// 标签名（停止：空白、'>'、'/' 用于闭合检测）
+		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>' && ch != '/')
 		{
 			sb += ch;
 			ch = instream->ReadChar();
 		}
 		
 		std::u8string tag = sb.ToString();
-		sb += ch;
 
 		if (xybase::string::to_utf16(tag) != name)
 			throw xybase::RuntimeException(L"Format error, expect " + xybase::string::to_wstring(name) + L", but got " + xybase::string::to_wstring(tag), 9002);
 
-		// 组合类型内部仍为元素，找到结束点同步即可
-		if (realm->IsComposite())
+		element.SetType(mule::Data::Basic::MultiValue::MVT_NULL);
+		element.metadata.clear();
+
+		// 消费开标签剩余部分（空白 + 属性 + '>' 或 '/>'），并判定是否自闭合
+		std::u8string openTag = tag;
+		bool selfClosing = ConsumeOpenTagTail(ch, openTag);
+
+		if (selfClosing)
 		{
-			element.SetType(mule::Data::Basic::MultiValue::MVT_NULL);
-			element.metadata.clear();
-			while (ch != '>')
-			{
-				if (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t')
-				{
-					xybase::StringBuilder sb;
-					while (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t' && ch != '=')
-					{
-						sb.Append(ch);
-						ch = instream->ReadChar();
-					}
-					std::string key = sb.ToString();
-					while (ch != '=')
-					{
-						ch = instream->ReadChar();
-					}
-					while (ch != '\'' && ch != '"')
-					{
-						ch = instream->ReadChar();
-					}
-					char endCh = ch;
-					sb.Clear();
-					ch = instream->ReadChar();
-					while (ch != endCh) {
-						sb.Append(ch);
-						ch = instream->ReadChar();
-					}
-					element.metadata[xybase::string::to_utf16(key)] = MultiValue::Parse(xybase::string::to_utf16(sb.ToString()));
-				}
-				ch = instream->ReadChar();
-			}
+			// 复合类型自闭合与"schema 驱动、复合必有子元素"冲突，明确报错而非误读/挂死。
+			if (realm->IsComposite())
+				throw xybase::RuntimeException(std::format(L"Self-closing composite element '</{}>' is not supported.", xybase::string::to_wstring(name)), 95080);
+			// 叶子自闭合 = 空值
+			element = MultiValue::MV_NULL;
 			return;
 		}
 
+		// 组合类型内部仍为元素，找到结束点同步即可；属性已在 ConsumeOpenTagTail 中解析进 element.metadata
+		if (realm->IsComposite())
+			return;
+
 		// 非组合类型须解析内部元素
-		ReadTagAndParse(tag, sb, realm->GetDataType().starts_with(u"string/"), realm->GetDataType() == u"string/text");
+		ReadTagAndParse(tag, openTag, realm->GetDataType().starts_with(u"string/"), realm->GetDataType() == u"string/text");
 	}
 }
 
-void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase::StringBuilder<char8_t> &sb, bool isString, bool isText)
+void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, std::u8string &frag, bool isString, bool isText)
 {
 	std::u8string endTag = u8"</" + tagName + u8">";
 
@@ -164,9 +148,9 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 		if (ch == endTag[cmp]) cmp++;
 		else cmp = 0;
 		if (cmp == endTag.size()) repeat = false;
-		sb.Append(ch);
+		frag.push_back((char8_t)ch);
 	}
-	auto root = xmlParser.Parse(xybase::string::to_utf8("<") + sb.ToString());
+	auto root = xmlParser.Parse(std::u8string(u8"<") + frag);
 	
 	std::u16string text {};
 	if (root.children.empty()) return;
@@ -196,13 +180,29 @@ void mule::Xml::XmlHandler::ReadTagAndParse(const std::u8string &tagName, xybase
 	}
 }
 
-void mule::Xml::XmlHandler::SkipComment()
+void mule::Xml::XmlHandler::SkipComment(char chAfterLt)
 {
+	// chAfterLt 是紧跟在 '<' 之后的字符（'!' 或 '?'）
+	if (chAfterLt == '?')
+	{
+		// <? ... ?> 处理指令
+		auto ch = instream->ReadChar();
+		while (ch != '?')
+		{
+			ch = instream->ReadChar();
+		}
+		ch = instream->ReadChar();
+		// 到 '?>' 为止
+		while (ch != '>') ch = instream->ReadChar();
+		return;
+	}
+
+	// chAfterLt == '!'：读 '!' 之后的字符判断类型
 	auto ch = instream->ReadChar();
 	if (ch == '-')
 	{
 		ch = instream->ReadChar();
-		if (ch == '-') // comment
+		if (ch == '-') // <!-- ... -->
 		{
 			while (true)
 			{
@@ -215,7 +215,7 @@ void mule::Xml::XmlHandler::SkipComment()
 						ch = instream->ReadChar();
 						if (ch == '>')
 						{
-							break;
+							return;
 						}
 					}
 				}
@@ -223,10 +223,102 @@ void mule::Xml::XmlHandler::SkipComment()
 		}
 		else
 		{
+			// 非 "<!--" 的不完整注释，跳到 '>'
 			while (ch != '>') ch = instream->ReadChar();
 		}
+		return;
 	}
-	while (ch != '>') ch = instream->ReadChar();
+
+	if (ch == '[')
+	{
+		// <![CDATA[ ... ]]> 或 <![...]] 块，跳到 ']]>'
+		while (true)
+		{
+			ch = instream->ReadChar();
+			if (ch == ']')
+			{
+				ch = instream->ReadChar();
+				if (ch == ']')
+				{
+					ch = instream->ReadChar();
+					if (ch == '>') return;
+				}
+			}
+		}
+	}
+
+	// <!DOCTYPE ...> 或其它 <!...> 声明：跳到 '>'，正确处理内部 [ ... ] 子集
+	while (true)
+	{
+		ch = instream->ReadChar();
+		if (ch == '[')
+		{
+			while (ch != ']') ch = instream->ReadChar();
+			continue;
+		}
+		if (ch == '>') return;
+	}
+}
+
+bool mule::Xml::XmlHandler::ConsumeOpenTagTail(char &ch, std::u8string &openTag)
+{
+	// ch 是标签名后的第一个字符（空白、'>' 或 '/'）
+	while (true)
+	{
+		// 跳过空白
+		while (ch == ' ' || ch == '\t' || ch == '\r' || ch == '\n')
+			ch = instream->ReadChar();
+
+		if (ch == '>')
+		{
+			openTag.push_back((char8_t)ch);
+			return false;
+		}
+
+		if (ch == '/')
+		{
+			char next = instream->ReadChar();
+			if (next == '>')
+			{
+				openTag += u8"/>";
+				return true; // 自闭合
+			}
+			throw xybase::RuntimeException(L"Malformed XML tag: '/' not followed by '>'.", 95081);
+		}
+
+		// 属性名
+		std::u8string key;
+		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '=' && ch != '>' && ch != '/')
+		{
+			key.push_back((char8_t)ch);
+			ch = instream->ReadChar();
+		}
+
+		// 跳过直到 '='
+		while (ch != '=') ch = instream->ReadChar();
+		// 跳过直到引号
+		while (ch != '\'' && ch != '"') ch = instream->ReadChar();
+		char quote = ch;
+		ch = instream->ReadChar();
+		std::u8string val;
+		while (ch != quote)
+		{
+			val.push_back((char8_t)ch);
+			ch = instream->ReadChar();
+		}
+
+		element.metadata[xybase::string::to_utf16(key)] = MultiValue::Parse(xybase::string::to_utf16(val));
+
+		openTag.push_back((char8_t)' ');
+		openTag += key;
+		openTag.push_back((char8_t)'=');
+		openTag.push_back((char8_t)quote);
+		openTag += val;
+		openTag.push_back((char8_t)quote);
+
+		// 消费闭合引号后的字符
+		ch = instream->ReadChar();
+	}
 }
 
 void mule::Xml::XmlHandler::OnRealmExit(Type *realm, const std::u16string& rawName)
@@ -377,64 +469,43 @@ void mule::Xml::XmlHandler::OnRealmEnter(Type *realm, int idx)
 			ch = instream->ReadChar();
 			if (ch == '!' || ch == '?')
 			{
-				while (ch != '>') ch = instream->ReadChar();
+				SkipComment(ch);
 				againFlag = true;
 			}
 		} while (againFlag);
 
-		// 读取，构建标签名
-		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>')
+		// 读取，构建标签名（停止：空白、'>'、'/' 用于闭合检测）
+		while (ch != ' ' && ch != '\t' && ch != '\r' && ch != '\n' && ch != '>' && ch != '/')
 		{
 			sb += ch;
 			ch = instream->ReadChar();
 		}
 
 		std::u8string tag = sb.ToString();
-		sb += ch;
 
 		if (xybase::string::to_utf16(tag) != u"item")
 			throw xybase::RuntimeException(L"Format error, expect " L"item" L", but got " + xybase::string::to_wstring(tag), 9002);
 
-		// 组合类型内部仍为元素，找到结束点同步即可
-		if (realm->IsComposite())
+		element.SetType(mule::Data::Basic::MultiValue::MVT_NULL);
+		element.metadata.clear();
+
+		std::u8string openTag = tag;
+		bool selfClosing = ConsumeOpenTagTail(ch, openTag);
+
+		if (selfClosing)
 		{
-			element.SetType(mule::Data::Basic::MultiValue::MVT_NULL);
-			element.metadata.clear();
-			while (ch != '>')
-			{
-				if (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t')
-				{
-					xybase::StringBuilder sb;
-					while (ch != ' ' && ch != '\n' && ch != '\r' && ch != '\t' && ch != '=')
-					{
-						sb.Append(ch);
-						ch = instream->ReadChar();
-					}
-					std::string key = sb.ToString();
-					while (ch != '=')
-					{
-						ch = instream->ReadChar();
-					}
-					while (ch != '\'' && ch != '"')
-					{
-						ch = instream->ReadChar();
-					}
-					char endCh = ch;
-					sb.Clear();
-					ch = instream->ReadChar();
-					while (ch != endCh) {
-						sb.Append(ch);
-						ch = instream->ReadChar();
-					}
-					element.metadata[xybase::string::to_utf16(key)] = MultiValue::Parse(xybase::string::to_utf16(sb.ToString()));
-				}
-				ch = instream->ReadChar();
-			}
+			if (realm->IsComposite())
+				throw xybase::RuntimeException(L"Self-closing composite element '</item>' is not supported.", 95080);
+			element = MultiValue::MV_NULL;
 			return;
 		}
 
+		// 组合类型内部仍为元素，找到结束点同步即可；属性已在 ConsumeOpenTagTail 中解析进 element.metadata
+		if (realm->IsComposite())
+			return;
+
 		// 非组合类型须解析内部元素
-		ReadTagAndParse(tag, sb, realm->GetDataType().starts_with(u"string/"), realm->GetDataType() == u"string/text");
+		ReadTagAndParse(tag, openTag, realm->GetDataType().starts_with(u"string/"), realm->GetDataType() == u"string/text");
 	}
 }
 
@@ -464,7 +535,7 @@ void mule::Xml::XmlHandler::OnRealmExit(Type *realm, int idx)
 		{
 			outstream->Write("<");
 			outstream->Write(reinterpret_cast<const char *>(xybase::string::to_utf8(nodeName).c_str()));
-			element.metadata[u"i"] = idx;
+			element.metadata[mule::Data::MetadataKey::Index] = idx;
 			for (auto &&datum : element.metadata)
 			{
 				outstream->Write(" ");

@@ -2,6 +2,7 @@
 
 #include <xystring.h>
 #include <Configuration.h>
+#include "Data/MetadataKey.h"
 
 using namespace mule::Data::Basic;
 
@@ -33,7 +34,7 @@ MultiValue mule::Data::Basic::String::DoRead(xybase::Stream *stream)
 	auto rawString = stream->ReadString();
 	MultiValue tmp(xybase::string::to_utf16(rawString));
 	lastSize = rawString.size();
-	tmp.metadata[u"size"] = lastSize;
+	tmp.metadata[mule::Data::MetadataKey::Size] = lastSize;
 	return tmp;
 }
 
@@ -43,7 +44,7 @@ void mule::Data::Basic::String::DoWrite(xybase::Stream *stream, const MultiValue
 
 	auto data = xybase::string::to_string(*(value.value.stringValue));
 
-	auto &&itr = value.metadata.find(u"size");
+	auto &&itr = value.metadata.find(mule::Data::MetadataKey::Size);
 	if (itr != value.metadata.end())
 	{
 		if (data.size() > itr->second.value.unsignedValue)

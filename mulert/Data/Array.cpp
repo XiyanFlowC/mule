@@ -4,6 +4,7 @@
 #include "Basic/ContextManager.h"
 #include "Basic/BasicType.h"
 #include "../Configuration.h"
+#include "MetadataKey.h"
 
 using namespace mule::Data::Basic;
 
@@ -46,9 +47,11 @@ void mule::Data::Array::Write(xybase::Stream *stream, FileHandler * fileHandler)
 	// 定义的长度是变量时，试图通过上下文信息获取变量数值
 	if (limit == (size_t)-1 && sizeCache != ARRAY_SIZE_INFINITY) limit = ContextManager::GetInstance().GetVariable(sizeCache).value.unsignedValue;
 	// 未定义长度时，尝试从 sheet 中获取长度定义
-	if (limit == (size_t)-1 && sizeCache == ARRAY_SIZE_INFINITY && fileHandler->OnDataWrite().metadata.contains(u"size"))
+	if (limit == (size_t)-1 && sizeCache == ARRAY_SIZE_INFINITY)
 	{
-		limit = fileHandler->OnDataWrite().metadata.find(u"size")->second.value.unsignedValue;
+		auto val = fileHandler->OnDataWrite();
+		if (auto s = val.GetMetadata<uint64_t>(MetadataKey::Size))
+			limit = (size_t)*s;
 	}
 	for (size_t i = 0; i < limit; ++i) {
 		fileHandler->OnRealmEnter(innerObject, (int)i);

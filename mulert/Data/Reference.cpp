@@ -5,6 +5,7 @@
 #include "../Configuration.h"
 #include "Basic/BasicType.h"
 #include "SmartReference.h"
+#include "MetadataKey.h"
 
 using namespace mule::Data::Basic;
 
@@ -15,9 +16,9 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 	if (ptr == 0)
 	{
 		if (referent->IsComposite())
-			dataHandler->AppendMetadatum(u"ptr", (int64_t)0);
+			dataHandler->AppendMetadatum(MetadataKey::Ptr, (int64_t)0);
 		dataHandler->OnDataRead(MultiValue::MV_NULL);
-		dataHandler->AppendMetadatum(u"ptr", (int64_t)ptr);
+		dataHandler->AppendMetadatum(MetadataKey::Ptr, (int64_t)ptr);
 		if (ptrReject && ptrRejectValue == ptr) throw BasicType::ConstraintViolationException(L"ptr rejected.");
 
 		return;
@@ -27,9 +28,9 @@ void mule::Data::Reference::Read(xybase::Stream *stream, DataHandler *dataHandle
 	size_t loc = stream->Tell();
 	stream->Seek(ptr, xybase::Stream::SM_BEGIN);
 	if (referent->IsComposite())
-		dataHandler->AppendMetadatum(u"ptr", MultiValue((int64_t)ptr));
+		dataHandler->AppendMetadatum(MetadataKey::Ptr, MultiValue((int64_t)ptr));
 	referent->Read(stream, dataHandler);
-	dataHandler->AppendMetadatum(u"ptr", MultiValue((int64_t)ptr));
+	dataHandler->AppendMetadatum(MetadataKey::Ptr, MultiValue((int64_t)ptr));
 	stream->Seek(loc, xybase::Stream::SM_BEGIN);
 }
 
@@ -43,8 +44,12 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 		return;
 	}
 
-	size_t ptr = val.metadata[u"ptr"].value.unsignedValue;
-	if (!val.metadata[u"ptr"].IsType(MultiValue::MVT_INT))
+	size_t ptr;
+	if (auto p = val.GetMetadata<uint64_t>(MetadataKey::Ptr))
+	{
+		ptr = (size_t)*p;
+	}
+	else
 	{
 		stream->Seek(0, xybase::Stream::SM_CURRENT);
 		ptr = stream->ReadUInt32();
@@ -52,24 +57,22 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	}
 
 	bool realloc = false;
-	auto reallocAttr = val.metadata[u"realloc"];
-	if (reallocAttr.IsType(MultiValue::MVT_INT) && reallocAttr.value.signedValue != 0)
+	if (auto r = val.GetMetadata<int64_t>(MetadataKey::Realloc))
 	{
-		realloc = true;
+		realloc = (*r != 0);
 	}
-	if (reallocAttr.IsType(MultiValue::MVT_STRING) && reallocAttr.value.stringValue->compare(u"true") == 0)
+	else if (auto r = val.GetMetadata<std::u16string>(MetadataKey::Realloc))
 	{
-		realloc = true;
+		realloc = (*r == u"true");
 	}
 
 	if (realloc)
 	{
 		// 获取 align 要求
-		auto alignAttr = val.metadata[u"align"];
 		size_t align = 1;
-		if (alignAttr.IsType(mule::Data::Basic::MultiValue::MVT_INT) || alignAttr.IsType(mule::Data::Basic::MultiValue::MVT_UINT))
+		if (auto a = val.GetMetadata<uint64_t>(MetadataKey::Align))
 		{
-			align = alignAttr.value.unsignedValue;
+			align = (size_t)*a;
 			// 检查 align 是否是 2 的幂
 			if (align & (align - 1))
 				throw xybase::RuntimeException(L"Invalid alignment requirement.", 72501);
@@ -78,10 +81,9 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 		// 尝试分配新地址
 		if (referent->Size() == (size_t)-1)
 		{
-			auto sizeAttr = val.metadata[u"size"];
-			if (sizeAttr.IsType(mule::Data::Basic::MultiValue::MVT_INT) || sizeAttr.IsType(mule::Data::Basic::MultiValue::MVT_UINT))
+			if (auto s = val.GetMetadata<uint64_t>(MetadataKey::Size))
 			{
-				ptr = SmartReference::MemoryManager::GetInstance().GetMemory(stream).Alloc(sizeAttr.value.unsignedValue, align);
+				ptr = SmartReference::MemoryManager::GetInstance().GetMemory(stream).Alloc((size_t)*s, align);
 			}
 			else throw xybase::RuntimeException(L"Non-constant size referent is requiring reallocation.", 72500);
 		}
