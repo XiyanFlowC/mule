@@ -26,17 +26,22 @@ void FragmentManager::RegisterFragment(const Fragment &frag)
 {
 	for (auto f : frags)
 	{
-		if (f->IsContains(frag))
-		{
-			return;
-		}
-		if (f->IsOverlapsWith(frag))
-		{
-			f->Merge(frag);
-			return;
-		}
+		if (f->IsContains(frag)) return;          // already free: nothing to add
 	}
-	frags.push_back(new Fragment(frag));
+
+	Fragment merged(frag);
+	for (auto itr = frags.begin(); itr != frags.end(); )
+	{
+		if (!merged.IsOverlapsWith(**itr))
+		{
+			++itr;
+			continue;
+		}
+		merged.Merge(**itr);
+		delete *itr;
+		itr = frags.erase(itr);
+	}
+	frags.push_back(new Fragment(merged));
 }
 
 void FragmentManager::RegisterFragment(size_t position, size_t size)
@@ -72,18 +77,18 @@ bool FragmentManager::IsFree(size_t position)
 {
 	for (auto frag : frags)
 	{
-		if (frag->IsContains(position)) return false;
+		if (frag->IsContains(position)) return true;
 	}
-	return true;
+	return false;
 }
 
 bool FragmentManager::IsFree(Fragment *frag)
 {
-	for (auto frag : frags)
+	for (auto f : frags)
 	{
-		if (frag->IsContains(*frag)) return false;
+		if (f->IsContains(*frag)) return true;
 	}
-	return true;
+	return false;
 }
 
 size_t FragmentManager::Alloc(size_t size, int align)
@@ -96,6 +101,7 @@ size_t FragmentManager::Alloc(size_t size, int align)
 		{
 			size_t ret = frag->GetBeginning();
 			frag->EliminateBeginning((size_t)size);
+			DiscardIfEmpty(frag);
 			return ret;
 		}
 	}
@@ -113,11 +119,20 @@ size_t FragmentManager::Alloc(size_t size, int align)
 			{
 				// 返回对齐的空间
 				frag->EliminateBeginning((size_t)size + add);
+				DiscardIfEmpty(frag);
 				return bgn;
 			}
 		}
 	}
 	throw xybase::InvalidOperationException(L"Cannot alloc anymore.", 32751);
+}
+
+void FragmentManager::DiscardIfEmpty(Fragment *frag)
+{
+	if (frag == nullptr || frag->GetSize() != 0) return;
+
+	frags.remove(frag);
+	delete frag;
 }
 
 size_t xybase::Fragment::FragmentManager::AllocNear(size_t size, int align, size_t pos, size_t maxDistance)
@@ -134,23 +149,31 @@ size_t xybase::Fragment::FragmentManager::AllocNear(size_t size, int align, size
 			size_t bgn = XY_ALIGN(frag->GetBeginning(), align);
 			if (bgn >= frag->GetBeginning() && bgn + size <= frag->GetEnding())
 			{
-				// FIXME: 可能溢出
-				if (XY_ABS(static_cast<long long>(bgn - pos)) <= maxDistance)
+				// The distances are computed in signed arithmetic: `bgn - pos` on size_t wraps when
+				// bgn < pos, and whether the cast that followed recovered the negative value was an
+				// implementation detail (it did, on MSVC, by two's complement).
+				if (XY_ABS(static_cast<long long>(bgn) - static_cast<long long>(pos)) <= maxDistance)
 				{
 					size_t add = bgn - frag->GetBeginning();
 					frag->EliminateBeginning(size + add);
+					DiscardIfEmpty(frag);
 					return bgn;
 				}
 			}
 
 			// 2) 从尾部对齐分配
-			size_t endAligned = (frag->GetEnding() - size, align) & (~(align - 1));
+			// The start used to be computed with a comma operator --
+			// `(frag->GetEnding() - size, align) & (~(align - 1))` discards the subtraction and
+			// yields `align & ~(align - 1)`, i.e. 0 for any power-of-two alignment, so this branch
+			// could never be taken and `srmalloc_n` silently degraded to head/middle placement.
+			size_t endAligned = (frag->GetEnding() - size) & ~(static_cast<size_t>(align) - 1);
 			if (endAligned >= frag->GetBeginning() && endAligned + size <= frag->GetEnding())
 			{
-				if (XY_ABS(static_cast<long long>(endAligned - pos)) <= maxDistance)
+				if (XY_ABS(static_cast<long long>(endAligned) - static_cast<long long>(pos)) <= maxDistance)
 				{
 					size_t add = frag->GetEnding() - (endAligned + size);
 					frag->EliminateEnding(size + add);
+					DiscardIfEmpty(frag);
 					return endAligned;
 				}
 			}

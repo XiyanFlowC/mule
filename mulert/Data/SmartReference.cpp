@@ -45,7 +45,7 @@ MultiValue mule::Data::SmartReference::DoRead(xybase::Stream *stream)
 	stream->Seek(ptr);
 	auto value = referent->DoRead(stream);
 	auto size = referent->GetLastSize();
-	MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(ptr, XY_ALIGN(size, GetAlign()));
+	MemoryManager::GetInstance().GetMemory(stream).RegisterFragment(static_cast<size_t>(ptr), XY_ALIGN(size, GetAlign()));
 	stream->Seek(cur);
 	value.metadata[MetadataKey::Ptr] = ptr;
 	return value;

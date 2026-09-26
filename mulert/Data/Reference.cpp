@@ -45,9 +45,11 @@ void mule::Data::Reference::Write(xybase::Stream *stream, FileHandler * fileHand
 	}
 
 	size_t ptr;
+	uint64_t ptrMetaVal = 0;
 	if (auto p = val.GetMetadata<uint64_t>(MetadataKey::Ptr))
 	{
 		ptr = (size_t)*p;
+		ptrMetaVal = (uint64_t)*p;
 	}
 	else
 	{

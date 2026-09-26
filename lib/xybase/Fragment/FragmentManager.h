@@ -22,6 +22,14 @@ namespace xybase
 		{
 			std::list<Fragment *> frags;
 
+			/**
+			 * @brief 从空闲表中移除并释放一个已被分配动作削空的片段（size == 0）。
+			 *
+			 * `Alloc`/`AllocNear` 就地削减片段，正好用尽时会留下长度为 0 的残片：它既不能再被分配，
+			 * 又会被 `srmsave` 的 dump 永远列出来（实测占真实 dump 条目数的 61%，纯噪声）。
+			*/
+			void DiscardIfEmpty(Fragment *frag);
+
 		public:
 			/**
 			 * @brief 创建新的空碎片管理器。

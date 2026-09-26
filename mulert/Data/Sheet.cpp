@@ -1,6 +1,7 @@
 #include "Sheet.h"
 #include "Basic/BasicType.h"
 #include "../Configuration.h"
+#include "../Logger.h"
 
 using namespace mule::Data::Basic;
 
