@@ -45,8 +45,12 @@ void mule::SheetManager::WriteSheets(xybase::Stream *target, const std::u16strin
 
 	auto &sheets = itr->second;
 	std::u16string baseDir = Configuration::GetInstance().GetString(u"mule.sheet.basedir");
-	for (auto *sheet : sheets)
+	// Range-based for snapshots end() at loop start; sub-sheets registered DURING a sheet's Write
+	// (SheetReference -> RegisterSheet -> push_back) would be skipped. std::list iterators are stable,
+	// so an explicit loop that re-evaluates end() each iteration processes the appended sub-sheets too.
+	for (auto _sit = sheets.begin(); _sit != sheets.end(); ++_sit)
 	{
+		auto *sheet = *_sit;
 		logger.Info(L"Start to write sheet {}", xybase::string::to_wstring(sheet->GetName()));
 		
 		std::unique_ptr<mule::Data::Basic::Type::FileHandler> handler(
@@ -102,8 +106,10 @@ void mule::SheetManager::ReadSheets(xybase::Stream *target, const std::u16string
 
 	auto &sheets = itr->second;
 	std::u16string baseDir = Configuration::GetInstance().GetString(u"mule.sheet.basedir");
-	for (auto *sheet : sheets)
+	// Same fix as WriteSheets: explicit list iterator loop (re-evaluates end(), so appended sub-sheets read too).
+	for (auto _sit = sheets.begin(); _sit != sheets.end(); ++_sit)
 	{
+		auto *sheet = *_sit;
 		logger.Info(L"Start to read sheet {}", xybase::string::to_wstring(sheet->GetName()));
 		
 		std::unique_ptr<mule::Data::Basic::Type::DataHandler> handler(

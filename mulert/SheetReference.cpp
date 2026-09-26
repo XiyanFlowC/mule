@@ -43,7 +43,7 @@ mule::SheetReference::~SheetReference()
 
 size_t mule::SheetReference::Size() const
 {
-	return size_t(4);
+	return size_t(0);
 }
 
 std::u16string mule::SheetReference::GetDataType() const
