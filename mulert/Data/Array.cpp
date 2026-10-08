@@ -77,6 +77,7 @@ void mule::Data::Array::Write(xybase::Stream *stream, FileHandler * fileHandler)
 
 size_t mule::Data::Array::Size() const
 {
+	if (length == (size_t)-1) return (size_t)-1;
 	if (innerObject->Size() == (size_t)-1) return (size_t)-1;
 	return length * innerObject->Size();
 }
